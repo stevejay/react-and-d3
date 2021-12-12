@@ -30,17 +30,17 @@ module.exports = {
       {
         groups: [
           // Packages. react related packages come first.
-          ['^react', '^@?w'],
+          ['^react', '^@?\\w'],
           // Internal packages.
           ['^(@)(/.*|$)'],
           // Side effect imports.
-          ['^\u0000'],
+          ['^\\u0000'],
           // Parent imports. Put .. last.
-          ['^..(?!/?$)', '^../?$'],
+          ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
           // Other relative imports. Put same-folder imports and . last.
-          ['^./(?=.*/)(?!/?$)', '^.(?!/?$)', '^./?$'],
+          ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
           // Style imports.
-          ['^.+.s?css$']
+          ['^.+\\.s?css$']
         ]
       }
     ],
@@ -73,7 +73,8 @@ module.exports = {
         'react/display-name': 'off', // forwardRef causing a problem here
         'react/prop-types': 'off', // forwardRef causing a problem here,
         'no-unused-vars': 'off',
-        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
+        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+        'testing-library/render-result-naming-convention': 'off'
       }
     },
     {

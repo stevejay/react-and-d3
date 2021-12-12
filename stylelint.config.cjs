@@ -6,6 +6,12 @@ module.exports = {
     'font-family-name-quotes': null,
     'selector-class-pattern': null,
     'keyframes-name-pattern': null,
-    'string-quotes': 'single'
+    'string-quotes': 'single',
+    'at-rule-no-unknown': [
+      true,
+      {
+        ignoreAtRules: ['extends', 'layer', 'tailwind']
+      }
+    ]
   }
 };

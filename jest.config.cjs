@@ -23,8 +23,8 @@ module.exports = {
   ],
 
   moduleNameMapper: {
-    '.(css|sass|scss)$': 'identity-obj-proxy',
-    '^.+.svg$': 'jest-svg-transformer',
+    '\\.(css|sass|scss)$': 'identity-obj-proxy',
+    '\\.svg$': 'jest-svg-transformer',
     '^@/(.*)$': '<rootDir>/src/$1'
   },
 
@@ -35,7 +35,7 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
 
   transform: {
-    '.tsx?$': ['babel-jest', { configFile: './babel.jestConfig.cjs' }]
+    '\\.tsx?$': ['babel-jest', { configFile: './babel.jestConfig.cjs' }]
   },
 
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts']
