@@ -1,11 +1,11 @@
 import { FC, SVGProps } from 'react';
 
-type SvgSvgProps = Omit<SVGProps<SVGSVGElement>, 'viewBox' | 'xmlns' | 'width' | 'height'> & {
+export type SvgProps = Omit<SVGProps<SVGSVGElement>, 'viewBox' | 'xmlns' | 'width' | 'height'> & {
   width: number;
   height: number;
 };
 
-export const SvgSvg: FC<SvgSvgProps> = ({ width, height, children, ...rest }) => (
+export const Svg: FC<SvgProps> = ({ width, height, children, ...rest }) => (
   <svg
     {...rest}
     viewBox={`0 0 ${width} ${height}`}

@@ -1,8 +1,9 @@
 import { FC, useState } from 'react';
 import { random, range } from 'lodash-es';
 
-import { AxisD3 } from './AxisD3';
-import { SvgChart } from './SvgChart';
+import { D3AxisChart } from './D3AxisChart';
+import { ReactAxisChart } from './ReactAxisChart';
+import { useDebouncedResizeObserver } from './useDebouncedResizeObserver';
 
 function createRandomData(): number[] {
   const rangeSeed = random(0, 3);
@@ -22,29 +23,35 @@ const dataInterruptOne = [-48, 44];
 const dataInterruptTwo = [-220, -102];
 const dataInterruptThree = [39, 191];
 
-const transitionDurationSeconds = 3;
-
 export const App: FC = () => {
-  const [dimensions, setDimensions] = useState({ width: 600, height: 100 });
+  const [transitionSeconds, setTransitionSeconds] = useState(0.25);
   const [data, setData] = useState(createRandomData);
   const [drawTicksAsGridLines, setDrawTicksAsGridLines] = useState(false);
+  const { ref: sizerRef, width, height } = useDebouncedResizeObserver(300);
 
   return (
     <div className="m-8 space-y-4">
-      <SvgChart
-        data={data}
-        width={dimensions.width}
-        height={dimensions.height}
-        drawTicksAsGridLines={drawTicksAsGridLines}
-        transitionDurationSeconds={transitionDurationSeconds}
-      />
-      <AxisD3
-        data={data}
-        width={dimensions.width}
-        height={dimensions.height}
-        drawTicksAsGridLines={drawTicksAsGridLines}
-        transitionDurationSeconds={transitionDurationSeconds}
-      />
+      <div ref={sizerRef} className="h-36 w-full">
+        <ReactAxisChart
+          // Seems to be the only way to get the MotionConfig transition prop to accept
+          // an update to the duration value:
+          key={transitionSeconds}
+          data={data}
+          width={width ?? 0}
+          height={height ?? 0}
+          drawTicksAsGridLines={drawTicksAsGridLines}
+          transitionSeconds={transitionSeconds}
+        />
+      </div>
+      <div className="h-36 w-full">
+        <D3AxisChart
+          data={data}
+          width={width ?? 0}
+          height={height ?? 0}
+          drawTicksAsGridLines={drawTicksAsGridLines}
+          transitionSeconds={transitionSeconds}
+        />
+      </div>
       <div className="flex items-center space-x-2">
         <button
           type="button"
@@ -77,14 +84,10 @@ export const App: FC = () => {
         </button>
         <button
           type="button"
-          onClick={() =>
-            setDimensions((state) =>
-              state.width === 600 ? { width: 500, height: 200 } : { width: 600, height: 100 }
-            )
-          }
+          onClick={() => setTransitionSeconds((state) => (state === 0.25 ? 3 : 0.25))}
           className="bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring outline-none text-white font-light px-4 py-2"
         >
-          Cycle dimensions
+          Cycle speed
         </button>
       </div>
       <div className="flex items-center space-x-2">

@@ -75,6 +75,7 @@ module.exports = {
         'no-unused-vars': 'off',
         '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
         'testing-library/render-result-naming-convention': 'off',
+        'testing-library/await-async-utils': 'off',
         '@typescript-eslint/no-explicit-any': [
           2,
           {

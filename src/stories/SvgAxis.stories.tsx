@@ -2,8 +2,8 @@ import { ComponentMeta, Story } from '@storybook/react';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
+import { Svg } from '@/Svg';
 import { SvgAxis } from '@/SvgAxis';
-import { SvgSvg } from '@/SvgSvg';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -39,7 +39,6 @@ const LinearScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   const chartWidth = width - margins.left - margins.right;
   const chartHeight = height - margins.top - margins.bottom;
 
-  console.log(orientation, margins, chartWidth);
   const scale = d3
     .scaleLinear()
     .domain(domain)
@@ -62,7 +61,7 @@ const LinearScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
 
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
-      <SvgSvg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
+      <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
         <SvgAxis
           scale={scale}
           translateX={translateX}
@@ -72,7 +71,7 @@ const LinearScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
           tickSizeInner={null}
           tickSizeOuter={orientation === 'top' || orientation === 'bottom' ? -chartHeight : -chartWidth}
         />
-      </SvgSvg>
+      </Svg>
     </MotionConfig>
   );
 };
@@ -136,7 +135,7 @@ const BandScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
 
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
-      <SvgSvg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
+      <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
         <SvgAxis
           scale={scale}
           translateX={translateX}
@@ -145,7 +144,7 @@ const BandScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
           tickSizeInner={null}
           tickSizeOuter={orientation === 'top' || orientation === 'bottom' ? -chartHeight : -chartWidth}
         />
-      </SvgSvg>
+      </Svg>
     </MotionConfig>
   );
 };
@@ -208,7 +207,7 @@ const TimeScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
 
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
-      <SvgSvg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
+      <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
         <SvgAxis
           scale={scale}
           translateX={translateX}
@@ -218,7 +217,7 @@ const TimeScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
           tickSizeInner={null}
           tickSizeOuter={orientation === 'top' || orientation === 'bottom' ? -chartHeight : -chartWidth}
         />
-      </SvgSvg>
+      </Svg>
     </MotionConfig>
   );
 };
@@ -282,7 +281,7 @@ const PointScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
 
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
-      <SvgSvg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
+      <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
         <SvgAxis
           scale={scale}
           translateX={translateX}
@@ -291,7 +290,7 @@ const PointScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
           tickSizeInner={null}
           tickSizeOuter={orientation === 'top' || orientation === 'bottom' ? -chartHeight : -chartWidth}
         />
-      </SvgSvg>
+      </Svg>
     </MotionConfig>
   );
 };

@@ -1,6 +1,6 @@
 import { FC, SVGProps } from 'react';
 
-type SvgGroupProps = Omit<SVGProps<SVGGElement>, 'translate'> & {
+export type SvgGroupProps = Omit<SVGProps<SVGGElement>, 'translate'> & {
   translateX: number;
   translateY: number;
 };

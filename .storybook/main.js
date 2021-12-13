@@ -28,7 +28,8 @@ module.exports = {
         include: [
           ...(config?.optimizeDeps?.include ?? []),
           '@storybook/theming',
-          '@storybook/addon-actions'
+          '@storybook/addon-actions',
+          'use-resize-observer'
           //   '@emotion/react/jsx-dev-runtime'
         ]
       }
