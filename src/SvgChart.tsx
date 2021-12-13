@@ -23,7 +23,12 @@ export const SvgChart: FC<SvgChartProps> = memo(
     const scale = d3.scaleLinear().domain(domain).range([0, chartWidth]);
 
     return (
-      <MotionConfig transition={{ duration: transitionDurationSeconds }}>
+      <MotionConfig
+        transition={{
+          duration: transitionDurationSeconds,
+          ease: d3.easeCubicInOut
+        }}
+      >
         <Svg width={width} height={height}>
           <Axis
             scale={scale}
