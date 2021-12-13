@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
 import { Axis } from './Axis';
-import { Svg } from './Svg';
+import { SvgSvg } from './SvgSvg';
 
 type SvgChartProps = {
   data: number[];
@@ -29,7 +29,7 @@ export const SvgChart: FC<SvgChartProps> = memo(
           ease: d3.easeCubicInOut
         }}
       >
-        <Svg width={width} height={height} className="bg-slate-200 font-sans">
+        <SvgSvg width={width} height={height} className="bg-slate-200 font-sans">
           <Axis
             scale={scale}
             translateX={margins.left}
@@ -38,7 +38,7 @@ export const SvgChart: FC<SvgChartProps> = memo(
             tickSizeInner={drawTicksAsGridLines ? -chartHeight : null}
             tickSizeOuter={-chartHeight}
           />
-        </Svg>
+        </SvgSvg>
       </MotionConfig>
     );
   },
