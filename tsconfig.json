@@ -21,6 +21,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["./src", "./playwright.config.ts", "./e2e-tests"],
+  "include": ["./src", "./playwright.config.ts", "./e2e-tests", "./.storybook"],
   "exclude": ["./types-temp"]
 }

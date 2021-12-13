@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { FC, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import { identity, isNil } from 'lodash-es';
@@ -9,24 +8,24 @@ import { SvgGroup } from './SvgGroup';
 // Returns a function that transforms a domain value into a position in pixels
 // using the given scale object to do so. This is the transform used when the
 // scale is not a band scale.
-function number(scale: d3.AxisScale<d3.NumberValue>) {
-  return (d: d3.NumberValue) => +(scale(d) ?? ''); // TODO Not sure what '' should actually be
+function number<Domain>(scale: d3.AxisScale<Domain>) {
+  return (d: Domain) => +(scale(d) ?? ''); // TODO Not sure what '' should actually be
 }
 
 // Returns a function that transforms a domain value into a position in pixels
 // using the given scale object to do so. This is the transform used when the
 // scale is a band scale.
-function center(scale: d3.AxisScale<d3.NumberValue> & { round?: () => boolean }, offset: number) {
+function center<Domain>(scale: d3.AxisScale<Domain> & { round?: () => boolean }, offset: number) {
   offset = Math.max(0, scale.bandwidth ? scale.bandwidth() - offset * 2 : 0) / 2;
   if (scale.round && scale.round()) {
     offset = Math.round(offset);
   }
-  return (d: d3.NumberValue) => +(scale(d) ?? 0) + offset;
+  return (d: Domain) => +(scale(d) ?? 0) + offset;
 }
 
 // A single path is used to draw the domain line and the outer ticks as one
 // continuous line.
-function createDomainPathData(
+function createDomainPathString(
   orientation: Orientation,
   tickSizeOuter: number,
   offset: number,
@@ -45,31 +44,72 @@ function createDomainPathData(
 
 type Orientation = 'top' | 'bottom' | 'left' | 'right';
 
-// TODO: The generic <Domain> is the type of the axis domain.
-// Domain === d3.NumberValue
-
-type AxisProps = {
-  scale: d3.AxisScale<d3.NumberValue>;
-  translateX: number;
-  translateY: number;
+type AxisProps<Domain> = {
+  /**
+   * The scale used to render the axis. Required.
+   */
+  scale: d3.AxisScale<Domain>;
+  /**
+   * The position of the axis relative to the chart that it annotates. Required.
+   */
   orientation: Orientation;
+  /*
+   * The horizontal distance in pixels to translate the axis by, relative to the
+   * SVG's origin.  Required.
+   */
+  translateX: number;
+  /*
+   * The vertical distance in pixels to translate the axis by, relative to the
+   * SVG's origin.  Required.
+   */
+  translateY: number;
+  /**
+   * The offset in pixels. Used to ensure crisp edges on low-resolution devices.
+   * Defaults to 0 on devices with a devicePixelRatio greater than 1, and 0.5px otherwise.
+   */
   offset?: number | null;
+  /**
+   * The spacing in pixels between a ticks and its label. Defaults to 3px.
+   */
   tickPadding?: number | null;
+  /**
+   * The length in pixels of the inner tick lines. Defaults to 6px.
+   */
   tickSizeInner?: number | null;
+  /**
+   * The length in pixels of the outer tick lines. Defaults to 6px.
+   */
   tickSizeOuter?: number | null;
+  /**
+   * Sets both `tickSizeInner` and `tickSizeOuter` to the given pixel value.
+   */
   tickSize?: number | null;
-  tickFormat?: (domainValue: d3.NumberValue, index: number) => string | null;
-  tickValues?: d3.NumberValue[] | null;
-  // issue of ticks and tickArguments
-  ticksCount?: number | null;
-  ticksSpecifier?: string | null;
+  /**
+   * Sets the arguments that will be passed to scale.ticks and scale.tickFormat
+   * when the axis is rendered. If you previously used the `ticks` property on the
+   * d3 axis component then use `tickArguments` instead (passing the args as an
+   * array).
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tickArguments?: any[];
+  /**
+   * Sets the formatter function. Pass `null` to explicitly use the scale's
+   * default formatter. Defaults to the scale's default formatter.
+   */
+  tickFormat?: (domainValue: Domain, index: number) => string | null;
+  /**
+   * The ticks values to use for ticks instead of those returned by the scale’s
+   * automatic tick generator
+   */
+  tickValues?: Domain[] | null;
 };
 
-export const Axis: FC<AxisProps> = (props) => {
-  const { orientation, translateX, translateY } = props;
-  const scale = props.scale as d3.AxisScale<d3.NumberValue> & {
-    ticks?(count?: number): d3.NumberValue[];
-    tickFormat?(count?: number, specifier?: string): (d: d3.NumberValue) => string;
+export function Axis<Domain>(props: AxisProps<Domain>) {
+  const { orientation, translateX, translateY, tickArguments = [] } = props;
+
+  const scale = props.scale as d3.AxisScale<Domain> & {
+    ticks?(...args: any[]): Domain[];
+    tickFormat?(...args: any[]): (d: Domain) => string;
   };
 
   // The length of the inner ticks (which are the ticks with labels).
@@ -94,7 +134,8 @@ export const Axis: FC<AxisProps> = (props) => {
   // Determine the exact tick values to use.
   const tickValues = isNil(props.tickValues)
     ? scale.ticks
-      ? scale.ticks() // Major issue here to do with tickArguments and the alternative ticks() forms.
+      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        scale.ticks(...tickArguments)
       : scale.domain()
     : props.tickValues;
 
@@ -102,7 +143,8 @@ export const Axis: FC<AxisProps> = (props) => {
   const tickFormat =
     props.tickFormat == null
       ? scale.tickFormat
-        ? scale.tickFormat() // Major issue here to do with tickArguments and the alternative tickFormat() forms.
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          scale.tickFormat(...tickArguments)
         : identity
       : props.tickFormat;
 
@@ -127,7 +169,7 @@ export const Axis: FC<AxisProps> = (props) => {
 
   // Store the position function so it can be used to animate the entering ticks
   // from the position they would have been in if they were already in the DOM.
-  const previousPositionRef = useRef<((d: d3.NumberValue) => number) | null>(null);
+  const previousPositionRef = useRef<((d: Domain) => number) | null>(null);
   useEffect(() => {
     previousPositionRef.current = position;
   }, [position]); // Always run
@@ -143,77 +185,91 @@ export const Axis: FC<AxisProps> = (props) => {
       <motion.path
         stroke="currentColor"
         animate={{
-          d: createDomainPathData(orientation, tickSizeOuter, offset, range0, range1, k)
+          d: createDomainPathString(orientation, tickSizeOuter, offset, range0, range1, k)
         }}
       />
       {/* Send the current position to the tick exit animation variant */}
       <AnimatePresence custom={position}>
-        {tickValues.map((tickValue, index) => {
-          // May be an issue here with the sorting of the tick values.
-          // Also not sure about the `index` on the tickFormat call.
+        {
+          // orderBy(tickValues, (d) => (d as unknown as object | number | string).toString())
 
-          //   const exitPosition = position(tickValue);
-          //   const exit = isFinite(exitPosition)
-          //     ? { opacity: 0, [translate]: exitPosition + offset }
-          //     : { opacity: 0 };
+          tickValues.map((tickValue, index) => {
+            // May be an issue here with the sorting of the tick values.
+            // Also not sure about the `index` on the tickFormat call.
 
-          //   const initialPosition = previousPositionRef.current ? previousPositionRef.current(tickValue) : null;
-          //   const initial =
-          //     !isNil(initialPosition) && isFinite(initialPosition)
-          //       ? { opacity: 0, [translate]: initialPosition + offset }
-          //       : { opacity: 0, [translate]: position(tickValue) + offset };
+            //   console.log(tickValue, scale(tickValue));
 
-          return (
-            <motion.g
-              //   key={scale(tickValue)}
-              key={tickValue.toString()}
-              stroke="currentColor"
-              custom={position}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              variants={{
-                initial: () => {
-                  const initialPosition = previousPositionRef.current
-                    ? previousPositionRef.current(tickValue)
-                    : null;
-                  return !isNil(initialPosition) && isFinite(initialPosition)
-                    ? { opacity: 0, [translate]: initialPosition + offset }
-                    : { opacity: 0, [translate]: position(tickValue) + offset };
-                },
-                animate: () => ({ opacity: 1, [translate]: position(tickValue) + offset }),
-                exit: (custom: (d: d3.NumberValue) => number) => {
-                  const exitPosition = custom(tickValue);
-                  return isFinite(exitPosition)
-                    ? { opacity: 0, [translate]: exitPosition + offset }
-                    : { opacity: 0 };
-                }
-              }}
-
-              //   initial={initial}
-              //   animate={{ opacity: 1, [translate]: position(tickValue) + offset }}
-              //   exit={exit}
-            >
-              <motion.line
+            return (
+              <motion.g
+                //   key={scale(tickValue)}
+                key={(tickValue as unknown as object | number | string).toString()}
                 stroke="currentColor"
-                initial={false}
-                animate={{ [x + '2']: k * tickSizeInner }}
-                exit={{ [x + '2']: k * tickSizeInner }}
-              />
-              <motion.text
-                fill="currentColor"
-                stroke="none"
-                dy={orientation === 'top' ? '0em' : orientation === 'bottom' ? '0.71em' : '0.32em'}
-                initial={false}
-                animate={{ [x]: k * spacing }}
-                exit={{ [x]: k * spacing }}
+                // The custom prop value is actually never used. It only exists here to make
+                // framer motion pass the custom value on the parent AnimatePresence component
+                // to the exit variant function.
+                custom={position}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                //   variants={{
+                //     initial: (custom: (d: Domain) => number) => {
+                //       const initialPosition = previousPositionRef.current
+                //         ? previousPositionRef.current(tickValue)
+                //         : null;
+                //       return !isNil(initialPosition) && isFinite(initialPosition)
+                //         ? { opacity: 0, [translate]: initialPosition + offset }
+                //         : { opacity: 0, [translate]: custom(tickValue) + offset };
+                //     },
+                //     animate: (custom: (d: Domain) => number) => ({
+                //       opacity: 1,
+                //       [translate]: custom(tickValue) + offset
+                //     }),
+                //     exit: (custom: (d: Domain) => number) => {
+                //       const exitPosition = custom(tickValue);
+                //       return isFinite(exitPosition)
+                //         ? { opacity: 0, [translate]: exitPosition + offset }
+                //         : { opacity: 0 };
+                //     }
+                //   }}
+                variants={{
+                  initial: () => {
+                    const initialPosition = previousPositionRef.current
+                      ? previousPositionRef.current(tickValue)
+                      : null;
+                    return !isNil(initialPosition) && isFinite(initialPosition)
+                      ? { opacity: 0, [translate]: initialPosition + offset }
+                      : { opacity: 0, [translate]: position(tickValue) + offset };
+                  },
+                  animate: () => ({ opacity: 1, [translate]: position(tickValue) + offset }),
+                  exit: (custom: (d: Domain) => number) => {
+                    const exitPosition = custom(tickValue);
+                    return isFinite(exitPosition)
+                      ? { opacity: 0, [translate]: exitPosition + offset }
+                      : { opacity: 0 };
+                  }
+                }}
               >
-                {tickFormat(tickValue, index)}
-              </motion.text>
-            </motion.g>
-          );
-        })}
+                <motion.line
+                  stroke="currentColor"
+                  initial={false}
+                  animate={{ [x + '2']: k * tickSizeInner }}
+                  exit={{ [x + '2']: k * tickSizeInner }}
+                />
+                <motion.text
+                  fill="currentColor"
+                  stroke="none"
+                  dy={orientation === 'top' ? '0em' : orientation === 'bottom' ? '0.71em' : '0.32em'}
+                  initial={false}
+                  animate={{ [x]: k * spacing }}
+                  exit={{ [x]: k * spacing }}
+                >
+                  {tickFormat(tickValue, index)}
+                </motion.text>
+              </motion.g>
+            );
+          })
+        }
       </AnimatePresence>
     </SvgGroup>
   );
-};
+}

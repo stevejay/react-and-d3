@@ -1,15 +1,17 @@
-import { FC } from 'react';
+import { FC, SVGProps } from 'react';
 
-type SvgProps = {
+//
+
+type SvgProps = Omit<SVGProps<SVGSVGElement>, 'viewBox' | 'xmlns' | 'style' | 'width' | 'height'> & {
   width: number;
   height: number;
 };
 
-export const Svg: FC<SvgProps> = ({ width, height, children }) => (
+export const Svg: FC<SvgProps> = ({ width, height, children, ...rest }) => (
   <svg
+    {...rest}
     viewBox={`0 0 ${width} ${height}`}
     xmlns="http://www.w3.org/2000/svg"
-    className="bg-slate-200 font-sans"
     style={{ shapeRendering: 'optimizeSpeed' }}
     width={width}
     height={height}

@@ -148,15 +148,18 @@ function axis(orient, scale) {
     // with that selection.
     let path = selection.selectAll('.domain').data([null]);
 
-    // Select the inner tick groups. The scale is used as the key function, meaning
-    // that it is the translated pixel position for each tick value that is used as
-    // its key value. This key value is used to match each datum to a DOM element.
+    // Select the inner tick groups and join with the latest tick values. The scale
+    // is used as the key function for the data join, meaning that it is the
+    // translated pixel position for each tick value that is used as its key value.
+    // This confuses me. When I recreated this axis component in React.js, using
+    // scale in this way to generate the `key` value on each tick failed in a few
+    // edge cases.
     //
     // The `order()` call is used to ensure that the document order of the selection
-    // elements matches the selection order, by re-inserting them into the DOM. (I'm
+    // elements matches the selection order, by re-inserting them into the DOM. I'm
     // not sure why this is important because, regardless of the order of the
     // elements in the DOM, the ticks are still displayed in their correct position
-    // in the axis.)
+    // in the axis.
     let tick = selection.selectAll('.tick').data(values, scale).order();
 
     // Select the exiting tick groups.

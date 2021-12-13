@@ -14,7 +14,7 @@ type SvgChartProps = {
 };
 
 export const SvgChart: FC<SvgChartProps> = memo(
-  ({ data, width, height, drawTicksAsGridLines, transitionDurationSeconds = 0.5 }) => {
+  ({ data, width, height, drawTicksAsGridLines, transitionDurationSeconds = 0.25 }) => {
     const margins = { top: 20, bottom: 34, left: 20, right: 20 };
     const chartWidth = width - margins.left - margins.right;
     const chartHeight = height - margins.top - margins.bottom;
@@ -29,13 +29,12 @@ export const SvgChart: FC<SvgChartProps> = memo(
           ease: d3.easeCubicInOut
         }}
       >
-        <Svg width={width} height={height}>
+        <Svg width={width} height={height} className="bg-slate-200 font-sans">
           <Axis
             scale={scale}
             translateX={margins.left}
             translateY={margins.top + chartHeight}
             orientation="bottom"
-            ticksCount={10}
             tickSizeInner={drawTicksAsGridLines ? -chartHeight : null}
             tickSizeOuter={-chartHeight}
           />

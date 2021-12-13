@@ -5,6 +5,7 @@ class AxisD3Renderer {
   width = 0;
   height = 0;
   drawTicksAsGridLines = false;
+  transitionDurationSeconds = 0.25;
 
   private scale = d3.scaleLinear();
   private axis = d3.axisBottom(this.scale);
@@ -36,7 +37,10 @@ class AxisD3Renderer {
       .attr('font-family', 'inherit');
     // .classed('axis');
 
-    group.transition().duration(1000).call(this.axis);
+    group
+      .transition()
+      .duration(this.transitionDurationSeconds * 1000)
+      .call(this.axis);
     // this.axis(group.transition());
 
     // .classed('text-red-500', true);
@@ -48,9 +52,16 @@ type AxisD3Props = {
   width: number;
   height: number;
   drawTicksAsGridLines: boolean;
+  transitionDurationSeconds: number;
 };
 
-export const AxisD3: FC<AxisD3Props> = ({ data, width, height, drawTicksAsGridLines }) => {
+export const AxisD3: FC<AxisD3Props> = ({
+  data,
+  width,
+  height,
+  drawTicksAsGridLines,
+  transitionDurationSeconds
+}) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [renderer] = useState<AxisD3Renderer>(() => new AxisD3Renderer());
 
@@ -58,10 +69,11 @@ export const AxisD3: FC<AxisD3Props> = ({ data, width, height, drawTicksAsGridLi
     renderer.width = width;
     renderer.height = height;
     renderer.drawTicksAsGridLines = drawTicksAsGridLines;
+    renderer.transitionDurationSeconds = transitionDurationSeconds;
     if (svgRef.current) {
       renderer.render(svgRef.current, data);
     }
-  }, [renderer, data, width, height, drawTicksAsGridLines]);
+  }, [renderer, data, width, height, drawTicksAsGridLines, transitionDurationSeconds]);
 
   //   useEffect(() => {
   //     console.log((svgRef.current?.firstChild as unknown as { __axis: any }).__axis);

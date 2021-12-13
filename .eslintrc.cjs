@@ -74,7 +74,13 @@ module.exports = {
         'react/prop-types': 'off', // forwardRef causing a problem here,
         'no-unused-vars': 'off',
         '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-        'testing-library/render-result-naming-convention': 'off'
+        'testing-library/render-result-naming-convention': 'off',
+        '@typescript-eslint/no-explicit-any': [
+          2,
+          {
+            ignoreRestArgs: true // Required for tickArguments in Axis component.
+          }
+        ]
       }
     },
     {
