@@ -2,12 +2,12 @@ import { ComponentMeta, Story } from '@storybook/react';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
-import { SVGAxis } from '@/SVGoldAxis';
+import { SvgAxis } from '@/SvgAxis';
 import { SvgSvg } from '@/SvgSvg';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Chart/SVGAxis',
+  title: 'Chart/SvgAxis',
   argTypes: {
     orientation: {
       table: { disable: true }
@@ -16,7 +16,7 @@ export default {
   parameters: {
     controls: { expanded: false, hideNoControlsWarning: true }
   }
-} as ComponentMeta<typeof SVGAxis>;
+} as ComponentMeta<typeof SvgAxis>;
 
 type TemplateProps = {
   orientation: 'top' | 'bottom' | 'left' | 'right';
@@ -63,7 +63,7 @@ const LinearScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <SvgSvg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
-        <SVGAxis
+        <SvgAxis
           scale={scale}
           translateX={translateX}
           translateY={translateY}
@@ -137,7 +137,7 @@ const BandScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <SvgSvg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
-        <SVGAxis
+        <SvgAxis
           scale={scale}
           translateX={translateX}
           translateY={translateY}
@@ -209,7 +209,7 @@ const TimeScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <SvgSvg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
-        <SVGAxis
+        <SvgAxis
           scale={scale}
           translateX={translateX}
           translateY={translateY}
@@ -283,7 +283,7 @@ const PointScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <SvgSvg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
-        <SVGAxis
+        <SvgAxis
           scale={scale}
           translateX={translateX}
           translateY={translateY}

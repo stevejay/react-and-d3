@@ -44,7 +44,7 @@ function createDomainPathString(
 
 export type Orientation = 'top' | 'bottom' | 'left' | 'right';
 
-export type SVGAxisAxisProps<Domain> = {
+export type SvgAxisProps<Domain> = {
   /**
    * The scale used to render the axis. Required.
    */
@@ -104,7 +104,7 @@ export type SVGAxisAxisProps<Domain> = {
   tickValues?: Domain[] | null;
 };
 
-export function SVGAxis<Domain>(props: SVGAxisAxisProps<Domain>) {
+export function SvgAxis<Domain>(props: SvgAxisProps<Domain>) {
   const { orientation, translateX, translateY, tickArguments = [] } = props;
 
   const scale = props.scale as d3.AxisScale<Domain> & {

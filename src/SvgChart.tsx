@@ -2,7 +2,7 @@ import { FC, memo, useMemo } from 'react';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
-import { SVGAxis } from './SVGoldAxis';
+import { SvgAxis } from './SvgAxis';
 import { SvgSvg } from './SvgSvg';
 
 type SvgChartProps = {
@@ -30,7 +30,7 @@ export const SvgChart: FC<SvgChartProps> = memo(
         }}
       >
         <SvgSvg width={width} height={height} className="bg-slate-200 font-sans">
-          <SVGAxis
+          <SvgAxis
             scale={scale}
             translateX={margins.left}
             translateY={margins.top + chartHeight}

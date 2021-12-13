@@ -50,8 +50,7 @@ module.exports = {
         cases: {
           camelCase: true,
           pascalCase: true
-        },
-        ignore: ['SVG']
+        }
       }
     ],
     'testing-library/no-node-access': 0
