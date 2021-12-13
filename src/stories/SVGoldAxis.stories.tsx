@@ -2,12 +2,12 @@ import { ComponentMeta, Story } from '@storybook/react';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
-import { Axis } from '@/Axis';
+import { SVGAxis } from '@/SVGoldAxis';
 import { SvgSvg } from '@/SvgSvg';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Chart/Axis',
+  title: 'Chart/SVGAxis',
   argTypes: {
     orientation: {
       table: { disable: true }
@@ -16,7 +16,7 @@ export default {
   parameters: {
     controls: { expanded: false, hideNoControlsWarning: true }
   }
-} as ComponentMeta<typeof Axis>;
+} as ComponentMeta<typeof SVGAxis>;
 
 type TemplateProps = {
   orientation: 'top' | 'bottom' | 'left' | 'right';
@@ -63,7 +63,7 @@ const LinearScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <SvgSvg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
-        <Axis
+        <SVGAxis
           scale={scale}
           translateX={translateX}
           translateY={translateY}
@@ -77,23 +77,23 @@ const LinearScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   );
 };
 
-export const LeftLinearScale = LinearScaleTemplate.bind({});
-LeftLinearScale.args = {
+export const LinearScaleLeft = LinearScaleTemplate.bind({});
+LinearScaleLeft.args = {
   orientation: 'left'
 };
 
-export const RightLinearScale = LinearScaleTemplate.bind({});
-RightLinearScale.args = {
+export const LinearScaleRight = LinearScaleTemplate.bind({});
+LinearScaleRight.args = {
   orientation: 'right'
 };
 
-export const TopLinearScale = LinearScaleTemplate.bind({});
-TopLinearScale.args = {
+export const LinearScaleTop = LinearScaleTemplate.bind({});
+LinearScaleTop.args = {
   orientation: 'top'
 };
 
-export const BottomLinearScale = LinearScaleTemplate.bind({});
-BottomLinearScale.args = {
+export const LinearScaleBottom = LinearScaleTemplate.bind({});
+LinearScaleBottom.args = {
   orientation: 'bottom'
 };
 
@@ -137,7 +137,7 @@ const BandScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <SvgSvg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
-        <Axis
+        <SVGAxis
           scale={scale}
           translateX={translateX}
           translateY={translateY}
@@ -150,23 +150,23 @@ const BandScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   );
 };
 
-export const LeftBandScale = BandScaleTemplate.bind({});
-LeftBandScale.args = {
+export const BandScaleLeft = BandScaleTemplate.bind({});
+BandScaleLeft.args = {
   orientation: 'left'
 };
 
-export const RightBandScale = BandScaleTemplate.bind({});
-RightBandScale.args = {
+export const BandScaleRight = BandScaleTemplate.bind({});
+BandScaleRight.args = {
   orientation: 'right'
 };
 
-export const TopBandScale = BandScaleTemplate.bind({});
-TopBandScale.args = {
+export const BandScaleTop = BandScaleTemplate.bind({});
+BandScaleTop.args = {
   orientation: 'top'
 };
 
-export const BottomBandScale = BandScaleTemplate.bind({});
-BottomBandScale.args = {
+export const BandScaleBottom = BandScaleTemplate.bind({});
+BandScaleBottom.args = {
   orientation: 'bottom'
 };
 
@@ -209,7 +209,7 @@ const TimeScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <SvgSvg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
-        <Axis
+        <SVGAxis
           scale={scale}
           translateX={translateX}
           translateY={translateY}
@@ -223,23 +223,23 @@ const TimeScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   );
 };
 
-export const LeftTimeScale = TimeScaleTemplate.bind({});
-LeftTimeScale.args = {
+export const TimeScaleLeft = TimeScaleTemplate.bind({});
+TimeScaleLeft.args = {
   orientation: 'left'
 };
 
-export const RightTimeScale = TimeScaleTemplate.bind({});
-RightTimeScale.args = {
+export const TimeScaleRight = TimeScaleTemplate.bind({});
+TimeScaleRight.args = {
   orientation: 'right'
 };
 
-export const TopTimeScale = TimeScaleTemplate.bind({});
-TopTimeScale.args = {
+export const TimeScaleTop = TimeScaleTemplate.bind({});
+TimeScaleTop.args = {
   orientation: 'top'
 };
 
-export const BottomTimeScale = TimeScaleTemplate.bind({});
-BottomTimeScale.args = {
+export const TimeScaleBottom = TimeScaleTemplate.bind({});
+TimeScaleBottom.args = {
   orientation: 'bottom'
 };
 
@@ -283,7 +283,7 @@ const PointScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <SvgSvg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
-        <Axis
+        <SVGAxis
           scale={scale}
           translateX={translateX}
           translateY={translateY}
@@ -296,22 +296,22 @@ const PointScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   );
 };
 
-export const LeftPointScale = PointScaleTemplate.bind({});
-LeftPointScale.args = {
+export const PointScaleLeft = PointScaleTemplate.bind({});
+PointScaleLeft.args = {
   orientation: 'left'
 };
 
-export const RightPointScale = PointScaleTemplate.bind({});
-RightPointScale.args = {
+export const PointScaleRight = PointScaleTemplate.bind({});
+PointScaleRight.args = {
   orientation: 'right'
 };
 
-export const TopPointScale = PointScaleTemplate.bind({});
-TopPointScale.args = {
+export const PointScaleTop = PointScaleTemplate.bind({});
+PointScaleTop.args = {
   orientation: 'top'
 };
 
-export const BottomPointScale = PointScaleTemplate.bind({});
-BottomPointScale.args = {
+export const PointScaleBottom = PointScaleTemplate.bind({});
+PointScaleBottom.args = {
   orientation: 'bottom'
 };
