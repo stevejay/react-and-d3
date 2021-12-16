@@ -1,4 +1,5 @@
 import { ComponentMeta, Story } from '@storybook/react';
+import type { AxisDomain, AxisScale } from 'd3';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
@@ -63,7 +64,7 @@ const LinearScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
         <SvgAxis
-          scale={scale}
+          scale={scale as AxisScale<AxisDomain>}
           translateX={translateX}
           translateY={translateY}
           orientation={orientation}
@@ -137,7 +138,7 @@ const BandScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
         <SvgAxis
-          scale={scale}
+          scale={scale as AxisScale<AxisDomain>}
           translateX={translateX}
           translateY={translateY}
           orientation={orientation}
@@ -209,7 +210,7 @@ const TimeScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
         <SvgAxis
-          scale={scale}
+          scale={scale as AxisScale<AxisDomain>}
           translateX={translateX}
           translateY={translateY}
           orientation={orientation}
@@ -283,7 +284,7 @@ const PointScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
         <SvgAxis
-          scale={scale}
+          scale={scale as AxisScale<AxisDomain>}
           translateX={translateX}
           translateY={translateY}
           orientation={orientation}

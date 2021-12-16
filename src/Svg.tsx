@@ -1,4 +1,4 @@
-import { FC, SVGProps } from 'react';
+import type { FC, SVGProps } from 'react';
 
 export type SvgProps = Omit<SVGProps<SVGSVGElement>, 'viewBox' | 'xmlns' | 'width' | 'height'> & {
   width: number;

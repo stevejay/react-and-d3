@@ -1,17 +1,70 @@
 import { FC, useEffect, useRef } from 'react';
+import { useForceUpdate } from '@uifabric/react-hooks';
 import type { AxisDomain } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
-import { identity, isNil } from 'lodash-es';
+import { differenceBy, identity, isNil, sortBy, unionBy } from 'lodash-es';
+import useDebouncedEffect from 'use-debounced-effect';
 
 import { center, createAxisDomainPathData, getDefaultOffset, getTickKey, number } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
 import type { DefaultAxisProps, ExpandedAxisScale } from './types';
 
-export type SvgAxisProps = DefaultAxisProps;
+// function useForceUpdate(): () => void {
+//   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+//   const [, dispatch] = useState<object>(Object.create(null));
 
-export const SvgAxis: FC<SvgAxisProps> = (props) => {
-  const { orientation, translateX, translateY, tickArguments = [] } = props;
+//   // Turn dispatch(required_parameter) into dispatch().
+//   const memoizedDispatch = useCallback((): void => {
+//     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+//     dispatch(Object.create(null));
+//   }, [dispatch]);
+//   return memoizedDispatch;
+// }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// function useDebouncedEffect(callback: any, delay: number) {
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   const data = useRef<{ firstTime: boolean; clearFunc: any }>({ firstTime: true, clearFunc: null });
+//   useEffect(() => {
+//     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+//     const { firstTime, clearFunc } = data.current;
+
+//     if (firstTime) {
+//       data.current.firstTime = false;
+//       return;
+//     }
+
+//     const handler = setTimeout(() => {
+//       if (clearFunc && typeof clearFunc === 'function') {
+//         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+//         clearFunc();
+//       }
+//       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+//       data.current.clearFunc = callback();
+//     }, delay);
+
+//     return () => {
+//       clearTimeout(handler);
+//     };
+//   });
+// }
+
+function getExitingTickValues(
+  tickValues: AxisDomain[],
+  previousTickValues: AxisDomain[],
+  exitingTickValues: AxisDomain[]
+) {
+  const iteratee = (x: AxisDomain) => (x.valueOf ? x.valueOf() : x);
+  return differenceBy(unionBy(previousTickValues, exitingTickValues, iteratee), tickValues, iteratee);
+}
+
+export type SvgAxisNoExitProps = DefaultAxisProps & { transitionSeconds: number };
+
+export const SvgAxisNoExit: FC<SvgAxisNoExitProps> = (props) => {
+  const { orientation, translateX, translateY, transitionSeconds, tickArguments = [] } = props;
   const scale = props.scale as ExpandedAxisScale;
+
+  const forceUpdate = useForceUpdate();
 
   // The length of the inner ticks (which are the ticks with labels).
   const tickSizeInner = props.tickSize ?? props.tickSizeInner ?? 6;
@@ -70,10 +123,38 @@ export const SvgAxis: FC<SvgAxisProps> = (props) => {
   // from the position they would have been in if they were already in the DOM.
   const previousPositionRef = useRef<typeof position | null>(null);
 
+  const exitingTickValuesRef = useRef<AxisDomain[]>([]);
+  const previousTickValuesRef = useRef<AxisDomain[]>([]);
+
+  // Updated exiting is current exiting plus any new exiting minus any resurrected ones.
+  const exiting = getExitingTickValues(
+    tickValues,
+    previousTickValuesRef.current,
+    exitingTickValuesRef.current
+  );
+
+  const currentAndExiting = sortBy(
+    [
+      ...tickValues.map((tickValue) => ({ exiting: false, tickValue })),
+      ...exiting.map((tickValue) => ({ exiting: true, tickValue }))
+    ],
+    (x) => x.tickValue
+  );
+
   // Always run.
   useEffect(() => {
     previousPositionRef.current = position;
+    previousTickValuesRef.current = tickValues;
+    exitingTickValuesRef.current = exiting;
   });
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  useDebouncedEffect(() => {
+    if (exitingTickValuesRef.current.length) {
+      exitingTickValuesRef.current = [];
+      forceUpdate();
+    }
+  }, transitionSeconds * 1000);
 
   return (
     <SvgGroup
@@ -90,15 +171,12 @@ export const SvgAxis: FC<SvgAxisProps> = (props) => {
           d: createAxisDomainPathData(orientation, tickSizeOuter, offset, range0, range1, k)
         }}
       />
-      {/* Send the current position to the tick exit animation variant. */}
-      <AnimatePresence custom={position}>
-        {tickValues.map((tickValue, index) => (
+      <AnimatePresence>
+        {currentAndExiting.map(({ tickValue, exiting }, index) => (
           <motion.g
             key={getTickKey(tickValue)}
-            custom={position}
             initial="initial"
-            animate="animate"
-            exit="exit"
+            animate={exiting ? 'exit' : 'animate'}
             variants={{
               initial: () => {
                 const initialPosition = previousPositionRef.current
@@ -109,8 +187,8 @@ export const SvgAxis: FC<SvgAxisProps> = (props) => {
                   : { opacity: 0, [translate]: position(tickValue) + offset };
               },
               animate: () => ({ opacity: 1, [translate]: position(tickValue) + offset }),
-              exit: (custom: (d: AxisDomain) => number) => {
-                const exitPosition = custom(tickValue);
+              exit: () => {
+                const exitPosition = position(tickValue);
                 return isFinite(exitPosition)
                   ? { opacity: 0, [translate]: exitPosition + offset }
                   : { opacity: 0 };

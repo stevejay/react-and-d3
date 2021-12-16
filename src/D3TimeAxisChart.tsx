@@ -1,24 +1,24 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 
-class D3AxisChartRenderer {
+class D3TimeAxisChartRenderer {
   width = 0;
   height = 0;
   drawTicksAsGridLines = false;
   transitionSeconds = 0.25;
 
-  private scale = d3.scaleLinear();
+  private scale = d3.scaleTime();
   private axis = d3.axisBottom(this.scale);
-  private margins = { top: 20, bottom: 34, left: 20, right: 20 };
+  private margins = { top: 20, bottom: 34, left: 40, right: 40 };
 
-  render(svgElement: SVGSVGElement | null, data: number[]): void {
+  render(svgElement: SVGSVGElement | null, data: Date[]): void {
     if (!svgElement) {
       return;
     }
 
     const svg = d3.select(svgElement);
-    svg.style('width', `${this.width}px`);
-    svg.style('height', `${this.height}px`);
+    svg.attr('width', this.width);
+    svg.attr('height', this.height);
 
     if (this.width === 0 || this.height === 0) {
       return;
@@ -28,7 +28,7 @@ class D3AxisChartRenderer {
     const chartHeight = this.height - this.margins.top - this.margins.bottom;
 
     const domain = [d3.min(data) ?? 0, d3.max(data) ?? 0];
-    this.scale.domain(domain).range([0, chartWidth]);
+    this.scale.domain(domain).range([0, chartWidth]).nice();
 
     this.axis
       .tickArguments([10])
@@ -39,22 +39,22 @@ class D3AxisChartRenderer {
     group = group.enter().append('g').classed('axis', true).merge(group);
     group
       .attr('transform', `translate(${this.margins.left}, ${this.margins.top + chartHeight})`)
-      .attr('font-family', 'inherit')
+      .style('font-family', 'inherit')
       .transition()
       .duration(this.transitionSeconds * 1000)
       .call(this.axis);
   }
 }
 
-export type D3AxisChartProps = {
-  data: number[];
+export type D3TimeAxisChartProps = {
+  data: Date[];
   width: number;
   height: number;
   drawTicksAsGridLines: boolean;
   transitionSeconds: number;
 };
 
-export const D3AxisChart: FC<D3AxisChartProps> = ({
+export const D3TimeAxisChart: FC<D3TimeAxisChartProps> = ({
   data,
   width,
   height,
@@ -62,7 +62,7 @@ export const D3AxisChart: FC<D3AxisChartProps> = ({
   transitionSeconds
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [renderer] = useState<D3AxisChartRenderer>(() => new D3AxisChartRenderer());
+  const [renderer] = useState<D3TimeAxisChartRenderer>(() => new D3TimeAxisChartRenderer());
 
   useEffect(() => {
     renderer.width = width;

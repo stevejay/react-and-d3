@@ -1773,6 +1773,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluentui/dom-utilities@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@fluentui/dom-utilities@npm:1.1.2"
+  dependencies:
+    "@uifabric/set-version": ^7.0.24
+    tslib: ^1.10.0
+  checksum: 4b837f1fdb29e576e61fde4f57f68776e953c42e109c204a64bdd5ec261ead5053394717de853a275ed37fb51fa0504219e56497a3cd4cde7ec2e6f623df23ad
+  languageName: node
+  linkType: hard
+
+"@fluentui/react-window-provider@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@fluentui/react-window-provider@npm:1.0.2"
+  dependencies:
+    "@uifabric/set-version": ^7.0.24
+    tslib: ^1.10.0
+  peerDependencies:
+    "@types/react": ">=16.8.0 <17.0.0"
+    "@types/react-dom": ">=16.8.0 <17.0.0"
+    react: ">=16.8.0 <17.0.0"
+    react-dom: ">=16.8.0 <17.0.0"
+  checksum: 4acfae566006d300fb4170dfda9c5a73a21d458d145daaae79a63a499685c94cf68d9a6c2087d23b30c99a3625cddfc90f1439942389c8d63a998cc8eae64a18
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.0.1":
   version: 1.1.2
   resolution: "@gar/promisify@npm:1.1.2"
@@ -2266,39 +2291,6 @@ __metadata:
   version: 2.11.0
   resolution: "@popperjs/core@npm:2.11.0"
   checksum: 84d6f197d3ddfd8a5b05c7276c3692d8404c96128a946ab0a800b25567d8fc231928319c1f97a67e0817e76ce2a1b735589ef0f38f8e8835692408660a2395a1
-  languageName: node
-  linkType: hard
-
-"@react-hook/latest@npm:^1.0.2":
-  version: 1.0.3
-  resolution: "@react-hook/latest@npm:1.0.3"
-  peerDependencies:
-    react: ">=16.8"
-  checksum: 2408c9cd35c5cfa7697b6da3bc5eebef254a932ade70955074c474f23be7dd3e2f81bbba12edcc9208bd0f89c6ed366d6b11d4f6d7b1052877a0bac8f74afad4
-  languageName: node
-  linkType: hard
-
-"@react-hook/passive-layout-effect@npm:^1.2.0":
-  version: 1.2.1
-  resolution: "@react-hook/passive-layout-effect@npm:1.2.1"
-  peerDependencies:
-    react: ">=16.8"
-  checksum: 217cb8aa90fb8e677672319a9a466d7752890cf4357c76df000b207696e9cc717cf2ee88080671cc9dae238a82f92093ab4f61ab2f6032d2a8db958fc7d99b5d
-  languageName: node
-  linkType: hard
-
-"@react-hook/resize-observer@npm:^1.2.5":
-  version: 1.2.5
-  resolution: "@react-hook/resize-observer@npm:1.2.5"
-  dependencies:
-    "@juggle/resize-observer": ^3.3.1
-    "@react-hook/latest": ^1.0.2
-    "@react-hook/passive-layout-effect": ^1.2.0
-    "@types/raf-schd": ^4.0.0
-    raf-schd: ^4.0.2
-  peerDependencies:
-    react: ">=16.8"
-  checksum: a2f3b333e344adb3d7a4cfd2bc77fd75054b07063fba706d57bef0c497650c3e82038eafb64fa4148c08527e8b0a34f2f70392da1700a7a0d9676ee8ba795c16
   languageName: node
   linkType: hard
 
@@ -4308,13 +4300,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/raf-schd@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "@types/raf-schd@npm:4.0.1"
-  checksum: 0babaa85541aadc6e5f8aa64ec79cd68bf67ea56abb7610c8daf3ca5f4b1a75d12e4e147a0b5434938a4031650ebddc733021ec4e7db4f11f7955390ec32c917
-  languageName: node
-  linkType: hard
-
 "@types/react-dom@npm:^17.0.10":
   version: 17.0.11
   resolution: "@types/react-dom@npm:17.0.11"
@@ -4567,6 +4552,60 @@ __metadata:
     "@typescript-eslint/types": 5.6.0
     eslint-visitor-keys: ^3.0.0
   checksum: c1d9e2596ff4f03b52857a77ff373ca82e66c1883ea818f28c3a18e5c4877c4ac6367874f4681223e9134bcebd6560f95b9a3d12c411060d567a17d10113e9e5
+  languageName: node
+  linkType: hard
+
+"@uifabric/merge-styles@npm:^7.19.2":
+  version: 7.19.2
+  resolution: "@uifabric/merge-styles@npm:7.19.2"
+  dependencies:
+    "@uifabric/set-version": ^7.0.24
+    tslib: ^1.10.0
+  checksum: 125bdf64c56220b288ced873b8a6a9e209aa7a025eba4a8aa29208a9c6a7f2bd571f398e47d0a96008a5510318074f87bb8d0a51283bd6f3f54241fbcbcc0d23
+  languageName: node
+  linkType: hard
+
+"@uifabric/react-hooks@npm:^7.14.0":
+  version: 7.14.0
+  resolution: "@uifabric/react-hooks@npm:7.14.0"
+  dependencies:
+    "@fluentui/react-window-provider": ^1.0.2
+    "@uifabric/set-version": ^7.0.24
+    "@uifabric/utilities": ^7.33.5
+    tslib: ^1.10.0
+  peerDependencies:
+    "@types/react": ">=16.8.0 <17.0.0"
+    "@types/react-dom": ">=16.8.0 <17.0.0"
+    react: ">=16.8.0 <17.0.0"
+    react-dom: ">=16.8.0 <17.0.0"
+  checksum: b4144957e30dbdc27dba6e3de2b89f24d5879f263a83c33305a745e363194c3451629f152375bdd3bef57d8fa9875f1cddc0bce572f5cb916fc8ec15d31d6f62
+  languageName: node
+  linkType: hard
+
+"@uifabric/set-version@npm:^7.0.24":
+  version: 7.0.24
+  resolution: "@uifabric/set-version@npm:7.0.24"
+  dependencies:
+    tslib: ^1.10.0
+  checksum: 5d4f69596946f4128539c65e357b4c6a62e0eebe5037f87ec5c31f48eb1c7f0ccd68277b55ade5cc49012c49506f5a292a716eabff68ad0ac928bece7fb783c3
+  languageName: node
+  linkType: hard
+
+"@uifabric/utilities@npm:^7.33.5":
+  version: 7.33.5
+  resolution: "@uifabric/utilities@npm:7.33.5"
+  dependencies:
+    "@fluentui/dom-utilities": ^1.1.2
+    "@uifabric/merge-styles": ^7.19.2
+    "@uifabric/set-version": ^7.0.24
+    prop-types: ^15.7.2
+    tslib: ^1.10.0
+  peerDependencies:
+    "@types/react": ">=16.8.0 <17.0.0"
+    "@types/react-dom": ">=16.8.0 <17.0.0"
+    react: ">=16.8.0 <17.0.0"
+    react-dom: ">=16.8.0 <17.0.0"
+  checksum: 794774c549b25d1cc9f5ab9d380f6801606da8c0472a8362c19497032314d85fef3bc0cd7f0ac192d92a7cfb0ead7d3f1dca361e768e77a6834623401173ee43
   languageName: node
   linkType: hard
 
@@ -15358,13 +15397,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"raf-schd@npm:^4.0.2":
-  version: 4.0.3
-  resolution: "raf-schd@npm:4.0.3"
-  checksum: 45514041c5ad31fa96aef3bb3c572a843b92da2f2cd1cb4a47c9ad58e48761d3a4126e18daa32b2bfa0bc2551a42d8f324a0e40e536cb656969929602b4e8b58
-  languageName: node
-  linkType: hard
-
 "ramda@npm:^0.21.0":
   version: 0.21.0
   resolution: "ramda@npm:0.21.0"
@@ -15454,7 +15486,6 @@ __metadata:
     "@jest/globals": ^27.4.4
     "@mdx-js/react": ^1.6.22
     "@playwright/test": 1.17.0
-    "@react-hook/resize-observer": ^1.2.5
     "@storybook/addon-actions": ^6.5.0-alpha.3
     "@storybook/addon-docs": ^6.5.0-alpha.3
     "@storybook/addon-essentials": ^6.5.0-alpha.3
@@ -15477,6 +15508,7 @@ __metadata:
     "@types/testing-library__jest-dom": ^5
     "@typescript-eslint/eslint-plugin": ^5.6.0
     "@typescript-eslint/parser": ^5.6.0
+    "@uifabric/react-hooks": ^7.14.0
     "@vitejs/plugin-react": ^1.0.7
     autoprefixer: ^10.4.0
     babel-jest: ^27.4.4
@@ -15517,6 +15549,7 @@ __metadata:
     stylelint-config-standard: ^24.0.0
     tailwindcss: ^3.0.0
     typescript: ^4.4.4
+    use-debounced-effect: ^1.2.0
     use-resize-observer: ^8.0.0
     vite: ^2.7.0
   languageName: unknown
@@ -18111,7 +18144,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^1.8.1":
+"tslib@npm:^1.10.0, tslib@npm:^1.8.1":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
@@ -18574,6 +18607,13 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0
   checksum: b438c1577eafb26dd8aff8d7ffbeae10b544172fc4c4f38733343f70c04da6f14a748a274cb76b70b829604e1382be56fb37a96f3c62b5aeec50657e23e61097
+  languageName: node
+  linkType: hard
+
+"use-debounced-effect@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "use-debounced-effect@npm:1.2.0"
+  checksum: a2f31751f7fa41017983da7c722799bbb337d1f24f7b4981d6390f4d93bf55cf7b181a6a60bda9c9493a34d254fdfc5813c8e7282b78f25bfe0b3c9eb8ebd371
   languageName: node
   linkType: hard
 
