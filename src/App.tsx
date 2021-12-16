@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 
 import { CustomTimeAxisExamples } from './CustomTimeAxisExamples';
 import { LinearAxisExamples } from './LinearAxisExamples';
+import { RadarChartExamples } from './RadarChartExamples';
 import { TimeAxisExamples } from './TimeAxisExamples';
 
 const SectionHeading: FC = ({ children }) => <h2 className="text-2xl text-gray-700 font-bold">{children}</h2>;
@@ -49,6 +50,8 @@ export const App: FC = () => {
         <TimeAxisExamples drawTicksAsGridLines={drawTicksAsGridLines} transitionSeconds={transitionSeconds} />
         <SectionHeading>Custom Time Axis</SectionHeading>
         <CustomTimeAxisExamples transitionSeconds={transitionSeconds} />
+        <SectionHeading>Radar Chart</SectionHeading>
+        <RadarChartExamples transitionSeconds={transitionSeconds} />
       </div>
     </>
   );

@@ -9,46 +9,6 @@ import { center, createAxisDomainPathData, getDefaultOffset, getTickKey, number 
 import { SvgGroup } from './SvgGroup';
 import type { DefaultAxisProps, ExpandedAxisScale } from './types';
 
-// function useForceUpdate(): () => void {
-//   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-//   const [, dispatch] = useState<object>(Object.create(null));
-
-//   // Turn dispatch(required_parameter) into dispatch().
-//   const memoizedDispatch = useCallback((): void => {
-//     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-//     dispatch(Object.create(null));
-//   }, [dispatch]);
-//   return memoizedDispatch;
-// }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// function useDebouncedEffect(callback: any, delay: number) {
-//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   const data = useRef<{ firstTime: boolean; clearFunc: any }>({ firstTime: true, clearFunc: null });
-//   useEffect(() => {
-//     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-//     const { firstTime, clearFunc } = data.current;
-
-//     if (firstTime) {
-//       data.current.firstTime = false;
-//       return;
-//     }
-
-//     const handler = setTimeout(() => {
-//       if (clearFunc && typeof clearFunc === 'function') {
-//         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-//         clearFunc();
-//       }
-//       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-//       data.current.clearFunc = callback();
-//     }, delay);
-
-//     return () => {
-//       clearTimeout(handler);
-//     };
-//   });
-// }
-
 function getExitingTickValues(
   tickValues: AxisDomain[],
   previousTickValues: AxisDomain[],
@@ -201,6 +161,8 @@ export const SvgAxisNoExit: FC<SvgAxisNoExitProps> = (props) => {
               dy={orientation === 'top' ? '0em' : orientation === 'bottom' ? '0.71em' : '0.32em'}
               initial={false}
               animate={{ [x === 'x' ? 'attrX' : 'attrY']: k * spacing }}
+              role="presentation"
+              aria-hidden
             >
               {tickFormat(tickValue, index)}
             </motion.text>

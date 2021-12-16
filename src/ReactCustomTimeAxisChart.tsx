@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { AxisScale } from 'd3';
 import { MotionConfig } from 'framer-motion';
 
-import { lastMsOfThisMonth, startOfThisMonth } from './dateUtils';
+import { lastMomentOfThisMonth, startOfThisMonth } from './dateUtils';
 import { Svg } from './Svg';
 import { SvgCustomTimeAxis } from './SvgCustomTimeAxis';
 
@@ -24,7 +24,7 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
     const scale = useMemo(() => {
       const now = new Date();
       const minDate = startOfThisMonth(d3.min(data) ?? now);
-      const maxDate = lastMsOfThisMonth(d3.max(data) ?? now);
+      const maxDate = lastMomentOfThisMonth(d3.max(data) ?? now);
       return d3.scaleTime<number, number>([minDate, maxDate], [0, chartWidth]);
     }, [data, chartWidth]);
 

@@ -20,6 +20,6 @@ export function startOfThisMonth(d: Date): Date {
  * the input date.
  * @returns A new Date object
  */
-export function lastMsOfThisMonth(d: Date): Date {
+export function lastMomentOfThisMonth(d: Date): Date {
   return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0, 0, 0, 0, -1));
 }

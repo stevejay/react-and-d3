@@ -123,7 +123,15 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
                   animate: { x: monthWidth * 0.5 }
                 }}
               >
-                <text stroke="none" dy="0.71em" y={tickSize - 26} textAnchor="middle" className="text-xs">
+                <text
+                  stroke="none"
+                  dy="0.71em"
+                  y={tickSize - 26}
+                  textAnchor="middle"
+                  className="text-xs"
+                  role="presentation"
+                  aria-hidden
+                >
                   {tickFormat(tickValue)}
                 </text>
               </motion.g>
@@ -174,6 +182,8 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
                   x={3}
                   textAnchor="start"
                   className="text-[10px]"
+                  role="presentation"
+                  aria-hidden
                 >
                   {tickYear}
                 </text>

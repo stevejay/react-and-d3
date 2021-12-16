@@ -37,26 +37,6 @@ function createRandomData(): Date[] {
 const dataA = [new Date(Date.UTC(2000, 0, 1)), new Date(Date.UTC(2000, 9, 1))];
 const dataB = [new Date(Date.UTC(1999, 8, 1)), new Date(Date.UTC(2000, 4, 1))];
 
-// function getRandomDateWithinRange(start: string, end: string) {
-//   const startMs = Date.parse(start);
-//   const endMs = Date.parse(end);
-//   return new Date(Math.floor(Math.random() * (endMs - startMs + 1) + startMs));
-// }
-
-// function createRandomData(): Date[] {
-//   const rangeSeed = random(0, 3);
-//   let dataRange: [string, string] = ['2021-01-01', '2021-09-30'];
-//   if (rangeSeed === 1) {
-//     dataRange = ['2020-01-01', '2021-10-01'];
-//   } else if (rangeSeed === 2) {
-//     dataRange = ['2020-11-01', '2021-02-15'];
-//   }
-//   return range(5, 15).map(() => getRandomDateWithinRange(...dataRange));
-// }
-
-// const dataA = [new Date(2000, 0, 1), new Date(2000, 9, 1)];
-// const dataB = [new Date(1999, 8, 1), new Date(2000, 4, 1)];
-
 export type TimeAxisExamplesProps = {
   drawTicksAsGridLines: boolean;
   transitionSeconds: number;

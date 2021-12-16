@@ -47,24 +47,21 @@ export const CategorySlice: FC<CategorySliceProps> = ({
   upperLabelArcId,
   onClick
 }) => {
-  //   const [isHovering, toggleIsHovering] = useSwitch(false);
   return (
     <>
       <path
-        className={`slice-arc transition-colors ${isSelected ? 'text-gray-750' : 'text-gray-850'} ${
-          /*isHovering ? 'fill-gray-750' : 'fill-current'*/ 'fill-gray-750'
-        }`}
+        className={`slice-arc transition-colors ${
+          isSelected ? 'text-gray-700' : 'text-gray-800'
+        } fill-gray-800`}
         role="presentation"
         aria-hidden
         d={path}
-        // onMouseEnter={toggleIsHovering.on}
-        // onMouseLeave={toggleIsHovering.off}
         onClick={onClick}
       />
       <text
         className={`slice-label pointer-events-none transition-colors uppercase ${
           isSelected ? 'text-white' : 'text-gray-400'
-        } ${/*isHovering ? 'fill-white' : 'fill-current'*/ 'fill-current'}`}
+        } fill-current`}
         role="presentation"
         aria-hidden
         dy={degree > 90 && degree < 270 ? '0.75em' : '0em'}
@@ -85,9 +82,9 @@ export const CategorySlice: FC<CategorySliceProps> = ({
   );
 };
 
-const TOTAL = 'TOTAL';
+export const TOTAL = 'TOTAL';
 
-enum ShotCategory {
+export enum ShotCategory {
   /** Approach */
   App = 'APP',
   /** Around the green */
@@ -115,34 +112,34 @@ export const REALISTIC_DATA: Datum[] = [
 
 const SHOT_CATEGORY_COLOR_MAP = {
   TOTAL: {
-    color: 'text-total',
-    border: 'border-total',
-    stroke: 'stroke-total',
-    fill: 'fill-total'
+    color: 'text-[#0072ce]',
+    border: 'border-[#0072ce]',
+    stroke: 'stroke-[#0072ce]',
+    fill: 'fill-[#0072ce]'
   },
   [ShotCategory.Tee]: {
-    color: 'text-ott',
-    border: 'border-ott',
-    stroke: 'stroke-ott',
-    fill: 'fill-ott'
+    color: 'text-[#ffba01]',
+    border: 'border-[#ffba01]',
+    stroke: 'stroke-[#ffba01]',
+    fill: 'fill-[#ffba01]'
   },
   [ShotCategory.App]: {
-    color: 'text-app',
-    border: 'border-app',
-    stroke: 'stroke-app',
-    fill: 'fill-app'
+    color: 'text-[#35e2c3]',
+    border: 'border-[#35e2c3]',
+    stroke: 'stroke-[#35e2c3]',
+    fill: 'fill-[#35e2c3]'
   },
   [ShotCategory.Arg]: {
-    color: 'text-arg',
-    border: 'border-arg',
-    stroke: 'stroke-arg',
-    fill: 'fill-arg'
+    color: 'text-[#f43168]',
+    border: 'border-[#f43168]',
+    stroke: 'stroke-[#f43168]',
+    fill: 'fill-[#f43168]'
   },
   [ShotCategory.Putt]: {
-    color: 'text-put',
-    border: 'border-put',
-    stroke: 'stroke-put',
-    fill: 'fill-put'
+    color: 'text-[#9800ce]',
+    border: 'border-[#9800ce]',
+    stroke: 'stroke-[#9800ce]',
+    fill: 'fill-[#9800ce]'
   }
 } as const;
 
@@ -397,7 +394,7 @@ export const RadarChart = memo(
             {getYScaleTicks(y.domain()).map((tick) => (
               <circle
                 key={tick}
-                className="text-gray-750 stroke-current fill-transparent"
+                className="text-gray-700 stroke-current fill-transparent"
                 strokeWidth={1}
                 cx={0}
                 cy={0}
@@ -412,7 +409,7 @@ export const RadarChart = memo(
           <g>
             {!isZeroState && (
               <path
-                className="text-gray-300 stroke-current"
+                className="text-gray-400 stroke-current"
                 fill={`url(#${gradientId})`}
                 strokeWidth={2}
                 role="presentation"
@@ -440,34 +437,10 @@ export const RadarChart = memo(
               ))}
           </g>
 
-          {/* Data point circles */}
-          <g className="pointer-events-none">
-            {!isZeroState &&
-              data.map((d) => {
-                const legendDatum = data.find((element) => element.key === d.key);
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const ariaRoleDescription = legendDatum
-                  ? `${legendDatum.label} player quality score of ${d.value}`
-                  : '';
-                return (
-                  <circle
-                    key={d.key}
-                    className={`${SHOT_CATEGORY_COLOR_MAP[d.key].color} stroke-white fill-current`}
-                    r={5}
-                    strokeWidth={4}
-                    role="graphics-symbol img"
-                    cx={radialPointLookup.get(d.key)?.[0] ?? 0}
-                    cy={radialPointLookup.get(d.key)?.[1] ?? 0}
-                    aria-roledescription={ariaRoleDescription}
-                  />
-                );
-              })}
-          </g>
-
           {/* Centre ring with big number */}
           <g className="pointer-events-none">
             <circle
-              className={`${isZeroState ? 'stroke-gray-850' : 'stroke-current'} fill-gray-950`}
+              className={`${isZeroState ? 'stroke-gray-800' : 'stroke-current'} fill-gray-900`}
               cx={0}
               cy={0}
               role="presentation"
@@ -486,7 +459,7 @@ export const RadarChart = memo(
               fill="currentColor"
               style={{ fontSize: centerRingFontSizePx }}
             >
-              {selectedDatum.value}
+              {Math.round(selectedDatum.value)}
             </text>
           </g>
 
@@ -495,7 +468,7 @@ export const RadarChart = memo(
             {getYScaleLabelTicks(y.domain()).map((tick) => (
               <g key={tick}>
                 <rect
-                  className="text-gray-750 stroke-current fill-gray-950"
+                  className="text-gray-700 stroke-current fill-gray-900"
                   rx={tickRectBorderRadiusPx}
                   ry={tickRectBorderRadiusPx}
                   strokeWidth={1}
@@ -531,15 +504,15 @@ export const RadarChart = memo(
           >
             {!isZeroState && (
               <g>
-                <circle
-                  className="stroke-current fill-transparent"
-                  strokeWidth={activePointStrokeWidthPx}
+                {/* <circle
+                  className="fill-current"
+                  //   strokeWidth={activePointStrokeWidthPx}
                   role="presentation"
                   aria-hidden
                   cx={0}
                   cy={0}
                   r={activePointRadiusPx}
-                />
+                /> */}
                 <circle
                   className="stroke-current fill-transparent opacity-75"
                   strokeWidth={activePointOuterRadius - activePointInnerRadius}
@@ -551,6 +524,30 @@ export const RadarChart = memo(
                 />
               </g>
             )}
+          </g>
+
+          {/* Data point circles */}
+          <g className="pointer-events-none">
+            {!isZeroState &&
+              data.map((d) => {
+                const legendDatum = data.find((element) => element.key === d.key);
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const ariaRoleDescription = legendDatum
+                  ? `${legendDatum.label} player quality score of ${d.value}`
+                  : '';
+                return (
+                  <circle
+                    key={d.key}
+                    className={`${SHOT_CATEGORY_COLOR_MAP[d.key].color} stroke-white fill-current`}
+                    r={5}
+                    strokeWidth={4}
+                    role="graphics-symbol img"
+                    cx={radialPointLookup.get(d.key)?.[0] ?? 0}
+                    cy={radialPointLookup.get(d.key)?.[1] ?? 0}
+                    aria-roledescription={ariaRoleDescription}
+                  />
+                );
+              })}
           </g>
 
           {/* Data point tooltip trigger circles */}

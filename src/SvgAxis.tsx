@@ -123,6 +123,8 @@ export const SvgAxis: FC<SvgAxisProps> = (props) => {
               dy={orientation === 'top' ? '0em' : orientation === 'bottom' ? '0.71em' : '0.32em'}
               initial={false}
               animate={{ [x === 'x' ? 'attrX' : 'attrY']: k * spacing }}
+              role="presentation"
+              aria-hidden
             >
               {tickFormat(tickValue, index)}
             </motion.text>
