@@ -5,7 +5,7 @@ import { ChartTitle } from './ChartTitle';
 import { D3LinearAxisChart } from './D3LinearAxisChart';
 import { ReactLinearAxisChart } from './ReactLinearAxisChart';
 import { ReactLinearAxisNoExitChart } from './ReactLinearAxisNoExitChart';
-import { useDebouncedResizeObserver } from './useDebouncedResizeObserver';
+import { useDebouncedMeasure } from './useDebouncedMeasure';
 
 function createRandomData(): number[] {
   const rangeSeed = random(0, 3);
@@ -35,7 +35,7 @@ export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({
   transitionSeconds
 }) => {
   const [data, setData] = useState(createRandomData);
-  const { ref: sizerRef, width, height } = useDebouncedResizeObserver(300);
+  const { ref: sizerRef, width, height } = useDebouncedMeasure();
 
   return (
     <div className="space-y-4">

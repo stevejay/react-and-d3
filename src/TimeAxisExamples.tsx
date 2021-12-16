@@ -5,7 +5,7 @@ import { ChartTitle } from './ChartTitle';
 import { D3TimeAxisChart } from './D3TimeAxisChart';
 import { ReactTimeAxisChart } from './ReactTimeAxisChart';
 import { ReactTimeAxisNoExitChart } from './ReactTimeAxisNoExitChart';
-import { useDebouncedResizeObserver } from './useDebouncedResizeObserver';
+import { useDebouncedMeasure } from './useDebouncedMeasure';
 
 function getRandomDateWithinRange(start: Date, end: Date): Date {
   const timestamp = random(start.getTime(), end.getTime());
@@ -64,7 +64,7 @@ export type TimeAxisExamplesProps = {
 
 export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ drawTicksAsGridLines, transitionSeconds }) => {
   const [data, setData] = useState(createRandomData);
-  const { ref: sizerRef, width, height } = useDebouncedResizeObserver(300);
+  const { ref: sizerRef, width, height } = useDebouncedMeasure();
 
   return (
     <div className="space-y-4">

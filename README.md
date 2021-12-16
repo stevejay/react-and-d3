@@ -1,5 +1,5 @@
 # react-and-d3
 
-TODO
+## Decisions
 
-Switch to <https://www.npmjs.com/package/react-use-measure>
+- Using [react-use-measure](https://www.npmjs.com/package/react-use-measure) for width/height measuring because it has debouncing built in. (An alternative is use-resize-observer.)

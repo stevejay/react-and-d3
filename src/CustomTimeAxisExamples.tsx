@@ -3,7 +3,7 @@ import { random, range } from 'lodash-es';
 
 import { ChartTitle } from './ChartTitle';
 import { ReactCustomTimeAxisChart } from './ReactCustomTimeAxisChart';
-import { useDebouncedResizeObserver } from './useDebouncedResizeObserver';
+import { useDebouncedMeasure } from './useDebouncedMeasure';
 
 function getRandomDateWithinRange(start: Date, end: Date): Date {
   const timestamp = random(start.getTime(), end.getTime());
@@ -41,7 +41,7 @@ export type CustomTimeAxisExamplesProps = {
 
 export const CustomTimeAxisExamples: FC<CustomTimeAxisExamplesProps> = ({ transitionSeconds }) => {
   const [data, setData] = useState(createRandomData);
-  const { ref: sizerRef, width, height } = useDebouncedResizeObserver(300);
+  const { ref: sizerRef, width, height } = useDebouncedMeasure();
 
   return (
     <div className="space-y-4">
