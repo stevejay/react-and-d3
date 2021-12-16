@@ -35,7 +35,7 @@ export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = m
         key={transitionSeconds}
         transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}
       >
-        <Svg width={width} height={height} className="bg-slate-200 font-sans">
+        <Svg width={width} height={height} className="bg-slate-200 font-sans select-none">
           <SvgAxisNoExit
             scale={scale as AxisScale<AxisDomain>}
             translateX={margins.left}

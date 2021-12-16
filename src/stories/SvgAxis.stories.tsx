@@ -62,7 +62,7 @@ const LinearScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
 
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
-      <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
+      <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base select-none">
         <SvgAxis
           scale={scale as AxisScale<AxisDomain>}
           translateX={translateX}
@@ -136,7 +136,7 @@ const BandScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
 
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
-      <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
+      <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base select-none">
         <SvgAxis
           scale={scale as AxisScale<AxisDomain>}
           translateX={translateX}
@@ -208,7 +208,7 @@ const TimeScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
 
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
-      <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
+      <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base select-none">
         <SvgAxis
           scale={scale as AxisScale<AxisDomain>}
           translateX={translateX}
@@ -282,7 +282,7 @@ const PointScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
 
   return (
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
-      <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base">
+      <Svg width={width} height={height} className="bg-slate-200 font-sans font-normal text-base select-none">
         <SvgAxis
           scale={scale as AxisScale<AxisDomain>}
           translateX={translateX}

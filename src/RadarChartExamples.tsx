@@ -1,46 +1,33 @@
-import { FC, useCallback, useMemo } from 'react';
+import { FC, useCallback, useState } from 'react';
 
 import { ChartTitle } from './ChartTitle';
-import { Datum, DatumWithLegend, Key, Legend, RadarChart, ShotCategory, TOTAL } from './RadarChart';
-// import { useDebouncedMeasure } from './useDebouncedMeasure';
+import { Datum, RadarChart } from './RadarChart';
 
-const REALISTIC_DATA: Datum[] = [
-  { key: TOTAL, value: 89.34 },
-  { key: ShotCategory.Tee, value: 83.56 },
-  { key: ShotCategory.App, value: 81.32 },
-  { key: ShotCategory.Arg, value: 102.974 },
-  { key: ShotCategory.Putt, value: 87.247 }
+const dataA: Datum[] = [
+  { key: 'one', value: 89.34, label: 'Category One' },
+  { key: 'two', value: 83.56, label: 'Category Two' },
+  { key: 'three', value: 81.32, label: 'Category Three' },
+  { key: 'four', value: 102.974, label: 'Category Four' },
+  { key: 'five', value: 87.247, label: 'Category Five' }
 ];
 
-// type DatumDD = {
-//     key: string;
-//     value: number;
-//     label: string;
-// }
+const dataB: Datum[] = [
+  { key: 'one', value: 40, label: 'Category One' },
+  { key: 'two', value: 150, label: 'Category Two' },
+  { key: 'three', value: 20, label: 'Category Three' },
+  { key: 'four', value: 63.9, label: 'Category Four' },
+  { key: 'five', value: 0, label: 'Category Five' }
+];
 
-export function createRadarChartData(data: readonly Datum[]): readonly DatumWithLegend[] {
-  const legends: Legend[] = [
-    { key: TOTAL, label: 'Total Player Quality' },
-    { key: ShotCategory.Tee, label: 'Off the Tee' },
-    { key: ShotCategory.App, label: 'Approach' },
-    { key: ShotCategory.Arg, label: 'Around the Green' },
-    { key: ShotCategory.Putt, label: 'Putting' }
-  ];
-  return legends.map((element, index) => {
-    const d = data.find((d) => d.key === element.key);
-    return { ...element, value: d?.value || 0, degree: (360 / legends.length) * index };
-  });
-}
+const zeroData: Datum[] = dataA.map((d) => ({ ...d, value: 0 }));
 
 export type RadarChartExamplesProps = {
   transitionSeconds: number;
 };
 
 export const RadarChartExamples: FC<RadarChartExamplesProps> = () => {
-  //   const [data, setData] = useState(createRandomData);
-  //   const { ref: sizerRef, width, height } = useDebouncedMeasure();
-  const radarChartData = useMemo(() => createRadarChartData(REALISTIC_DATA), []);
-  const onSelected = useCallback((key: Key) => console.log('onSelected', key), []);
+  const [selectedKey, setSelectedKey] = useState<Datum['key']>('one');
+  const [data, setData] = useState<Datum[]>(dataA);
   const onShowTooltip = useCallback(() => console.log('onShowTooltip'), []);
   const onHideTooltip = useCallback(() => console.log('onHideTooltip'), []);
 
@@ -49,23 +36,23 @@ export const RadarChartExamples: FC<RadarChartExamplesProps> = () => {
       <ChartTitle title="Example Radar Chart" />
       <div className="w-full py-8 flex flex-col items-center bg-gray-900">
         <RadarChart
-          data={radarChartData}
-          size="lg"
+          data={data}
           label="Some label"
-          selectedKey={ShotCategory.App}
-          onSelected={onSelected}
+          selectedKey={selectedKey}
+          diameter={420}
+          onSelect={setSelectedKey}
           onShowTooltip={onShowTooltip}
           onHideTooltip={onHideTooltip}
           // transitionSeconds={transitionSeconds}
         />
       </div>
-      {/* <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-2">
         <button
           type="button"
-          onClick={() => setData(createRandomData)}
+          onClick={() => setData(zeroData)}
           className="bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring outline-none text-white font-light px-4 py-2"
         >
-          Random data
+          Zero data
         </button>
         <button
           type="button"
@@ -74,22 +61,7 @@ export const RadarChartExamples: FC<RadarChartExamplesProps> = () => {
         >
           Data A/B
         </button>
-        <button
-          type="button"
-          onClick={() =>
-            setData((state) =>
-              state === dataInterruptOne
-                ? dataInterruptTwo
-                : state == dataInterruptTwo
-                ? dataInterruptThree
-                : dataInterruptOne
-            )
-          }
-          className="bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring outline-none text-white font-light px-4 py-2"
-        >
-          Interrupt 1 (200) / 2 (50, in) / 3
-        </button>
-      </div> */}
+      </div>
     </div>
   );
 };

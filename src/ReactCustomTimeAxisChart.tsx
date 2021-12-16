@@ -37,7 +37,7 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
         key={transitionSeconds}
         transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}
       >
-        <Svg width={width} height={height} className="bg-slate-200 font-sans">
+        <Svg width={width} height={height} className="bg-slate-200 font-sans select-none">
           <SvgCustomTimeAxis
             scale={scale as AxisScale<Date>}
             translateX={margins.left}

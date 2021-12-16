@@ -35,7 +35,7 @@ export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
         key={transitionSeconds}
         transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}
       >
-        <Svg width={width} height={height} className="bg-slate-200 font-sans">
+        <Svg width={width} height={height} className="bg-slate-200 font-sans select-none">
           <SvgAxis
             scale={scale as AxisScale<AxisDomain>}
             translateX={margins.left}

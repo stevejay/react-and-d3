@@ -1,12 +1,16 @@
 import { FC, forwardRef, memo } from 'react';
 import { useId } from '@uifabric/react-hooks';
-// import { SHOT_CATEGORY_COLOR_MAP } from '@clippd/constants/player';
-// import { ShotCategory } from '@clippd/graphql/generated/react-apollo';
-// import { formatQScore } from '@clippd/utils/formatter';
 import * as d3 from 'd3';
 import { every, range } from 'lodash-es';
 
+import { Svg } from './Svg';
 import type { Margins } from './types';
+
+export type Datum = {
+  key: string;
+  value: number;
+  label: string | ((d: Datum) => string);
+};
 
 export type CategorySliceProps = {
   /** Whether this slice is the currently selected slice. */
@@ -82,83 +86,10 @@ export const CategorySlice: FC<CategorySliceProps> = ({
   );
 };
 
-export const TOTAL = 'TOTAL';
+const margins: Margins = { left: 1, right: 1, top: 1, bottom: 1 };
 
-export enum ShotCategory {
-  /** Approach */
-  App = 'APP',
-  /** Around the green */
-  Arg = 'ARG',
-  /** Putting */
-  Putt = 'PUTT',
-  /** Off the tee */
-  Tee = 'TEE'
-}
-
-export type Key = typeof TOTAL | ShotCategory.Tee | ShotCategory.App | ShotCategory.Arg | ShotCategory.Putt;
-export type Datum = { key: Key; value: number };
-export type Legend = { key: Key; label: string };
-export type DatumWithLegend = Legend & Pick<Datum, 'value'> & { degree: number };
-
-const MARGINS: Margins = { left: 1, right: 1, top: 1, bottom: 1 };
-
-export const REALISTIC_DATA: Datum[] = [
-  { key: TOTAL, value: 89.34 },
-  { key: ShotCategory.Tee, value: 83.56 },
-  { key: ShotCategory.App, value: 81.32 },
-  { key: ShotCategory.Arg, value: 102.974 },
-  { key: ShotCategory.Putt, value: 87.247 }
-];
-
-const SHOT_CATEGORY_COLOR_MAP = {
-  TOTAL: {
-    color: 'text-[#0072ce]',
-    border: 'border-[#0072ce]',
-    stroke: 'stroke-[#0072ce]',
-    fill: 'fill-[#0072ce]'
-  },
-  [ShotCategory.Tee]: {
-    color: 'text-[#ffba01]',
-    border: 'border-[#ffba01]',
-    stroke: 'stroke-[#ffba01]',
-    fill: 'fill-[#ffba01]'
-  },
-  [ShotCategory.App]: {
-    color: 'text-[#35e2c3]',
-    border: 'border-[#35e2c3]',
-    stroke: 'stroke-[#35e2c3]',
-    fill: 'fill-[#35e2c3]'
-  },
-  [ShotCategory.Arg]: {
-    color: 'text-[#f43168]',
-    border: 'border-[#f43168]',
-    stroke: 'stroke-[#f43168]',
-    fill: 'fill-[#f43168]'
-  },
-  [ShotCategory.Putt]: {
-    color: 'text-[#9800ce]',
-    border: 'border-[#9800ce]',
-    stroke: 'stroke-[#9800ce]',
-    fill: 'fill-[#9800ce]'
-  }
-} as const;
-
-/**
- * Creates a domain that extends above and below the data values to
- * the nearest tens value, and extends to at least the range [50, 120].
- * The maximum possible range is [0, 200].
- */
-export function getYScaleDomain(data: readonly DatumWithLegend[], isZeroState: boolean): [number, number] {
-  if (isZeroState) {
-    return [0, 100];
-  }
-  const min = d3.min(data, (d) => d.value) ?? 0;
-  const floorMin = Math.max(Math.floor(min * 0.1) * 10, 0);
-  const max = d3.max(data, (d) => d.value) ?? 0;
-  const ceilMax = Math.min(Math.ceil(max * 0.1) * 10, 200);
-  const domainMin = Math.min(floorMin, 50);
-  const domainMax = Math.max(ceilMax, 120);
-  return [domainMin, domainMax];
+function getLabel(d: Datum): string {
+  return typeof d.label === 'function' ? d.label(d) : d.label;
 }
 
 /**
@@ -185,23 +116,21 @@ export function getYScaleLabelTicks(domain: number[]): number[] {
 
 export type RadarChartProps = {
   label: string;
-  selectedKey: DatumWithLegend['key'];
-  data: readonly DatumWithLegend[];
-  size: 'sm' | 'lg';
+  selectedKey: Datum['key'];
+  data: readonly Datum[];
+  diameter: number;
   /** Needs to be a stable callback. */
-  onSelected: (key: DatumWithLegend['key']) => void;
+  onSelect: (key: Datum['key']) => void;
   /** Needs to be a stable callback. */
-  onShowTooltip: (element: Element, datum: DatumWithLegend) => void;
+  onShowTooltip: (element: Element, datum: Datum) => void;
   /** Needs to be a stable callback. */
   onHideTooltip: () => void;
 };
 
 export const RadarChart = memo(
   forwardRef<SVGSVGElement, RadarChartProps>(
-    ({ label, selectedKey, onSelected, data, size, onShowTooltip, onHideTooltip }, ref) => {
+    ({ label, selectedKey, data, diameter, onSelect, onShowTooltip, onHideTooltip }, ref) => {
       const id = useId();
-      const isSmallChart = size === 'sm';
-      const dimension = isSmallChart ? 330 : 420;
 
       // ----- DATA PREPARATION -----
 
@@ -212,15 +141,17 @@ export const RadarChart = memo(
         return null;
       }
 
+      const degreesLookup = new Map(data.map((d, index) => [d.key, (360 / data.length) * index]));
+
       // ----- CHART SIZING -----
 
-      const tickFontSizePx = isSmallChart ? 10 : 12;
-      const tickRectWidthPx = isSmallChart ? 24 : 28;
+      const tickFontSizePx = /*isSmallChart ? 10 :*/ 12;
+      const tickRectWidthPx = /*isSmallChart ? 24 :*/ 28;
       const tickRectHeightPx = tickFontSizePx + 4;
       const tickRectBorderRadiusPx = 2;
       const radiatingPointRadiusPx = 5;
       const radiatingPointStrokeWidthPx = 4;
-      const centerRingFontSizePx = isSmallChart ? 38 : 38; // fix
+      const centerRingFontSizePx = /*isSmallChart ? 38 :*/ 38; // fix
       const centerRingRadiusPx = centerRingFontSizePx + 6;
       const centerRingStrokeWidthPx = 8;
       const activePointRadiusPx = 17;
@@ -228,11 +159,11 @@ export const RadarChart = memo(
       const yAxisMarginTopPx = 12;
       const yAxisMarginBottomPx = yAxisMarginTopPx + centerRingStrokeWidthPx * 0.5;
       const slicePadAngleRadians = 0.0075;
-      const sliceHeightPx = isSmallChart ? 24 : 32;
-      const sliceLabelFontSizePx = isSmallChart ? 11 : 14;
+      const sliceHeightPx = /*isSmallChart ? 24 :*/ 32;
+      const sliceLabelFontSizePx = /*isSmallChart ? 11 :*/ 14;
 
       const chartAreaRadius =
-        (dimension - MARGINS.left - MARGINS.right - sliceHeightPx * 2 - yAxisMarginTopPx * 2) * 0.5;
+        (diameter - margins.left - margins.right - sliceHeightPx * 2 - yAxisMarginTopPx * 2) * 0.5;
 
       // ----- SCALES -----
 
@@ -241,15 +172,14 @@ export const RadarChart = memo(
 
       const y = d3
         .scaleLinear()
-        .range([centerRingRadiusPx + yAxisMarginBottomPx, chartAreaRadius])
-        .domain(getYScaleDomain(data, isZeroState));
+        .domain([d3.min(data, (d) => d.value) ?? 0, d3.max(data, (d) => d.value) ?? 0])
+        .range([centerRingRadiusPx + yAxisMarginBottomPx, chartAreaRadius]);
 
       // X-scale is generated from the categories (keys).
-      // The domain is 360 degrees, i.e., 2*Pi radians.
 
       const x = d3
         .scaleBand()
-        .range([0, 2 * Math.PI])
+        .range([0, 2 * Math.PI]) // [0 degrees, 360 degrees]
         .domain(data.map((d) => d.key));
 
       // ----- RADIAL POINTS -----
@@ -289,7 +219,7 @@ export const RadarChart = memo(
         .outerRadius(chartAreaRadius + yAxisMarginTopPx + sliceHeightPx);
 
       const slicePieGenerator = d3
-        .pie<DatumWithLegend>()
+        .pie<Datum>()
         .sort(null)
         .value(1)
         .padAngle(slicePadAngleRadians)
@@ -309,7 +239,7 @@ export const RadarChart = memo(
       // ----- RADIAL POLYGON -----
 
       const radialLineGenerator = d3
-        .lineRadial<DatumWithLegend>()
+        .lineRadial<Datum>()
         .angle((d) => x(d.key) ?? 0)
         .radius((d) => y(d.value))
         .curve(d3.curveLinearClosed);
@@ -326,14 +256,14 @@ export const RadarChart = memo(
       // ----- RENDERING -----
 
       return (
-        <svg
+        <Svg
           ref={ref}
-          className={`select-none flex-shrink-0 ${SHOT_CATEGORY_COLOR_MAP[selectedDatum.key].color}`}
+          width={diameter}
+          height={diameter}
           role="graphics-document group"
+          viewBox={`${-diameter / 2} ${-diameter / 2} ${diameter} ${diameter}`}
+          className="select-none text-pink-600"
           aria-label={label}
-          width={dimension}
-          height={dimension}
-          viewBox={`${-dimension / 2} ${-dimension / 2} ${dimension} ${dimension}`}
         >
           {/* Definitions */}
           <defs role="presentation" aria-hidden>
@@ -367,14 +297,14 @@ export const RadarChart = memo(
               <CategorySlice
                 key={d.data.key}
                 isSelected={d.data.key === selectedKey}
-                degree={d.data.degree}
-                label={d.data.label}
+                degree={degreesLookup.get(d.data.key) ?? 0}
+                label={getLabel(d.data)}
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
                 path={sliceArcGenerator(d as any) ?? ''}
                 sliceLabelFontSizePx={sliceLabelFontSizePx}
                 lowerLabelArcId={lowerLabelArcId}
                 upperLabelArcId={upperLabelArcId}
-                onClick={() => onSelected(d.data.key)}
+                onClick={() => onSelect(d.data.key)}
               />
             ))}
           </g>
@@ -386,7 +316,7 @@ export const RadarChart = memo(
             aria-hidden
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
             d={(indicatorSliceArc as any)()}
-            style={{ transform: `rotate(${selectedDatum.degree}deg)` }}
+            style={{ transform: `rotate(${degreesLookup.get(selectedDatum.key) ?? 0}deg)` }}
           />
 
           {/* Y-scale circles */}
@@ -425,7 +355,7 @@ export const RadarChart = memo(
               data.map((d) => (
                 <line
                   key={d.key}
-                  className={`${SHOT_CATEGORY_COLOR_MAP[d.key].color} stroke-current`}
+                  className="stroke-current"
                   x1={0}
                   y1={0}
                   role="presentation"
@@ -504,15 +434,6 @@ export const RadarChart = memo(
           >
             {!isZeroState && (
               <g>
-                {/* <circle
-                  className="fill-current"
-                  //   strokeWidth={activePointStrokeWidthPx}
-                  role="presentation"
-                  aria-hidden
-                  cx={0}
-                  cy={0}
-                  r={activePointRadiusPx}
-                /> */}
                 <circle
                   className="stroke-current fill-transparent opacity-75"
                   strokeWidth={activePointOuterRadius - activePointInnerRadius}
@@ -532,13 +453,11 @@ export const RadarChart = memo(
               data.map((d) => {
                 const legendDatum = data.find((element) => element.key === d.key);
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const ariaRoleDescription = legendDatum
-                  ? `${legendDatum.label} player quality score of ${d.value}`
-                  : '';
+                const ariaRoleDescription = legendDatum ? `${getLabel(legendDatum)} value of ${d.value}` : '';
                 return (
                   <circle
                     key={d.key}
-                    className={`${SHOT_CATEGORY_COLOR_MAP[d.key].color} stroke-white fill-current`}
+                    className="stroke-white fill-current"
                     r={5}
                     strokeWidth={4}
                     role="graphics-symbol img"
@@ -574,12 +493,12 @@ export const RadarChart = memo(
                 );
               })}
           </g>
-        </svg>
+        </Svg>
       );
     }
   ),
   (prevProps, nextProps) =>
     prevProps.data === nextProps.data &&
     prevProps.selectedKey === nextProps.selectedKey &&
-    prevProps.size === nextProps.size
+    prevProps.diameter === nextProps.diameter
 );
