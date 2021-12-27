@@ -1,45 +1,37 @@
 import { FC, useState } from 'react';
 
+import { AriaKitDialog } from './AriaKitDialog';
+import { Checkbox } from './Checkbox';
 import { CustomTimeAxisExamples } from './CustomTimeAxisExamples';
+// import { HeadlessUiDialog } from './HeadlessUiDialog';
 import { LinearAxisExamples } from './LinearAxisExamples';
 import { RadarChartExamples } from './RadarChartExamples';
+import { SparklineExamples } from './SparklineExamples';
 import { TimeAxisExamples } from './TimeAxisExamples';
 
-const SectionHeading: FC = ({ children }) => <h2 className="text-2xl text-gray-700 font-bold">{children}</h2>;
+const SectionHeading: FC = ({ children }) => (
+  <h2 className="text-2xl font-bold text-slate-700">{children}</h2>
+);
 
 const fastAnimationSeconds = 0.75;
 const slowAnimationSeconds = 2;
 
 export const App: FC = () => {
-  const [transitionSeconds, setTransitionSeconds] = useState(fastAnimationSeconds);
+  const [slowAnimations, setSlowAnimations] = useState(false);
   const [drawTicksAsGridLines, setDrawTicksAsGridLines] = useState(false);
-
+  const transitionSeconds = slowAnimations ? slowAnimationSeconds : fastAnimationSeconds;
   return (
     <>
-      <div className="px-8 py-4 flex space-x-8 bg-white shadow-lg sticky top-0">
-        <div className="flex items-center space-x-2">
-          <input
-            id="ticks-as-grid-lines"
-            type="checkbox"
-            checked={drawTicksAsGridLines}
-            onChange={() => setDrawTicksAsGridLines((state) => !state)}
-          />
-          <label htmlFor="ticks-as-grid-lines">Draw inner ticks as grid lines</label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <input
-            id="slow-animations"
-            type="checkbox"
-            checked={transitionSeconds === slowAnimationSeconds}
-            onChange={() =>
-              setTransitionSeconds((state) =>
-                state === fastAnimationSeconds ? slowAnimationSeconds : fastAnimationSeconds
-              )
-            }
-          />
-          <label htmlFor="slow-animations">Slow animations</label>
-        </div>
+      <div className="sticky top-0 flex px-8 py-4 space-x-8 bg-white shadow-lg">
+        <Checkbox
+          label="Draw inner ticks as grid lines"
+          checked={drawTicksAsGridLines}
+          onChange={setDrawTicksAsGridLines}
+        />
+        <Checkbox label="Use slow animations" checked={slowAnimations} onChange={setSlowAnimations} />
       </div>
+      <AriaKitDialog />
+      {/* <HeadlessUiDialog /> */}
       <div className="m-8 space-y-8">
         <SectionHeading>Linear Axis</SectionHeading>
         <LinearAxisExamples
@@ -52,6 +44,8 @@ export const App: FC = () => {
         <CustomTimeAxisExamples transitionSeconds={transitionSeconds} />
         <SectionHeading>Radar Chart</SectionHeading>
         <RadarChartExamples transitionSeconds={transitionSeconds} />
+        <SectionHeading>Sparkline</SectionHeading>
+        <SparklineExamples transitionSeconds={transitionSeconds} />
       </div>
     </>
   );

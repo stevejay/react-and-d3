@@ -20,7 +20,7 @@
 .eslintcache
 
 # TS types generation
-tsconfig.tsbuildinfo
+*.tsbuildinfo
 /types-temp/
 
 # Storybook
@@ -32,7 +32,7 @@ tsconfig.tsbuildinfo
 # npm publish
 /*.tgz
 
-# jest
+# coverage
 /coverage
 
 #-------------------------------------------------------------------------------------------------------------------
@@ -51,4 +51,3 @@ lib
 
 # Prettier reformats code blocks inside Markdown, which affects rendered output
 *.md
-*.mdx

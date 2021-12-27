@@ -40,7 +40,7 @@ export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({
   return (
     <div className="space-y-4">
       <ChartTitle title="React Rendering" subtitle="Basic Exit Animation" />
-      <div ref={sizerRef} className="h-28 w-full">
+      <div ref={sizerRef} className="w-full h-28">
         <ReactLinearAxisChart
           data={data}
           width={width ?? 0}
@@ -50,7 +50,7 @@ export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({
         />
       </div>
       <ChartTitle title="React Rendering" subtitle="Interruptible Exit Animation" />
-      <div className="h-28 w-full">
+      <div className="w-full h-28">
         <ReactLinearAxisNoExitChart
           data={data}
           width={width ?? 0}
@@ -60,7 +60,7 @@ export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({
         />
       </div>
       <ChartTitle title="D3 Rendering" />
-      <div className="h-28 w-full">
+      <div className="w-full h-28">
         <D3LinearAxisChart
           data={data}
           width={width ?? 0}
@@ -73,31 +73,37 @@ export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({
         <button
           type="button"
           onClick={() => setData(createRandomData)}
-          className="bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring outline-none text-white font-light px-4 py-2"
+          className="px-4 py-2 font-light text-white outline-none bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring"
         >
           Random data
         </button>
         <button
           type="button"
           onClick={() => setData((state) => (state === dataA ? dataB : dataA))}
-          className="bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring outline-none text-white font-light px-4 py-2"
+          className="px-4 py-2 font-light text-white outline-none bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring"
         >
           Data A/B
         </button>
         <button
           type="button"
-          onClick={() =>
-            setData((state) =>
-              state === dataInterruptOne
-                ? dataInterruptTwo
-                : state == dataInterruptTwo
-                ? dataInterruptThree
-                : dataInterruptOne
-            )
-          }
-          className="bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring outline-none text-white font-light px-4 py-2"
+          onClick={() => setData(dataInterruptOne)}
+          className="px-4 py-2 font-light text-white outline-none bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring"
         >
-          Interrupt 1 (200) / 2 (50, in) / 3
+          Interrupt 1
+        </button>
+        <button
+          type="button"
+          onClick={() => setData(dataInterruptTwo)}
+          className="px-4 py-2 font-light text-white outline-none bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring"
+        >
+          Interrupt 2
+        </button>
+        <button
+          type="button"
+          onClick={() => setData(dataInterruptThree)}
+          className="px-4 py-2 font-light text-white outline-none bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring"
+        >
+          Interrupt 3
         </button>
       </div>
     </div>

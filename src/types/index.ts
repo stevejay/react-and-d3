@@ -55,7 +55,6 @@ export type DefaultAxisProps<Domain = AxisDomain> = {
    * d3 axis component then use `tickArguments` instead (passing the args as an
    * array).
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tickArguments?: any[];
   /**
    * Sets the formatter function. Pass `null` to explicitly use the scale's

@@ -20,11 +20,12 @@
     "**/.DS_Store": true,
     "**/node_modules": true,
     "env*": true,
-    "tsconfig.tsbuildinfo": true,
+    "*.tsbuildinfo": true,
     ".vite/": true
   },
   "css.validate": false,
   "stylelint.enable": true,
   "typescript.tsdk": "./node_modules/typescript/lib",
-  "eslint.validate": ["html", "javascript", "typescript", "javascriptreact", "typescriptreact"]
+  "eslint.validate": ["html", "javascript", "typescript", "javascriptreact", "typescriptreact"],
+  "eslint.packageManager": "yarn"
 }

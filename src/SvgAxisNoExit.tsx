@@ -46,8 +46,7 @@ export const SvgAxisNoExit: FC<SvgAxisNoExitProps> = (props) => {
   // Determine the exact tick values to use.
   const tickValues = isNil(props.tickValues)
     ? scale.ticks
-      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        scale.ticks(...tickArguments)
+      ? scale.ticks(...tickArguments)
       : scale.domain()
     : props.tickValues;
 
@@ -55,8 +54,7 @@ export const SvgAxisNoExit: FC<SvgAxisNoExitProps> = (props) => {
   const tickFormat =
     props.tickFormat == null
       ? scale.tickFormat
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          scale.tickFormat(...tickArguments)
+        ? scale.tickFormat(...tickArguments)
         : identity
       : props.tickFormat;
 
@@ -108,7 +106,6 @@ export const SvgAxisNoExit: FC<SvgAxisNoExitProps> = (props) => {
     exitingTickValuesRef.current = exiting;
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   useDebouncedEffect(() => {
     if (exitingTickValuesRef.current.length) {
       exitingTickValuesRef.current = [];

@@ -34,7 +34,7 @@ export const RadarChartExamples: FC<RadarChartExamplesProps> = () => {
   return (
     <div className="space-y-4">
       <ChartTitle title="Example Radar Chart" />
-      <div className="w-full py-8 flex flex-col items-center bg-gray-900">
+      <div className="w-full py-8 flex flex-col items-center bg-slate-900">
         <RadarChart
           data={data}
           label="Some label"

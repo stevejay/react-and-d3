@@ -1,7 +1,7 @@
 import { FC, forwardRef, memo } from 'react';
 import { useId } from '@uifabric/react-hooks';
 import * as d3 from 'd3';
-import { every, range } from 'lodash-es';
+import { every } from 'lodash-es';
 
 import { Svg } from './Svg';
 import type { Margins } from './types';
@@ -50,68 +50,44 @@ export const CategorySlice: FC<CategorySliceProps> = ({
   lowerLabelArcId,
   upperLabelArcId,
   onClick
-}) => {
-  return (
-    <>
-      <path
-        className={`slice-arc transition-colors ${
-          isSelected ? 'text-gray-700' : 'text-gray-800'
-        } fill-gray-800`}
-        role="presentation"
-        aria-hidden
-        d={path}
-        onClick={onClick}
-      />
-      <text
-        className={`slice-label pointer-events-none transition-colors uppercase ${
-          isSelected ? 'text-white' : 'text-gray-400'
-        } fill-current`}
-        role="presentation"
-        aria-hidden
-        dy={degree > 90 && degree < 270 ? '0.75em' : '0em'}
-        style={{
-          transform: `rotate(${degree}deg)`,
-          fontSize: sliceLabelFontSizePx
-        }}
+}) => (
+  <g className="hello">
+    <path
+      className={`slice-arc transition-colors fill-current ${
+        isSelected ? 'text-slate-700' : 'text-slate-800'
+      } hover:text-slate-700`}
+      role="presentation"
+      aria-hidden
+      d={path}
+      onClick={onClick}
+    />
+    <text
+      className={`slice-label pointer-events-none transition-colors uppercase ${
+        isSelected ? 'text-white' : 'text-slate-400'
+      } fill-current`}
+      role="presentation"
+      aria-hidden
+      dy={degree > 90 && degree < 270 ? '0.75em' : '0em'}
+      style={{
+        transform: `rotate(${degree}deg)`,
+        fontSize: sliceLabelFontSizePx
+      }}
+    >
+      <textPath
+        startOffset="50%"
+        href={degree > 90 && degree < 270 ? `#${lowerLabelArcId}` : `#${upperLabelArcId}`}
+        style={{ textAnchor: 'middle' }}
       >
-        <textPath
-          startOffset="50%"
-          href={degree > 90 && degree < 270 ? `#${lowerLabelArcId}` : `#${upperLabelArcId}`}
-          style={{ textAnchor: 'middle' }}
-        >
-          {label}
-        </textPath>
-      </text>
-    </>
-  );
-};
+        {label}
+      </textPath>
+    </text>
+  </g>
+);
 
 const margins: Margins = { left: 1, right: 1, top: 1, bottom: 1 };
 
 function getLabel(d: Datum): string {
   return typeof d.label === 'function' ? d.label(d) : d.label;
-}
-
-/**
- * Creates a list of tick values for the range [domain[0], domain[1]],
- * in increments of 10.
- */
-function getYScaleTicks(domain: number[]): number[] {
-  return range(domain[0], domain[1] + 1, 10);
-}
-
-/**
- * Creates a list of tick values for the y-scale labels.
- * The number of tick values generated depends on the domain range
- * of the y-scale.
- */
-export function getYScaleLabelTicks(domain: number[]): number[] {
-  const ticks = getYScaleTicks(domain);
-  if (ticks.length > 10) {
-    return ticks.filter((tick) => tick % 30 === 0 && tick > 0);
-  } else {
-    return ticks.filter((tick) => tick % 20 === 0 && tick > 0);
-  }
 }
 
 export type RadarChartProps = {
@@ -172,8 +148,11 @@ export const RadarChart = memo(
 
       const y = d3
         .scaleLinear()
-        .domain([d3.min(data, (d) => d.value) ?? 0, d3.max(data, (d) => d.value) ?? 0])
-        .range([centerRingRadiusPx + yAxisMarginBottomPx, chartAreaRadius]);
+        .domain(
+          isZeroState ? [0, 150] : [d3.min(data, (d) => d.value) ?? 0, d3.max(data, (d) => d.value) ?? 0]
+        )
+        .range([centerRingRadiusPx + yAxisMarginBottomPx, chartAreaRadius])
+        .nice();
 
       // X-scale is generated from the categories (keys).
 
@@ -262,7 +241,7 @@ export const RadarChart = memo(
           height={diameter}
           role="graphics-document group"
           viewBox={`${-diameter / 2} ${-diameter / 2} ${diameter} ${diameter}`}
-          className="select-none text-pink-600"
+          className="text-pink-600 select-none"
           aria-label={label}
         >
           {/* Definitions */}
@@ -299,7 +278,6 @@ export const RadarChart = memo(
                 isSelected={d.data.key === selectedKey}
                 degree={degreesLookup.get(d.data.key) ?? 0}
                 label={getLabel(d.data)}
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
                 path={sliceArcGenerator(d as any) ?? ''}
                 sliceLabelFontSizePx={sliceLabelFontSizePx}
                 lowerLabelArcId={lowerLabelArcId}
@@ -314,17 +292,16 @@ export const RadarChart = memo(
             className="pointer-events-none fill-current"
             role="presentation"
             aria-hidden
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
             d={(indicatorSliceArc as any)()}
             style={{ transform: `rotate(${degreesLookup.get(selectedDatum.key) ?? 0}deg)` }}
           />
 
           {/* Y-scale circles */}
           <g>
-            {getYScaleTicks(y.domain()).map((tick) => (
+            {y.ticks(5).map((tick) => (
               <circle
                 key={tick}
-                className="text-gray-700 stroke-current fill-transparent"
+                className="stroke-current text-slate-700 fill-transparent"
                 strokeWidth={1}
                 cx={0}
                 cy={0}
@@ -339,7 +316,7 @@ export const RadarChart = memo(
           <g>
             {!isZeroState && (
               <path
-                className="text-gray-400 stroke-current"
+                className="stroke-current text-slate-400"
                 fill={`url(#${gradientId})`}
                 strokeWidth={2}
                 role="presentation"
@@ -370,7 +347,7 @@ export const RadarChart = memo(
           {/* Centre ring with big number */}
           <g className="pointer-events-none">
             <circle
-              className={`${isZeroState ? 'stroke-gray-800' : 'stroke-current'} fill-gray-900`}
+              className={`${isZeroState ? 'stroke-slate-800' : 'stroke-current'} fill-slate-900`}
               cx={0}
               cy={0}
               role="presentation"
@@ -395,10 +372,10 @@ export const RadarChart = memo(
 
           {/* Y-scale labels */}
           <g className="pointer-events-none">
-            {getYScaleLabelTicks(y.domain()).map((tick) => (
+            {y.ticks(5).map((tick) => (
               <g key={tick}>
                 <rect
-                  className="text-gray-700 stroke-current fill-gray-900"
+                  className="stroke-current text-slate-700 fill-slate-900"
                   rx={tickRectBorderRadiusPx}
                   ry={tickRectBorderRadiusPx}
                   strokeWidth={1}
@@ -428,14 +405,13 @@ export const RadarChart = memo(
           <g
             className="pointer-events-none"
             style={{
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
               transform: `translate(${activePointCoords?.[0]}px, ${activePointCoords?.[1]}px)`
             }}
           >
             {!isZeroState && (
               <g>
                 <circle
-                  className="stroke-current fill-transparent opacity-75"
+                  className="opacity-75 stroke-current fill-transparent"
                   strokeWidth={activePointOuterRadius - activePointInnerRadius}
                   role="presentation"
                   aria-hidden
@@ -452,12 +428,11 @@ export const RadarChart = memo(
             {!isZeroState &&
               data.map((d) => {
                 const legendDatum = data.find((element) => element.key === d.key);
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const ariaRoleDescription = legendDatum ? `${getLabel(legendDatum)} value of ${d.value}` : '';
                 return (
                   <circle
                     key={d.key}
-                    className="stroke-white fill-current"
+                    className="fill-current stroke-white"
                     r={5}
                     strokeWidth={4}
                     role="graphics-symbol img"

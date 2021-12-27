@@ -16,7 +16,7 @@
 .eslintcache
 
 # TS types generation
-tsconfig.tsbuildinfo
+*.tsbuildinfo
 /types-temp/
 
 # Storybook
@@ -28,7 +28,7 @@ tsconfig.tsbuildinfo
 # npm publish
 /*.tgz
 
-# jest
+# coverage
 /coverage
 
 # yarn (without PnP) - exceptions

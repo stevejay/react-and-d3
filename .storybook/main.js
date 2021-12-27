@@ -25,13 +25,7 @@ module.exports = {
         ...config.optimizeDeps,
         // Entries are specified relative to the root
         entries: [`${path.relative(config.root, path.resolve(__dirname, '../src'))}/**/*.stories.tsx`],
-        include: [
-          ...(config?.optimizeDeps?.include ?? []),
-          '@storybook/theming',
-          '@storybook/addon-actions',
-          'use-resize-observer'
-          //   '@emotion/react/jsx-dev-runtime'
-        ]
+        include: [...(config?.optimizeDeps?.include ?? []), '@storybook/theming', '@storybook/addon-actions']
       }
     });
   }

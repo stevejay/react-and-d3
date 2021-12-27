@@ -6,7 +6,6 @@ import { MotionConfig } from 'framer-motion';
 import { Svg } from '@/Svg';
 import { SvgAxis } from '@/SvgAxis';
 
-// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'Chart/SvgAxis',
   argTypes: {
@@ -19,11 +18,11 @@ export default {
   }
 } as ComponentMeta<typeof SvgAxis>;
 
-type TemplateProps = {
+type ChartTemplateProps = {
   orientation: 'top' | 'bottom' | 'left' | 'right';
 };
 
-const LinearScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
+const LinearScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation }) => {
   const margin = 20;
   const scaleMargin = margin + 14;
 
@@ -77,27 +76,27 @@ const LinearScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   );
 };
 
-export const LinearScaleLeft = LinearScaleTemplate.bind({});
+export const LinearScaleLeft = LinearScaleChartTemplate.bind({});
 LinearScaleLeft.args = {
   orientation: 'left'
 };
 
-export const LinearScaleRight = LinearScaleTemplate.bind({});
+export const LinearScaleRight = LinearScaleChartTemplate.bind({});
 LinearScaleRight.args = {
   orientation: 'right'
 };
 
-export const LinearScaleTop = LinearScaleTemplate.bind({});
+export const LinearScaleTop = LinearScaleChartTemplate.bind({});
 LinearScaleTop.args = {
   orientation: 'top'
 };
 
-export const LinearScaleBottom = LinearScaleTemplate.bind({});
+export const LinearScaleBottom = LinearScaleChartTemplate.bind({});
 LinearScaleBottom.args = {
   orientation: 'bottom'
 };
 
-const BandScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
+const BandScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation }) => {
   const margin = 20;
   const xScaleMargin = margin + 40;
   const YScaleMargin = margin + 14;
@@ -150,27 +149,27 @@ const BandScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   );
 };
 
-export const BandScaleLeft = BandScaleTemplate.bind({});
+export const BandScaleLeft = BandScaleChartTemplate.bind({});
 BandScaleLeft.args = {
   orientation: 'left'
 };
 
-export const BandScaleRight = BandScaleTemplate.bind({});
+export const BandScaleRight = BandScaleChartTemplate.bind({});
 BandScaleRight.args = {
   orientation: 'right'
 };
 
-export const BandScaleTop = BandScaleTemplate.bind({});
+export const BandScaleTop = BandScaleChartTemplate.bind({});
 BandScaleTop.args = {
   orientation: 'top'
 };
 
-export const BandScaleBottom = BandScaleTemplate.bind({});
+export const BandScaleBottom = BandScaleChartTemplate.bind({});
 BandScaleBottom.args = {
   orientation: 'bottom'
 };
 
-const TimeScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
+const TimeScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation }) => {
   const margin = 20;
   const xScaleMargin = margin + 60;
   const YScaleMargin = margin + 14;
@@ -223,27 +222,27 @@ const TimeScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   );
 };
 
-export const TimeScaleLeft = TimeScaleTemplate.bind({});
+export const TimeScaleLeft = TimeScaleChartTemplate.bind({});
 TimeScaleLeft.args = {
   orientation: 'left'
 };
 
-export const TimeScaleRight = TimeScaleTemplate.bind({});
+export const TimeScaleRight = TimeScaleChartTemplate.bind({});
 TimeScaleRight.args = {
   orientation: 'right'
 };
 
-export const TimeScaleTop = TimeScaleTemplate.bind({});
+export const TimeScaleTop = TimeScaleChartTemplate.bind({});
 TimeScaleTop.args = {
   orientation: 'top'
 };
 
-export const TimeScaleBottom = TimeScaleTemplate.bind({});
+export const TimeScaleBottom = TimeScaleChartTemplate.bind({});
 TimeScaleBottom.args = {
   orientation: 'bottom'
 };
 
-const PointScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
+const PointScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation }) => {
   const margin = 20;
   const xScaleMargin = margin + 40;
   const YScaleMargin = margin + 14;
@@ -296,22 +295,22 @@ const PointScaleTemplate: Story<TemplateProps> = ({ orientation }) => {
   );
 };
 
-export const PointScaleLeft = PointScaleTemplate.bind({});
+export const PointScaleLeft = PointScaleChartTemplate.bind({});
 PointScaleLeft.args = {
   orientation: 'left'
 };
 
-export const PointScaleRight = PointScaleTemplate.bind({});
+export const PointScaleRight = PointScaleChartTemplate.bind({});
 PointScaleRight.args = {
   orientation: 'right'
 };
 
-export const PointScaleTop = PointScaleTemplate.bind({});
+export const PointScaleTop = PointScaleChartTemplate.bind({});
 PointScaleTop.args = {
   orientation: 'top'
 };
 
-export const PointScaleBottom = PointScaleTemplate.bind({});
+export const PointScaleBottom = PointScaleChartTemplate.bind({});
 PointScaleBottom.args = {
   orientation: 'bottom'
 };

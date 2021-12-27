@@ -105,7 +105,6 @@ export type SvgFixAxisProps<Domain> = {
    * d3 axis component then use `tickArguments` instead (passing the args as an
    * array).
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tickArguments?: any[];
   /**
    * Sets the formatter function. Pass `null` to explicitly use the scale's
@@ -147,7 +146,7 @@ export function SvgFixAxis<Domain>(props: SvgFixAxisProps<Domain>) {
   // Determine the ticks to add or update in this render.
   const tickValues = isNil(props.tickValues)
     ? scale.ticks
-      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      ?
         scale.ticks(...tickArguments)
       : scale.domain()
     : props.tickValues;
@@ -156,7 +155,7 @@ export function SvgFixAxis<Domain>(props: SvgFixAxisProps<Domain>) {
   const tickFormat =
     props.tickFormat == null
       ? scale.tickFormat
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        ?
           scale.tickFormat(...tickArguments)
         : identity
       : props.tickFormat;

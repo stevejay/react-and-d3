@@ -6,16 +6,29 @@ module.exports = {
     node: true,
     'jest/globals': true
   },
+  parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: ['./tsconfig.json', './tsconfig.eslint.json']
+    sourceType: 'module'
   },
-  plugins: ['import', 'unicorn', 'jest', 'testing-library', 'jsx-a11y', 'simple-import-sort'],
+  plugins: [
+    'html',
+    'import',
+    'unicorn',
+    'jest',
+    'testing-library',
+    'jsx-a11y',
+    'eslint-plugin-tsdoc',
+    'simple-import-sort'
+  ],
   extends: [
     'eslint:recommended',
+    'plugin:import/recommended',
+    'plugin:import/typescript',
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     'plugin:testing-library/react',
     'plugin:storybook/recommended',
+    'plugin:eslint-comments/recommended',
     'prettier'
   ],
   rules: {
@@ -53,41 +66,17 @@ module.exports = {
         }
       }
     ],
-    'testing-library/no-node-access': 0
+    'testing-library/no-node-access': 0,
+    // Can't enable this until https://github.com/microsoft/tsdoc/issues/220 is fixed:
+    'tsdoc/syntax': 0,
+    'react/display-name': 'off', // forwardRef causing a problem here
+    'react/prop-types': 'off', // forwardRef causing a problem here,
+    'no-unused-vars': 'off'
   },
   overrides: [
     {
-      files: ['**/*.{ts,tsx}'],
-      extends: [
-        'eslint:recommended',
-        'plugin:react/recommended',
-        'plugin:react/jsx-runtime',
-        'plugin:react-hooks/recommended',
-        'plugin:testing-library/react',
-        'plugin:storybook/recommended',
-        'plugin:@typescript-eslint/recommended',
-        'plugin:@typescript-eslint/recommended-requiring-type-checking',
-        'prettier'
-      ],
-      rules: {
-        'react/display-name': 'off', // forwardRef causing a problem here
-        'react/prop-types': 'off', // forwardRef causing a problem here,
-        'no-unused-vars': 'off',
-        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-        'testing-library/render-result-naming-convention': 'off',
-        'testing-library/await-async-utils': 'off',
-        '@typescript-eslint/no-explicit-any': [
-          2,
-          {
-            ignoreRestArgs: true // Required for tickArguments in Axis component.
-          }
-        ]
-      }
-    },
-    {
       files: ['**/*.test.{ts,tsx}'],
       rules: {
-        '@typescript-eslint/unbound-method': 'off',
         'jest/unbound-method': 'error'
       }
     }
@@ -95,6 +84,16 @@ module.exports = {
   settings: {
     react: {
       version: '17.0' // Would prefer this to be "detect"
+    },
+    'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.tsx']
+    },
+    'import/resolver': {
+      typescript: {
+        // always try to resolve types under  directory even it doesn't contain any source code, like
+        alwaysTryTypes: true
+      }
     }
   }
 };
