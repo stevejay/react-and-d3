@@ -7,7 +7,7 @@ import type { ScaleOrientation } from './types';
  * using the given scale object to do so. This is the transform used when the
  * scale is not a band scale.
  */
-export function number<Domain = AxisDomain>(scale: AxisScale<Domain>) {
+export function number<Domain extends AxisDomain>(scale: AxisScale<Domain>) {
   return (d: Domain) => +(scale(d) ?? NaN);
 }
 
@@ -16,7 +16,7 @@ export function number<Domain = AxisDomain>(scale: AxisScale<Domain>) {
  * using the given scale object to do so. This is the transform used when the
  * scale is a band scale.
  */
-export function center<Domain = AxisDomain>(
+export function center<Domain extends AxisDomain>(
   scale: AxisScale<Domain> & { round?: () => boolean },
   offset: number
 ) {
@@ -24,7 +24,7 @@ export function center<Domain = AxisDomain>(
   if (scale.round && scale.round()) {
     offset = Math.round(offset);
   }
-  return (d: Domain) => +(scale(d) ?? 0) + offset;
+  return (d: Domain) => +(scale(d) ?? NaN) + offset;
 }
 
 /**

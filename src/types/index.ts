@@ -6,7 +6,7 @@ export type ScaleOrientation = 'top' | 'bottom' | 'left' | 'right';
 
 export type ChartOrientation = 'vertical' | 'horizontal';
 
-export type ExpandedAxisScale<Domain = AxisDomain> = AxisScale<Domain> & {
+export type ExpandedAxisScale<Domain extends AxisDomain> = AxisScale<Domain> & {
   ticks?(...args: any[]): Domain[];
   tickFormat?(...args: any[]): (d: Domain) => string;
 };
