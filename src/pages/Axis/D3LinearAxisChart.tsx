@@ -9,7 +9,7 @@ class D3LinearAxisChartRenderer {
 
   private scale = d3.scaleLinear();
   private axis = d3.axisBottom(this.scale);
-  private margins = { top: 20, bottom: 34, left: 20, right: 20 };
+  private margins = { top: 20, bottom: 34, left: 40, right: 40 };
 
   render(svgElement: SVGSVGElement | null, data: number[]): void {
     if (!svgElement) {
@@ -77,7 +77,7 @@ export const D3LinearAxisChart: FC<D3LinearAxisChartProps> = ({
       ref={svgRef}
       viewBox={`0 0 ${width} ${height}`}
       xmlns="http://www.w3.org/2000/svg"
-      className="bg-slate-200 font-sans"
+      className="font-sans bg-slate-800"
       style={{ shapeRendering: 'optimizeSpeed' }}
     />
   );

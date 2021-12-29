@@ -1,17 +1,17 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 
-class D3TimeAxisChartRenderer {
+class D3BandAxisChartRenderer {
   width = 0;
   height = 0;
   drawTicksAsGridLines = false;
   transitionSeconds = 0.25;
 
-  private scale = d3.scaleTime();
+  private scale = d3.scaleBand();
   private axis = d3.axisBottom(this.scale);
   private margins = { top: 20, bottom: 34, left: 40, right: 40 };
 
-  render(svgElement: SVGSVGElement | null, data: Date[]): void {
+  render(svgElement: SVGSVGElement | null, data: string[]): void {
     if (!svgElement) {
       return;
     }
@@ -27,8 +27,7 @@ class D3TimeAxisChartRenderer {
     const chartWidth = this.width - this.margins.left - this.margins.right;
     const chartHeight = this.height - this.margins.top - this.margins.bottom;
 
-    const domain = [d3.min(data) ?? 0, d3.max(data) ?? 0];
-    this.scale.domain(domain).range([0, chartWidth]).nice();
+    this.scale.domain(data).range([0, chartWidth]);
 
     this.axis
       .tickArguments([10])
@@ -46,15 +45,15 @@ class D3TimeAxisChartRenderer {
   }
 }
 
-export type D3TimeAxisChartProps = {
-  data: Date[];
+export type D3BandAxisChartProps = {
+  data: string[];
   width: number;
   height: number;
   drawTicksAsGridLines: boolean;
   transitionSeconds: number;
 };
 
-export const D3TimeAxisChart: FC<D3TimeAxisChartProps> = ({
+export const D3BandAxisChart: FC<D3BandAxisChartProps> = ({
   data,
   width,
   height,
@@ -62,7 +61,7 @@ export const D3TimeAxisChart: FC<D3TimeAxisChartProps> = ({
   transitionSeconds
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [renderer] = useState<D3TimeAxisChartRenderer>(() => new D3TimeAxisChartRenderer());
+  const [renderer] = useState<D3BandAxisChartRenderer>(() => new D3BandAxisChartRenderer());
 
   useEffect(() => {
     renderer.width = width;
@@ -77,7 +76,7 @@ export const D3TimeAxisChart: FC<D3TimeAxisChartProps> = ({
       ref={svgRef}
       viewBox={`0 0 ${width} ${height}`}
       xmlns="http://www.w3.org/2000/svg"
-      className="bg-slate-200 font-sans"
+      className="font-sans bg-slate-800"
       style={{ shapeRendering: 'optimizeSpeed' }}
     />
   );

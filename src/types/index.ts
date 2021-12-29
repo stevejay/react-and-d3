@@ -2,7 +2,9 @@ import type { AxisDomain, AxisScale } from 'd3';
 
 export type Margins = { top: number; bottom: number; left: number; right: number };
 
-export type Orientation = 'top' | 'bottom' | 'left' | 'right';
+export type ScaleOrientation = 'top' | 'bottom' | 'left' | 'right';
+
+export type ChartOrientation = 'vertical' | 'horizontal';
 
 export type ExpandedAxisScale<Domain = AxisDomain> = AxisScale<Domain> & {
   ticks?(...args: any[]): Domain[];
@@ -17,7 +19,7 @@ export type DefaultAxisProps<Domain = AxisDomain> = {
   /**
    * The position of the axis relative to the chart that it annotates. Required.
    */
-  orientation: Orientation;
+  orientation: ScaleOrientation;
   /*
    * The horizontal distance in pixels to translate the axis by, relative to the
    * SVG's origin.  Required.

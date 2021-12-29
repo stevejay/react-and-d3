@@ -1,16 +1,53 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, SVGProps, useEffect, useRef } from 'react';
 import type { AxisDomain } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import { identity, isNil } from 'lodash-es';
 
-import { center, createAxisDomainPathData, getDefaultOffset, getTickKey, number } from './axisUtils';
+import { center, createAxisDomainPathData, getAxisDomainKey, getDefaultOffset, number } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
 import type { DefaultAxisProps, ExpandedAxisScale } from './types';
 
-export type SvgAxisProps = DefaultAxisProps;
+export type SvgAxisProps = DefaultAxisProps & {
+  className?: string;
+  domainClassName?: string;
+  domainProps?: Omit<
+    SVGProps<SVGPathElement>,
+    'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag' | 'ref'
+  >;
+  tickGroupClassName?: string;
+  tickGroupProps?: Omit<
+    SVGProps<SVGGElement>,
+    'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag' | 'ref'
+  >;
+  tickLineClassName?: string;
+  tickLineProps?: Omit<
+    SVGProps<SVGLineElement>,
+    'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag' | 'ref'
+  >;
+  tickTextClassName?: string;
+  tickTextProps?: Omit<
+    SVGProps<SVGTextElement>,
+    'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag' | 'ref'
+  >;
+};
 
 export const SvgAxis: FC<SvgAxisProps> = (props) => {
-  const { orientation, translateX, translateY, tickArguments = [] } = props;
+  const {
+    orientation,
+    translateX,
+    translateY,
+    domainProps,
+    tickGroupProps,
+    tickLineProps,
+    tickTextProps,
+    className = '',
+    domainClassName = '',
+    tickGroupClassName = '',
+    tickLineClassName = '',
+    tickTextClassName = '',
+    tickArguments = []
+  } = props;
+
   const scale = props.scale as ExpandedAxisScale;
 
   // The length of the inner ticks (which are the ticks with labels).
@@ -77,22 +114,25 @@ export const SvgAxis: FC<SvgAxisProps> = (props) => {
     <SvgGroup
       translateX={translateX}
       translateY={translateY}
-      className="text-[10px]"
       textAnchor={orientation === 'right' ? 'start' : orientation === 'left' ? 'end' : 'middle'}
       fill="currentColor"
       stroke="currentColor"
+      className={className}
     >
       <motion.path
         fill="none"
+        stroke="currentColor"
         animate={{
           d: createAxisDomainPathData(orientation, tickSizeOuter, offset, range0, range1, k)
         }}
+        className={domainClassName}
+        {...domainProps}
       />
       {/* Send the current position to the tick exit animation variant. */}
       <AnimatePresence custom={position}>
         {tickValues.map((tickValue, index) => (
           <motion.g
-            key={getTickKey(tickValue)}
+            key={getAxisDomainKey(tickValue)}
             custom={position}
             initial="initial"
             animate="animate"
@@ -114,15 +154,26 @@ export const SvgAxis: FC<SvgAxisProps> = (props) => {
                   : { opacity: 0 };
               }
             }}
+            className={tickGroupClassName}
+            {...tickGroupProps}
           >
-            <motion.line initial={false} animate={{ [x + '2']: k * tickSizeInner }} />
+            <motion.line
+              initial={false}
+              animate={{ [x + '2']: k * tickSizeInner }}
+              stroke="currentColor"
+              className={tickLineClassName}
+              {...tickLineProps}
+            />
             <motion.text
               stroke="none"
+              fill="currentColor"
               dy={orientation === 'top' ? '0em' : orientation === 'bottom' ? '0.71em' : '0.32em'}
               initial={false}
               animate={{ [x === 'x' ? 'attrX' : 'attrY']: k * spacing }}
               role="presentation"
               aria-hidden
+              className={tickTextClassName}
+              {...tickTextProps}
             >
               {tickFormat(tickValue, index)}
             </motion.text>

@@ -3,10 +3,10 @@ import * as d3 from 'd3';
 import { AxisDomain, AxisScale } from 'd3';
 import { MotionConfig } from 'framer-motion';
 
-import { Svg } from './Svg';
-import { SvgAxisNoExit } from './SvgAxisNoExit';
+import { Svg } from '../../Svg';
+import { SvgAxisNoExit } from '../../SvgAxisNoExit';
 
-const margins = { top: 20, bottom: 34, left: 20, right: 20 };
+const margins = { top: 20, bottom: 34, left: 40, right: 40 };
 
 export type ReactLinearAxisNoExitChartProps = {
   data: number[];
@@ -35,7 +35,7 @@ export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = m
         key={transitionSeconds}
         transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}
       >
-        <Svg width={width} height={height} className="bg-slate-200 font-sans select-none">
+        <Svg width={width} height={height} className="font-sans select-none bg-slate-800">
           <SvgAxisNoExit
             scale={scale as AxisScale<AxisDomain>}
             translateX={margins.left}

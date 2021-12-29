@@ -26,6 +26,7 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
+    'plugin:react-hooks/recommended',
     'plugin:testing-library/react',
     'plugin:storybook/recommended',
     'plugin:eslint-comments/recommended',
@@ -63,7 +64,8 @@ module.exports = {
         cases: {
           camelCase: true,
           pascalCase: true
-        }
+        },
+        ignore: ['\\.d\\.ts$']
       }
     ],
     'testing-library/no-node-access': 0,

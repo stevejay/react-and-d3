@@ -15698,6 +15698,9 @@ __metadata:
     react: ^17.0.2
     react-dom: ^17.0.2
     react-icons: ^4.3.1
+    react-intersection-observer: ^8.33.1
+    react-intersection-observer-hook: ^2.0.3
+    react-router-dom: 6
     react-use-measure: ^2.1.1
     serve: ^13.0.2
     storybook-builder-vite: ^0.1.12
@@ -15886,6 +15889,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-intersection-observer-hook@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "react-intersection-observer-hook@npm:2.0.3"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: a2c739a4bb53cd29870101fa2f256adac23617a9df97a142241615ba1b4f3021c3ab0ea0de50f51d170cf39e68c003a8a15e02ea3884ea0fd21721fa5507562a
+  languageName: node
+  linkType: hard
+
+"react-intersection-observer@npm:^8.33.1":
+  version: 8.33.1
+  resolution: "react-intersection-observer@npm:8.33.1"
+  peerDependencies:
+    react: ^15.0.0 || ^16.0.0 || ^17.0.0|| ^18.0.0
+  checksum: 5feb0df01dd64f1fa0b8300fb4fc12db95350c1ae2514f66f0652371f65e5501758a662746000dc2584d24dcce07139590e5375d6c9920a60b282af83468d0c4
+  languageName: node
+  linkType: hard
+
 "react-is@npm:17.0.2, react-is@npm:^17.0.1, react-is@npm:^17.0.2":
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
@@ -15941,7 +15962,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^6.0.0":
+"react-router-dom@npm:6, react-router-dom@npm:^6.0.0":
   version: 6.2.1
   resolution: "react-router-dom@npm:6.2.1"
   dependencies:

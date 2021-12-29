@@ -1,6 +1,6 @@
 import type { AxisDomain, AxisScale } from 'd3';
 
-import type { Orientation } from './types';
+import type { ScaleOrientation } from './types';
 
 /**
  * Returns a function that transforms a domain value into a position in pixels
@@ -30,8 +30,8 @@ export function center<Domain = AxisDomain>(
 /**
  * Get the key value for an AxisDomain object, for use as the key prop on a React element.
  */
-export function getTickKey(tickValue: AxisDomain): string {
-  return tickValue.toString();
+export function getAxisDomainKey(value: AxisDomain): string {
+  return value.toString();
 }
 
 /**
@@ -49,7 +49,7 @@ export function getTickKey(tickValue: AxisDomain): string {
  * @returns A string to set as the `d` attribute value for a `path` element.
  */
 export function createAxisDomainPathData(
-  orientation: Orientation,
+  orientation: ScaleOrientation,
   tickSizeOuter: number,
   offset: number,
   range0: number,
@@ -69,5 +69,6 @@ export function createAxisDomainPathData(
  * Returns the pixel offset for odd-value SVG lines, etc.
  */
 export function getDefaultOffset(): number {
-  return typeof window !== 'undefined' && window.devicePixelRatio > 1 ? 0 : 0.5;
+  return 0.5;
+  //   return typeof window !== 'undefined' && window.devicePixelRatio > 1 ? 0 : 0.5;
 }

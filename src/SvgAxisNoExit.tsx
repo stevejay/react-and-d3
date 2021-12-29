@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { differenceBy, identity, isNil, sortBy, unionBy } from 'lodash-es';
 import useDebouncedEffect from 'use-debounced-effect';
 
-import { center, createAxisDomainPathData, getDefaultOffset, getTickKey, number } from './axisUtils';
+import { center, createAxisDomainPathData, getAxisDomainKey, getDefaultOffset, number } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
 import type { DefaultAxisProps, ExpandedAxisScale } from './types';
 
@@ -131,7 +131,7 @@ export const SvgAxisNoExit: FC<SvgAxisNoExitProps> = (props) => {
       <AnimatePresence>
         {currentAndExiting.map(({ tickValue, exiting }, index) => (
           <motion.g
-            key={getTickKey(tickValue)}
+            key={getAxisDomainKey(tickValue)}
             initial="initial"
             animate={exiting ? 'exit' : 'animate'}
             variants={{

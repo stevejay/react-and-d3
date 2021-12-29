@@ -3,9 +3,9 @@ import * as d3 from 'd3';
 import { AxisScale } from 'd3';
 import { MotionConfig } from 'framer-motion';
 
-import { lastMomentOfThisMonth, startOfThisMonth } from './dateUtils';
-import { Svg } from './Svg';
-import { SvgCustomTimeAxis } from './SvgCustomTimeAxis';
+import { lastMomentOfThisMonth, startOfThisMonth } from '@/dateUtils';
+import { Svg } from '@/Svg';
+import { SvgCustomTimeAxis } from '@/SvgCustomTimeAxis';
 
 const margins = { top: 20, bottom: 60, left: 40, right: 40 };
 
@@ -37,7 +37,7 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
         key={transitionSeconds}
         transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}
       >
-        <Svg width={width} height={height} className="bg-slate-200 font-sans select-none">
+        <Svg width={width} height={height} className="font-sans select-none bg-slate-800">
           <SvgCustomTimeAxis
             scale={scale as AxisScale<Date>}
             translateX={margins.left}

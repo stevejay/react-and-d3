@@ -3,7 +3,7 @@ import { AxisScale, utcMonth } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import { identity, isNil, uniq } from 'lodash-es';
 
-import { createAxisDomainPathData, getDefaultOffset, getTickKey, number } from './axisUtils';
+import { createAxisDomainPathData, getAxisDomainKey, getDefaultOffset, number } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
 import type { ExpandedAxisScale } from './types';
 
@@ -79,17 +79,11 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
       fill="currentColor"
       stroke="currentColor"
     >
-      <motion.path
-        fill="none"
-        animate={{
-          d: createAxisDomainPathData('bottom', tickSizeOuter, offset, range0, range1, k)
-        }}
-      />
       <g>
         <AnimatePresence custom={position}>
           {tickValues.map((tickValue, index) => (
             <motion.g
-              key={getTickKey(tickValue)}
+              key={getAxisDomainKey(tickValue)}
               custom={position}
               initial="initial"
               animate="animate"
@@ -113,6 +107,8 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
               }}
             >
               <line
+                stroke="currentColor"
+                className={index === 0 || tickValue.getUTCMonth() === 0 ? '' : 'text-slate-500'}
                 strokeDasharray={index === 0 || tickValue.getUTCMonth() === 0 ? 'none' : '5 4'}
                 {...{ [x + '2']: k * tickSize }}
               />
@@ -192,6 +188,12 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
           })}
         </AnimatePresence>
       </g>
+      <motion.path
+        fill="none"
+        animate={{
+          d: createAxisDomainPathData('bottom', tickSizeOuter, offset, range0, range1, k)
+        }}
+      />
     </SvgGroup>
   );
 }
