@@ -1,6 +1,4 @@
-import { FC, useMemo, useState } from 'react';
-import type { AxisDomain } from 'd3';
-import * as d3 from 'd3';
+import { FC, useState } from 'react';
 import { random, sampleSize } from 'lodash-es';
 
 // import { Datum, VerticalBarChart } from './VerticalBarChart';
@@ -27,23 +25,21 @@ type HeroChartProps = {
 export const HeroBarChart: FC<HeroChartProps> = ({ width, height }) => {
   const [data] = useState(generateData);
 
-  const colorScale = useMemo(
-    () =>
-      d3.scaleOrdinal<AxisDomain, string>(domain, [
-        'text-slate-100',
-        'text-slate-200',
-        'text-slate-300',
-        'text-slate-400',
-        'text-slate-500'
-      ]),
-    []
-  );
+  //   const colorScale = useMemo(
+  //     () =>
+  //       d3.scaleOrdinal<AxisDomain, string>(domain, [
+  //         'text-slate-100',
+  //         'text-slate-200',
+  //         'text-slate-300',
+  //         'text-slate-400',
+  //         'text-slate-500'
+  //       ]),
+  //     []
+  //   );
 
-  return (
-    <HorizontalBarChart data={data} width={width} height={height} margins={margins} colorScale={colorScale} />
-  );
+  return <HorizontalBarChart data={data} width={width} height={height} margins={margins} />;
 
   //   return (
-  //     <VerticalBarChart data={data} width={width} height={height} margins={margins} colorScale={colorScale} />
+  //     <VerticalBarChart data={data} width={width} height={height} margins={margins} />
   //   );
 };

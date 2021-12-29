@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import type { AxisDomain, AxisScale, ScaleOrdinal } from 'd3';
+import type { AxisDomain, AxisScale } from 'd3';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
@@ -15,25 +15,18 @@ type HorizontalBarChartProps = {
   width: number;
   height: number;
   margins: Margins;
-  colorScale: ScaleOrdinal<AxisDomain, string>;
 };
 
-export const HorizontalBarChart: FC<HorizontalBarChartProps> = ({
-  data,
-  width,
-  height,
-  margins,
-  colorScale
-}) => {
+export const HorizontalBarChart: FC<HorizontalBarChartProps> = ({ data, width, height, margins }) => {
   const chartWidth = width - margins.left - margins.right;
   const chartHeight = height - margins.top - margins.bottom;
 
-  const valueScale = useMemo(
+  const valueScale = useMemo<AxisScale<number>>(
     () => d3.scaleLinear([0, d3.max(data, (d) => d.value) ?? 0], [0, chartWidth]).nice(),
     [data, chartWidth]
   );
 
-  const categoryScale = useMemo(
+  const categoryScale = useMemo<AxisScale<string>>(
     () =>
       d3
         .scaleBand(
@@ -53,7 +46,7 @@ export const HorizontalBarChart: FC<HorizontalBarChartProps> = ({
     <MotionConfig transition={{ duration: 0.5, ease: d3.easeCubicInOut }}>
       <Svg width={width} height={height} className="font-sans select-none">
         <SvgAxis
-          scale={valueScale as AxisScale<AxisDomain>}
+          scale={valueScale}
           translateX={margins.left}
           translateY={margins.top + chartHeight}
           orientation="bottom"
@@ -67,7 +60,7 @@ export const HorizontalBarChart: FC<HorizontalBarChartProps> = ({
         />
         <MotionConfig transition={{ duration: 0 }}>
           <SvgAxis
-            scale={categoryScale as AxisScale<AxisDomain>}
+            scale={categoryScale}
             translateX={margins.left}
             translateY={margins.top}
             orientation="left"
@@ -87,7 +80,7 @@ export const HorizontalBarChart: FC<HorizontalBarChartProps> = ({
           orientation="horizontal"
           categoryScale={categoryScale as AxisScale<AxisDomain>}
           valueScale={valueScale as AxisScale<AxisDomain>}
-          colorScale={colorScale}
+          className="text-slate-600"
         />
       </Svg>
     </MotionConfig>

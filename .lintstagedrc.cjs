@@ -5,10 +5,13 @@ module.exports = {
   // it impossible to update the eslint command to fail if there are any warnings.
   // See https://github.com/eslint/eslint/issues/15010
   '*.{js,cjs,mjs,ts,tsx}': 'yarn eslint --cache --fix',
-  // tsc-files might cause issues with its use of an empty includes array:
-  // https://github.com/gustavopch/tsc-files/issues/20
-  // There is a workaround here if this affects you:
-  // https://github.com/gustavopch/tsc-files/issues/20#issuecomment-996124875
+  // tsc-files currently adds an empty includes array to the temporary tsconfig
+  // file that it generates for linting. The problem is that your code may rely on
+  // ambient declaration files. These will not be included in the linting, so you
+  // will get 'Could not find a declaration file' errors. As a workaround you can
+  // explicitly add those declaration files here, e.g. 'tsc-files --noEmit
+  // src/types/use-debounced-effect.d.ts'. See
+  // https://github.com/gustavopch/tsc-files/issues/20 for more info.
   '**/*.{ts,tsx}': 'tsc-files --noEmit src/types/use-debounced-effect.d.ts',
   '*.css': 'yarn stylelint --cache',
   '**/*': 'yarn pretty-quick --staged',

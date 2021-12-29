@@ -1,5 +1,5 @@
-import { FC, useEffect, useRef } from 'react';
-import type { AxisDomain, AxisScale, ScaleOrdinal } from 'd3';
+import { ReactElement, useEffect, useRef } from 'react';
+import type { AxisDomain, AxisScale } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import { isNil } from 'lodash-es';
 
@@ -7,14 +7,14 @@ import { getAxisDomainKey, getDefaultOffset } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
 import { ChartOrientation } from './types';
 
-export type Datum = {
-  category: AxisDomain;
-  value: AxisDomain;
+export type Datum<CategoryDomain extends AxisDomain, ValueDomain extends AxisDomain> = {
+  category: CategoryDomain;
+  value: ValueDomain;
 };
 
-function createRectDataGenerator(
-  categoryScale: AxisScale<AxisDomain>,
-  valueScale: AxisScale<AxisDomain>,
+function createRectDataGenerator<CategoryDomain extends AxisDomain, ValueDomain extends AxisDomain>(
+  categoryScale: AxisScale<CategoryDomain>,
+  valueScale: AxisScale<ValueDomain>,
   chartWidth: number,
   chartHeight: number,
   orientation: ChartOrientation,
@@ -23,7 +23,7 @@ function createRectDataGenerator(
   const clonedCategoryScale = categoryScale.copy();
   const clonedValueScale = valueScale.copy();
 
-  return (d: Datum, isEnterOrExit: boolean) => {
+  return (d: Datum<CategoryDomain, ValueDomain>, isEnterOrExit: boolean) => {
     const categoryValue = clonedCategoryScale(d.category);
     const valueValue = clonedValueScale(d.value);
     const bandwidth = clonedCategoryScale.bandwidth?.();
@@ -57,20 +57,20 @@ function createRectDataGenerator(
   };
 }
 
-export type SvgBarsProps = {
-  data: Datum[];
+export type SvgBarsProps<CategoryDomain extends AxisDomain, ValueDomain extends AxisDomain> = {
+  data: Datum<CategoryDomain, ValueDomain>[];
   translateX: number;
   translateY: number;
   chartWidth: number;
   chartHeight: number;
   orientation: ChartOrientation;
-  categoryScale: AxisScale<AxisDomain>;
-  valueScale: AxisScale<AxisDomain>;
-  colorScale: ScaleOrdinal<AxisDomain, string>;
+  categoryScale: AxisScale<CategoryDomain>;
+  valueScale: AxisScale<ValueDomain>;
+  className?: string;
   offset?: number;
 };
 
-export const SvgBars: FC<SvgBarsProps> = ({
+export function SvgBars<CategoryDomain extends AxisDomain, ValueDomain extends AxisDomain>({
   data,
   translateX,
   translateY,
@@ -78,10 +78,10 @@ export const SvgBars: FC<SvgBarsProps> = ({
   chartHeight,
   categoryScale,
   valueScale,
-  colorScale,
   orientation,
-  offset: offsetProp
-}) => {
+  offset: offsetProp,
+  className = ''
+}: SvgBarsProps<CategoryDomain, ValueDomain>): ReactElement<any, any> | null {
   // Used to ensure crisp edges on low-resolution devices.
   const offset = offsetProp ?? getDefaultOffset();
 
@@ -102,13 +102,19 @@ export const SvgBars: FC<SvgBarsProps> = ({
   });
 
   return (
-    <SvgGroup translateX={translateX} translateY={translateY} fill="currentColor" stroke="none">
+    <SvgGroup
+      className={className}
+      translateX={translateX}
+      translateY={translateY}
+      fill="currentColor"
+      stroke="none"
+    >
       <AnimatePresence custom={generator}>
         {data.map((d) => (
           <motion.rect
             key={getAxisDomainKey(d.category)}
             fill="currentColor"
-            className={colorScale(d.category)}
+            className={className}
             custom={generator}
             initial="initial"
             animate="animate"
@@ -132,4 +138,4 @@ export const SvgBars: FC<SvgBarsProps> = ({
       </AnimatePresence>
     </SvgGroup>
   );
-};
+}
