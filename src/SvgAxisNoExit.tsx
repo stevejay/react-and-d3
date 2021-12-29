@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from 'react';
+import { ReactElement, useEffect, useRef } from 'react';
 import { useForceUpdate } from '@uifabric/react-hooks';
 import type { AxisDomain } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -9,20 +9,24 @@ import { center, createAxisDomainPathData, getAxisDomainKey, getDefaultOffset, n
 import { SvgGroup } from './SvgGroup';
 import type { DefaultAxisProps, ExpandedAxisScale } from './types';
 
-function getExitingTickValues(
-  tickValues: AxisDomain[],
-  previousTickValues: AxisDomain[],
-  exitingTickValues: AxisDomain[]
+function getExitingTickValues<Domain extends AxisDomain>(
+  tickValues: Domain[],
+  previousTickValues: Domain[],
+  exitingTickValues: Domain[]
 ) {
-  const iteratee = (x: AxisDomain) => (x.valueOf ? x.valueOf() : x);
+  const iteratee = (x: Domain) => (x.valueOf ? x.valueOf() : x);
   return differenceBy(unionBy(previousTickValues, exitingTickValues, iteratee), tickValues, iteratee);
 }
 
-export type SvgAxisNoExitProps = DefaultAxisProps & { transitionSeconds: number };
+export type SvgAxisNoExitProps<Domain extends AxisDomain> = DefaultAxisProps<Domain> & {
+  transitionSeconds: number;
+};
 
-export const SvgAxisNoExit: FC<SvgAxisNoExitProps> = (props) => {
+export function SvgAxisNoExit<Domain extends AxisDomain>(
+  props: SvgAxisNoExitProps<Domain>
+): ReactElement<any, any> | null {
   const { orientation, translateX, translateY, transitionSeconds, tickArguments = [] } = props;
-  const scale = props.scale as ExpandedAxisScale;
+  const scale = props.scale as ExpandedAxisScale<Domain>;
 
   const forceUpdate = useForceUpdate();
 
@@ -81,8 +85,8 @@ export const SvgAxisNoExit: FC<SvgAxisNoExitProps> = (props) => {
   // from the position they would have been in if they were already in the DOM.
   const previousPositionRef = useRef<typeof position | null>(null);
 
-  const exitingTickValuesRef = useRef<AxisDomain[]>([]);
-  const previousTickValuesRef = useRef<AxisDomain[]>([]);
+  const exitingTickValuesRef = useRef<Domain[]>([]);
+  const previousTickValuesRef = useRef<Domain[]>([]);
 
   // Updated exiting is current exiting plus any new exiting minus any resurrected ones.
   const exiting = getExitingTickValues(
@@ -168,4 +172,4 @@ export const SvgAxisNoExit: FC<SvgAxisNoExitProps> = (props) => {
       </AnimatePresence>
     </SvgGroup>
   );
-};
+}

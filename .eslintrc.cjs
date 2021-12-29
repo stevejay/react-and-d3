@@ -65,6 +65,7 @@ module.exports = {
           camelCase: true,
           pascalCase: true
         },
+        // ignore ambient module declaration file names
         ignore: ['\\.d\\.ts$']
       }
     ],

@@ -11,7 +11,7 @@ export type ExpandedAxisScale<Domain = AxisDomain> = AxisScale<Domain> & {
   tickFormat?(...args: any[]): (d: Domain) => string;
 };
 
-export type DefaultAxisProps<Domain = AxisDomain> = {
+export type DefaultAxisProps<Domain extends AxisDomain> = {
   /**
    * The scale used to render the axis. Required.
    */

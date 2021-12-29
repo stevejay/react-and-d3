@@ -1,6 +1,6 @@
 import { FC, memo, useMemo } from 'react';
+import type { AxisScale } from 'd3';
 import * as d3 from 'd3';
-import { AxisDomain, AxisScale } from 'd3';
 import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '../../Svg';
@@ -37,7 +37,7 @@ export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
       >
         <Svg width={width} height={height} className="font-sans select-none bg-slate-800">
           <SvgAxis
-            scale={scale as AxisScale<AxisDomain>}
+            scale={scale}
             translateX={margins.left}
             translateY={margins.top + chartHeight}
             orientation="bottom"

@@ -1,6 +1,6 @@
 import { FC, memo, useMemo } from 'react';
+import type { AxisScale } from 'd3';
 import * as d3 from 'd3';
-import { AxisScale } from 'd3';
 import { MotionConfig } from 'framer-motion';
 
 import { lastMomentOfThisMonth, startOfThisMonth } from '@/dateUtils';
@@ -21,11 +21,11 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
     const chartWidth = width - margins.left - margins.right;
     const chartHeight = height - margins.top - margins.bottom;
 
-    const scale = useMemo(() => {
+    const scale = useMemo<AxisScale<Date>>(() => {
       const now = new Date();
       const minDate = startOfThisMonth(d3.min(data) ?? now);
       const maxDate = lastMomentOfThisMonth(d3.max(data) ?? now);
-      return d3.scaleTime<number, number>([minDate, maxDate], [0, chartWidth]);
+      return d3.scaleTime([minDate, maxDate], [0, chartWidth]);
     }, [data, chartWidth]);
 
     if (!width || !height) {
@@ -38,11 +38,7 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
         transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}
       >
         <Svg width={width} height={height} className="font-sans select-none bg-slate-800">
-          <SvgCustomTimeAxis
-            scale={scale as AxisScale<Date>}
-            translateX={margins.left}
-            translateY={margins.top + chartHeight}
-          />
+          <SvgCustomTimeAxis scale={scale} translateX={margins.left} translateY={margins.top + chartHeight} />
         </Svg>
       </MotionConfig>
     );

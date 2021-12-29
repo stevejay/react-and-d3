@@ -1,4 +1,4 @@
-import { FC, SVGProps, useEffect, useRef } from 'react';
+import { ReactElement, SVGProps, useEffect, useRef } from 'react';
 import type { AxisDomain } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import { identity, isNil } from 'lodash-es';
@@ -7,7 +7,7 @@ import { center, createAxisDomainPathData, getAxisDomainKey, getDefaultOffset, n
 import { SvgGroup } from './SvgGroup';
 import type { DefaultAxisProps, ExpandedAxisScale } from './types';
 
-export type SvgAxisProps = DefaultAxisProps & {
+export type SvgAxisProps<Domain extends AxisDomain> = DefaultAxisProps<Domain> & {
   className?: string;
   domainClassName?: string;
   domainProps?: Omit<
@@ -31,7 +31,9 @@ export type SvgAxisProps = DefaultAxisProps & {
   >;
 };
 
-export const SvgAxis: FC<SvgAxisProps> = (props) => {
+export function SvgAxis<Domain extends AxisDomain>(
+  props: SvgAxisProps<Domain>
+): ReactElement<any, any> | null {
   const {
     orientation,
     translateX,
@@ -48,7 +50,7 @@ export const SvgAxis: FC<SvgAxisProps> = (props) => {
     tickArguments = []
   } = props;
 
-  const scale = props.scale as ExpandedAxisScale;
+  const scale = props.scale as ExpandedAxisScale<Domain>;
 
   // The length of the inner ticks (which are the ticks with labels).
   const tickSizeInner = props.tickSize ?? props.tickSizeInner ?? 6;
@@ -147,7 +149,7 @@ export const SvgAxis: FC<SvgAxisProps> = (props) => {
                   : { opacity: 0, [translate]: position(tickValue) + offset };
               },
               animate: () => ({ opacity: 1, [translate]: position(tickValue) + offset }),
-              exit: (custom: (d: AxisDomain) => number) => {
+              exit: (custom: (d: Domain) => number) => {
                 const exitPosition = custom(tickValue);
                 return isFinite(exitPosition)
                   ? { opacity: 0, [translate]: exitPosition + offset }
@@ -182,4 +184,4 @@ export const SvgAxis: FC<SvgAxisProps> = (props) => {
       </AnimatePresence>
     </SvgGroup>
   );
-};
+}

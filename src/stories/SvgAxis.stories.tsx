@@ -1,5 +1,5 @@
 import { ComponentMeta, Story } from '@storybook/react';
-import type { AxisDomain, AxisScale } from 'd3';
+import type { AxisScale } from 'd3';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
@@ -43,7 +43,7 @@ const LinearScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation }) =>
     .scaleLinear()
     .domain(domain)
     .range([0, orientation === 'top' || orientation === 'bottom' ? chartWidth : chartHeight])
-    .nice();
+    .nice() as AxisScale<number>;
 
   const translateX =
     orientation === 'top' || orientation === 'bottom'
@@ -63,7 +63,7 @@ const LinearScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation }) =>
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
         <SvgAxis
-          scale={scale as AxisScale<AxisDomain>}
+          scale={scale}
           translateX={translateX}
           translateY={translateY}
           orientation={orientation}
@@ -118,7 +118,7 @@ const BandScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation }) => {
     .scaleBand()
     .domain(domain)
     .rangeRound([0, orientation === 'top' || orientation === 'bottom' ? chartWidth : chartHeight])
-    .paddingOuter(0.5);
+    .paddingOuter(0.5) as AxisScale<string>;
 
   const translateX =
     orientation === 'top' || orientation === 'bottom'
@@ -138,7 +138,7 @@ const BandScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation }) => {
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
         <SvgAxis
-          scale={scale as AxisScale<AxisDomain>}
+          scale={scale}
           translateX={translateX}
           translateY={translateY}
           orientation={orientation}
@@ -191,7 +191,8 @@ const TimeScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation }) => {
   const scale = d3
     .scaleTime()
     .domain(domain)
-    .range([0, orientation === 'top' || orientation === 'bottom' ? chartWidth : chartHeight]);
+    .range([0, orientation === 'top' || orientation === 'bottom' ? chartWidth : chartHeight])
+    .nice() as AxisScale<Date>;
 
   const translateX =
     orientation === 'top' || orientation === 'bottom'
@@ -211,7 +212,7 @@ const TimeScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation }) => {
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
         <SvgAxis
-          scale={scale as AxisScale<AxisDomain>}
+          scale={scale}
           translateX={translateX}
           translateY={translateY}
           orientation={orientation}
@@ -266,7 +267,7 @@ const PointScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation }) => 
     .scalePoint()
     .domain(domain)
     .rangeRound([0, orientation === 'top' || orientation === 'bottom' ? chartWidth : chartHeight])
-    .padding(0.5);
+    .padding(0.5) as AxisScale<string>;
 
   const translateX =
     orientation === 'top' || orientation === 'bottom'
@@ -286,7 +287,7 @@ const PointScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation }) => 
     <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
       <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
         <SvgAxis
-          scale={scale as AxisScale<AxisDomain>}
+          scale={scale}
           translateX={translateX}
           translateY={translateY}
           orientation={orientation}

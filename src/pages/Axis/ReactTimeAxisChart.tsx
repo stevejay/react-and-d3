@@ -1,6 +1,6 @@
 import { FC, memo, useMemo } from 'react';
+import type { AxisScale } from 'd3';
 import * as d3 from 'd3';
-import { AxisDomain, AxisScale } from 'd3';
 import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '../../Svg';
@@ -21,8 +21,8 @@ export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
     const chartWidth = width - margins.left - margins.right;
     const chartHeight = height - margins.top - margins.bottom;
 
-    const scale = useMemo(
-      () => d3.scaleTime<AxisDomain, number>([d3.min(data) ?? 0, d3.max(data) ?? 0], [0, chartWidth]).nice(),
+    const scale = useMemo<AxisScale<Date>>(
+      () => d3.scaleTime([d3.min(data) ?? 0, d3.max(data) ?? 0], [0, chartWidth]).nice(),
       [data, chartWidth]
     );
 
@@ -37,7 +37,7 @@ export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
       >
         <Svg width={width} height={height} className="font-sans select-none bg-slate-800">
           <SvgAxis
-            scale={scale as AxisScale<AxisDomain>}
+            scale={scale}
             translateX={margins.left}
             translateY={margins.top + chartHeight}
             orientation="bottom"
