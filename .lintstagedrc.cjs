@@ -9,7 +9,7 @@ module.exports = {
   // https://github.com/gustavopch/tsc-files/issues/20
   // There is a workaround here if this affects you:
   // https://github.com/gustavopch/tsc-files/issues/20#issuecomment-996124875
-  '**/*.{ts,tsx}': 'tsc-files --noEmit',
+  '**/*.{ts,tsx}': 'tsc-files --noEmit src/types/use-debounced-effect.d.ts',
   '*.css': 'yarn stylelint --cache',
   '**/*': 'yarn pretty-quick --staged',
   '*.md': 'yarn markdownlint --config ./.markdownlint.json',
