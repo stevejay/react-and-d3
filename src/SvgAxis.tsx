@@ -1,4 +1,4 @@
-import { ReactElement, SVGProps, useEffect, useRef } from 'react';
+import { ReactElement, SVGAttributes, SVGProps, useEffect, useRef } from 'react';
 import type { AxisDomain } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import { identity, isNil } from 'lodash-es';
@@ -6,6 +6,104 @@ import { identity, isNil } from 'lodash-es';
 import { center, createAxisDomainPathData, getAxisDomainKey, getDefaultOffset, number } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
 import type { AxisLabelOrientation, AxisOrientation, DefaultAxisProps, ExpandedAxisScale } from './types';
+
+// TODO see if I can create a more compact version of this function.
+function getLabelOrientationProps(
+  orientation: AxisOrientation,
+  labelOrientation: AxisLabelOrientation
+): SVGAttributes<SVGTextElement> {
+  switch (orientation) {
+    case 'top':
+      switch (labelOrientation) {
+        case 'horizontal':
+          return {
+            dy: '0em'
+          };
+        case 'angled':
+          return {
+            transform: 'rotate(-45)',
+            textAnchor: 'start',
+            dy: '0.32em',
+            dx: '0.32em'
+          };
+        case 'vertical':
+          return {
+            transform: 'rotate(-90)',
+            textAnchor: 'start',
+            dy: '0.32em'
+          };
+        default:
+          throw new Error(`invalid labelOrientation '${labelOrientation}'`);
+      }
+
+    case 'bottom':
+      switch (labelOrientation) {
+        case 'horizontal':
+          return {
+            dy: '0.71em'
+          };
+        case 'angled':
+          return {
+            transform: 'rotate(-45)',
+            textAnchor: 'end',
+            dy: '0.32em',
+            dx: '-0.32em'
+          };
+        case 'vertical':
+          return {
+            transform: 'rotate(-90)',
+            textAnchor: 'end',
+            dy: '0.32em'
+          };
+        default:
+          throw new Error(`invalid labelOrientation '${labelOrientation}'`);
+      }
+
+    case 'left':
+      switch (labelOrientation) {
+        case 'horizontal':
+          return {
+            dy: '0.32em'
+          };
+        case 'angled':
+          return {
+            transform: 'rotate(-45)',
+            textAnchor: 'end',
+            dx: '-0.32em',
+            dy: '0.32em'
+          };
+        case 'vertical':
+          return {
+            transform: 'rotate(-90)',
+            textAnchor: 'middle'
+          };
+        default:
+          throw new Error(`invalid labelOrientation '${labelOrientation}'`);
+      }
+
+    case 'right':
+      switch (labelOrientation) {
+        case 'horizontal':
+          return {
+            dy: '0.32em'
+          };
+        case 'angled':
+          return {
+            transform: 'rotate(-45)',
+            textAnchor: 'start',
+            dx: '0.32em',
+            dy: '0.32em'
+          };
+        case 'vertical':
+          return {
+            transform: 'rotate(90)',
+            textAnchor: 'middle'
+          };
+        default:
+          throw new Error(`invalid labelOrientation '${labelOrientation}'`);
+      }
+  }
+}
 
 export type SvgAxisProps<Domain extends AxisDomain> = DefaultAxisProps<Domain> & {
   className?: string;
@@ -114,6 +212,9 @@ export function SvgAxis<Domain extends AxisDomain>(
     previousPositionRef.current = position;
   });
 
+  const labelOrientationProps = getLabelOrientationProps(orientation, labelOrientation);
+  const labelGroupTransform = `${translate === 'translateX' ? 'translateY' : 'translateX'}(${k * spacing}px)`;
+
   return (
     <SvgGroup
       translateX={translateX}
@@ -161,112 +262,28 @@ export function SvgAxis<Domain extends AxisDomain>(
             className={tickGroupClassName}
             {...tickGroupProps}
           >
-            <motion.line
-              initial={false}
-              animate={{ [x + '2']: k * tickSizeInner }}
+            <line
+              {...{ [x + '2']: k * tickSizeInner }}
               stroke="currentColor"
               className={tickLineClassName}
               {...tickLineProps}
             />
-            <motion.text
-              stroke="none"
-              fill="currentColor"
-              dy={orientation === 'top' ? '0em' : orientation === 'bottom' ? '0.71em' : '0.32em'}
-              initial={false}
-              animate={{ [x === 'x' ? 'attrX' : 'attrY']: k * spacing }}
-              role="presentation"
-              aria-hidden
-              className={tickTextClassName}
-              // bottom
-              //   transform="translate(-10,0) rotate(-45)"
-              //   textAnchor="end"
-              // top
-              //   transform="translate(10,0) rotate(-45)"
-              //   textAnchor="start"
-              // left
-              //   transform="rotate(-45) translate(0,-10)"
-              //   textAnchor="end"
-              // right
-              //   transform="rotate(-45) translate(0,10)"
-              //   textAnchor="start"
-              {...tickTextProps}
-              {...getLabelOrientation(orientation, labelOrientation)}
-              //   style={{ transform: 'translate(-10,0) rotate(-45)' }}
-            >
-              {tickFormat(tickValue, index)}
-            </motion.text>
+            <g style={{ transform: labelGroupTransform }}>
+              <text
+                stroke="none"
+                fill="currentColor"
+                role="presentation"
+                aria-hidden
+                className={tickTextClassName}
+                {...labelOrientationProps}
+                {...tickTextProps}
+              >
+                {tickFormat(tickValue, index)}
+              </text>
+            </g>
           </motion.g>
         ))}
       </AnimatePresence>
     </SvgGroup>
   );
-}
-
-// spacing
-
-function getLabelOrientation(orientation: AxisOrientation, labelOrientation: AxisLabelOrientation) {
-  console.log(orientation, labelOrientation);
-  switch (orientation) {
-    case 'top':
-      switch (labelOrientation) {
-        case 'horizontal':
-          return {};
-        case 'angled':
-          return {
-            // transform: 'translate(10,0) rotate(-45)',
-            // transform: 'rotate(-45) translate(10,0)',
-            transform: 'rotate(-45)',
-            textAnchor: 'start',
-            // dy: '0.29em',
-            // dy: '0.29em'
-            // dx: '0.71em'
-            // dy: '-0.29em',
-            dy: '0.5em',
-            dx: '0.5em'
-          };
-        default:
-          throw new Error('not implemented');
-      }
-
-    case 'bottom':
-      switch (labelOrientation) {
-        case 'horizontal':
-          return {};
-        case 'angled':
-          return {
-            transform: 'translate(-10,0) rotate(-45)',
-            // transform: 'rotate(-45) translate(-10, 0)',
-            // dy: 0,
-            textAnchor: 'end'
-          };
-        default:
-          throw new Error('not implemented');
-      }
-
-    case 'left':
-      switch (labelOrientation) {
-        case 'horizontal':
-          return {};
-        case 'angled':
-          return {
-            transform: 'rotate(-45) translate(0,-10)',
-            textAnchor: 'end'
-          };
-        default:
-          throw new Error('not implemented');
-      }
-
-    case 'right':
-      switch (labelOrientation) {
-        case 'horizontal':
-          return {};
-        case 'angled':
-          return {
-            transform: 'rotate(-45) translate(0,10)',
-            textAnchor: 'start'
-          };
-        default:
-          throw new Error('not implemented');
-      }
-  }
 }

@@ -25,14 +25,31 @@ type ChartTemplateProps = {
 };
 
 const LinearScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, labelOrientation }) => {
-  const margin = 20;
-  const scaleMargin = margin + 14;
+  const margin = 40;
+  const textWidthMargin = margin + (labelOrientation === 'angled' ? 28 : 34);
+  const textHeightMargin = margin + (labelOrientation === 'angled' ? 28 : 14);
 
   const margins = {
-    top: orientation === 'top' ? scaleMargin : margin,
-    bottom: orientation === 'bottom' ? scaleMargin : margin,
-    left: orientation === 'left' ? scaleMargin : margin,
-    right: orientation === 'right' ? scaleMargin : margin
+    top:
+      orientation === 'top' ? (labelOrientation === 'vertical' ? textWidthMargin : textHeightMargin) : margin,
+    bottom:
+      orientation === 'bottom'
+        ? labelOrientation === 'vertical'
+          ? textWidthMargin
+          : textHeightMargin
+        : margin,
+    left:
+      orientation === 'left'
+        ? labelOrientation === 'vertical'
+          ? textHeightMargin
+          : textWidthMargin
+        : margin,
+    right:
+      orientation === 'right'
+        ? labelOrientation === 'vertical'
+          ? textHeightMargin
+          : textWidthMargin
+        : margin
   };
 
   const width = 400;
@@ -128,16 +145,56 @@ LinearScaleBottomAngled.args = {
   labelOrientation: 'angled'
 };
 
+export const LinearScaleLeftVertical = LinearScaleChartTemplate.bind({});
+LinearScaleLeftVertical.args = {
+  orientation: 'left',
+  labelOrientation: 'vertical'
+};
+
+export const LinearScaleRightVertical = LinearScaleChartTemplate.bind({});
+LinearScaleRightVertical.args = {
+  orientation: 'right',
+  labelOrientation: 'vertical'
+};
+
+export const LinearScaleTopVertical = LinearScaleChartTemplate.bind({});
+LinearScaleTopVertical.args = {
+  orientation: 'top',
+  labelOrientation: 'vertical'
+};
+
+export const LinearScaleBottomVertical = LinearScaleChartTemplate.bind({});
+LinearScaleBottomVertical.args = {
+  orientation: 'bottom',
+  labelOrientation: 'vertical'
+};
+
 const BandScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, labelOrientation }) => {
-  const margin = 20;
-  const xScaleMargin = margin + 40;
-  const YScaleMargin = margin + 14 + (labelOrientation === 'angled' ? 20 : 0);
+  const margin = 40;
+  const textWidthMargin = margin + (labelOrientation === 'angled' ? 34 : 40);
+  const textHeightMargin = margin + (labelOrientation === 'angled' ? 34 : 14);
 
   const margins = {
-    top: orientation === 'top' ? YScaleMargin : margin,
-    bottom: orientation === 'bottom' ? YScaleMargin : margin,
-    left: orientation === 'left' ? xScaleMargin : margin,
-    right: orientation === 'right' ? xScaleMargin : margin
+    top:
+      orientation === 'top' ? (labelOrientation === 'vertical' ? textWidthMargin : textHeightMargin) : margin,
+    bottom:
+      orientation === 'bottom'
+        ? labelOrientation === 'vertical'
+          ? textWidthMargin
+          : textHeightMargin
+        : margin,
+    left:
+      orientation === 'left'
+        ? labelOrientation === 'vertical'
+          ? textHeightMargin
+          : textWidthMargin
+        : margin,
+    right:
+      orientation === 'right'
+        ? labelOrientation === 'vertical'
+          ? textHeightMargin
+          : textWidthMargin
+        : margin
   };
 
   const width = 400;
@@ -231,16 +288,56 @@ BandScaleBottomAngled.args = {
   labelOrientation: 'angled'
 };
 
+export const BandScaleLeftVertical = BandScaleChartTemplate.bind({});
+BandScaleLeftVertical.args = {
+  orientation: 'left',
+  labelOrientation: 'vertical'
+};
+
+export const BandScaleRightVertical = BandScaleChartTemplate.bind({});
+BandScaleRightVertical.args = {
+  orientation: 'right',
+  labelOrientation: 'vertical'
+};
+
+export const BandScaleTopVertical = BandScaleChartTemplate.bind({});
+BandScaleTopVertical.args = {
+  orientation: 'top',
+  labelOrientation: 'vertical'
+};
+
+export const BandScaleBottomVertical = BandScaleChartTemplate.bind({});
+BandScaleBottomVertical.args = {
+  orientation: 'bottom',
+  labelOrientation: 'vertical'
+};
+
 const TimeScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, labelOrientation }) => {
   const margin = 40;
-  const xScaleMargin = margin + 30;
-  const YScaleMargin = margin + 14;
+  const textWidthMargin = margin + (labelOrientation === 'angled' ? 34 : 40);
+  const textHeightMargin = margin + (labelOrientation === 'angled' ? 34 : 14);
 
   const margins = {
-    top: orientation === 'top' ? YScaleMargin : margin,
-    bottom: orientation === 'bottom' ? YScaleMargin : margin,
-    left: orientation === 'left' ? xScaleMargin : margin,
-    right: orientation === 'right' ? xScaleMargin : margin
+    top:
+      orientation === 'top' ? (labelOrientation === 'vertical' ? textWidthMargin : textHeightMargin) : margin,
+    bottom:
+      orientation === 'bottom'
+        ? labelOrientation === 'vertical'
+          ? textWidthMargin
+          : textHeightMargin
+        : margin,
+    left:
+      orientation === 'left'
+        ? labelOrientation === 'vertical'
+          ? textHeightMargin
+          : textWidthMargin
+        : margin,
+    right:
+      orientation === 'right'
+        ? labelOrientation === 'vertical'
+          ? textHeightMargin
+          : textWidthMargin
+        : margin
   };
 
   const width = 400;
@@ -335,16 +432,56 @@ TimeScaleBottomAngled.args = {
   labelOrientation: 'angled'
 };
 
+export const TimeScaleLeftVertical = TimeScaleChartTemplate.bind({});
+TimeScaleLeftVertical.args = {
+  orientation: 'left',
+  labelOrientation: 'vertical'
+};
+
+export const TimeScaleRightVertical = TimeScaleChartTemplate.bind({});
+TimeScaleRightVertical.args = {
+  orientation: 'right',
+  labelOrientation: 'vertical'
+};
+
+export const TimeScaleTopVertical = TimeScaleChartTemplate.bind({});
+TimeScaleTopVertical.args = {
+  orientation: 'top',
+  labelOrientation: 'vertical'
+};
+
+export const TimeScaleBottomVertical = TimeScaleChartTemplate.bind({});
+TimeScaleBottomVertical.args = {
+  orientation: 'bottom',
+  labelOrientation: 'vertical'
+};
+
 const PointScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, labelOrientation }) => {
-  const margin = 20;
-  const xScaleMargin = margin + 40;
-  const YScaleMargin = margin + 14 + (labelOrientation === 'angled' ? 20 : 0);
+  const margin = 40;
+  const textWidthMargin = margin + (labelOrientation === 'angled' ? 28 : 34);
+  const textHeightMargin = margin + (labelOrientation === 'angled' ? 28 : 14);
 
   const margins = {
-    top: orientation === 'top' ? YScaleMargin : margin,
-    bottom: orientation === 'bottom' ? YScaleMargin : margin,
-    left: orientation === 'left' ? xScaleMargin : margin,
-    right: orientation === 'right' ? xScaleMargin : margin
+    top:
+      orientation === 'top' ? (labelOrientation === 'vertical' ? textWidthMargin : textHeightMargin) : margin,
+    bottom:
+      orientation === 'bottom'
+        ? labelOrientation === 'vertical'
+          ? textWidthMargin
+          : textHeightMargin
+        : margin,
+    left:
+      orientation === 'left'
+        ? labelOrientation === 'vertical'
+          ? textHeightMargin
+          : textWidthMargin
+        : margin,
+    right:
+      orientation === 'right'
+        ? labelOrientation === 'vertical'
+          ? textHeightMargin
+          : textWidthMargin
+        : margin
   };
 
   const width = 400;
@@ -436,4 +573,28 @@ export const PointScaleBottomAngled = PointScaleChartTemplate.bind({});
 PointScaleBottomAngled.args = {
   orientation: 'bottom',
   labelOrientation: 'angled'
+};
+
+export const PointScaleLeftVertical = PointScaleChartTemplate.bind({});
+PointScaleLeftVertical.args = {
+  orientation: 'left',
+  labelOrientation: 'vertical'
+};
+
+export const PointScaleRightVertical = PointScaleChartTemplate.bind({});
+PointScaleRightVertical.args = {
+  orientation: 'right',
+  labelOrientation: 'vertical'
+};
+
+export const PointScaleTopVertical = PointScaleChartTemplate.bind({});
+PointScaleTopVertical.args = {
+  orientation: 'top',
+  labelOrientation: 'vertical'
+};
+
+export const PointScaleBottomVertical = PointScaleChartTemplate.bind({});
+PointScaleBottomVertical.args = {
+  orientation: 'bottom',
+  labelOrientation: 'vertical'
 };

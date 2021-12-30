@@ -3,6 +3,8 @@ import * as d3 from 'd3';
 
 import type { AxisLabelOrientation } from '@/types';
 
+import { yearMonthMultiFormat } from './formatters';
+
 class D3TimeAxisChartRenderer {
   width = 0;
   height = 0;
@@ -11,8 +13,8 @@ class D3TimeAxisChartRenderer {
   labelOrientation: AxisLabelOrientation = 'horizontal';
 
   private scale = d3.scaleTime();
-  private axis = d3.axisBottom(this.scale);
-  private margins = { top: 20, bottom: 34, left: 40, right: 40 };
+  private axis = d3.axisBottom<Date>(this.scale);
+  private margins = { top: 20, bottom: 48, left: 48, right: 32 };
 
   render(svgElement: SVGSVGElement | null, data: Date[]): void {
     if (!svgElement) {
@@ -36,7 +38,8 @@ class D3TimeAxisChartRenderer {
     this.axis
       .tickArguments([10])
       .tickSizeInner(this.drawTicksAsGridLines ? -chartHeight : 6)
-      .tickSizeOuter(-chartHeight);
+      .tickSizeOuter(-chartHeight)
+      .tickFormat(yearMonthMultiFormat);
 
     let group = svg.selectAll<SVGGElement, null>('.axis').data([null]);
     group = group.enter().append('g').classed('axis', true).merge(group);
@@ -45,7 +48,10 @@ class D3TimeAxisChartRenderer {
       .style('font-family', 'inherit')
       .transition()
       .duration(this.transitionSeconds * 1000)
-      .call(this.axis);
+      .call(this.axis)
+      .selectAll('text')
+      .attr('transform', 'translate(-10,0) rotate(-45)')
+      .style('text-anchor', 'end');
   }
 }
 

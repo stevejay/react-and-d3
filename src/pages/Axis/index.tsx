@@ -12,7 +12,7 @@ import { BandAxisExamples } from './BandAxisExamples';
 const Axis = () => (
   <>
     <PageHeading>Axis</PageHeading>
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="w-full max-w-3xl mx-auto space-y-8">
         <Paragraph>
           The D3 axis component is a stalwart of D3 data visualisations. I wanted to create a React-rendered

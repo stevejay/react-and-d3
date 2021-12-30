@@ -33,7 +33,7 @@ export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ drawTicksAsGridLin
               height={height}
               drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
-              labelOrientation="horizontal"
+              labelOrientation="angled"
             />
           )
         }

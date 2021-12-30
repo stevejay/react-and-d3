@@ -7,7 +7,9 @@ import { Svg } from '@/Svg';
 import { SvgAxis } from '@/SvgAxis';
 import type { AxisLabelOrientation } from '@/types';
 
-const margins = { top: 20, bottom: 34, left: 40, right: 40 };
+import { yearMonthMultiFormat } from './formatters';
+
+const margins = { top: 20, bottom: 48, left: 48, right: 32 };
 
 export type ReactTimeAxisChartProps = {
   data: Date[];
@@ -60,6 +62,7 @@ export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
             tickSizeInner={drawTicksAsGridLines ? -chartHeight : null}
             tickSizeOuter={-chartHeight}
             labelOrientation={labelOrientation}
+            tickFormat={yearMonthMultiFormat}
             className="text-[10px]"
           />
         </Svg>

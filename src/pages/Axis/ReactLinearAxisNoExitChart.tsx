@@ -7,7 +7,7 @@ import { Svg } from '@/Svg';
 import { SvgAxisNoExit } from '@/SvgAxisNoExit';
 import type { AxisLabelOrientation } from '@/types';
 
-const margins = { top: 20, bottom: 34, left: 40, right: 40 };
+const margins = { top: 20, bottom: 34, left: 30, right: 30 };
 
 export type ReactLinearAxisNoExitChartProps = {
   data: number[];

@@ -7,7 +7,7 @@ import { lastMomentOfThisMonth, startOfThisMonth } from '@/dateUtils';
 import { Svg } from '@/Svg';
 import { SvgCustomTimeAxis } from '@/SvgCustomTimeAxis';
 
-const margins = { top: 20, bottom: 60, left: 40, right: 40 };
+const margins = { top: 20, bottom: 60, left: 30, right: 30 };
 
 export type ReactCustomTimeAxisChartProps = {
   data: Date[];

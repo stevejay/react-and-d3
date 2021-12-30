@@ -8,7 +8,7 @@ import { ReactCustomTimeAxisChart } from '@/pages/CustomAxis/ReactCustomTimeAxis
 const dataSets = [
   [new Date(Date.UTC(2000, 0, 1)), new Date(Date.UTC(2000, 9, 1))],
   [new Date(Date.UTC(1999, 8, 1)), new Date(Date.UTC(2000, 4, 1))],
-  [new Date(Date.UTC(1999, 10, 1)), new Date(Date.UTC(2001, 1, 1))]
+  [new Date(Date.UTC(1999, 10, 1)), new Date(Date.UTC(2000, 6, 1))]
 ];
 
 export type CustomTimeAxisExamplesProps = {
