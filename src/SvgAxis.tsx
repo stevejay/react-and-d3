@@ -5,7 +5,7 @@ import { identity, isNil } from 'lodash-es';
 
 import { center, createAxisDomainPathData, getAxisDomainKey, getDefaultOffset, number } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
-import type { DefaultAxisProps, ExpandedAxisScale } from './types';
+import type { AxisLabelOrientation, AxisOrientation, DefaultAxisProps, ExpandedAxisScale } from './types';
 
 export type SvgAxisProps<Domain extends AxisDomain> = DefaultAxisProps<Domain> & {
   className?: string;
@@ -29,6 +29,7 @@ export type SvgAxisProps<Domain extends AxisDomain> = DefaultAxisProps<Domain> &
     SVGProps<SVGTextElement>,
     'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag' | 'ref'
   >;
+  labelOrientation?: AxisLabelOrientation;
 };
 
 export function SvgAxis<Domain extends AxisDomain>(
@@ -47,6 +48,7 @@ export function SvgAxis<Domain extends AxisDomain>(
     tickGroupClassName = '',
     tickLineClassName = '',
     tickTextClassName = '',
+    labelOrientation = 'horizontal',
     tickArguments = []
   } = props;
 
@@ -175,7 +177,21 @@ export function SvgAxis<Domain extends AxisDomain>(
               role="presentation"
               aria-hidden
               className={tickTextClassName}
+              // bottom
+              //   transform="translate(-10,0) rotate(-45)"
+              //   textAnchor="end"
+              // top
+              //   transform="translate(10,0) rotate(-45)"
+              //   textAnchor="start"
+              // left
+              //   transform="rotate(-45) translate(0,-10)"
+              //   textAnchor="end"
+              // right
+              //   transform="rotate(-45) translate(0,10)"
+              //   textAnchor="start"
               {...tickTextProps}
+              {...getLabelOrientation(orientation, labelOrientation)}
+              //   style={{ transform: 'translate(-10,0) rotate(-45)' }}
             >
               {tickFormat(tickValue, index)}
             </motion.text>
@@ -184,4 +200,73 @@ export function SvgAxis<Domain extends AxisDomain>(
       </AnimatePresence>
     </SvgGroup>
   );
+}
+
+// spacing
+
+function getLabelOrientation(orientation: AxisOrientation, labelOrientation: AxisLabelOrientation) {
+  console.log(orientation, labelOrientation);
+  switch (orientation) {
+    case 'top':
+      switch (labelOrientation) {
+        case 'horizontal':
+          return {};
+        case 'angled':
+          return {
+            // transform: 'translate(10,0) rotate(-45)',
+            // transform: 'rotate(-45) translate(10,0)',
+            transform: 'rotate(-45)',
+            textAnchor: 'start',
+            // dy: '0.29em',
+            // dy: '0.29em'
+            // dx: '0.71em'
+            // dy: '-0.29em',
+            dy: '0.5em',
+            dx: '0.5em'
+          };
+        default:
+          throw new Error('not implemented');
+      }
+
+    case 'bottom':
+      switch (labelOrientation) {
+        case 'horizontal':
+          return {};
+        case 'angled':
+          return {
+            transform: 'translate(-10,0) rotate(-45)',
+            // transform: 'rotate(-45) translate(-10, 0)',
+            // dy: 0,
+            textAnchor: 'end'
+          };
+        default:
+          throw new Error('not implemented');
+      }
+
+    case 'left':
+      switch (labelOrientation) {
+        case 'horizontal':
+          return {};
+        case 'angled':
+          return {
+            transform: 'rotate(-45) translate(0,-10)',
+            textAnchor: 'end'
+          };
+        default:
+          throw new Error('not implemented');
+      }
+
+    case 'right':
+      switch (labelOrientation) {
+        case 'horizontal':
+          return {};
+        case 'angled':
+          return {
+            transform: 'rotate(-45) translate(0,10)',
+            textAnchor: 'start'
+          };
+        default:
+          throw new Error('not implemented');
+      }
+  }
 }

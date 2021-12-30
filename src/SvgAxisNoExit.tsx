@@ -7,7 +7,7 @@ import useDebouncedEffect from 'use-debounced-effect';
 
 import { center, createAxisDomainPathData, getAxisDomainKey, getDefaultOffset, number } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
-import type { DefaultAxisProps, ExpandedAxisScale } from './types';
+import type { AxisLabelOrientation, DefaultAxisProps, ExpandedAxisScale } from './types';
 
 function getExitingTickValues<Domain extends AxisDomain>(
   tickValues: Domain[],
@@ -20,12 +20,20 @@ function getExitingTickValues<Domain extends AxisDomain>(
 
 export type SvgAxisNoExitProps<Domain extends AxisDomain> = DefaultAxisProps<Domain> & {
   transitionSeconds: number;
+  labelOrientation?: AxisLabelOrientation;
 };
 
 export function SvgAxisNoExit<Domain extends AxisDomain>(
   props: SvgAxisNoExitProps<Domain>
 ): ReactElement<any, any> | null {
-  const { orientation, translateX, translateY, transitionSeconds, tickArguments = [] } = props;
+  const {
+    orientation,
+    translateX,
+    translateY,
+    transitionSeconds,
+    // labelOrientation = 'horizontal',
+    tickArguments = []
+  } = props;
   const scale = props.scale as ExpandedAxisScale<Domain>;
 
   const forceUpdate = useForceUpdate();

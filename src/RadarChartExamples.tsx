@@ -1,4 +1,5 @@
 import { FC, useCallback, useState } from 'react';
+import { useId } from '@uifabric/react-hooks';
 
 import { ChartTitle } from './ChartTitle';
 import { Datum, RadarChart } from './RadarChart';
@@ -30,11 +31,12 @@ export const RadarChartExamples: FC<RadarChartExamplesProps> = () => {
   const [data, setData] = useState<Datum[]>(dataA);
   const onShowTooltip = useCallback(() => console.log('onShowTooltip'), []);
   const onHideTooltip = useCallback(() => console.log('onHideTooltip'), []);
+  const id = useId();
 
   return (
     <div className="space-y-4">
-      <ChartTitle title="Example Radar Chart" />
-      <div className="w-full py-8 flex flex-col items-center bg-slate-900">
+      <ChartTitle title="Example Radar Chart" id={id} />
+      <div className="flex flex-col items-center w-full py-8 bg-slate-900">
         <RadarChart
           data={data}
           label="Some label"
@@ -50,14 +52,14 @@ export const RadarChartExamples: FC<RadarChartExamplesProps> = () => {
         <button
           type="button"
           onClick={() => setData(zeroData)}
-          className="bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring outline-none text-white font-light px-4 py-2"
+          className="px-4 py-2 font-light text-white outline-none bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring"
         >
           Zero data
         </button>
         <button
           type="button"
           onClick={() => setData((state) => (state === dataA ? dataB : dataA))}
-          className="bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring outline-none text-white font-light px-4 py-2"
+          className="px-4 py-2 font-light text-white outline-none bg-emerald-800 active:bg-emerald-900 hover:bg-emerald-900 focus-visible:ring"
         >
           Data A/B
         </button>

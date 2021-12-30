@@ -58,19 +58,17 @@ export const HorizontalBarChart: FC<HorizontalBarChartProps> = ({ data, width, h
           tickLineClassName="text-slate-600"
           tickTextClassName="text-slate-200"
         />
-        <MotionConfig transition={{ duration: 0 }}>
-          <SvgAxis
-            scale={categoryScale}
-            translateX={margins.left}
-            translateY={margins.top}
-            orientation="left"
-            tickSizeInner={0}
-            tickPadding={10}
-            className="text-sm"
-            domainClassName="text-slate-400"
-            // tickTextProps={{ transform: 'translate(-10,0)rotate(-45)', style: { textAnchor: 'end' } }}
-          />
-        </MotionConfig>
+        <SvgAxis
+          scale={categoryScale}
+          translateX={margins.left}
+          translateY={margins.top}
+          orientation="left"
+          tickSizeInner={0}
+          tickPadding={10}
+          className="text-sm"
+          domainClassName="text-slate-400"
+          // tickTextProps={{ transform: 'translate(-10,0)rotate(-45)', style: { textAnchor: 'end' } }}
+        />
         <SvgBars
           data={data}
           translateX={margins.left}

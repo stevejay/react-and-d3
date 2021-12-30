@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
@@ -6,6 +6,7 @@ import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 
 import { D3LinearAxisChart } from './D3LinearAxisChart';
 import { ReactLinearAxisNoExitChart } from './ReactLinearAxisNoExitChart';
+import { useDataSets } from './useDataSets';
 
 const dataSets = [
   [-34, 5, -45, 30, 0, 17, -7, 19, -14, -8],
@@ -22,38 +23,40 @@ export const AlternateLinearAxisExamples: FC<AlternateLinearAxisExamplesProps> =
   drawTicksAsGridLines,
   transitionSeconds
 }) => {
-  const [dataIndex, setDataIndex] = useState(0);
-  const cycleDataIndex = () => setDataIndex((i) => (i === dataSets.length - 1 ? 0 : i + 1));
-  const data = dataSets[dataIndex];
+  const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
       <ExampleChartWrapper title="Linear Axis" subtitle="React">
-        {({ inView, width, height }) =>
+        {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <ReactLinearAxisNoExitChart
+              ariaLabelledby={ariaLabelledby}
               data={data}
               width={width}
               height={height}
               drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
+              labelOrientation="horizontal"
             />
           )
         }
       </ExampleChartWrapper>
       <ExampleChartWrapper title="Linear Axis" subtitle="D3">
-        {({ inView, width, height }) =>
+        {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <D3LinearAxisChart
+              ariaLabelledby={ariaLabelledby}
               data={data}
               width={width}
               height={height}
               drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
+              labelOrientation="horizontal"
             />
           )
         }
       </ExampleChartWrapper>
-      <ExampleUpdateButton onClick={cycleDataIndex}>Update linear axis data</ExampleUpdateButton>
+      <ExampleUpdateButton onClick={nextDataSet}>Update linear axis data</ExampleUpdateButton>
     </ExamplesSectionWrapper>
   );
 };

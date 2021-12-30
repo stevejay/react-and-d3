@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
@@ -6,6 +6,7 @@ import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 
 import { D3TimeAxisChart } from './D3TimeAxisChart';
 import { ReactTimeAxisChart } from './ReactTimeAxisChart';
+import { useDataSets } from './useDataSets';
 
 const dataSets = [
   [new Date(Date.UTC(2000, 0, 1)), new Date(Date.UTC(2000, 9, 1))],
@@ -19,49 +20,40 @@ export type TimeAxisExamplesProps = {
 };
 
 export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ drawTicksAsGridLines, transitionSeconds }) => {
-  const [dataIndex, setDataIndex] = useState(0);
-  const cycleDataIndex = () => setDataIndex((i) => (i === dataSets.length - 1 ? 0 : i + 1));
-  const data = dataSets[dataIndex];
+  const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
       <ExampleChartWrapper title="Time Axis" subtitle="React">
-        {({ inView, width, height }) =>
+        {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <ReactTimeAxisChart
+              ariaLabelledby={ariaLabelledby}
               data={data}
               width={width}
               height={height}
               drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
+              labelOrientation="horizontal"
             />
           )
         }
       </ExampleChartWrapper>
       <ExampleChartWrapper title="Time Axis" subtitle="D3">
-        {({ inView, width, height }) =>
+        {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <D3TimeAxisChart
+              ariaLabelledby={ariaLabelledby}
               data={data}
               width={width}
               height={height}
               drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
+              labelOrientation="horizontal"
             />
           )
         }
       </ExampleChartWrapper>
-      <ExampleUpdateButton onClick={cycleDataIndex}>Update time axis data</ExampleUpdateButton>
+      <ExampleUpdateButton onClick={nextDataSet}>Update time axis data</ExampleUpdateButton>
     </ExamplesSectionWrapper>
   );
 };
-
-/* <ChartTitle title="React Rendering" subtitle="Interruptible Exit Animation" />
-      <div className="w-full h-28">
-        <ReactTimeAxisNoExitChart
-          data={data}
-          width={width ?? 0}
-          height={height ?? 0}
-          drawTicksAsGridLines={drawTicksAsGridLines}
-          transitionSeconds={transitionSeconds}
-        />
-      </div> */

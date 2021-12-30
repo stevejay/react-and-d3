@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
@@ -6,6 +6,7 @@ import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 
 import { D3BandAxisChart } from './D3BandAxisChart';
 import { ReactBandAxisChart } from './ReactBandAxisChart';
+import { useDataSets } from './useDataSets';
 
 const dataSets = [
   ['A', 'B', 'C', 'D'],
@@ -19,38 +20,40 @@ export type BandAxisExamplesProps = {
 };
 
 export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ drawTicksAsGridLines, transitionSeconds }) => {
-  const [dataIndex, setDataIndex] = useState(0);
-  const cycleDataIndex = () => setDataIndex((i) => (i === dataSets.length - 1 ? 0 : i + 1));
-  const data = dataSets[dataIndex];
+  const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
       <ExampleChartWrapper title="Band Axis" subtitle="React">
-        {({ inView, width, height }) =>
+        {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <ReactBandAxisChart
+              ariaLabelledby={ariaLabelledby}
               data={data}
               width={width}
               height={height}
               drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
+              labelOrientation="horizontal"
             />
           )
         }
       </ExampleChartWrapper>
       <ExampleChartWrapper title="Band Axis" subtitle="D3">
-        {({ inView, width, height }) =>
+        {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <D3BandAxisChart
+              ariaLabelledby={ariaLabelledby}
               data={data}
               width={width}
               height={height}
               drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
+              labelOrientation="horizontal"
             />
           )
         }
       </ExampleChartWrapper>
-      <ExampleUpdateButton onClick={cycleDataIndex}>Update band axis data</ExampleUpdateButton>
+      <ExampleUpdateButton onClick={nextDataSet}>Update band axis data</ExampleUpdateButton>
     </ExamplesSectionWrapper>
   );
 };

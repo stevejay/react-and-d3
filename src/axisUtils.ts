@@ -1,6 +1,6 @@
 import type { AxisDomain, AxisScale } from 'd3';
 
-import type { ScaleOrientation } from './types';
+import type { AxisOrientation } from './types';
 
 /**
  * Returns a function that transforms a domain value into a position in pixels
@@ -49,7 +49,7 @@ export function getAxisDomainKey(value: AxisDomain): string {
  * @returns A string to set as the `d` attribute value for a `path` element.
  */
 export function createAxisDomainPathData(
-  orientation: ScaleOrientation,
+  orientation: AxisOrientation,
   tickSizeOuter: number,
   offset: number,
   range0: number,

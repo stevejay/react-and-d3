@@ -1,6 +1,7 @@
 import { FC, lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
+import { LoadingPlaceholder } from './components/LoadingPlaceholder';
 import { ScrollToTop } from './components/ScrollToTop';
 import { DocumentVisibilityRoot } from './DocumentVisibility';
 // import { Checkbox } from './Checkbox';
@@ -67,7 +68,7 @@ export const App: FC = () => {
       {/* <main className="p-8 space-y-8 bg-fixed bg-left-top bg-no-repeat bg-d3-logo"> */}
       <DocumentVisibilityRoot>
         <main className="mx-auto max-w-screen-2xl">
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<LoadingPlaceholder />}>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/axis" element={<Axis />} />

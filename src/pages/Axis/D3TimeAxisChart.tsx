@@ -1,11 +1,14 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 
+import type { AxisLabelOrientation } from '@/types';
+
 class D3TimeAxisChartRenderer {
   width = 0;
   height = 0;
   drawTicksAsGridLines = false;
   transitionSeconds = 0.25;
+  labelOrientation: AxisLabelOrientation = 'horizontal';
 
   private scale = d3.scaleTime();
   private axis = d3.axisBottom(this.scale);
@@ -50,16 +53,20 @@ export type D3TimeAxisChartProps = {
   data: Date[];
   width: number;
   height: number;
+  ariaLabelledby: string;
   drawTicksAsGridLines: boolean;
   transitionSeconds: number;
+  labelOrientation: AxisLabelOrientation;
 };
 
 export const D3TimeAxisChart: FC<D3TimeAxisChartProps> = ({
   data,
   width,
   height,
+  ariaLabelledby,
   drawTicksAsGridLines,
-  transitionSeconds
+  transitionSeconds,
+  labelOrientation
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [renderer] = useState<D3TimeAxisChartRenderer>(() => new D3TimeAxisChartRenderer());
@@ -69,8 +76,9 @@ export const D3TimeAxisChart: FC<D3TimeAxisChartProps> = ({
     renderer.height = height;
     renderer.drawTicksAsGridLines = drawTicksAsGridLines;
     renderer.transitionSeconds = transitionSeconds;
+    renderer.labelOrientation = labelOrientation;
     renderer.render(svgRef.current, data);
-  }, [renderer, data, width, height, drawTicksAsGridLines, transitionSeconds]);
+  }, [renderer, data, width, height, drawTicksAsGridLines, transitionSeconds, labelOrientation]);
 
   return (
     <svg
@@ -79,6 +87,7 @@ export const D3TimeAxisChart: FC<D3TimeAxisChartProps> = ({
       xmlns="http://www.w3.org/2000/svg"
       className="font-sans bg-slate-800"
       style={{ shapeRendering: 'optimizeSpeed' }}
+      aria-labelledby={ariaLabelledby}
     />
   );
 };

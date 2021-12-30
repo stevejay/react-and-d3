@@ -27,7 +27,7 @@ function center<Domain>(scale: d3.AxisScale<Domain> & { round?: () => boolean },
 // A single path is used to draw the domain line and the outer ticks as one
 // continuous line.
 function createAxisDomainPathData(
-  orientation: ScaleOrientation,
+  orientation: AxisOrientation,
   tickSizeOuter: number,
   offset: number,
   range0: number,
@@ -52,7 +52,7 @@ function getExitingTickValues<Domain>(
   return difference(union(previousTickValues, exitingTickValues), tickValues);
 }
 
-export type ScaleOrientation = 'top' | 'bottom' | 'left' | 'right';
+export type AxisOrientation = 'top' | 'bottom' | 'left' | 'right';
 
 export type ExpandedScaleType<Domain> = d3.AxisScale<Domain> & {
   ticks?(...args: any[]): Domain[];
@@ -67,7 +67,7 @@ export type SvgFixAxisProps<Domain> = {
   /**
    * The position of the axis relative to the chart that it annotates. Required.
    */
-  orientation: ScaleOrientation;
+  orientation: AxisOrientation;
   /*
    * The horizontal distance in pixels to translate the axis by, relative to the
    * SVG's origin.  Required.

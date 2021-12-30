@@ -22,9 +22,10 @@ export const CustomTimeAxisExamples: FC<CustomTimeAxisExamplesProps> = ({ transi
   return (
     <ExamplesSectionWrapper>
       <ExampleChartWrapper title="Custom Time Axis" subtitle="React">
-        {({ inView, width, height }) =>
+        {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <ReactCustomTimeAxisChart
+              ariaLabelledby={ariaLabelledby}
               data={data}
               width={width ?? 0}
               height={height ?? 0}

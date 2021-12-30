@@ -3,8 +3,9 @@ import type { AxisScale } from 'd3';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
-import { Svg } from '../../Svg';
-import { SvgAxisNoExit } from '../../SvgAxisNoExit';
+import { Svg } from '@/Svg';
+import { SvgAxisNoExit } from '@/SvgAxisNoExit';
+import type { AxisLabelOrientation } from '@/types';
 
 const margins = { top: 20, bottom: 34, left: 40, right: 40 };
 
@@ -12,12 +13,22 @@ export type ReactLinearAxisNoExitChartProps = {
   data: number[];
   width: number;
   height: number;
+  ariaLabelledby: string;
   drawTicksAsGridLines: boolean;
   transitionSeconds: number;
+  labelOrientation: AxisLabelOrientation;
 };
 
 export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = memo(
-  ({ data, width, height, drawTicksAsGridLines, transitionSeconds = 0.25 }) => {
+  ({
+    data,
+    width,
+    height,
+    ariaLabelledby,
+    drawTicksAsGridLines,
+    labelOrientation,
+    transitionSeconds = 0.25
+  }) => {
     const chartWidth = width - margins.left - margins.right;
     const chartHeight = height - margins.top - margins.bottom;
 
@@ -35,7 +46,12 @@ export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = m
         key={transitionSeconds}
         transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}
       >
-        <Svg width={width} height={height} className="font-sans select-none bg-slate-800">
+        <Svg
+          width={width}
+          height={height}
+          aria-labelledby={ariaLabelledby}
+          className="font-sans select-none bg-slate-800"
+        >
           <SvgAxisNoExit
             scale={scale}
             translateX={margins.left}
@@ -44,6 +60,7 @@ export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = m
             tickSizeInner={drawTicksAsGridLines ? -chartHeight : null}
             tickSizeOuter={-chartHeight}
             transitionSeconds={transitionSeconds}
+            labelOrientation={labelOrientation}
           />
         </Svg>
       </MotionConfig>
@@ -54,5 +71,6 @@ export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = m
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
     prevProps.drawTicksAsGridLines === nextProps.drawTicksAsGridLines &&
-    prevProps.transitionSeconds === nextProps.transitionSeconds
+    prevProps.transitionSeconds === nextProps.transitionSeconds &&
+    prevProps.labelOrientation === nextProps.labelOrientation
 );

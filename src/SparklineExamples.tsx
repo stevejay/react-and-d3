@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import { useId } from '@uifabric/react-hooks';
 
 import { ChartTitle } from './ChartTitle';
 import { Datum, Sparkline } from './Sparkline';
@@ -27,9 +28,10 @@ export type SparklineExamplesProps = {
 
 export const SparklineExamples: FC<SparklineExamplesProps> = () => {
   const [data, setData] = useState<Datum[]>(dataA);
+  const id = useId();
   return (
     <div className="space-y-4">
-      <ChartTitle title="Simple Sparkline" />
+      <ChartTitle title="Simple Sparkline" id={id} />
       <div className="w-full py-8 flex flex-col items-center bg-slate-900">
         <Sparkline
           data={data}

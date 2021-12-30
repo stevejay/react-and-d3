@@ -13,11 +13,12 @@ export type ReactCustomTimeAxisChartProps = {
   data: Date[];
   width: number;
   height: number;
+  ariaLabelledby: string;
   transitionSeconds: number;
 };
 
 export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
-  ({ data, width, height, transitionSeconds = 0.25 }) => {
+  ({ data, width, height, ariaLabelledby, transitionSeconds = 0.25 }) => {
     const chartWidth = width - margins.left - margins.right;
     const chartHeight = height - margins.top - margins.bottom;
 
@@ -37,7 +38,12 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
         key={transitionSeconds}
         transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}
       >
-        <Svg width={width} height={height} className="font-sans select-none bg-slate-800">
+        <Svg
+          width={width}
+          height={height}
+          className="font-sans select-none bg-slate-800"
+          aria-labelledby={ariaLabelledby}
+        >
           <SvgCustomTimeAxis scale={scale} translateX={margins.left} translateY={margins.top + chartHeight} />
         </Svg>
       </MotionConfig>
