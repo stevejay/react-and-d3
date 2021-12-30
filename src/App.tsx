@@ -27,7 +27,6 @@ const navigationData: NavigationSection[] = [
     links: [
       { href: '/', title: 'Home' },
       { href: '/axis', title: 'Axis' },
-      { href: '/axis/custom', title: 'Custom Axis' },
       { href: '/radar-chart', title: 'Radar Chart' },
       { href: '/sparkline', title: 'Sparkline' }
     ]
@@ -42,7 +41,6 @@ const navigationData: NavigationSection[] = [
 ];
 
 const Home = lazy(() => import('@/pages/Home'));
-const CustomAxis = lazy(() => import('@/pages/CustomAxis'));
 const Axis = lazy(() => import('@/pages/Axis'));
 const RadarChart = lazy(() => import('@/pages/RadarChart'));
 const Sparkline = lazy(() => import('@/pages/Sparkline'));
@@ -72,7 +70,6 @@ export const App: FC = () => {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/axis" element={<Axis />} />
-              <Route path="/axis/custom" element={<CustomAxis />} />
               <Route path="/radar-chart" element={<RadarChart />} />
               <Route path="/sparkline" element={<Sparkline />} />
             </Routes>

@@ -3,10 +3,10 @@ import { FC } from 'react';
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
+import { useDataSets } from '@/useDataSets';
 
 import { D3LinearAxisChart } from './D3LinearAxisChart';
 import { ReactLinearAxisChart } from './ReactLinearAxisChart';
-import { useDataSets } from './useDataSets';
 
 const dataSets = [
   [-34, 5, -45, 30, 0, 17, -7, 19, -14, -8],

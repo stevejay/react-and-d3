@@ -3,10 +3,10 @@ import { FC } from 'react';
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
+import { useDataSets } from '@/useDataSets';
 
 import { D3TimeAxisChart } from './D3TimeAxisChart';
 import { ReactTimeAxisChart } from './ReactTimeAxisChart';
-import { useDataSets } from './useDataSets';
 
 const dataSets = [
   [new Date(Date.UTC(2000, 0, 1)), new Date(Date.UTC(2000, 9, 1))],

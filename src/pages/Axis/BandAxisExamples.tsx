@@ -3,10 +3,10 @@ import { FC } from 'react';
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
+import { useDataSets } from '@/useDataSets';
 
 import { D3BandAxisChart } from './D3BandAxisChart';
 import { ReactBandAxisChart } from './ReactBandAxisChart';
-import { useDataSets } from './useDataSets';
 
 const dataSets = [
   ['A', 'B', 'C', 'D'],

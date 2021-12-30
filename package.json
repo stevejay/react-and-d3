@@ -6,7 +6,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prepare": "husky install",
-    "lint:dockerfile": "dockerfilelint Dockerfile",
+    "lint:dockerfile": "dockerfilelint Dockerfile*",
     "lint:prettier": "prettier --loglevel warn --check .",
     "lint:eslint": "eslint --ext .html,.js,.jsx,.ts,.tsx --max-warnings 0 .",
     "lint:ts": "tsc --noEmit --pretty",
@@ -25,7 +25,6 @@
   "dependencies": {
     "@headlessui/react": "^1.4.2",
     "@uifabric/react-hooks": "^7.14.0",
-    "ariakit": "2.0.0-alpha.13",
     "d3": "^7.2.1",
     "framer-motion": "^5.5.5",
     "lodash-es": "^4.17.21",
@@ -36,6 +35,7 @@
     "react-intersection-observer-hook": "^2.0.3",
     "react-router-dom": "6",
     "react-use-measure": "^2.1.1",
+    "use-breakpoint": "^3.0.0",
     "use-debounced-effect": "^1.2.0"
   },
   "devDependencies": {

@@ -42,10 +42,7 @@ export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = m
     }
 
     return (
-      <MotionConfig
-        key={transitionSeconds}
-        transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}
-      >
+      <MotionConfig transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}>
         <Svg
           width={width}
           height={height}

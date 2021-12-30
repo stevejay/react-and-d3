@@ -16,5 +16,5 @@ module.exports = {
   '*.css': 'yarn stylelint --cache',
   '**/*': 'yarn pretty-quick --staged',
   '*.md': 'yarn markdownlint --config ./.markdownlint.json',
-  Dockerfile: 'yarn dockerfilelint'
+  '**/Dockerfile*': 'yarn dockerfilelint'
 };

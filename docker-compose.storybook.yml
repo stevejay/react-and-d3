@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  storybook:
+    build:
+      dockerfile: Dockerfile-storybook
+      context: .
+    ports:
+      - '6007:5000'

@@ -3,7 +3,7 @@ import { useId } from '@uifabric/react-hooks';
 import * as d3 from 'd3';
 import { motion } from 'framer-motion';
 
-import type { Margins } from './types';
+import type { Margins } from '@/types';
 
 export type Datum = {
   date: Date;
@@ -78,7 +78,7 @@ export const Sparkline: FC<SparklineProps> = memo(
     return (
       <motion.svg
         role="none"
-        className="pointer-events-none text-pink-600"
+        className="text-pink-600 pointer-events-none"
         width={width}
         height={height}
         initial={{ opacity: 0 }}

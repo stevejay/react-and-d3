@@ -34,10 +34,7 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
     }
 
     return (
-      <MotionConfig
-        key={transitionSeconds}
-        transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}
-      >
+      <MotionConfig transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}>
         <Svg
           width={width}
           height={height}

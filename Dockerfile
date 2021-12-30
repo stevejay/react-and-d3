@@ -1,23 +1,35 @@
-FROM node:16 AS build
+# ----- Stage 1: build the Web site ----- 
+
+# Use a node docker image:
+FROM node:16-stretch AS src-build
+
 WORKDIR /usr/src/app
 
 COPY package.json .
+COPY ./.yarnrc.yml ./.yarnrc.yml
 COPY ./yarn.lock ./yarn.lock
 COPY ./.yarn/releases/ ./.yarn/releases/
 COPY ./.yarn/plugins/ ./.yarn/plugins/
-COPY ./.yarnrc.yml ./.yarnrc.yml
 
 RUN yarn
 
 COPY ./index.html .
 COPY ./tsconfig.json .
 COPY ./vite.config.ts .
-COPY ./.storybook ./.storybook
+COPY ./tailwind.config.js .
+COPY ./postcss.config.js .
 COPY ./src ./src
 
-RUN yarn build:storybook
+RUN yarn build
 
-FROM node:16 AS storybook
+# ----- Stage 2: create the final nginx docker image ----- 
 
-COPY --from=build /usr/src/app/storybook-static ./storybook-static
-CMD [ "npx", "serve", "storybook-static", "--listen", "5000" ]
+FROM nginx:1.20
+
+# Copy the built Web pages into it:
+COPY --from=src-build /usr/src/app/dist /usr/share/nginx/html/
+
+# Copy the nginx config files:
+COPY nginx /etc/nginx
+
+EXPOSE 80/tcp

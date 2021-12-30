@@ -42,10 +42,7 @@ export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
     }
 
     return (
-      <MotionConfig
-        key={transitionSeconds}
-        transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}
-      >
+      <MotionConfig transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}>
         <Svg
           width={width}
           height={height}

@@ -2324,7 +2324,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@popperjs/core@npm:^2.10.2, @popperjs/core@npm:^2.5.4, @popperjs/core@npm:^2.6.0":
+"@popperjs/core@npm:^2.5.4, @popperjs/core@npm:^2.6.0":
   version: 2.11.0
   resolution: "@popperjs/core@npm:2.11.0"
   checksum: 84d6f197d3ddfd8a5b05c7276c3692d8404c96128a946ab0a800b25567d8fc231928319c1f97a67e0817e76ce2a1b735589ef0f38f8e8835692408660a2395a1
@@ -5293,28 +5293,6 @@ __metadata:
   version: 5.0.0
   resolution: "aria-query@npm:5.0.0"
   checksum: c41f98866c5a304561ee8cae55856711cddad6f3f85d8cb43cc5f79667078d9b8979ce32d244c1ff364e6463a4d0b6865804a33ccc717fed701b281cf7dc6296
-  languageName: node
-  linkType: hard
-
-"ariakit-utils@npm:^0.17.0-alpha.10":
-  version: 0.17.0-alpha.10
-  resolution: "ariakit-utils@npm:0.17.0-alpha.10"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^18.0.0-beta
-  checksum: 212822012dcec75653c2e26ea8e3295244cd79cf45a32de1d06c7937e790d6ff61ca55b7e97ee45148ed60de79b020687f9880bb015ace248dab56ab4499eda4
-  languageName: node
-  linkType: hard
-
-"ariakit@npm:2.0.0-alpha.13":
-  version: 2.0.0-alpha.13
-  resolution: "ariakit@npm:2.0.0-alpha.13"
-  dependencies:
-    "@popperjs/core": ^2.10.2
-    ariakit-utils: ^0.17.0-alpha.10
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^18.0.0-beta
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^18.0.0-beta
-  checksum: 79f9709da5d9bfb7588f54b774c78a31ef3b0b8d97ffc2abcd0cbc0f11d6674a3615da3fd09127a398fe65ea0afd3a12024eaced3506b81bca4e8fc63a3de7a9
   languageName: node
   linkType: hard
 
@@ -15659,7 +15637,6 @@ __metadata:
     "@typescript-eslint/parser": ^5.8.0
     "@uifabric/react-hooks": ^7.14.0
     "@vitejs/plugin-react": ^1.0.7
-    ariakit: 2.0.0-alpha.13
     autoprefixer: ^10.4.0
     babel-jest: ^27.4.5
     babel-loader: ^8.2.3
@@ -15710,6 +15687,7 @@ __metadata:
     tailwindcss: ^3.0.7
     tsc-files: ^1.1.3
     typescript: ^4.4.4
+    use-breakpoint: ^3.0.0
     use-debounced-effect: ^1.2.0
     vite: ^2.7.2
   languageName: unknown
@@ -18821,6 +18799,16 @@ __metadata:
     punycode: 1.3.2
     querystring: 0.2.0
   checksum: 50d100d3dd2d98b9fe3ada48cadb0b08aa6be6d3ac64112b867b56b19be4bfcba03c2a9a0d7922bfd7ac17d4834e88537749fe182430dfd9b68e520175900d90
+  languageName: node
+  linkType: hard
+
+"use-breakpoint@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "use-breakpoint@npm:3.0.0"
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 527403a9bc54bc8c49317f6347b2bc5be8ab7989d9b2b0ff8fa15ae2a2003006654b06233d4188c6df39c9ef8f56194d94b9b68e566aa8d2fea7d65c7c9284a6
   languageName: node
   linkType: hard
 
