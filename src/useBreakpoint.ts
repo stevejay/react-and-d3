@@ -7,4 +7,4 @@ const breakpoints = {
   //, xl: 1280, '2xl': 1536
 };
 
-export const useBreakpoint = () => useBreakpointLib(breakpoints, 'desktop');
+export const useBreakpoint = () => useBreakpointLib(breakpoints);

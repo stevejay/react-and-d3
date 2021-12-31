@@ -1,4 +1,4 @@
-import { FC, forwardRef, memo } from 'react';
+import { FC, forwardRef, Fragment, memo } from 'react';
 import { useId } from '@uifabric/react-hooks';
 import * as d3 from 'd3';
 import { motion, MotionConfig } from 'framer-motion';
@@ -405,9 +405,8 @@ export const RadarChart = memo(
                 const legendDatum = data.find((element) => element.key === d.key);
                 const ariaRoleDescription = legendDatum ? `${getLabel(legendDatum)} value of ${d.value}` : '';
                 return (
-                  <>
+                  <Fragment key={d.key}>
                     <motion.circle
-                      key={`${d.key}-outer`}
                       fill="currentColor"
                       stroke="none"
                       role="graphics-symbol img"
@@ -420,7 +419,6 @@ export const RadarChart = memo(
                       }}
                     />
                     <motion.circle
-                      key={`${d.key}-inner`}
                       className="fill-current stroke-white"
                       r={5}
                       strokeWidth={4}
@@ -432,7 +430,7 @@ export const RadarChart = memo(
                         opacity: isZeroState ? 0 : 1
                       }}
                     />
-                  </>
+                  </Fragment>
                 );
               })}
             </g>
