@@ -1,3 +1,5 @@
+const circumference = 282.74;
+
 export const LoadingPlaceholder = () => (
   <div
     role="progressbar"
@@ -28,8 +30,8 @@ export const LoadingPlaceholder = () => (
         fill="none"
         stroke="currentColor"
         className="text-slate-400"
-        strokeDashoffset={0.25 * 282.74} // 282.74 is circumference
-        strokeDasharray={`${0.25 * 282.74} ${282.74 - 0.25 * 282.74}`}
+        strokeDashoffset={0.25 * circumference}
+        strokeDasharray={`${0.25 * circumference} ${circumference - 0.25 * circumference}`}
       />
     </svg>
   </div>

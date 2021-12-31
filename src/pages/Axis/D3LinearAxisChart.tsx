@@ -6,7 +6,6 @@ import type { AxisLabelOrientation } from '@/types';
 class D3LinearAxisChartRenderer {
   width = 0;
   height = 0;
-  drawTicksAsGridLines = false;
   transitionSeconds = 0.25;
   labelOrientation: AxisLabelOrientation = 'horizontal';
 
@@ -33,10 +32,7 @@ class D3LinearAxisChartRenderer {
     const domain = [d3.min(data) ?? 0, d3.max(data) ?? 0];
     this.scale.domain(domain).range([0, chartWidth]).nice();
 
-    this.axis
-      .tickArguments([10])
-      .tickSizeInner(this.drawTicksAsGridLines ? -chartHeight : 6)
-      .tickSizeOuter(-chartHeight);
+    this.axis.tickArguments([10]).tickSizeInner(6).tickSizeOuter(-chartHeight);
 
     let group = svg.selectAll<SVGGElement, null>('.axis').data([null]);
     group = group.enter().append('g').classed('axis', true).merge(group);
@@ -54,8 +50,7 @@ export type D3LinearAxisChartProps = {
   width: number;
   height: number;
   ariaLabelledby: string;
-  drawTicksAsGridLines: boolean;
-  transitionSeconds: number;
+  transitionSeconds?: number;
   labelOrientation: AxisLabelOrientation;
 };
 
@@ -64,9 +59,8 @@ export const D3LinearAxisChart: FC<D3LinearAxisChartProps> = ({
   width,
   height,
   ariaLabelledby,
-  drawTicksAsGridLines,
-  transitionSeconds,
-  labelOrientation
+  labelOrientation,
+  transitionSeconds = 0.25
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [renderer] = useState<D3LinearAxisChartRenderer>(() => new D3LinearAxisChartRenderer());
@@ -74,11 +68,10 @@ export const D3LinearAxisChart: FC<D3LinearAxisChartProps> = ({
   useEffect(() => {
     renderer.width = width;
     renderer.height = height;
-    renderer.drawTicksAsGridLines = drawTicksAsGridLines;
     renderer.transitionSeconds = transitionSeconds;
     renderer.labelOrientation = labelOrientation;
     renderer.render(svgRef.current, data);
-  }, [renderer, data, width, height, drawTicksAsGridLines, transitionSeconds, labelOrientation]);
+  }, [renderer, data, width, height, transitionSeconds, labelOrientation]);
 
   return (
     <svg

@@ -12,12 +12,11 @@ export type ReactTimeAxisNoExitChartProps = {
   data: Date[];
   width: number;
   height: number;
-  drawTicksAsGridLines: boolean;
-  transitionSeconds: number;
+  transitionSeconds?: number;
 };
 
 export const ReactTimeAxisNoExitChart: FC<ReactTimeAxisNoExitChartProps> = memo(
-  ({ data, width, height, drawTicksAsGridLines, transitionSeconds = 0.25 }) => {
+  ({ data, width, height, transitionSeconds = 0.25 }) => {
     const chartWidth = width - margins.left - margins.right;
     const chartHeight = height - margins.top - margins.bottom;
 
@@ -38,7 +37,6 @@ export const ReactTimeAxisNoExitChart: FC<ReactTimeAxisNoExitChartProps> = memo(
             translateX={margins.left}
             translateY={margins.top + chartHeight}
             orientation="bottom"
-            tickSizeInner={drawTicksAsGridLines ? -chartHeight : null}
             tickSizeOuter={-chartHeight}
             transitionSeconds={transitionSeconds}
           />
@@ -50,6 +48,5 @@ export const ReactTimeAxisNoExitChart: FC<ReactTimeAxisNoExitChartProps> = memo(
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
-    prevProps.drawTicksAsGridLines === nextProps.drawTicksAsGridLines &&
     prevProps.transitionSeconds === nextProps.transitionSeconds
 );

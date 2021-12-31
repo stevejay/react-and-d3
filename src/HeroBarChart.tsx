@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { random, sampleSize } from 'lodash-es';
 
 // import { Datum, VerticalBarChart } from './VerticalBarChart';
-import { Datum, HorizontalBarChart } from './HorizontalBarChart';
+import { Datum, HorizontalBarChart } from './pages/BarChart/HorizontalBarChart';
 
 const domain = ['A', 'B', 'C', 'D', 'E'];
 

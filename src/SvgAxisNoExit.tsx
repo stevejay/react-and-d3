@@ -19,7 +19,7 @@ function getExitingTickValues<Domain extends AxisDomain>(
 }
 
 export type SvgAxisNoExitProps<Domain extends AxisDomain> = DefaultAxisProps<Domain> & {
-  transitionSeconds: number;
+  transitionSeconds?: number;
   labelOrientation?: AxisLabelOrientation;
 };
 
@@ -30,7 +30,7 @@ export function SvgAxisNoExit<Domain extends AxisDomain>(
     orientation,
     translateX,
     translateY,
-    transitionSeconds,
+    transitionSeconds = 0.25,
     // labelOrientation = 'horizontal',
     tickArguments = []
   } = props;

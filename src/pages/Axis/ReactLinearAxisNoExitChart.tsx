@@ -14,21 +14,12 @@ export type ReactLinearAxisNoExitChartProps = {
   width: number;
   height: number;
   ariaLabelledby: string;
-  drawTicksAsGridLines: boolean;
-  transitionSeconds: number;
+  transitionSeconds?: number;
   labelOrientation: AxisLabelOrientation;
 };
 
 export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = memo(
-  ({
-    data,
-    width,
-    height,
-    ariaLabelledby,
-    drawTicksAsGridLines,
-    labelOrientation,
-    transitionSeconds = 0.25
-  }) => {
+  ({ data, width, height, ariaLabelledby, labelOrientation, transitionSeconds = 0.25 }) => {
     const chartWidth = width - margins.left - margins.right;
     const chartHeight = height - margins.top - margins.bottom;
 
@@ -54,7 +45,6 @@ export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = m
             translateX={margins.left}
             translateY={margins.top + chartHeight}
             orientation="bottom"
-            tickSizeInner={drawTicksAsGridLines ? -chartHeight : null}
             tickSizeOuter={-chartHeight}
             transitionSeconds={transitionSeconds}
             labelOrientation={labelOrientation}
@@ -67,7 +57,6 @@ export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = m
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
-    prevProps.drawTicksAsGridLines === nextProps.drawTicksAsGridLines &&
     prevProps.transitionSeconds === nextProps.transitionSeconds &&
     prevProps.labelOrientation === nextProps.labelOrientation
 );

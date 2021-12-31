@@ -12,10 +12,10 @@ const dataSets = [
 ];
 
 export type CustomTimeAxisExamplesProps = {
-  transitionSeconds: number;
+  transitionSeconds?: number;
 };
 
-export const CustomTimeAxisExamples: FC<CustomTimeAxisExamplesProps> = ({ transitionSeconds }) => {
+export const CustomTimeAxisExamples: FC<CustomTimeAxisExamplesProps> = ({ transitionSeconds = 0.25 }) => {
   const [dataIndex, setDataIndex] = useState(0);
   const cycleDataIndex = () => setDataIndex((i) => (i === dataSets.length - 1 ? 0 : i + 1));
   const data = dataSets[dataIndex];

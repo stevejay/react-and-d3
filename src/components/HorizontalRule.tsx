@@ -1,1 +1,3 @@
-export const HorizontalRule = () => <hr className="border-cyan-700 max-w-prose" />;
+export const HorizontalRule = () => (
+  <hr className="h-px border-0 bg-gradient-to-r from-blue-500 to-green-700 max-w-prose" />
+);

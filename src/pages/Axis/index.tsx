@@ -18,15 +18,15 @@ const Axis = () => (
           D3 to render your charts, you are going to need a replacement. This page demonstrates my own port of
           the D3 axis to React. The main complication I had was recreating the animations. Entering ticks
           animate in based on the previous scale and exiting ticks animate out based on the new scale. Luckily
-          Framer Motion can handle this well. You try some examples below of various D3 axes and their React
-          equivalent.
+          Framer Motion can handle this well. You can try some examples below of various D3 axes and their
+          React equivalent.
         </Paragraph>
         <HorizontalRule />
-        <LinearAxisExamples drawTicksAsGridLines={false} transitionSeconds={0.5} />
+        <LinearAxisExamples transitionSeconds={0.5} />
         <HorizontalRule />
-        <TimeAxisExamples drawTicksAsGridLines={false} transitionSeconds={0.5} />
+        <TimeAxisExamples transitionSeconds={0.5} />
         <HorizontalRule />
-        <BandAxisExamples drawTicksAsGridLines={false} transitionSeconds={0.5} />
+        <BandAxisExamples transitionSeconds={0.5} />
         <HorizontalRule />
         <Paragraph>
           The React animations work well but they are not perfect. A problem arises when an animation is
@@ -37,7 +37,7 @@ const Axis = () => (
           Click on the update button while the axis is animating.
         </Paragraph>
         <HorizontalRule />
-        <LinearAxisExamples drawTicksAsGridLines={false} transitionSeconds={1.5} />
+        <LinearAxisExamples transitionSeconds={1.5} />
         <HorizontalRule />
         <Paragraph>
           Luckily the problem is really only obvious with unrealistically long animation times. I did create a
@@ -45,7 +45,7 @@ const Axis = () => (
           is also significantly more complex in implementation. You can try this alternate version below.
         </Paragraph>
         <HorizontalRule />
-        <AlternateLinearAxisExamples drawTicksAsGridLines={false} transitionSeconds={1.5} />
+        <AlternateLinearAxisExamples transitionSeconds={1.5} />
         <h3 className="pt-8 text-3xl">Custom Axis</h3>
         <Paragraph>
           An advantage of the React axis component is that it is easy to use as a starting point for creating

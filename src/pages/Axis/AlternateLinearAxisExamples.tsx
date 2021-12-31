@@ -15,13 +15,11 @@ const dataSets = [
 ];
 
 export type AlternateLinearAxisExamplesProps = {
-  drawTicksAsGridLines: boolean;
-  transitionSeconds: number;
+  transitionSeconds?: number;
 };
 
 export const AlternateLinearAxisExamples: FC<AlternateLinearAxisExamplesProps> = ({
-  drawTicksAsGridLines,
-  transitionSeconds
+  transitionSeconds = 0.25
 }) => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
@@ -34,7 +32,6 @@ export const AlternateLinearAxisExamples: FC<AlternateLinearAxisExamplesProps> =
               data={data}
               width={width}
               height={height}
-              drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
               labelOrientation="horizontal"
             />
@@ -49,7 +46,6 @@ export const AlternateLinearAxisExamples: FC<AlternateLinearAxisExamplesProps> =
               data={data}
               width={width}
               height={height}
-              drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
               labelOrientation="horizontal"
             />

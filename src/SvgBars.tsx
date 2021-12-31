@@ -42,16 +42,16 @@ function createRectDataGenerator<CategoryDomain extends AxisDomain, ValueDomain 
     if (orientation === 'vertical') {
       return {
         attrX: categoryValue + offset,
-        width: bandwidth - offset * 2,
+        width: Math.max(bandwidth - offset * 2, 0),
         attrY: isEnterOrExit ? chartHeight : valueValue + offset,
-        height: isEnterOrExit ? 0 : chartHeight - valueValue - offset * 2
+        height: isEnterOrExit ? 0 : Math.max(chartHeight - valueValue - offset * 2, 0)
       };
     } else {
       return {
         attrY: categoryValue + offset,
-        height: bandwidth - offset * 2,
+        height: Math.max(bandwidth - offset * 2, 0),
         attrX: 0,
-        width: isEnterOrExit ? 0 : valueValue - offset * 2
+        width: isEnterOrExit ? 0 : Math.max(valueValue - offset * 2, 0)
       };
     }
   };

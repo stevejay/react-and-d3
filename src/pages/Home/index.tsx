@@ -19,8 +19,8 @@ const Home = () => (
     </div>
     <div className="p-8 space-y-8 md:space-y-0 md:gap-8 md:grid md:grid-cols-2 lg:grid-cols-3">
       <PageCard href="/axis" title="Axis" illustration={AxisSvg} />
-      <PageCard href="/axis" title="Vertical Bar Chart" illustration={VerticalBarChartSvg} />
-      <PageCard href="/axis" title="Horizontal Bar Chart" illustration={HorizontalBarChartSvg} />
+      <PageCard href="/bar-chart" title="Bar Chart" illustration={VerticalBarChartSvg} />
+      <PageCard href="/histogram" title="Histogram" illustration={HorizontalBarChartSvg} />
       <PageCard href="/axis" title="Stacked Vertical Bar Chart" illustration={StackedVerticalBarChartSvg} />
       <PageCard href="/radar-chart" title="Radar Chart" illustration={RadarChartSvg} />
       <PageCard href="/axis" title="Sparkline" illustration={SparklineSvg} />

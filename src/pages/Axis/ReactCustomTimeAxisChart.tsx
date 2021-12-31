@@ -14,7 +14,7 @@ export type ReactCustomTimeAxisChartProps = {
   width: number;
   height: number;
   ariaLabelledby: string;
-  transitionSeconds: number;
+  transitionSeconds?: number;
 };
 
 export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(

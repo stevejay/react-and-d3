@@ -15,14 +15,10 @@ const dataSets = [
 ];
 
 export type LinearAxisExamplesProps = {
-  drawTicksAsGridLines: boolean;
-  transitionSeconds: number;
+  transitionSeconds?: number;
 };
 
-export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({
-  drawTicksAsGridLines,
-  transitionSeconds
-}) => {
+export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({ transitionSeconds = 0.25 }) => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
@@ -34,7 +30,6 @@ export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({
               data={data}
               width={width}
               height={height}
-              drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
               labelOrientation="horizontal"
             />
@@ -49,7 +44,6 @@ export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({
               data={data}
               width={width}
               height={height}
-              drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
               labelOrientation="horizontal"
             />

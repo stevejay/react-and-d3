@@ -15,11 +15,10 @@ const dataSets = [
 ];
 
 export type TimeAxisExamplesProps = {
-  drawTicksAsGridLines: boolean;
-  transitionSeconds: number;
+  transitionSeconds?: number;
 };
 
-export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ drawTicksAsGridLines, transitionSeconds }) => {
+export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ transitionSeconds = 0.25 }) => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
@@ -31,7 +30,6 @@ export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ drawTicksAsGridLin
               data={data}
               width={width}
               height={height}
-              drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
               labelOrientation="angled"
             />
@@ -46,7 +44,6 @@ export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ drawTicksAsGridLin
               data={data}
               width={width}
               height={height}
-              drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
               labelOrientation="horizontal"
             />

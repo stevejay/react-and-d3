@@ -30,11 +30,7 @@ const dataSets = [
   ]
 ];
 
-export type RadarChartExamplesProps = {
-  transitionSeconds: number;
-};
-
-export const RadarChartExamples: FC<RadarChartExamplesProps> = () => {
+export const RadarChartExamples: FC = () => {
   const [selectedKey, setSelectedKey] = useState<Datum['key']>('one');
   const onShowTooltip = useCallback(() => console.log('onShowTooltip'), []);
   const onHideTooltip = useCallback(() => console.log('onHideTooltip'), []);
@@ -43,20 +39,18 @@ export const RadarChartExamples: FC<RadarChartExamplesProps> = () => {
   const isMobile = breakpoint === 'mobile';
 
   return (
-    <>
-      <div className="flex flex-col items-center w-full py-8 space-y-8 bg-slate-900">
-        <RadarChart
-          data={data}
-          label="Some label"
-          compact={isMobile}
-          selectedKey={selectedKey}
-          diameter={isMobile ? 340 : 420}
-          onSelect={setSelectedKey}
-          onShowTooltip={onShowTooltip}
-          onHideTooltip={onHideTooltip}
-        />
-        <ExampleUpdateButton onClick={nextDataSet}>Update radar chart data</ExampleUpdateButton>
-      </div>
-    </>
+    <div className="flex flex-col items-center w-full py-8 space-y-8 bg-slate-900">
+      <RadarChart
+        data={data}
+        label="The label"
+        compact={isMobile}
+        selectedKey={selectedKey}
+        diameter={isMobile ? 340 : 420}
+        onSelect={setSelectedKey}
+        onShowTooltip={onShowTooltip}
+        onHideTooltip={onHideTooltip}
+      />
+      <ExampleUpdateButton onClick={nextDataSet}>Update radar chart data</ExampleUpdateButton>
+    </div>
   );
 };

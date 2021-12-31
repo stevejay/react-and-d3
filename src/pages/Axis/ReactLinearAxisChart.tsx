@@ -14,21 +14,12 @@ export type ReactLinearAxisChartProps = {
   width: number;
   height: number;
   ariaLabelledby: string;
-  drawTicksAsGridLines: boolean;
-  transitionSeconds: number;
+  transitionSeconds?: number;
   labelOrientation: AxisLabelOrientation;
 };
 
 export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
-  ({
-    data,
-    width,
-    height,
-    ariaLabelledby,
-    drawTicksAsGridLines,
-    labelOrientation,
-    transitionSeconds = 0.25
-  }) => {
+  ({ data, width, height, ariaLabelledby, labelOrientation, transitionSeconds = 0.25 }) => {
     const chartWidth = width - margins.left - margins.right;
     const chartHeight = height - margins.top - margins.bottom;
 
@@ -54,7 +45,6 @@ export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
             translateX={margins.left}
             translateY={margins.top + chartHeight}
             orientation="bottom"
-            tickSizeInner={drawTicksAsGridLines ? -chartHeight : null}
             tickSizeOuter={-chartHeight}
             labelOrientation={labelOrientation}
             className="text-[10px]"
@@ -67,7 +57,6 @@ export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
-    prevProps.drawTicksAsGridLines === nextProps.drawTicksAsGridLines &&
     prevProps.transitionSeconds === nextProps.transitionSeconds &&
     prevProps.labelOrientation === nextProps.labelOrientation
 );

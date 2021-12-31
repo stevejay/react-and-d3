@@ -10,7 +10,7 @@ import { DocumentVisibilityRoot } from './DocumentVisibility';
 import { Header, NavigationSection } from './Header';
 // import { HeadlessUiDialog } from './HeadlessUiDialog';
 // import { LinearAxisExamples } from './LinearAxisExamples';
-// import { RadarChartExamples } from './RadarChartExamples';
+// import { RadarChartExample } from './RadarChartExample';
 // import { SparklineExamples } from './SparklineExamples';
 // import { TimeAxisExamples } from './TimeAxisExamples';
 
@@ -27,6 +27,7 @@ const navigationData: NavigationSection[] = [
     links: [
       { href: '/', title: 'Home' },
       { href: '/axis', title: 'Axis' },
+      { href: '/bar-chart', title: 'Bar Chart' },
       { href: '/radar-chart', title: 'Radar Chart' },
       { href: '/sparkline', title: 'Sparkline' }
     ]
@@ -42,6 +43,7 @@ const navigationData: NavigationSection[] = [
 
 const Home = lazy(() => import('@/pages/Home'));
 const Axis = lazy(() => import('@/pages/Axis'));
+const BarChart = lazy(() => import('@/pages/BarChart'));
 const RadarChart = lazy(() => import('@/pages/RadarChart'));
 const Sparkline = lazy(() => import('@/pages/Sparkline'));
 
@@ -70,6 +72,7 @@ export const App: FC = () => {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/axis" element={<Axis />} />
+              <Route path="/bar-chart" element={<BarChart />} />
               <Route path="/radar-chart" element={<RadarChart />} />
               <Route path="/sparkline" element={<Sparkline />} />
             </Routes>
@@ -86,7 +89,7 @@ export const App: FC = () => {
         <SectionHeading>Custom Time Axis</SectionHeading>
         <CustomTimeAxisExamples transitionSeconds={transitionSeconds} />
         <SectionHeading>Radar Chart</SectionHeading>
-        <RadarChartExamples transitionSeconds={transitionSeconds} />
+        <RadarChartExample transitionSeconds={transitionSeconds} />
         <SectionHeading>Sparkline</SectionHeading>
         <SparklineExamples transitionSeconds={transitionSeconds} /> */}
         </main>

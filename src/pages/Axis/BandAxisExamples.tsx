@@ -15,11 +15,10 @@ const dataSets = [
 ];
 
 export type BandAxisExamplesProps = {
-  drawTicksAsGridLines: boolean;
-  transitionSeconds: number;
+  transitionSeconds?: number;
 };
 
-export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ drawTicksAsGridLines, transitionSeconds }) => {
+export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ transitionSeconds = 0.25 }) => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
@@ -31,7 +30,6 @@ export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ drawTicksAsGridLin
               data={data}
               width={width}
               height={height}
-              drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
               labelOrientation="horizontal"
             />
@@ -46,7 +44,6 @@ export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ drawTicksAsGridLin
               data={data}
               width={width}
               height={height}
-              drawTicksAsGridLines={drawTicksAsGridLines}
               transitionSeconds={transitionSeconds}
               labelOrientation="horizontal"
             />

@@ -6,7 +6,6 @@ import type { AxisLabelOrientation } from '@/types';
 class D3BandAxisChartRenderer {
   width = 0;
   height = 0;
-  drawTicksAsGridLines = false;
   transitionSeconds = 0.25;
   labelOrientation: AxisLabelOrientation = 'horizontal';
 
@@ -32,10 +31,7 @@ class D3BandAxisChartRenderer {
 
     this.scale.domain(data).range([0, chartWidth]);
 
-    this.axis
-      .tickArguments([10])
-      .tickSizeInner(this.drawTicksAsGridLines ? -chartHeight : 6)
-      .tickSizeOuter(-chartHeight);
+    this.axis.tickArguments([10]).tickSizeInner(6).tickSizeOuter(-chartHeight);
 
     let group = svg.selectAll<SVGGElement, null>('.axis').data([null]);
     group = group.enter().append('g').classed('axis', true).merge(group);
@@ -53,8 +49,7 @@ export type D3BandAxisChartProps = {
   width: number;
   height: number;
   ariaLabelledby: string;
-  drawTicksAsGridLines: boolean;
-  transitionSeconds: number;
+  transitionSeconds?: number;
   labelOrientation: AxisLabelOrientation;
 };
 
@@ -63,9 +58,8 @@ export const D3BandAxisChart: FC<D3BandAxisChartProps> = ({
   width,
   height,
   ariaLabelledby,
-  drawTicksAsGridLines,
-  transitionSeconds,
-  labelOrientation
+  labelOrientation,
+  transitionSeconds = 0.25
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [renderer] = useState<D3BandAxisChartRenderer>(() => new D3BandAxisChartRenderer());
@@ -73,11 +67,10 @@ export const D3BandAxisChart: FC<D3BandAxisChartProps> = ({
   useEffect(() => {
     renderer.width = width;
     renderer.height = height;
-    renderer.drawTicksAsGridLines = drawTicksAsGridLines;
     renderer.transitionSeconds = transitionSeconds;
     renderer.labelOrientation = labelOrientation;
     renderer.render(svgRef.current, data);
-  }, [renderer, data, width, height, drawTicksAsGridLines, transitionSeconds, labelOrientation]);
+  }, [renderer, data, width, height, transitionSeconds, labelOrientation]);
 
   return (
     <svg
