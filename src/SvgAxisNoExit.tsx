@@ -140,7 +140,7 @@ export function SvgAxisNoExit<Domain extends AxisDomain>(
           d: createAxisDomainPathData(orientation, tickSizeOuter, offset, range0, range1, k)
         }}
       />
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {currentAndExiting.map(({ tickValue, exiting }, index) => (
           <motion.g
             key={getAxisDomainKey(tickValue)}

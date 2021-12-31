@@ -8,6 +8,20 @@ export type ChartOrientation = 'vertical' | 'horizontal';
 
 export type AxisLabelOrientation = 'horizontal' | 'vertical' | 'angled';
 
+export type BarChartDatum<CategoryT extends AxisDomain> = {
+  category: CategoryT;
+  value: number;
+};
+
+export type ChartArea = {
+  width: number;
+  height: number;
+  translateX: number;
+  translateY: number;
+  xRange: readonly [number, number];
+  yRange: readonly [number, number];
+};
+
 export type ExpandedAxisScale<Domain extends AxisDomain> = AxisScale<Domain> & {
   ticks?(...args: any[]): Domain[];
   tickFormat?(...args: any[]): (d: Domain) => string;

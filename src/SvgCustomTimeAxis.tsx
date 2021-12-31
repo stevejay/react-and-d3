@@ -80,7 +80,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
       stroke="currentColor"
     >
       <g>
-        <AnimatePresence custom={position}>
+        <AnimatePresence custom={position} initial={false}>
           {tickValues.map((tickValue, index) => (
             <motion.g
               key={getAxisDomainKey(tickValue)}
@@ -136,7 +136,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
         </AnimatePresence>
       </g>
       <g>
-        <AnimatePresence custom={position}>
+        <AnimatePresence custom={position} initial={false}>
           {yearTickValues.map((tickValue, index) => {
             const tickYear = tickValue.getUTCFullYear();
             const isFirstTick = index === 0;

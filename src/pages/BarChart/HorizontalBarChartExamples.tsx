@@ -5,8 +5,8 @@ import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { Margins } from '@/types';
 import { useDataSets } from '@/useDataSets';
 
+import { HorizontalBarChart } from './HorizontalBarChart';
 import { TemporaryChartWrapper } from './TemporaryChartWrapper';
-import { VerticalBarChart } from './VerticalBarChart';
 
 const dataSets = [
   [
@@ -29,20 +29,20 @@ const dataSets = [
   ]
 ];
 
-const margins: Margins = { left: 40, right: 40, top: 40, bottom: 40 };
+const margins: Margins = { left: 64, right: 40, top: 40, bottom: 64 };
 
-export type BarChartExamplesProps = {
+export type HorizontalBarChartExamplesProps = {
   transitionSeconds: number;
 };
 
-export const BarChartExamples: FC<BarChartExamplesProps> = ({ transitionSeconds }) => {
+export const HorizontalBarChartExamples: FC<HorizontalBarChartExamplesProps> = ({ transitionSeconds }) => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
-      <TemporaryChartWrapper title="Vertical Bar Chart">
+      <TemporaryChartWrapper title="Horizontal Bar Chart">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
-            <VerticalBarChart
+            <HorizontalBarChart
               ariaLabelledby={ariaLabelledby}
               data={data}
               width={width}

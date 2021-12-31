@@ -8,7 +8,7 @@ import { SvgGroup } from './SvgGroup';
 import type { AxisLabelOrientation, AxisOrientation, DefaultAxisProps, ExpandedAxisScale } from './types';
 
 // TODO see if I can create a more compact version of this function.
-function getLabelOrientationProps(
+function getTickLabelOrientationProps(
   orientation: AxisOrientation,
   labelOrientation: AxisLabelOrientation
 ): SVGAttributes<SVGTextElement> {
@@ -212,7 +212,7 @@ export function SvgAxis<Domain extends AxisDomain>(
     previousPositionRef.current = position;
   });
 
-  const labelOrientationProps = getLabelOrientationProps(orientation, labelOrientation);
+  const labelOrientationProps = getTickLabelOrientationProps(orientation, labelOrientation);
   const labelGroupTransform = `${translate === 'translateX' ? 'translateY' : 'translateX'}(${k * spacing}px)`;
 
   return (
@@ -234,7 +234,7 @@ export function SvgAxis<Domain extends AxisDomain>(
         {...domainProps}
       />
       {/* Send the current position to the tick exit animation variant. */}
-      <AnimatePresence custom={position}>
+      <AnimatePresence custom={position} initial={false}>
         {tickValues.map((tickValue, index) => (
           <motion.g
             key={getAxisDomainKey(tickValue)}

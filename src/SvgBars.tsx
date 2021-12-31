@@ -23,7 +23,7 @@ function createRectDataGenerator<CategoryDomain extends AxisDomain, ValueDomain 
   const clonedCategoryScale = categoryScale.copy();
   const clonedValueScale = valueScale.copy();
 
-  return (d: Datum<CategoryDomain, ValueDomain>, isEnterOrExit: boolean) => {
+  return (d: Datum<CategoryDomain, ValueDomain>, animateFromOrToZero: boolean) => {
     const categoryValue = clonedCategoryScale(d.category);
     const valueValue = clonedValueScale(d.value);
     const bandwidth = clonedCategoryScale.bandwidth?.();
@@ -43,15 +43,15 @@ function createRectDataGenerator<CategoryDomain extends AxisDomain, ValueDomain 
       return {
         attrX: categoryValue + offset,
         width: Math.max(bandwidth - offset * 2, 0),
-        attrY: isEnterOrExit ? chartHeight : valueValue + offset,
-        height: isEnterOrExit ? 0 : Math.max(chartHeight - valueValue - offset * 2, 0)
+        attrY: animateFromOrToZero ? chartHeight : valueValue + offset,
+        height: animateFromOrToZero ? 0 : Math.max(chartHeight - valueValue - offset * 2, 0)
       };
     } else {
       return {
         attrY: categoryValue + offset,
         height: Math.max(bandwidth - offset * 2, 0),
         attrX: 0,
-        width: isEnterOrExit ? 0 : Math.max(valueValue - offset * 2, 0)
+        width: animateFromOrToZero ? 0 : Math.max(valueValue - offset * 2, 0)
       };
     }
   };
@@ -109,7 +109,7 @@ export function SvgBars<CategoryDomain extends AxisDomain, ValueDomain extends A
       fill="currentColor"
       stroke="none"
     >
-      <AnimatePresence custom={generator}>
+      <AnimatePresence custom={generator} initial={false}>
         {data.map((d) => (
           <motion.rect
             key={getAxisDomainKey(d.category)}
@@ -122,7 +122,7 @@ export function SvgBars<CategoryDomain extends AxisDomain, ValueDomain extends A
             variants={{
               initial: () => ({
                 opacity: 0,
-                ...generator(d, true)
+                ...generator(d, false)
               }),
               animate: () => ({
                 opacity: 1,
@@ -130,7 +130,7 @@ export function SvgBars<CategoryDomain extends AxisDomain, ValueDomain extends A
               }),
               exit: (nextGenerator: typeof generator) => ({
                 opacity: 0,
-                ...nextGenerator(d, true)
+                ...nextGenerator(d, false)
               })
             }}
           />
