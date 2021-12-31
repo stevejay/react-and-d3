@@ -5,7 +5,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { differenceBy, identity, isNil, sortBy, unionBy } from 'lodash-es';
 import useDebouncedEffect from 'use-debounced-effect';
 
-import { center, createAxisDomainPathData, getAxisDomainKey, getDefaultOffset, number } from './axisUtils';
+import {
+  center,
+  createAxisDomainPathData,
+  getAxisDomainAsReactKey,
+  getDefaultOffset,
+  number
+} from './axisUtils';
 import { SvgGroup } from './SvgGroup';
 import type { AxisLabelOrientation, DefaultAxisProps, ExpandedAxisScale } from './types';
 
@@ -143,7 +149,7 @@ export function SvgAxisNoExit<Domain extends AxisDomain>(
       <AnimatePresence initial={false}>
         {currentAndExiting.map(({ tickValue, exiting }, index) => (
           <motion.g
-            key={getAxisDomainKey(tickValue)}
+            key={getAxisDomainAsReactKey(tickValue)}
             initial="initial"
             animate={exiting ? 'exit' : 'animate'}
             variants={{
@@ -171,7 +177,7 @@ export function SvgAxisNoExit<Domain extends AxisDomain>(
               initial={false}
               animate={{ [x === 'x' ? 'attrX' : 'attrY']: k * spacing }}
               role="presentation"
-              aria-hidden
+              //   aria-hidden
             >
               {tickFormat(tickValue, index)}
             </motion.text>

@@ -77,7 +77,7 @@ export const Sparkline: FC<SparklineProps> = memo(
 
     return (
       <motion.svg
-        role="none"
+        role="presentation"
         className="text-pink-600 pointer-events-none"
         width={width}
         height={height}

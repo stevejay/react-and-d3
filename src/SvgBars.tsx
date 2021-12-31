@@ -3,7 +3,7 @@ import type { AxisDomain, AxisScale } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import { isNil } from 'lodash-es';
 
-import { getAxisDomainKey, getDefaultOffset } from './axisUtils';
+import { getAxisDomainAsReactKey, getDefaultOffset } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
 import { ChartOrientation } from './types';
 
@@ -112,7 +112,7 @@ export function SvgBars<CategoryDomain extends AxisDomain, ValueDomain extends A
       <AnimatePresence custom={generator} initial={false}>
         {data.map((d) => (
           <motion.rect
-            key={getAxisDomainKey(d.category)}
+            key={getAxisDomainAsReactKey(d.category)}
             fill="currentColor"
             className={className}
             custom={generator}

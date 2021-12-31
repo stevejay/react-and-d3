@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { AxisScale, utcMonth } from 'd3';
+import type { AxisScale } from 'd3';
+import { utcMonth } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import { identity, isNil, uniq } from 'lodash-es';
 
-import { createAxisDomainPathData, getAxisDomainKey, getDefaultOffset, number } from './axisUtils';
+import { createAxisDomainPathData, getAxisDomainAsReactKey, getDefaultOffset, number } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
 import type { ExpandedAxisScale } from './types';
 
@@ -83,7 +84,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
         <AnimatePresence custom={position} initial={false}>
           {tickValues.map((tickValue, index) => (
             <motion.g
-              key={getAxisDomainKey(tickValue)}
+              key={getAxisDomainAsReactKey(tickValue)}
               custom={position}
               initial="initial"
               animate="animate"
@@ -126,7 +127,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
                   textAnchor="middle"
                   className="text-xs"
                   role="presentation"
-                  aria-hidden
+                  //   aria-hidden
                 >
                   {tickFormat(tickValue)}
                 </text>
@@ -179,7 +180,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
                   textAnchor="start"
                   className="text-[10px]"
                   role="presentation"
-                  aria-hidden
+                  //   aria-hidden
                 >
                   {tickYear}
                 </text>

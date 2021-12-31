@@ -30,7 +30,7 @@ export function center<Domain extends AxisDomain>(
 /**
  * Get the key value for an AxisDomain object, for use as the key prop on a React element.
  */
-export function getAxisDomainKey(value: AxisDomain): string {
+export function getAxisDomainAsReactKey(value: AxisDomain): string {
   return value.toString();
 }
 

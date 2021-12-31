@@ -3,7 +3,13 @@ import type { AxisDomain } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import { identity, isNil } from 'lodash-es';
 
-import { center, createAxisDomainPathData, getAxisDomainKey, getDefaultOffset, number } from './axisUtils';
+import {
+  center,
+  createAxisDomainPathData,
+  getAxisDomainAsReactKey,
+  getDefaultOffset,
+  number
+} from './axisUtils';
 import { SvgGroup } from './SvgGroup';
 import type { AxisLabelOrientation, AxisOrientation, DefaultAxisProps, ExpandedAxisScale } from './types';
 
@@ -218,7 +224,7 @@ export function SvgAxis<Domain extends AxisDomain>(
   return (
     <SvgGroup
       translateX={translateX}
-      translateY={translateY}
+      translateY={translateY - 1}
       textAnchor={orientation === 'right' ? 'start' : orientation === 'left' ? 'end' : 'middle'}
       fill="currentColor"
       stroke="currentColor"
@@ -237,7 +243,7 @@ export function SvgAxis<Domain extends AxisDomain>(
       <AnimatePresence custom={position} initial={false}>
         {tickValues.map((tickValue, index) => (
           <motion.g
-            key={getAxisDomainKey(tickValue)}
+            key={getAxisDomainAsReactKey(tickValue)}
             custom={position}
             initial="initial"
             animate="animate"
@@ -273,7 +279,7 @@ export function SvgAxis<Domain extends AxisDomain>(
                 stroke="none"
                 fill="currentColor"
                 role="presentation"
-                aria-hidden
+                // aria-hidden
                 className={tickTextClassName}
                 {...labelOrientationProps}
                 {...tickTextProps}
