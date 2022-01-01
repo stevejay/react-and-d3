@@ -29,7 +29,7 @@ class D3BandAxisChartRenderer {
     const chartWidth = this.width - this.margins.left - this.margins.right;
     const chartHeight = this.height - this.margins.top - this.margins.bottom;
 
-    this.scale.domain(data).range([0, chartWidth]);
+    this.scale.domain(data).rangeRound([0, chartWidth]);
 
     this.axis.tickArguments([10]).tickSizeInner(6).tickSizeOuter(-chartHeight);
 

@@ -1,10 +1,13 @@
-import { FC, memo, useMemo } from 'react';
-import type { AxisScale } from 'd3';
+import { FC, memo } from 'react';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
+import { identity } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
+import { useChartArea } from '@/hooks/useChartArea';
+import { useTimeDomain } from '@/hooks/useTimeDomain';
+import { useTimeScale } from '@/hooks/useTimeScale';
 import type { AxisLabelOrientation } from '@/types';
 
 import { yearMonthMultiFormat } from './formatters';
@@ -22,13 +25,13 @@ export type ReactTimeAxisChartProps = {
 
 export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
   ({ data, width, height, ariaLabelledby, labelOrientation, transitionSeconds = 0.25 }) => {
-    const chartWidth = width - margins.left - margins.right;
-    const chartHeight = height - margins.top - margins.bottom;
-
-    const scale = useMemo<AxisScale<Date>>(
-      () => d3.scaleTime([d3.min(data) ?? 0, d3.max(data) ?? 0], [0, chartWidth]).nice(),
-      [data, chartWidth]
-    );
+    const chartArea = useChartArea(width, height, margins);
+    const domain = useTimeDomain(data, identity);
+    const scale = useTimeScale(domain, chartArea.xRange, {
+      nice: true,
+      rangeRound: true,
+      utc: true
+    });
 
     if (!width || !height) {
       return null;
@@ -44,10 +47,10 @@ export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
         >
           <SvgAxis
             scale={scale}
-            translateX={margins.left}
-            translateY={margins.top + chartHeight}
+            translateX={chartArea.translateX}
+            translateY={chartArea.translateY + chartArea.height}
             orientation="bottom"
-            tickSizeOuter={-chartHeight}
+            tickSizeOuter={-chartArea.height}
             labelOrientation={labelOrientation}
             tickFormat={yearMonthMultiFormat}
             className="text-[10px]"

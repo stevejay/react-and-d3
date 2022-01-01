@@ -9,8 +9,8 @@ export function useContinuousDomain<Datum>(
 ): readonly [number, number] {
   const { includeZeroInDomain } = options ?? {};
   return useMemo(() => {
-    let min = d3.min(data, accessor) ?? 0;
-    let max = d3.max(data, accessor) ?? 0;
+    let min = d3.min(data, accessor) ?? 0; // TODO what does d3 scale do in this case?
+    let max = d3.max(data, accessor) ?? 0; // TODO what does d3 scale do in this case?
     if (includeZeroInDomain) {
       if (min > 0) {
         min = 0;

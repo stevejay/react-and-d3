@@ -32,7 +32,7 @@ class D3TimeAxisChartRenderer {
     const chartHeight = this.height - this.margins.top - this.margins.bottom;
 
     const domain = [d3.min(data) ?? 0, d3.max(data) ?? 0];
-    this.scale.domain(domain).range([0, chartWidth]).nice();
+    this.scale.domain(domain).rangeRound([0, chartWidth]).nice();
 
     this.axis
       .tickArguments([10])

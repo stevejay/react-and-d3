@@ -241,7 +241,7 @@ export function SvgAxis<Domain extends AxisDomain>(
           d: createAxisDomainPathData(orientation, tickSizeOuter, offset, range0, range1, k)
         }}
         className={domainClassName}
-        shapeRendering="crispEdges"
+        // shapeRendering="crispEdges"
         {...domainProps}
       />
       {/* Send the current position to the tick exit animation variant. */}
@@ -278,7 +278,7 @@ export function SvgAxis<Domain extends AxisDomain>(
               stroke="currentColor"
               role="presentation"
               className={tickLineClassName}
-              shapeRendering="crispEdges"
+              //   shapeRendering="crispEdges"
               {...tickLineProps}
             />
             <g style={{ transform: labelGroupTransform }}>

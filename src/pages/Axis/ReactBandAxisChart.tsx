@@ -1,10 +1,11 @@
-import { FC, memo, useMemo } from 'react';
-import type { AxisScale } from 'd3';
+import { FC, memo } from 'react';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
+import { useBandScale } from '@/hooks/useBandScale';
+import { useChartArea } from '@/hooks/useChartArea';
 import type { AxisLabelOrientation } from '@/types';
 
 const margins = { top: 20, bottom: 34, left: 30, right: 30 };
@@ -20,10 +21,8 @@ export type ReactBandAxisChartProps = {
 
 export const ReactBandAxisChart: FC<ReactBandAxisChartProps> = memo(
   ({ data, width, height, ariaLabelledby, labelOrientation, transitionSeconds = 0.25 }) => {
-    const chartWidth = width - margins.left - margins.right;
-    const chartHeight = height - margins.top - margins.bottom;
-
-    const scale = useMemo<AxisScale<string>>(() => d3.scaleBand(data, [0, chartWidth]), [data, chartWidth]);
+    const chartArea = useChartArea(width, height, margins);
+    const scale = useBandScale(data, chartArea.xRange, { rangeRound: true });
 
     if (!width || !height) {
       return null;
@@ -39,10 +38,10 @@ export const ReactBandAxisChart: FC<ReactBandAxisChartProps> = memo(
         >
           <SvgAxis
             scale={scale}
-            translateX={margins.left}
-            translateY={margins.top + chartHeight}
+            translateX={chartArea.translateX}
+            translateY={chartArea.translateY + chartArea.height}
             orientation="bottom"
-            tickSizeOuter={-chartHeight}
+            tickSizeOuter={-chartArea.height}
             labelOrientation={labelOrientation}
             className="text-[10px]"
           />

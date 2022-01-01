@@ -1,10 +1,13 @@
-import { FC, memo, useMemo } from 'react';
-import type { AxisScale } from 'd3';
+import { FC, memo } from 'react';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
+import { identity } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
+import { useChartArea } from '@/hooks/useChartArea';
+import { useContinuousDomain } from '@/hooks/useContinuousDomain';
+import { useLinearScale } from '@/hooks/useLinearScale';
 import type { AxisLabelOrientation } from '@/types';
 
 const margins = { top: 20, bottom: 34, left: 30, right: 30 };
@@ -20,13 +23,12 @@ export type ReactLinearAxisChartProps = {
 
 export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
   ({ data, width, height, ariaLabelledby, labelOrientation, transitionSeconds = 0.25 }) => {
-    const chartWidth = width - margins.left - margins.right;
-    const chartHeight = height - margins.top - margins.bottom;
-
-    const scale = useMemo<AxisScale<number>>(
-      () => d3.scaleLinear([d3.min(data) ?? 0, d3.max(data) ?? 0], [0, chartWidth]).nice(),
-      [data, chartWidth]
-    );
+    const chartArea = useChartArea(width, height, margins);
+    const domain = useContinuousDomain(data, identity);
+    const scale = useLinearScale(domain, chartArea.xRange, {
+      nice: true,
+      rangeRound: true
+    });
 
     if (!width || !height) {
       return null;
@@ -42,10 +44,10 @@ export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
         >
           <SvgAxis
             scale={scale}
-            translateX={margins.left}
-            translateY={margins.top + chartHeight}
+            translateX={chartArea.translateX}
+            translateY={chartArea.translateY + chartArea.height}
             orientation="bottom"
-            tickSizeOuter={-chartHeight}
+            tickSizeOuter={-chartArea.height}
             labelOrientation={labelOrientation}
             className="text-[10px]"
           />
