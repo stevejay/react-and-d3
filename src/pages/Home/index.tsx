@@ -1,10 +1,10 @@
 import { AxisSvg } from './illustrations/AxisSvg';
-import { HorizontalBarChartSvg } from './illustrations/HorizontalBarChartSvg';
 import { RadarChartSvg } from './illustrations/RadarChartSvg';
 import { ReactAndD3Svg } from './illustrations/ReactAndD3Svg';
 import { SparklineSvg } from './illustrations/SparklineSvg';
 import { StackedVerticalBarChartSvg } from './illustrations/StackedVerticalBarChartSvg';
 import { VerticalBarChartSvg } from './illustrations/VerticalBarChartSvg';
+import { VerticalHistogramChartSvg } from './illustrations/VerticalHistogramChartSvg';
 import { PageCard } from './PageCard';
 
 const Home = () => (
@@ -20,10 +20,14 @@ const Home = () => (
     <div className="p-8 space-y-8 md:space-y-0 md:gap-8 md:grid md:grid-cols-2 lg:grid-cols-3">
       <PageCard href="/axis" title="Axis" illustration={AxisSvg} />
       <PageCard href="/bar-chart" title="Bar Chart" illustration={VerticalBarChartSvg} />
-      <PageCard href="/histogram" title="Histogram" illustration={HorizontalBarChartSvg} />
-      <PageCard href="/axis" title="Stacked Vertical Bar Chart" illustration={StackedVerticalBarChartSvg} />
+      <PageCard
+        href="/stacked-bar-chart"
+        title="Stacked Bar Chart"
+        illustration={StackedVerticalBarChartSvg}
+      />
+      <PageCard href="/histogram" title="Histogram" illustration={VerticalHistogramChartSvg} />
       <PageCard href="/radar-chart" title="Radar Chart" illustration={RadarChartSvg} />
-      <PageCard href="/axis" title="Sparkline" illustration={SparklineSvg} />
+      <PageCard href="/sparkline" title="Sparkline" illustration={SparklineSvg} />
     </div>
   </div>
 );

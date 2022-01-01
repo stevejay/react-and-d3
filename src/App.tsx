@@ -12,6 +12,8 @@ const navigationData: NavigationSection[] = [
       { href: '/', title: 'Home' },
       { href: '/axis', title: 'Axis' },
       { href: '/bar-chart', title: 'Bar Chart' },
+      { href: '/stacked-bar-chart', title: 'Stacked Bar Chart' },
+      { href: '/histogram', title: 'Histogram' },
       { href: '/radar-chart', title: 'Radar Chart' },
       { href: '/sparkline', title: 'Sparkline' }
     ]
@@ -28,6 +30,8 @@ const navigationData: NavigationSection[] = [
 const Home = lazy(() => import('@/pages/Home'));
 const Axis = lazy(() => import('@/pages/Axis'));
 const BarChart = lazy(() => import('@/pages/BarChart'));
+const StackedBarChart = lazy(() => import('@/pages/StackedBarChart'));
+const Histogram = lazy(() => import('@/pages/Histogram'));
 const RadarChart = lazy(() => import('@/pages/RadarChart'));
 const Sparkline = lazy(() => import('@/pages/Sparkline'));
 
@@ -41,6 +45,8 @@ export const App: FC = () => (
           <Route path="/" element={<Home />} />
           <Route path="/axis" element={<Axis />} />
           <Route path="/bar-chart" element={<BarChart />} />
+          <Route path="/stacked-bar-chart" element={<StackedBarChart />} />
+          <Route path="/histogram" element={<Histogram />} />
           <Route path="/radar-chart" element={<RadarChart />} />
           <Route path="/sparkline" element={<Sparkline />} />
         </Routes>
