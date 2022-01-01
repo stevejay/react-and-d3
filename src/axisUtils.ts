@@ -20,8 +20,8 @@ export function center<Domain extends AxisDomain>(
   scale: AxisScale<Domain> & { round?: () => boolean },
   offset: number
 ) {
-  offset = Math.max(0, scale.bandwidth ? scale.bandwidth() - offset * 2 : 0) / 2;
-  if (scale.round && scale.round()) {
+  offset = Math.max(0, scale.bandwidth ? scale.bandwidth() - offset * 2 : 0) * 0.5;
+  if (scale.round?.()) {
     offset = Math.round(offset);
   }
   return (d: Domain) => +(scale(d) ?? NaN) + offset;
@@ -66,9 +66,9 @@ export function createAxisDomainPathData(
 }
 
 /**
- * Returns the pixel offset for odd-value SVG lines, etc.
+ * Returns the default pixel offset for helping ensure crisp lines on non-retina
+ * displays.
  */
 export function getDefaultOffset(): number {
-  return 0.5;
-  //   return typeof window !== 'undefined' && window.devicePixelRatio > 1 ? 0 : 0.5;
+  return typeof window !== 'undefined' && window.devicePixelRatio > 1 ? 0 : 0.5;
 }

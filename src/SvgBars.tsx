@@ -42,16 +42,16 @@ function createRectDataGenerator<CategoryDomain extends AxisDomain, ValueDomain 
     if (orientation === 'vertical') {
       return {
         attrX: categoryValue + offset,
-        width: Math.max(bandwidth - offset * 2, 0),
+        width: Math.max(bandwidth, 0),
         attrY: animateFromOrToZero ? chartHeight : valueValue + offset,
-        height: animateFromOrToZero ? 0 : Math.max(chartHeight - valueValue - offset * 2, 0)
+        height: animateFromOrToZero ? 0 : Math.max(chartHeight - valueValue, 0)
       };
     } else {
       return {
         attrY: categoryValue + offset,
-        height: Math.max(bandwidth - offset * 2, 0),
+        height: Math.max(bandwidth, 0),
         attrX: 0,
-        width: animateFromOrToZero ? 0 : Math.max(valueValue - offset * 2, 0)
+        width: animateFromOrToZero ? 0 : Math.max(valueValue, 0)
       };
     }
   };
@@ -133,6 +133,7 @@ export function SvgBars<CategoryDomain extends AxisDomain, ValueDomain extends A
                 ...nextGenerator(d, false)
               })
             }}
+            shapeRendering="crispEdges"
           />
         ))}
       </AnimatePresence>

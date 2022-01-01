@@ -224,7 +224,7 @@ export function SvgAxis<Domain extends AxisDomain>(
   return (
     <SvgGroup
       translateX={translateX}
-      translateY={translateY - 1}
+      translateY={translateY}
       textAnchor={orientation === 'right' ? 'start' : orientation === 'left' ? 'end' : 'middle'}
       fill="currentColor"
       stroke="currentColor"
@@ -237,6 +237,7 @@ export function SvgAxis<Domain extends AxisDomain>(
           d: createAxisDomainPathData(orientation, tickSizeOuter, offset, range0, range1, k)
         }}
         className={domainClassName}
+        shapeRendering="crispEdges"
         {...domainProps}
       />
       {/* Send the current position to the tick exit animation variant. */}
@@ -272,6 +273,7 @@ export function SvgAxis<Domain extends AxisDomain>(
               {...{ [x + '2']: k * tickSizeInner }}
               stroke="currentColor"
               className={tickLineClassName}
+              shapeRendering="crispEdges"
               {...tickLineProps}
             />
             <g style={{ transform: labelGroupTransform }}>

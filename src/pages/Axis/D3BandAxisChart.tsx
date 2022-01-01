@@ -78,7 +78,6 @@ export const D3BandAxisChart: FC<D3BandAxisChartProps> = ({
       viewBox={`0 0 ${width} ${height}`}
       xmlns="http://www.w3.org/2000/svg"
       className="font-sans bg-slate-800"
-      style={{ shapeRendering: 'optimizeSpeed' }}
       aria-labelledby={ariaLabelledby}
     />
   );
