@@ -7,14 +7,15 @@ import { getAxisDomainAsReactKey, getDefaultOffset } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
 import { ChartOrientation } from './types';
 
-export type Datum<CategoryDomain extends AxisDomain, ValueDomain extends AxisDomain> = {
-  category: CategoryDomain;
-  value: ValueDomain;
+// TODO raise to types file.
+export type Datum<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
+  category: CategoryT;
+  value: ValueT;
 };
 
-function createRectDataGenerator<CategoryDomain extends AxisDomain, ValueDomain extends AxisDomain>(
-  categoryScale: AxisScale<CategoryDomain>,
-  valueScale: AxisScale<ValueDomain>,
+function createRectDataGenerator<CategoryT extends AxisDomain, ValueT extends AxisDomain>(
+  categoryScale: AxisScale<CategoryT>,
+  valueScale: AxisScale<ValueT>,
   chartWidth: number,
   chartHeight: number,
   orientation: ChartOrientation,
@@ -23,7 +24,7 @@ function createRectDataGenerator<CategoryDomain extends AxisDomain, ValueDomain 
   const clonedCategoryScale = categoryScale.copy();
   const clonedValueScale = valueScale.copy();
 
-  return (d: Datum<CategoryDomain, ValueDomain>, animateFromOrToZero: boolean) => {
+  return (d: Datum<CategoryT, ValueT>, animateFromOrToZero: boolean) => {
     const categoryValue = clonedCategoryScale(d.category);
     const valueValue = clonedValueScale(d.value);
     const bandwidth = clonedCategoryScale.bandwidth?.();
@@ -57,20 +58,23 @@ function createRectDataGenerator<CategoryDomain extends AxisDomain, ValueDomain 
   };
 }
 
-export type SvgBarsProps<CategoryDomain extends AxisDomain, ValueDomain extends AxisDomain> = {
-  data: Datum<CategoryDomain, ValueDomain>[];
+export type SvgBarsProps<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
+  data: Datum<CategoryT, ValueT>[];
   translateX: number;
   translateY: number;
   chartWidth: number;
   chartHeight: number;
   orientation: ChartOrientation;
-  categoryScale: AxisScale<CategoryDomain>;
-  valueScale: AxisScale<ValueDomain>;
+  categoryScale: AxisScale<CategoryT>;
+  valueScale: AxisScale<ValueT>;
   className?: string;
   offset?: number;
+  datumAriaRoleDescription?: (datum: Datum<CategoryT, ValueT>) => string;
+  datumAriaLabel?: (datum: Datum<CategoryT, ValueT>) => string;
+  datumAriaDescription?: (datum: Datum<CategoryT, ValueT>) => string;
 };
 
-export function SvgBars<CategoryDomain extends AxisDomain, ValueDomain extends AxisDomain>({
+export function SvgBars<CategoryT extends AxisDomain, ValueT extends AxisDomain>({
   data,
   translateX,
   translateY,
@@ -81,7 +85,7 @@ export function SvgBars<CategoryDomain extends AxisDomain, ValueDomain extends A
   orientation,
   offset: offsetProp,
   className = ''
-}: SvgBarsProps<CategoryDomain, ValueDomain>): ReactElement<any, any> | null {
+}: SvgBarsProps<CategoryT, ValueT>): ReactElement<any, any> | null {
   // Used to ensure crisp edges on low-resolution devices.
   const offset = offsetProp ?? getDefaultOffset();
 

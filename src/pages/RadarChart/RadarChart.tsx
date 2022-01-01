@@ -21,17 +21,13 @@ import type { Margins } from '@/types';
 
 import { CategorySlice } from './CategorySlice';
 
+// TODO can I make value a generic: ValueT extends AxisDomain ?
 export type RadarChartDatum<CategoryT extends AxisDomain> = {
   category: CategoryT;
   value: number;
-  //   label: string | ((d: RadarChartDatum<CategoryT>) => string);
 };
 
 const margins: Margins = { left: 1, right: 1, top: 1, bottom: 1 };
-
-// function getLabel<CategoryT extends AxisDomain>(d: RadarChartDatum<CategoryT>): string {
-//   return typeof d.label === 'function' ? d.label(d) : d.label;
-// }
 
 export type RadarChartProps<CategoryT extends AxisDomain> = {
   title: string;

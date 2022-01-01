@@ -1,12 +1,14 @@
 import type { AxisDomain, AxisScale } from 'd3';
 
+// TODO should I make an alias for AxisDomain?
+
 export type Margins = { top: number; bottom: number; left: number; right: number };
 
 export type AxisOrientation = 'top' | 'bottom' | 'left' | 'right';
 
-export type ChartOrientation = 'vertical' | 'horizontal';
-
 export type AxisLabelOrientation = 'horizontal' | 'vertical' | 'angled';
+
+export type ChartOrientation = 'vertical' | 'horizontal';
 
 export type BarChartDatum<CategoryT extends AxisDomain> = {
   category: CategoryT;

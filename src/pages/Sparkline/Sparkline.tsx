@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 
 import type { Margins } from '@/types';
 
+// TODO can I generalise this type?
 export type Datum = {
   date: Date;
   value: number;
