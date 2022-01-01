@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 import type { AxisDomain } from 'd3';
 import { identity } from 'lodash-es';
 
+// The domain will not be recalculated if you only change the accessor.
+// This means the accessor function does not need to be stable.
 export function useOrdinalDomain<Datum, CategoryT extends AxisDomain>(
   data: Datum[],
   accessor: (d: Datum) => CategoryT = identity
