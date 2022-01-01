@@ -3,8 +3,8 @@ import type { AxisScale } from 'd3';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
-import { Svg } from '@/Svg';
-import { SvgAxisNoExit } from '@/SvgAxisNoExit';
+import { Svg } from '@/components/Svg';
+import { SvgAxisNoExit } from '@/components/SvgAxisNoExit';
 import type { AxisLabelOrientation } from '@/types';
 
 const margins = { top: 20, bottom: 34, left: 30, right: 30 };

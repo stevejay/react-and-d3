@@ -3,9 +3,9 @@ import type { AxisScale } from 'd3';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
-import { lastMomentOfThisMonth, startOfThisMonth } from '@/dateUtils';
-import { Svg } from '@/Svg';
-import { SvgCustomTimeAxis } from '@/SvgCustomTimeAxis';
+import { Svg } from '@/components/Svg';
+import { SvgCustomTimeAxis } from '@/components/SvgCustomTimeAxis';
+import { lastMomentOfThisMonth, startOfThisMonth } from '@/utils/dateUtils';
 
 const margins = { top: 20, bottom: 60, left: 30, right: 30 };
 

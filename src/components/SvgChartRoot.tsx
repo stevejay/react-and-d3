@@ -2,7 +2,7 @@ import { forwardRef, ReactNode } from 'react';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
-import { Svg } from '@/Svg';
+import { Svg } from '@/components/Svg';
 
 export type SvgChartRootProps = {
   width: number;

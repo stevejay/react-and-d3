@@ -1,9 +1,9 @@
 import { FC, useCallback, useState } from 'react';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
+import { useDataSets } from '@/hooks/useDataSets';
 import type { CategoryValueDatum } from '@/types';
-import { useBreakpoint } from '@/useBreakpoint';
-import { useDataSets } from '@/useDataSets';
 
 import { RadarChart } from './RadarChart';
 

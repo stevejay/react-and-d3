@@ -3,15 +3,16 @@ import type { AxisDomain } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import { identity, isNil } from 'lodash-es';
 
+import type { AxisLabelOrientation, AxisOrientation, BaseAxisProps, ExpandedAxisScale } from '@/types';
 import {
   center,
   createAxisDomainPathData,
   getAxisDomainAsReactKey,
   getDefaultOffset,
   number
-} from './axisUtils';
+} from '@/utils/axisUtils';
+
 import { SvgGroup } from './SvgGroup';
-import type { AxisLabelOrientation, AxisOrientation, BaseAxisProps, ExpandedAxisScale } from './types';
 
 // TODO see if I can create a more compact version of this function.
 function getTickLabelOrientationProps(

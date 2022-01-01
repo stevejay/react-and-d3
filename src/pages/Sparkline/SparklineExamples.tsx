@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
-import { useDataSets } from '@/useDataSets';
+import { useDataSets } from '@/hooks/useDataSets';
 
 import { Sparkline } from './Sparkline';
 

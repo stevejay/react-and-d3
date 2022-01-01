@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
-import { useDataSets } from '@/useDataSets';
+import { useDataSets } from '@/hooks/useDataSets';
 
 import { D3LinearAxisChart } from './D3LinearAxisChart';
 import { ReactLinearAxisNoExitChart } from './ReactLinearAxisNoExitChart';

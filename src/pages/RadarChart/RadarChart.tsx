@@ -15,9 +15,9 @@ import {
 import { motion, MotionConfig } from 'framer-motion';
 import { every } from 'lodash-es';
 
-import { getAxisDomainAsReactKey } from '@/axisUtils';
-import { Svg } from '@/Svg';
+import { Svg } from '@/components/Svg';
 import type { CategoryValueDatum, Margins } from '@/types';
+import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 
 import { CategorySlice } from './CategorySlice';
 

@@ -1,12 +1,12 @@
 import { HorizontalRule } from '@/components/HorizontalRule';
 import { PageHeading } from '@/components/PageHeading';
 import { Paragraph } from '@/components/Paragraph';
-import { LinearAxisExamples } from '@/pages/Axis/LinearAxisExamples';
-import { TimeAxisExamples } from '@/pages/Axis/TimeAxisExamples';
 
 import { AlternateLinearAxisExamples } from './AlternateLinearAxisExamples';
 import { BandAxisExamples } from './BandAxisExamples';
 import { CustomTimeAxisExamples } from './CustomTimeAxisExamples';
+import { LinearAxisExamples } from './LinearAxisExamples';
+import { TimeAxisExamples } from './TimeAxisExamples';
 
 const Axis = () => (
   <>

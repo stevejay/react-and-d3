@@ -4,9 +4,15 @@ import { utcMonth } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import { identity, isNil, uniq } from 'lodash-es';
 
-import { createAxisDomainPathData, getAxisDomainAsReactKey, getDefaultOffset, number } from './axisUtils';
+import type { ExpandedAxisScale } from '@/types';
+import {
+  createAxisDomainPathData,
+  getAxisDomainAsReactKey,
+  getDefaultOffset,
+  number
+} from '@/utils/axisUtils';
+
 import { SvgGroup } from './SvgGroup';
-import type { ExpandedAxisScale } from './types';
 
 function conditionalClamp(coord: number, shouldClamp: boolean): number {
   return shouldClamp ? Math.max(coord, 0) : coord;

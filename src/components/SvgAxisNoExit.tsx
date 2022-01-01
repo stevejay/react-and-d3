@@ -5,15 +5,16 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { differenceBy, identity, isNil, sortBy, unionBy } from 'lodash-es';
 import useDebouncedEffect from 'use-debounced-effect';
 
+import type { AxisLabelOrientation, BaseAxisProps, ExpandedAxisScale } from '@/types';
 import {
   center,
   createAxisDomainPathData,
   getAxisDomainAsReactKey,
   getDefaultOffset,
   number
-} from './axisUtils';
+} from '@/utils/axisUtils';
+
 import { SvgGroup } from './SvgGroup';
-import type { AxisLabelOrientation, BaseAxisProps, ExpandedAxisScale } from './types';
 
 function getExitingTickValues<Domain extends AxisDomain>(
   tickValues: Domain[],

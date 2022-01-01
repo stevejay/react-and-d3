@@ -3,7 +3,8 @@ import { FC, useState } from 'react';
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
-import { ReactCustomTimeAxisChart } from '@/pages/Axis/ReactCustomTimeAxisChart';
+
+import { ReactCustomTimeAxisChart } from './ReactCustomTimeAxisChart';
 
 const dataSets = [
   [new Date(Date.UTC(2000, 0, 1)), new Date(Date.UTC(2000, 9, 1))],

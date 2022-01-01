@@ -3,8 +3,8 @@ import type { AxisScale } from 'd3';
 import * as d3 from 'd3';
 import { MotionConfig } from 'framer-motion';
 
-import { Svg } from '@/Svg';
-import { SvgAxis } from '@/SvgAxis';
+import { Svg } from '@/components/Svg';
+import { SvgAxis } from '@/components/SvgAxis';
 import type { AxisLabelOrientation } from '@/types';
 
 import { yearMonthMultiFormat } from './formatters';

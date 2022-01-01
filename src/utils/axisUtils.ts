@@ -1,6 +1,6 @@
 import type { AxisDomain, AxisScale } from 'd3';
 
-import type { AxisOrientation } from './types';
+import type { AxisOrientation } from '@/types';
 
 /**
  * Returns a function that transforms a domain value into a position in pixels

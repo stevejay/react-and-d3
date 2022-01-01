@@ -1,16 +1,16 @@
 import { ReactElement } from 'react';
 import type { AxisDomain } from 'd3';
 
-import { SvgAxis } from '@/SvgAxis';
-import { SvgAxisLabel } from '@/SvgAxisLabel';
-import { SvgBars } from '@/SvgBars';
-import { SvgChartRoot } from '@/SvgChartRoot';
+import { SvgAxis } from '@/components/SvgAxis';
+import { SvgAxisLabel } from '@/components/SvgAxisLabel';
+import { SvgBars } from '@/components/SvgBars';
+import { SvgChartRoot } from '@/components/SvgChartRoot';
+import { useBandScale } from '@/hooks/useBandScale';
+import { useChartArea } from '@/hooks/useChartArea';
+import { useContinuousDomain } from '@/hooks/useContinuousDomain';
+import { useLinearScale } from '@/hooks/useLinearScale';
+import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
 import type { CategoryValueDatum, Margins } from '@/types';
-import { useBandScale } from '@/useBandScale';
-import { useChartArea } from '@/useChartArea';
-import { useContinuousDomain } from '@/useContinuousDomain';
-import { useLinearScale } from '@/useLinearScale';
-import { useOrdinalDomain } from '@/useOrdinalDomain';
 
 type VerticalBarChartProps<CategoryT extends AxisDomain> = {
   data: CategoryValueDatum<CategoryT, number>[];

@@ -2,8 +2,8 @@ import { FC, ReactNode } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useId } from '@uifabric/react-hooks';
 
-import { ChartTitle } from '@/ChartTitle';
-import { useDebouncedMeasure } from '@/useDebouncedMeasure';
+import { ChartTitle } from '@/components/ChartTitle';
+import { useDebouncedMeasure } from '@/hooks/useDebouncedMeasure';
 
 export type ExampleChartWrapperProps = {
   title: string;

@@ -3,9 +3,10 @@ import type { AxisDomain, AxisScale } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import { isNil } from 'lodash-es';
 
-import { getAxisDomainAsReactKey, getDefaultOffset } from './axisUtils';
+import type { CategoryValueDatum, ChartOrientation } from '@/types';
+import { getAxisDomainAsReactKey, getDefaultOffset } from '@/utils/axisUtils';
+
 import { SvgGroup } from './SvgGroup';
-import { CategoryValueDatum, ChartOrientation } from './types';
 
 function createRectDataGenerator<CategoryT extends AxisDomain, ValueT extends AxisDomain>(
   categoryScale: AxisScale<CategoryT>,
