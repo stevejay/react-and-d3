@@ -137,6 +137,8 @@ export type SvgAxisProps<Domain extends AxisDomain> = BaseAxisProps<Domain> & {
   labelOrientation?: AxisLabelOrientation;
 };
 
+// TODO include a way to not render the domain at all, rather than having to
+// make it transparent to hide it.
 export function SvgAxis<Domain extends AxisDomain>(
   props: SvgAxisProps<Domain>
 ): ReactElement<any, any> | null {

@@ -79,7 +79,10 @@ export function SvgBars<CategoryT extends AxisDomain, ValueT extends AxisDomain>
   valueScale,
   orientation,
   offset: offsetProp,
-  className = ''
+  className = '',
+  datumAriaRoleDescription,
+  datumAriaLabel,
+  datumAriaDescription
 }: SvgBarsProps<CategoryT, ValueT>): ReactElement<any, any> | null {
   // Used to ensure crisp edges on low-resolution devices.
   const offset = offsetProp ?? getDefaultOffset();
@@ -133,7 +136,12 @@ export function SvgBars<CategoryT extends AxisDomain, ValueT extends AxisDomain>
               })
             }}
             shapeRendering="crispEdges"
-          />
+            role="graphics-symbol"
+            aria-roledescription={datumAriaRoleDescription?.(d)}
+            aria-label={datumAriaLabel?.(d)}
+          >
+            {datumAriaDescription && <desc>{datumAriaDescription(d)}</desc>}
+          </motion.rect>
         ))}
       </AnimatePresence>
     </SvgGroup>

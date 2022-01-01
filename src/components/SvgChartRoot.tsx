@@ -11,6 +11,7 @@ export type SvgChartRootProps = {
   className?: string;
   ariaLabel?: string;
   ariaLabelledby?: string;
+  ariaRoleDescription?: string;
   ariaDescription?: string;
   ariaDescribedby?: string;
   children?: ReactNode;
@@ -25,6 +26,7 @@ export const SvgChartRoot = forwardRef<SVGSVGElement, SvgChartRootProps>(
       className = '',
       ariaLabel,
       ariaLabelledby,
+      ariaRoleDescription,
       ariaDescription,
       ariaDescribedby,
       children
@@ -45,6 +47,8 @@ export const SvgChartRoot = forwardRef<SVGSVGElement, SvgChartRootProps>(
           aria-labelledby={ariaLabelledby}
           aria-description={ariaDescription}
           aria-describedby={ariaDescribedby}
+          aria-roledescription={ariaRoleDescription}
+          role="graphics-document"
         >
           {children}
         </Svg>

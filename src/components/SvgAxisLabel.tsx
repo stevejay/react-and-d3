@@ -66,6 +66,8 @@ export const SvgAxisLabel: FC<SvgAxisLabelProps> = ({
         className={className}
         textAnchor={orientationProps.textAnchor}
         dy={orientationProps.dy}
+        role="presentation"
+        aria-hidden
       >
         {label}
       </text>

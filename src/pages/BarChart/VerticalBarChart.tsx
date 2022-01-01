@@ -21,6 +21,9 @@ type VerticalBarChartProps<CategoryT extends AxisDomain> = {
   ariaLabelledby?: string;
   ariaDescription?: string;
   ariaDescribedby?: string;
+  datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  datumAriaDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
 };
 
 export function VerticalBarChart<CategoryT extends AxisDomain>({
@@ -31,7 +34,10 @@ export function VerticalBarChart<CategoryT extends AxisDomain>({
   ariaLabel,
   ariaLabelledby,
   ariaDescription,
-  ariaDescribedby
+  ariaDescribedby,
+  datumAriaRoleDescription,
+  datumAriaLabel,
+  datumAriaDescription
 }: VerticalBarChartProps<CategoryT>): ReactElement<any, any> | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useContinuousDomain(data, (d) => d.value, { includeZeroInDomain: true });
@@ -48,6 +54,7 @@ export function VerticalBarChart<CategoryT extends AxisDomain>({
       durationSecs={0.5}
       ariaLabel={ariaLabel}
       ariaLabelledby={ariaLabelledby}
+      ariaRoleDescription="Bar chart"
       ariaDescription={ariaDescription}
       ariaDescribedby={ariaDescribedby}
       className="font-sans select-none bg-slate-800"
@@ -71,7 +78,7 @@ export function VerticalBarChart<CategoryT extends AxisDomain>({
         offset={48}
         orientation="left"
         align="center"
-        className="text-sm text-slate-400"
+        className="text-sm text-slate-300"
       />
       <SvgAxis
         scale={categoryScale}
@@ -81,7 +88,7 @@ export function VerticalBarChart<CategoryT extends AxisDomain>({
         tickSizeInner={0}
         tickPadding={10}
         className="text-sm"
-        domainClassName="text-slate-400"
+        domainClassName="text-transparent"
       />
       <SvgAxisLabel
         label="X Axis Label"
@@ -89,7 +96,7 @@ export function VerticalBarChart<CategoryT extends AxisDomain>({
         offset={32}
         orientation="bottom"
         align="center"
-        className="text-sm text-slate-400"
+        className="text-sm text-slate-300"
       />
       <SvgBars
         data={data}
@@ -101,6 +108,9 @@ export function VerticalBarChart<CategoryT extends AxisDomain>({
         chartHeight={chartArea.height}
         orientation="vertical"
         className="text-slate-600"
+        datumAriaRoleDescription={datumAriaRoleDescription}
+        datumAriaLabel={datumAriaLabel}
+        datumAriaDescription={datumAriaDescription}
       />
     </SvgChartRoot>
   );

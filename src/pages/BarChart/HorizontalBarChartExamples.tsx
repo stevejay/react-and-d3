@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
-import type { Margins } from '@/types';
+import type { CategoryValueDatum, Margins } from '@/types';
 
 import { HorizontalBarChart } from './HorizontalBarChart';
 import { TemporaryChartWrapper } from './TemporaryChartWrapper';
@@ -31,6 +31,10 @@ const dataSets = [
 
 const margins: Margins = { left: 64, right: 40, top: 40, bottom: 64 };
 
+function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
+  return datum.category;
+}
+
 export type HorizontalBarChartExamplesProps = {
   transitionSeconds: number;
 };
@@ -48,6 +52,9 @@ export const HorizontalBarChartExamples: FC<HorizontalBarChartExamplesProps> = (
               width={width}
               height={height}
               margins={margins}
+              datumAriaRoleDescription={getCategoryLabel}
+              datumAriaLabel={(d) => `${d.value}`}
+              datumAriaDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
             />
           )
         }
