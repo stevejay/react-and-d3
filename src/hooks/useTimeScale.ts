@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
-import { AxisScale, interpolateRound, scaleTime, scaleUtc } from 'd3';
+import { AxisScale, interpolate, interpolateRound, scaleTime, scaleUtc } from 'd3';
 
-// TODO ensure that options can be undone.
 // This only supports continuous scales that have two values each in their domain and range.
 // The domain and range need to be stable. The options object does not need to be stable.
 //
@@ -18,14 +17,14 @@ export function useTimeScale(
     utc?: boolean;
   }
 ): AxisScale<Date> {
-  const { nice, rangeRound, clamp, unknown, ticks, utc } = options ?? {};
+  const { nice, rangeRound = false, clamp = false, unknown = undefined, ticks, utc } = options ?? {};
   return useMemo<AxisScale<Date>>(() => {
     const factory = utc ? scaleUtc : scaleTime;
     const scale = factory();
     scale.domain(domain);
     scale.range(range);
-    rangeRound && scale.interpolate(interpolateRound);
-    clamp && scale.clamp();
+    scale.interpolate(rangeRound ? interpolateRound : interpolate);
+    scale.clamp(clamp);
     scale.unknown(unknown);
     scale.ticks(ticks ?? 10);
     // Nice-ing must happen after setting the domain, so just always set it last.

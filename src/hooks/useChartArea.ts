@@ -9,5 +9,6 @@ export function useChartArea(svgWidth: number, svgHeight: number, margins: Margi
   const translateY = margins.top;
   const xRange = useMemo(() => [0, width] as const, [width]);
   const yRange = useMemo(() => [height, 0] as const, [height]);
-  return { width, height, translateX, translateY, xRange, yRange };
+  const yRangeReversed = useMemo(() => [0, height] as const, [height]);
+  return { width, height, translateX, translateY, xRange, yRange, yRangeReversed };
 }

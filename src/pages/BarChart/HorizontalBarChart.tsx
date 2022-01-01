@@ -43,7 +43,7 @@ export function HorizontalBarChart<CategoryT extends AxisDomain>({
   const valueDomain = useContinuousDomain(data, (d) => d.value, { includeZeroInDomain: true });
   const valueScale = useLinearScale(valueDomain, chartArea.xRange, { nice: true, clamp: true });
   const categoryDomain = useOrdinalDomain(data, (d) => d.category);
-  const categoryScale = useBandScale(categoryDomain, chartArea.yRange, {
+  const categoryScale = useBandScale(categoryDomain, chartArea.yRangeReversed, {
     paddingInner: 0.3,
     paddingOuter: 0.2
   });
@@ -80,24 +80,6 @@ export function HorizontalBarChart<CategoryT extends AxisDomain>({
         align="center"
         className="text-sm text-slate-300"
       />
-      <SvgAxis
-        scale={categoryScale}
-        translateX={chartArea.translateX}
-        translateY={chartArea.translateY}
-        orientation="left"
-        tickSizeInner={0}
-        tickPadding={10}
-        className="text-sm"
-        domainClassName="text-transparent"
-      />
-      <SvgAxisLabel
-        label="Y Axis Label"
-        chartArea={chartArea}
-        offset={40}
-        orientation="left"
-        align="center"
-        className="text-sm text-slate-300"
-      />
       <SvgBars
         data={data}
         categoryScale={categoryScale}
@@ -111,6 +93,26 @@ export function HorizontalBarChart<CategoryT extends AxisDomain>({
         datumAriaRoleDescription={datumAriaRoleDescription}
         datumAriaLabel={datumAriaLabel}
         datumAriaDescription={datumAriaDescription}
+      />
+      {/* Y-axis is rendered after the bars so that its domain sits on top of them */}
+      <SvgAxis
+        scale={categoryScale}
+        translateX={chartArea.translateX}
+        translateY={chartArea.translateY}
+        orientation="left"
+        tickSizeInner={0}
+        tickSizeOuter={0}
+        tickPadding={10}
+        className="text-sm"
+        domainClassName="text-slate-300"
+      />
+      <SvgAxisLabel
+        label="Y Axis Label"
+        chartArea={chartArea}
+        offset={40}
+        orientation="left"
+        align="center"
+        className="text-sm text-slate-300"
       />
     </SvgChartRoot>
   );

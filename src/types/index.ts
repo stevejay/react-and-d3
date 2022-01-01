@@ -20,6 +20,7 @@ export type ChartArea = {
   translateY: number;
   xRange: readonly [number, number];
   yRange: readonly [number, number];
+  yRangeReversed: readonly [number, number]; // TODO think about this solution
 };
 
 export type ExpandedAxisScale<Domain extends AxisDomain> = AxisScale<Domain> & {

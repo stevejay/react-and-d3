@@ -80,24 +80,6 @@ export function VerticalBarChart<CategoryT extends AxisDomain>({
         align="center"
         className="text-sm text-slate-300"
       />
-      <SvgAxis
-        scale={categoryScale}
-        translateX={chartArea.translateX}
-        translateY={chartArea.translateY + chartArea.height}
-        orientation="bottom"
-        tickSizeInner={0}
-        tickPadding={10}
-        className="text-sm"
-        domainClassName="text-transparent"
-      />
-      <SvgAxisLabel
-        label="X Axis Label"
-        chartArea={chartArea}
-        offset={32}
-        orientation="bottom"
-        align="center"
-        className="text-sm text-slate-300"
-      />
       <SvgBars
         data={data}
         categoryScale={categoryScale}
@@ -111,6 +93,26 @@ export function VerticalBarChart<CategoryT extends AxisDomain>({
         datumAriaRoleDescription={datumAriaRoleDescription}
         datumAriaLabel={datumAriaLabel}
         datumAriaDescription={datumAriaDescription}
+      />
+      {/* X-axis is rendered after the bars so that its domain sits on top of them */}
+      <SvgAxis
+        scale={categoryScale}
+        translateX={chartArea.translateX}
+        translateY={chartArea.translateY + chartArea.height}
+        orientation="bottom"
+        tickSizeInner={0}
+        tickSizeOuter={0}
+        tickPadding={10}
+        className="text-sm"
+        domainClassName="text-slate-300"
+      />
+      <SvgAxisLabel
+        label="X Axis Label"
+        chartArea={chartArea}
+        offset={32}
+        orientation="bottom"
+        align="center"
+        className="text-sm text-slate-300"
       />
     </SvgChartRoot>
   );
