@@ -44,8 +44,7 @@ export const CategorySlice: FC<CategorySliceProps> = ({
       className={`slice-arc transition-colors fill-current ${
         isSelected ? 'text-slate-700' : 'text-slate-800'
       } hover:text-slate-700`}
-      //   role="presentation"
-      //   aria-hidden
+      role="presentation"
       d={path}
       onClick={onClick}
     />
@@ -54,7 +53,7 @@ export const CategorySlice: FC<CategorySliceProps> = ({
         isSelected ? 'text-white' : 'text-slate-400'
       } fill-current`}
       role="presentation"
-      //   aria-hidden
+      aria-hidden
       dy={degree > 90 && degree < 270 ? '0.75em' : '0em'}
       style={{
         transform: `rotate(${degree}deg)`,
@@ -62,7 +61,6 @@ export const CategorySlice: FC<CategorySliceProps> = ({
       }}
     >
       <textPath
-        role="presentation"
         startOffset="50%"
         href={degree > 90 && degree < 270 ? `#${lowerLabelArcId}` : `#${upperLabelArcId}`}
         style={{ textAnchor: 'middle' }}

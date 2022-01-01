@@ -185,10 +185,7 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
         aria-label={title}
       >
         {/* Definitions */}
-        <defs
-        //   role="presentation"
-        //  aria-hidden
-        >
+        <defs>
           <radialGradient
             id={gradientId}
             gradientUnits="userSpaceOnUse"
@@ -200,12 +197,14 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
             <stop offset="100%" stopColor="currentColor" stopOpacity="0.1" />
           </radialGradient>
           <path
+            role="presentation"
             id={upperLabelArcId}
             d={`M-${labelArcRadiusPx},0 a${labelArcRadiusPx},${labelArcRadiusPx} 0 0,1 ${
               labelArcRadiusPx * 2
             },0`}
           />
           <path
+            role="presentation"
             id={lowerLabelArcId}
             d={`M${labelArcRadiusPx},0 a${labelArcRadiusPx},${labelArcRadiusPx} 0 0,0 -${
               labelArcRadiusPx * 2
@@ -233,8 +232,7 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
         {/* Indicator slice */}
         <path
           className="pointer-events-none fill-current"
-          //   role="presentation"
-          //   aria-hidden
+          role="presentation"
           d={(indicatorSliceArc as any)()}
           style={{ transform: `rotate(${degreesLookup.get(selectedDatum.category) ?? 0}deg)` }}
         />
@@ -248,8 +246,7 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
               strokeWidth={1}
               cx={0}
               cy={0}
-              //   role="presentation"
-              //   aria-hidden
+              role="presentation"
               r={y(tick)}
             ></circle>
           ))}
@@ -264,8 +261,7 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
                 rx={tickRectBorderRadiusPx}
                 ry={tickRectBorderRadiusPx}
                 stroke="none"
-                // role="presentation"
-                // aria-hidden
+                role="presentation"
                 width={tickRectWidthPx}
                 height={tickRectHeightPx}
                 x={tickRectWidthPx * -0.5}
@@ -274,7 +270,7 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
               <text
                 className="fill-current text-slate-400"
                 role="presentation"
-                // aria-hidden
+                aria-hidden
                 x={0}
                 y={y(tick)}
                 dy="0.35em"
@@ -293,8 +289,7 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
               className="stroke-current text-slate-400"
               fill={`url(#${gradientId})`}
               strokeWidth={2}
-              //   role="presentation"
-              //   aria-hidden
+              role="presentation"
               animate={{
                 d: radialLineGenerator(data) ?? '',
                 opacity: isZeroState ? 0 : 1
@@ -311,8 +306,7 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
               className="stroke-current"
               x1={0}
               y1={0}
-              //   role="presentation"
-              //   aria-hidden
+              role="presentation"
               strokeWidth={d.category === selectedCategory ? 5 : 2}
               animate={{
                 x2: radialPointLookup.get(d.category)?.[0] ?? 0,
@@ -331,8 +325,7 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
             } fill-slate-900 transition-colors`}
             cx={0}
             cy={0}
-            // role="presentation"
-            // aria-hidden
+            role="presentation"
             r={centerRingRadiusPx}
             strokeWidth={centerRingStrokeWidthPx}
           />
@@ -343,7 +336,7 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
             dy="0.35em"
             className="font-medium text-white"
             role="presentation"
-            // aria-hidden
+            aria-hidden
             fill="currentColor"
             style={{ fontSize: centerRingFontSizePx }}
           >
@@ -356,10 +349,9 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
           {data.map((d) => (
             <Fragment key={getAxisDomainAsReactKey(d.category)}>
               <motion.circle
-                //   role="graphics-symbol"
-                //   aria-roledescription={datumAriaRoleDescription?.(d)}
                 fill="currentColor"
                 stroke="none"
+                role="presentation"
                 r={activePointRadiusPx}
                 animate={{
                   cx: radialPointLookup.get(d.category)?.[0] ?? 0,
@@ -396,8 +388,7 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
                   key={getAxisDomainAsReactKey(d.category)}
                   id={circleId}
                   className="fill-transparent"
-                  //   role="presentation"
-                  //   aria-hidden
+                  role="presentation"
                   cx={radialPointLookup.get(d.category)?.[0] ?? 0}
                   cy={radialPointLookup.get(d.category)?.[1] ?? 0}
                   r={activePointRadiusPx}

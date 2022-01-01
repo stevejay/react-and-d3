@@ -59,7 +59,7 @@ export const RadarChartExamples: FC = () => {
     <div className="flex flex-col items-center w-full py-8 space-y-8 bg-slate-900">
       <RadarChart
         data={data}
-        title="The label"
+        title="This is the radar chart label"
         categoryLabel={getCategoryLabel}
         selectedCategory={selectedCategory}
         compact={isMobile}
@@ -68,7 +68,7 @@ export const RadarChartExamples: FC = () => {
         onShowTooltip={onShowTooltip}
         onHideTooltip={onHideTooltip}
         datumAriaRoleDescription={getCategoryLabel}
-        datumAriaLabel={(d) => `Value is ${d.value}`}
+        datumAriaLabel={(d) => `${d.value}`}
         datumAriaDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
       />
       <ExampleUpdateButton onClick={nextDataSet}>Update radar chart data</ExampleUpdateButton>
