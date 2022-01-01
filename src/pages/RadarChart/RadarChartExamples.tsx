@@ -1,12 +1,13 @@
 import { FC, useCallback, useState } from 'react';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
+import type { CategoryValueDatum } from '@/types';
 import { useBreakpoint } from '@/useBreakpoint';
 import { useDataSets } from '@/useDataSets';
 
-import { RadarChart, RadarChartDatum } from './RadarChart';
+import { RadarChart } from './RadarChart';
 
-const dataSets: readonly RadarChartDatum<string>[][] = [
+const dataSets: readonly CategoryValueDatum<string, number>[][] = [
   [
     { category: 'one', value: 89.34 },
     { category: 'two', value: 83.56 },
@@ -30,7 +31,7 @@ const dataSets: readonly RadarChartDatum<string>[][] = [
   ]
 ];
 
-function getCategoryLabel(datum: RadarChartDatum<string>) {
+function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
   switch (datum.category) {
     case 'one':
       return 'Category One';

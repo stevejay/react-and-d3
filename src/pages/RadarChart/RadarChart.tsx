@@ -17,34 +17,28 @@ import { every } from 'lodash-es';
 
 import { getAxisDomainAsReactKey } from '@/axisUtils';
 import { Svg } from '@/Svg';
-import type { Margins } from '@/types';
+import type { CategoryValueDatum, Margins } from '@/types';
 
 import { CategorySlice } from './CategorySlice';
-
-// TODO can I make value a generic: ValueT extends AxisDomain ?
-export type RadarChartDatum<CategoryT extends AxisDomain> = {
-  category: CategoryT;
-  value: number;
-};
 
 const margins: Margins = { left: 1, right: 1, top: 1, bottom: 1 };
 
 export type RadarChartProps<CategoryT extends AxisDomain> = {
   title: string;
-  categoryLabel: (datum: RadarChartDatum<CategoryT>) => string;
+  categoryLabel: (datum: CategoryValueDatum<CategoryT, number>) => string;
   selectedCategory: CategoryT;
-  data: readonly RadarChartDatum<CategoryT>[];
+  data: readonly CategoryValueDatum<CategoryT, number>[];
   compact: boolean;
   diameter: number;
   /** Needs to be a stable callback. */
-  onSelect: (datum: RadarChartDatum<CategoryT>) => void;
+  onSelect: (datum: CategoryValueDatum<CategoryT, number>) => void;
   /** Needs to be a stable callback. */
-  onShowTooltip: (element: Element, datum: RadarChartDatum<CategoryT>) => void;
+  onShowTooltip: (element: Element, datum: CategoryValueDatum<CategoryT, number>) => void;
   /** Needs to be a stable callback. */
   onHideTooltip: () => void;
-  datumAriaRoleDescription?: (datum: RadarChartDatum<CategoryT>) => string;
-  datumAriaLabel?: (datum: RadarChartDatum<CategoryT>) => string;
-  datumAriaDescription?: (datum: RadarChartDatum<CategoryT>) => string;
+  datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  datumAriaDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
 };
 
 const RadarChartImpl = <CategoryT extends AxisDomain>({
@@ -144,7 +138,7 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
     .innerRadius(chartAreaRadius + yAxisMarginTopPx)
     .outerRadius(chartAreaRadius + yAxisMarginTopPx + sliceHeightPx);
 
-  const slicePieGenerator = pie<RadarChartDatum<CategoryT>>()
+  const slicePieGenerator = pie<CategoryValueDatum<CategoryT, number>>()
     .sort(null)
     .value(1)
     .padAngle(slicePadAngleRadians)
@@ -162,7 +156,7 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
 
   // ----- RADIAL POLYGON -----
 
-  const radialLineGenerator = lineRadial<RadarChartDatum<CategoryT>>()
+  const radialLineGenerator = lineRadial<CategoryValueDatum<CategoryT, number>>()
     .angle((d) => x(d.category) ?? 0)
     .radius((d) => y(d.value))
     .curve(curveLinearClosed);

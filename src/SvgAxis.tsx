@@ -11,7 +11,7 @@ import {
   number
 } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
-import type { AxisLabelOrientation, AxisOrientation, DefaultAxisProps, ExpandedAxisScale } from './types';
+import type { AxisLabelOrientation, AxisOrientation, BaseAxisProps, ExpandedAxisScale } from './types';
 
 // TODO see if I can create a more compact version of this function.
 function getTickLabelOrientationProps(
@@ -111,7 +111,7 @@ function getTickLabelOrientationProps(
   }
 }
 
-export type SvgAxisProps<Domain extends AxisDomain> = DefaultAxisProps<Domain> & {
+export type SvgAxisProps<Domain extends AxisDomain> = BaseAxisProps<Domain> & {
   className?: string;
   domainClassName?: string;
   domainProps?: Omit<

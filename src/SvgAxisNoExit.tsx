@@ -13,7 +13,7 @@ import {
   number
 } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
-import type { AxisLabelOrientation, DefaultAxisProps, ExpandedAxisScale } from './types';
+import type { AxisLabelOrientation, BaseAxisProps, ExpandedAxisScale } from './types';
 
 function getExitingTickValues<Domain extends AxisDomain>(
   tickValues: Domain[],
@@ -24,7 +24,7 @@ function getExitingTickValues<Domain extends AxisDomain>(
   return differenceBy(unionBy(previousTickValues, exitingTickValues, iteratee), tickValues, iteratee);
 }
 
-export type SvgAxisNoExitProps<Domain extends AxisDomain> = DefaultAxisProps<Domain> & {
+export type SvgAxisNoExitProps<Domain extends AxisDomain> = BaseAxisProps<Domain> & {
   transitionSeconds?: number;
   labelOrientation?: AxisLabelOrientation;
 };

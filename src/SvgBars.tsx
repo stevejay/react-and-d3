@@ -5,13 +5,7 @@ import { isNil } from 'lodash-es';
 
 import { getAxisDomainAsReactKey, getDefaultOffset } from './axisUtils';
 import { SvgGroup } from './SvgGroup';
-import { ChartOrientation } from './types';
-
-// TODO raise to types file.
-export type Datum<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
-  category: CategoryT;
-  value: ValueT;
-};
+import { CategoryValueDatum, ChartOrientation } from './types';
 
 function createRectDataGenerator<CategoryT extends AxisDomain, ValueT extends AxisDomain>(
   categoryScale: AxisScale<CategoryT>,
@@ -24,7 +18,7 @@ function createRectDataGenerator<CategoryT extends AxisDomain, ValueT extends Ax
   const clonedCategoryScale = categoryScale.copy();
   const clonedValueScale = valueScale.copy();
 
-  return (d: Datum<CategoryT, ValueT>, animateFromOrToZero: boolean) => {
+  return (d: CategoryValueDatum<CategoryT, ValueT>, animateFromOrToZero: boolean) => {
     const categoryValue = clonedCategoryScale(d.category);
     const valueValue = clonedValueScale(d.value);
     const bandwidth = clonedCategoryScale.bandwidth?.();
@@ -59,7 +53,7 @@ function createRectDataGenerator<CategoryT extends AxisDomain, ValueT extends Ax
 }
 
 export type SvgBarsProps<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
-  data: Datum<CategoryT, ValueT>[];
+  data: CategoryValueDatum<CategoryT, ValueT>[];
   translateX: number;
   translateY: number;
   chartWidth: number;
@@ -69,9 +63,9 @@ export type SvgBarsProps<CategoryT extends AxisDomain, ValueT extends AxisDomain
   valueScale: AxisScale<ValueT>;
   className?: string;
   offset?: number;
-  datumAriaRoleDescription?: (datum: Datum<CategoryT, ValueT>) => string;
-  datumAriaLabel?: (datum: Datum<CategoryT, ValueT>) => string;
-  datumAriaDescription?: (datum: Datum<CategoryT, ValueT>) => string;
+  datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, ValueT>) => string;
+  datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, ValueT>) => string;
+  datumAriaDescription?: (datum: CategoryValueDatum<CategoryT, ValueT>) => string;
 };
 
 export function SvgBars<CategoryT extends AxisDomain, ValueT extends AxisDomain>({

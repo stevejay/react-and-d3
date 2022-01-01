@@ -5,7 +5,7 @@ import { SvgAxis } from '@/SvgAxis';
 import { SvgAxisLabel } from '@/SvgAxisLabel';
 import { SvgBars } from '@/SvgBars';
 import { SvgChartRoot } from '@/SvgChartRoot';
-import type { BarChartDatum, Margins } from '@/types';
+import type { CategoryValueDatum, Margins } from '@/types';
 import { useBandScale } from '@/useBandScale';
 import { useChartArea } from '@/useChartArea';
 import { useContinuousDomain } from '@/useContinuousDomain';
@@ -13,7 +13,7 @@ import { useLinearScale } from '@/useLinearScale';
 import { useOrdinalDomain } from '@/useOrdinalDomain';
 
 type VerticalBarChartProps<CategoryT extends AxisDomain> = {
-  data: BarChartDatum<CategoryT>[];
+  data: CategoryValueDatum<CategoryT, number>[];
   width: number;
   height: number;
   margins: Margins;

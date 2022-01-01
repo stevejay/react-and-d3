@@ -1,7 +1,5 @@
 import type { AxisDomain, AxisScale } from 'd3';
 
-// TODO should I make an alias for AxisDomain?
-
 export type Margins = { top: number; bottom: number; left: number; right: number };
 
 export type AxisOrientation = 'top' | 'bottom' | 'left' | 'right';
@@ -10,9 +8,9 @@ export type AxisLabelOrientation = 'horizontal' | 'vertical' | 'angled';
 
 export type ChartOrientation = 'vertical' | 'horizontal';
 
-export type BarChartDatum<CategoryT extends AxisDomain> = {
+export type CategoryValueDatum<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
   category: CategoryT;
-  value: number;
+  value: ValueT;
 };
 
 export type ChartArea = {
@@ -29,7 +27,7 @@ export type ExpandedAxisScale<Domain extends AxisDomain> = AxisScale<Domain> & {
   tickFormat?(...args: any[]): (d: Domain) => string;
 };
 
-export type DefaultAxisProps<Domain extends AxisDomain> = {
+export type BaseAxisProps<Domain extends AxisDomain> = {
   /**
    * The scale used to render the axis. Required.
    */

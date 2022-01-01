@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
-import { Margins } from '@/types';
+import type { Margins } from '@/types';
 import { useDataSets } from '@/useDataSets';
 
 import { TemporaryChartWrapper } from './TemporaryChartWrapper';
