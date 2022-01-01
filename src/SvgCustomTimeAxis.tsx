@@ -113,6 +113,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
                 strokeDasharray={index === 0 || tickValue.getUTCMonth() === 0 ? 'none' : '5 4'}
                 {...{ [x + '2']: k * tickSize }}
                 shapeRendering="crispEdges"
+                role="presentation"
               />
               <motion.g
                 initial={false}
@@ -128,7 +129,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
                   textAnchor="middle"
                   className="text-xs"
                   role="presentation"
-                  //   aria-hidden
+                  aria-hidden
                 >
                   {tickFormat(tickValue)}
                 </text>
@@ -181,7 +182,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
                   textAnchor="start"
                   className="text-[10px]"
                   role="presentation"
-                  //   aria-hidden
+                  aria-hidden
                 >
                   {tickYear}
                 </text>
@@ -196,6 +197,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
           d: createAxisDomainPathData('bottom', tickSizeOuter, offset, range0, range1, k)
         }}
         shapeRendering="crispEdges"
+        role="presentation"
       />
     </SvgGroup>
   );

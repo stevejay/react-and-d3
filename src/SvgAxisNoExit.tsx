@@ -145,6 +145,7 @@ export function SvgAxisNoExit<Domain extends AxisDomain>(
         animate={{
           d: createAxisDomainPathData(orientation, tickSizeOuter, offset, range0, range1, k)
         }}
+        role="presentation"
       />
       <AnimatePresence initial={false}>
         {currentAndExiting.map(({ tickValue, exiting }, index) => (
@@ -170,14 +171,14 @@ export function SvgAxisNoExit<Domain extends AxisDomain>(
               }
             }}
           >
-            <motion.line initial={false} animate={{ [x + '2']: k * tickSizeInner }} />
+            <motion.line initial={false} animate={{ [x + '2']: k * tickSizeInner }} role="presentation" />
             <motion.text
               stroke="none"
               dy={orientation === 'top' ? '0em' : orientation === 'bottom' ? '0.71em' : '0.32em'}
               initial={false}
               animate={{ [x === 'x' ? 'attrX' : 'attrY']: k * spacing }}
               role="presentation"
-              //   aria-hidden
+              aria-hidden
             >
               {tickFormat(tickValue, index)}
             </motion.text>

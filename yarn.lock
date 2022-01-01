@@ -15676,7 +15676,6 @@ __metadata:
     react-dom: ^17.0.2
     react-icons: ^4.3.1
     react-intersection-observer: ^8.33.1
-    react-intersection-observer-hook: ^2.0.3
     react-router-dom: 6
     react-use-measure: ^2.1.1
     serve: ^13.0.2
@@ -15864,15 +15863,6 @@ __metadata:
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
   checksum: ca9e4c1fedb94e4e956dd3142838c5a25a9d61375aee5e8a74dd623bae09a263098a93f220e8d84c7fd39e569e1fa4297d363ddbc91b15bca91baeb7281d7f4f
-  languageName: node
-  linkType: hard
-
-"react-intersection-observer-hook@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "react-intersection-observer-hook@npm:2.0.3"
-  peerDependencies:
-    react: ">=16.8.0"
-  checksum: a2c739a4bb53cd29870101fa2f256adac23617a9df97a142241615ba1b4f3021c3ab0ea0de50f51d170cf39e68c003a8a15e02ea3884ea0fd21721fa5507562a
   languageName: node
   linkType: hard
 

@@ -233,6 +233,7 @@ export function SvgAxis<Domain extends AxisDomain>(
       <motion.path
         fill="none"
         stroke="currentColor"
+        role="presentation"
         animate={{
           d: createAxisDomainPathData(orientation, tickSizeOuter, offset, range0, range1, k)
         }}
@@ -272,6 +273,7 @@ export function SvgAxis<Domain extends AxisDomain>(
             <line
               {...{ [x + '2']: k * tickSizeInner }}
               stroke="currentColor"
+              role="presentation"
               className={tickLineClassName}
               shapeRendering="crispEdges"
               {...tickLineProps}
@@ -281,7 +283,7 @@ export function SvgAxis<Domain extends AxisDomain>(
                 stroke="none"
                 fill="currentColor"
                 role="presentation"
-                // aria-hidden
+                aria-hidden
                 className={tickTextClassName}
                 {...labelOrientationProps}
                 {...tickTextProps}
