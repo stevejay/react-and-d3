@@ -64,11 +64,3 @@ export function createAxisDomainPathData(
     ? `M${range0},${k * tickSizeOuter}V${offset}H${range1}V${k * tickSizeOuter}`
     : `M${range0},${offset}H${range1}`;
 }
-
-/**
- * Returns the default pixel offset for helping ensure crisp lines on non-retina
- * displays.
- */
-export function getDefaultOffset(): number {
-  return typeof window !== 'undefined' && window.devicePixelRatio > 1 ? 0 : 0.5;
-}

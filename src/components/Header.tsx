@@ -45,7 +45,7 @@ export const Header: FC<HeaderProps> = ({ navigationData }) => {
                 static
                 open={isOpen}
                 onClose={close}
-                className="fixed inset-0 p-8 overflow-y-auto md:p-12 bg-gradient-to-br from-pink-700 via-pink-700 to-pink-600"
+                className="fixed z-[10000] inset-0 p-8 overflow-y-auto md:p-12 bg-gradient-to-br from-pink-700 via-pink-700 to-pink-600"
                 variants={variants}
                 initial="enter"
                 animate="animate"

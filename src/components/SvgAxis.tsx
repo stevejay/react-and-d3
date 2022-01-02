@@ -4,13 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { identity, isNil } from 'lodash-es';
 
 import type { AxisLabelOrientation, AxisOrientation, BaseAxisProps, ExpandedAxisScale } from '@/types';
-import {
-  center,
-  createAxisDomainPathData,
-  getAxisDomainAsReactKey,
-  getDefaultOffset,
-  number
-} from '@/utils/axisUtils';
+import { center, createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
+import { getDefaultOffset } from '@/utils/renderUtils';
 
 import { SvgGroup } from './SvgGroup';
 

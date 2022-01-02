@@ -7,12 +7,12 @@ import { Svg } from '@/components/Svg';
 export type SvgChartRootProps = {
   width: number;
   height: number;
-  durationSecs?: number;
+  transitionSeconds?: number;
   className?: string;
   ariaLabel?: string;
   ariaLabelledby?: string;
   ariaRoleDescription?: string;
-  ariaDescription?: string;
+  description?: string;
   ariaDescribedby?: string;
   children?: ReactNode;
 };
@@ -22,12 +22,12 @@ export const SvgChartRoot = forwardRef<SVGSVGElement, SvgChartRootProps>(
     {
       width,
       height,
-      durationSecs = 0.25,
+      transitionSeconds = 0.25,
       className = '',
       ariaLabel,
       ariaLabelledby,
       ariaRoleDescription,
-      ariaDescription,
+      description,
       ariaDescribedby,
       children
     },
@@ -37,7 +37,7 @@ export const SvgChartRoot = forwardRef<SVGSVGElement, SvgChartRootProps>(
       return null;
     }
     return (
-      <MotionConfig transition={{ duration: durationSecs, ease: d3.easeCubicInOut }}>
+      <MotionConfig transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}>
         <Svg
           ref={ref}
           width={width}
@@ -45,11 +45,11 @@ export const SvgChartRoot = forwardRef<SVGSVGElement, SvgChartRootProps>(
           className={className}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledby}
-          aria-description={ariaDescription}
           aria-describedby={ariaDescribedby}
           aria-roledescription={ariaRoleDescription}
           role="graphics-document"
         >
+          {description && <desc>{description}</desc>}
           {children}
         </Svg>
       </MotionConfig>

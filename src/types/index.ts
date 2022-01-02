@@ -23,6 +23,13 @@ export type ChartArea = {
   yRangeReversed: readonly [number, number]; // TODO think about this solution
 };
 
+export type Rect = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 export type ExpandedAxisScale<Domain extends AxisDomain> = AxisScale<Domain> & {
   ticks?(...args: any[]): Domain[];
   tickFormat?(...args: any[]): (d: Domain) => string;

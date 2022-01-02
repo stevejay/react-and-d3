@@ -6,7 +6,7 @@ import { useDataSets } from '@/hooks/useDataSets';
 import type { CategoryValueDatum, Margins } from '@/types';
 
 import { TemporaryChartWrapper } from './TemporaryChartWrapper';
-import { VerticalBarChart } from './VerticalBarChart';
+import { VerticalBarChartWithTooltip } from './VerticalBarChartWithTooltip';
 
 const dataSets = [
   [
@@ -46,15 +46,21 @@ export const VerticalBarChartExamples: FC<VerticalBarChartExamplesProps> = ({ tr
       <TemporaryChartWrapper title="Vertical Bar Chart">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
-            <VerticalBarChart
+            <VerticalBarChartWithTooltip
               ariaLabelledby={ariaLabelledby}
               data={data}
               width={width}
               height={height}
               margins={margins}
+              ariaRoleDescription="Bar chart"
               datumAriaRoleDescription={getCategoryLabel}
               datumAriaLabel={(d) => `${d.value}`}
               datumAriaDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
+              renderTooltipContent={(d) => (
+                <>
+                  {getCategoryLabel(d)}: {d.value}
+                </>
+              )}
             />
           )
         }

@@ -6,13 +6,8 @@ import { differenceBy, identity, isNil, sortBy, unionBy } from 'lodash-es';
 import useDebouncedEffect from 'use-debounced-effect';
 
 import type { AxisLabelOrientation, BaseAxisProps, ExpandedAxisScale } from '@/types';
-import {
-  center,
-  createAxisDomainPathData,
-  getAxisDomainAsReactKey,
-  getDefaultOffset,
-  number
-} from '@/utils/axisUtils';
+import { center, createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
+import { getDefaultOffset } from '@/utils/renderUtils';
 
 import { SvgGroup } from './SvgGroup';
 

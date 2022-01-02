@@ -1,0 +1,53 @@
+.tooltip-arrow {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  z-index: 1;
+  border-color: inherit;
+
+  &::before {
+    @apply bg-slate-900;
+    content: '';
+    position: absolute;
+    transform: rotate(45deg);
+    width: 10px;
+    height: 10px;
+    box-sizing: content-box;
+  }
+
+  &[data-placement^='top'] {
+    bottom: -4px;
+
+    &::before {
+      @apply border-b border-r;
+      border-color: inherit;
+    }
+  }
+
+  &[data-placement^='bottom'] {
+    top: -5px;
+
+    &::before {
+      @apply border-t border-l;
+      border-color: inherit;
+    }
+  }
+
+  &[data-placement^='left'] {
+    right: -4px;
+
+    &::before {
+      @apply border-t border-r;
+      border-color: inherit;
+    }
+  }
+
+  &[data-placement^='right'] {
+    left: -5px;
+
+    &::before {
+      @apply border-b border-l;
+      border-color: inherit;
+    }
+  }
+}

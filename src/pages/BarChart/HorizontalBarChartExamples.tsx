@@ -52,6 +52,7 @@ export const HorizontalBarChartExamples: FC<HorizontalBarChartExamplesProps> = (
               width={width}
               height={height}
               margins={margins}
+              ariaRoleDescription="Bar chart"
               datumAriaRoleDescription={getCategoryLabel}
               datumAriaLabel={(d) => `${d.value}`}
               datumAriaDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}

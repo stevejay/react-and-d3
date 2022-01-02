@@ -5,12 +5,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { identity, isNil, uniq } from 'lodash-es';
 
 import type { ExpandedAxisScale } from '@/types';
-import {
-  createAxisDomainPathData,
-  getAxisDomainAsReactKey,
-  getDefaultOffset,
-  number
-} from '@/utils/axisUtils';
+import { createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
+import { getDefaultOffset } from '@/utils/renderUtils';
 
 import { SvgGroup } from './SvgGroup';
 

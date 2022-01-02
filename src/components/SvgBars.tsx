@@ -3,12 +3,14 @@ import type { AxisDomain, AxisScale } from 'd3';
 import { AnimatePresence, motion } from 'framer-motion';
 import { isNil } from 'lodash-es';
 
-import type { CategoryValueDatum, ChartOrientation } from '@/types';
-import { getAxisDomainAsReactKey, getDefaultOffset } from '@/utils/axisUtils';
+import type { CategoryValueDatum, ChartOrientation, Rect } from '@/types';
+import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
+import { getDefaultOffset, toAnimatableRect } from '@/utils/renderUtils';
 
 import { SvgGroup } from './SvgGroup';
 
-function createRectDataGenerator<CategoryT extends AxisDomain, ValueT extends AxisDomain>(
+// TODO extract
+export function createBarDataGenerator<CategoryT extends AxisDomain, ValueT extends AxisDomain>(
   categoryScale: AxisScale<CategoryT>,
   valueScale: AxisScale<ValueT>,
   chartWidth: number,
@@ -19,7 +21,7 @@ function createRectDataGenerator<CategoryT extends AxisDomain, ValueT extends Ax
   const clonedCategoryScale = categoryScale.copy();
   const clonedValueScale = valueScale.copy();
 
-  return (d: CategoryValueDatum<CategoryT, ValueT>, animateFromOrToZero: boolean) => {
+  return (d: CategoryValueDatum<CategoryT, ValueT>, returnInteractionArea: boolean = false): Rect | null => {
     const categoryValue = clonedCategoryScale(d.category);
     const valueValue = clonedValueScale(d.value);
     const bandwidth = clonedCategoryScale.bandwidth?.();
@@ -37,17 +39,17 @@ function createRectDataGenerator<CategoryT extends AxisDomain, ValueT extends Ax
 
     if (orientation === 'vertical') {
       return {
-        attrX: categoryValue + offset,
+        x: categoryValue + offset,
         width: Math.max(bandwidth, 0),
-        attrY: animateFromOrToZero ? chartHeight : valueValue + offset,
-        height: animateFromOrToZero ? 0 : Math.max(chartHeight - valueValue, 0)
+        y: returnInteractionArea ? offset : valueValue + offset,
+        height: returnInteractionArea ? chartHeight : Math.max(chartHeight - valueValue, 0)
       };
     } else {
       return {
-        attrY: categoryValue + offset,
-        height: Math.max(bandwidth, 0),
-        attrX: 0,
-        width: animateFromOrToZero ? 0 : Math.max(valueValue, 0)
+        x: 0,
+        width: returnInteractionArea ? chartWidth : Math.max(valueValue, 0),
+        y: categoryValue + offset,
+        height: Math.max(bandwidth, 0)
       };
     }
   };
@@ -87,7 +89,7 @@ export function SvgBars<CategoryT extends AxisDomain, ValueT extends AxisDomain>
   // Used to ensure crisp edges on low-resolution devices.
   const offset = offsetProp ?? getDefaultOffset();
 
-  const generator = createRectDataGenerator(
+  const generator = createBarDataGenerator(
     categoryScale,
     valueScale,
     chartWidth,
@@ -124,15 +126,15 @@ export function SvgBars<CategoryT extends AxisDomain, ValueT extends AxisDomain>
             variants={{
               initial: () => ({
                 opacity: 0,
-                ...generator(d, false)
+                ...toAnimatableRect(generator(d))
               }),
               animate: () => ({
                 opacity: 1,
-                ...generator(d, false)
+                ...toAnimatableRect(generator(d))
               }),
               exit: (nextGenerator: typeof generator) => ({
                 opacity: 0,
-                ...nextGenerator(d, false)
+                ...toAnimatableRect(nextGenerator(d))
               })
             }}
             shapeRendering="crispEdges"

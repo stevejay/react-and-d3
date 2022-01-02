@@ -3,6 +3,7 @@ module.exports = {
   rules: {
     'value-list-comma-newline-after': null,
     'declaration-colon-newline-after': null,
+    'declaration-empty-line-before': null,
     'font-family-name-quotes': null,
     'selector-class-pattern': null,
     'keyframes-name-pattern': null,
@@ -10,7 +11,7 @@ module.exports = {
     'at-rule-no-unknown': [
       true,
       {
-        ignoreAtRules: ['extends', 'layer', 'tailwind']
+        ignoreAtRules: ['extends', 'layer', 'tailwind', 'apply']
       }
     ]
   }
