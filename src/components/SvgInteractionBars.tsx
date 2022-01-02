@@ -71,19 +71,27 @@ export function SvgInteractionBars<CategoryT extends AxisDomain, ValueT extends 
           <rect
             key={getAxisDomainAsReactKey(d.category)}
             {...interactionRect}
-            className="outline-none"
+            className="outline-none cursor-pointer"
             // mouseover used instead of mouseenter.
             // Can't use onMouseEnter as it doesn't work well in Safari. If you click on a
             // bar, scroll down the page, scroll back up and then click again on the same
             // bar, the onMouseEnter event doesn't seem to fire.
-            onMouseOver={() => barRect && onMouseOver?.(d, barRect)}
-            onMouseOut={() => barRect && onMouseOut?.(d, barRect)}
+            // onMouseOver={() => barRect && onMouseOver?.(d, barRect)}
+            // onMouseOut={() => barRect && onMouseOut?.(d, barRect)}
+
             // This is the approach that react-bootstrap takes to tooltips.
             // They are made focusable (tabIndex=0). This means they work
             // on touch and display for keyboard users.
-            tabIndex={0}
-            onFocus={() => barRect && onFocus?.(d, barRect)}
-            onBlur={() => barRect && onBlur?.(d, barRect)}
+            // tabIndex={0}
+            // onFocus={() => barRect && onFocus?.(d, barRect)}
+            // onBlur={() => barRect && onBlur?.(d, barRect)}
+
+            // This is the default for Tippy.
+            tabIndex={0} // Required because a rect does not naturally receive focus.
+            onMouseEnter={() => barRect && onMouseOver?.(d, barRect)}
+            onFocus={() => barRect && onMouseOver?.(d, barRect)}
+            onMouseLeave={() => barRect && onMouseOut?.(d, barRect)}
+            onBlur={() => barRect && onMouseOut?.(d, barRect)}
           />
         );
       })}

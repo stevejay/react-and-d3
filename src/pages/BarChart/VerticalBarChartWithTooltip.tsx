@@ -1,4 +1,4 @@
-import { ReactElement, RefObject, useRef } from 'react';
+import { ReactElement, RefObject, useRef, useState } from 'react';
 import Tippy from '@tippyjs/react/headless';
 import type { AxisDomain } from 'd3';
 
@@ -6,7 +6,7 @@ import { CategoryValueDatum, Rect } from '@/types';
 
 import { TooltipArrow } from './TooltipArrow';
 // import { useDelayedState } from './useDelayedState';
-import { usePartiallyDelayedState } from './usePartiallyDelayedState';
+// import { usePartiallyDelayedState } from './usePartiallyDelayedState';
 import { VerticalBarChart, VerticalBarChartProps } from './VerticalBarChart';
 
 // const LazyTippy = forwardRef<any, any>((props, ref) => {
@@ -74,7 +74,13 @@ export function VerticalBarChartWithTooltip<CategoryT extends AxisDomain>(
 ): ReactElement<any, any> | null {
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const [tooltipState, setTooltipStateAfter] = usePartiallyDelayedState<{
+  //   const [tooltipState, setTooltipStateAfter] = usePartiallyDelayedState<{
+  //     visible: boolean;
+  //     rect: Rect | null;
+  //     datum: CategoryValueDatum<CategoryT, number> | null;
+  //   }>({ visible: false, rect: null, datum: null });
+
+  const [tooltipState, setTooltipState] = useState<{
     visible: boolean;
     rect: Rect | null;
     datum: CategoryValueDatum<CategoryT, number> | null;
@@ -94,32 +100,30 @@ export function VerticalBarChartWithTooltip<CategoryT extends AxisDomain>(
       <VerticalBarChart
         svgRef={svgRef}
         {...props}
-        // onTouchStart={(datum, rect) => {
-        //   setTooltipStateAfter({ visible: true, datum, rect }, 0);
-        //   // tooltipState.visible ? 0 : 500);
-        //   //   setTooltipVisible(true);
-        //   //   setTooltipState({ datum, rect });
+        // onMouseOver={(datum, rect) => {
+        //   setTooltipStateAfter({ visible: true, datum, rect }, 500);
         // }}
-        // onPointerOver={(datum, rect, pointerType) => {
-        //   setTooltipStateAfter({ visible: true, datum, rect }, pointerType === 'mouse' ? 500 : 0);
-        // }}
-        // onPointerLeave={() => {
+        // onMouseOut={() => {
         //   setTooltipStateAfter((prev) => ({ ...prev, visible: false }), 0);
-        //   //   setTooltipVisible(false);
         // }}
+        // onFocus={(datum, rect) => {
+        //   setTooltipStateAfter({ visible: true, datum, rect }, 0);
+        // }}
+        // onBlur={() => {
+        //   setTooltipStateAfter((prev) => ({ ...prev, visible: false }), 0);
+        // }}
+
         onMouseOver={(datum, rect) => {
-          setTooltipStateAfter({ visible: true, datum, rect }, 500);
+          setTooltipState({ visible: true, datum, rect });
         }}
         onMouseOut={() => {
-          setTooltipStateAfter((prev) => ({ ...prev, visible: false }), 0);
-          //   setTooltipVisible(false);
+          setTooltipState((prev) => ({ ...prev, visible: false }));
         }}
         onFocus={(datum, rect) => {
-          setTooltipStateAfter({ visible: true, datum, rect }, 0);
+          setTooltipState({ visible: true, datum, rect });
         }}
         onBlur={() => {
-          setTooltipStateAfter((prev) => ({ ...prev, visible: false }), 0);
-          //   setTooltipVisible(false);
+          setTooltipState((prev) => ({ ...prev, visible: false }));
         }}
       />
       <Tippy
