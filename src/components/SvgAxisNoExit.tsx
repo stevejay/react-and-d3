@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useRef } from 'react';
 import { useForceUpdate } from '@uifabric/react-hooks';
-import type { AxisDomain } from 'd3';
+import type { AxisDomain } from 'd3-axis';
 import { AnimatePresence, motion } from 'framer-motion';
 import { differenceBy, identity, isNil, sortBy, unionBy } from 'lodash-es';
 import useDebouncedEffect from 'use-debounced-effect';

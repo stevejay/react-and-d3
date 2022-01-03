@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { AxisDomain } from 'd3';
+import type { AxisDomain } from 'd3-axis';
 import { identity } from 'lodash-es';
 
 // The domain will not be recalculated if you only change the accessor.

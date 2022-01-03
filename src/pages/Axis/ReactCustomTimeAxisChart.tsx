@@ -1,5 +1,6 @@
 import { FC, memo, useMemo } from 'react';
-import { easeCubicInOut, max, min } from 'd3';
+import { max, min } from 'd3-array';
+import { easeCubicInOut } from 'd3-ease';
 import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '@/components/Svg';

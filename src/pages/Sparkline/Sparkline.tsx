@@ -1,6 +1,8 @@
 import { FC, memo } from 'react';
 import { useId } from '@uifabric/react-hooks';
-import { area, line, max, min, scaleLinear, scaleTime } from 'd3';
+import { max, min } from 'd3-array';
+import { scaleLinear, scaleTime } from 'd3-scale';
+import { area, line } from 'd3-shape';
 import { motion } from 'framer-motion';
 
 import type { Margins } from '@/types';

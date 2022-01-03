@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useRef } from 'react';
-import type { AxisDomain, AxisScale } from 'd3';
+import type { AxisDomain, AxisScale } from 'd3-axis';
 import { AnimatePresence, motion } from 'framer-motion';
 import { isNil } from 'lodash-es';
 

@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import type { AxisDomain, AxisScale } from 'd3';
+import type { AxisDomain, AxisScale } from 'd3-axis';
 
 import type { CategoryValueDatum, ChartOrientation, Rect } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';

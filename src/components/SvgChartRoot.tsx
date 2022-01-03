@@ -1,5 +1,5 @@
 import { forwardRef, ReactNode } from 'react';
-import { easeCubicInOut } from 'd3';
+import { easeCubicInOut } from 'd3-ease';
 import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '@/components/Svg';

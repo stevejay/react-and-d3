@@ -1,5 +1,9 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { axisBottom, max, min, scaleLinear, select } from 'd3';
+import { max, min } from 'd3-array';
+import { axisBottom } from 'd3-axis';
+import { scaleLinear } from 'd3-scale';
+import { select } from 'd3-selection';
+import { transition } from 'd3-transition';
 
 import type { AxisLabelOrientation } from '@/types';
 
@@ -36,11 +40,11 @@ class D3LinearAxisChartRenderer {
 
     let group = svg.selectAll<SVGGElement, null>('.axis').data([null]);
     group = group.enter().append('g').classed('axis', true).merge(group);
+    const groupTransition = transition<SVGGElement>().duration(this.transitionSeconds * 1000);
     group
       .attr('transform', `translate(${this.margins.left}, ${this.margins.top + chartHeight})`)
       .style('font-family', 'inherit')
-      .transition()
-      .duration(this.transitionSeconds * 1000)
+      .transition(groupTransition as any)
       .call(this.axis);
   }
 }

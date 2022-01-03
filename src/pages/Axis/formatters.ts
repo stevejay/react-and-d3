@@ -1,4 +1,5 @@
-import { timeFormat, timeYear } from 'd3';
+import { timeYear } from 'd3-time';
+import { timeFormat } from 'd3-time-format';
 
 const formatAbbrMonth = timeFormat('%b');
 const formatYear = timeFormat('%Y');

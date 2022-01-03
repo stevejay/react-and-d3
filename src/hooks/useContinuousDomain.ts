@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { max, min } from 'd3';
+import { max, min } from 'd3-array';
 import { identity, isNil } from 'lodash-es';
 
 // The domain will not be recalculated if you only change the accessor.

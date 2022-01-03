@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import type { AxisDomain, AxisScale } from 'd3';
-import { scalePoint } from 'd3';
+import type { AxisDomain, AxisScale } from 'd3-axis';
+import { scalePoint } from 'd3-scale';
 
 // The domain and range need to be stable. The options object does not need to be stable.
 // padding: specifies the amount of blank space, in terms of multiples of the step,

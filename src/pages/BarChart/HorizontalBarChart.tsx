@@ -1,5 +1,5 @@
 import { memo, ReactElement, Ref } from 'react';
-import type { AxisDomain } from 'd3';
+import type { AxisDomain } from 'd3-axis';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgAxisLabel } from '@/components/SvgAxisLabel';

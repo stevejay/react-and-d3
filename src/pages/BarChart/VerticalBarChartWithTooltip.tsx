@@ -1,6 +1,6 @@
 import { ReactElement, RefObject, useRef, useState } from 'react';
 import Tippy from '@tippyjs/react/headless';
-import type { AxisDomain } from 'd3';
+import type { AxisDomain } from 'd3-axis';
 
 import { CategoryValueDatum, Rect } from '@/types';
 

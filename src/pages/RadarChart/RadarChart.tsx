@@ -1,17 +1,10 @@
 import { Fragment, memo, ReactElement } from 'react';
 import { useId } from '@uifabric/react-hooks';
-import type { AxisDomain } from 'd3';
-import {
-  arc,
-  curveLinearClosed,
-  easeCubicInOut,
-  lineRadial,
-  max,
-  min,
-  pie,
-  scaleBand,
-  scaleLinear
-} from 'd3';
+import { max, min } from 'd3-array';
+import type { AxisDomain } from 'd3-axis';
+import { easeCubicInOut } from 'd3-ease';
+import { scaleBand, scaleLinear } from 'd3-scale';
+import { arc, curveLinearClosed, lineRadial, pie } from 'd3-shape';
 import { motion, MotionConfig } from 'framer-motion';
 import { every } from 'lodash-es';
 
