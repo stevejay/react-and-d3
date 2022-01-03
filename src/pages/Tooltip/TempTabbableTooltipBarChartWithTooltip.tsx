@@ -2,12 +2,12 @@ import { ReactElement, RefObject, useEffect, useRef, useState } from 'react';
 import Tippy from '@tippyjs/react/headless';
 import type { AxisDomain } from 'd3-axis';
 
-import { CategoryValueDatum, Rect } from '@/types';
+import { CategoryValueDatum, Margins, Rect } from '@/types';
 
-import { TooltipArrow } from './TooltipArrow';
 // import { useDelayedState } from './useDelayedState';
 // import { usePartiallyDelayedState } from './usePartiallyDelayedState';
-import { VerticalBarChart, VerticalBarChartProps } from './VerticalBarChart';
+import { TempTabbableTooltipBarChart } from './TempTabbableTooltipBarChart';
+import { Tooltip } from './Tooltip';
 
 // const LazyTippy = forwardRef<any, any>((props, ref) => {
 //   const [mounted, setMounted] = useState(false);
@@ -50,24 +50,38 @@ function createVirtualReference(container: RefObject<SVGSVGElement>, r: Rect) {
   };
 }
 
-/**
- * A popper.js modifier that flips the popper position if it would be
- * shown over the app's fixed header. This is useful if the tooltip
- * is for an element that is within the page's main content area.
- */
-const mainContentFlipModifier = {
-  name: 'flip',
-  enabled: true,
-  // Allow space for the app's fixed header. This cannot be a rem value.
-  options: { padding: { top: 63 } }
+const popperOptions = {
+  modifiers: [
+    {
+      name: 'flip',
+      enabled: true,
+      // Allow space for the sticky header. This cannot be a rem value.
+      options: { padding: { top: 63 } }
+    }
+  ]
 };
 
-const popperOptions = { modifiers: [mainContentFlipModifier] };
+// export type TempTabbableTooltipBarChartWithTooltipProps<CategoryT extends AxisDomain> = Omit<
+//   TempTabbableTooltipBarChartProps<CategoryT>,
+//   'svgRef' | 'onMouseOver' | 'onMouseOut' | 'onFocus' | 'onBlur'
+// > & {
+//   renderTooltipContent: (datum: CategoryValueDatum<CategoryT, number>) => ReactElement | null;
+// };
 
-export type VerticalBarChartPropsWithTooltip<CategoryT extends AxisDomain> = Omit<
-  VerticalBarChartProps<CategoryT>,
-  'SvgRef' | 'onMouseOver' | 'onMouseLeave'
-> & {
+export type TempTabbableTooltipBarChartWithTooltipProps<CategoryT extends AxisDomain> = {
+  data: CategoryValueDatum<CategoryT, number>[];
+  width: number;
+  height: number;
+  margins: Margins;
+  ariaLabel?: string;
+  ariaLabelledby?: string;
+  ariaRoleDescription?: string;
+  description?: string;
+  ariaDescribedby?: string;
+  datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  datumAriaDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  transitionSeconds?: number;
   renderTooltipContent: (datum: CategoryValueDatum<CategoryT, number>) => ReactElement | null;
 };
 
@@ -83,16 +97,16 @@ export type VerticalBarChartPropsWithTooltip<CategoryT extends AxisDomain> = Omi
 //   });
 // }
 
-export function VerticalBarChartWithTooltip<CategoryT extends AxisDomain>(
-  props: VerticalBarChartPropsWithTooltip<CategoryT>
-): ReactElement<any, any> | null {
-  const svgRef = useRef<SVGSVGElement>(null);
+//   const [tooltipState, setTooltipStateAfter] = usePartiallyDelayedState<{
+//     visible: boolean;
+//     rect: Rect | null;
+//     datum: CategoryValueDatum<CategoryT, number> | null;
+//   }>({ visible: false, rect: null, datum: null });
 
-  //   const [tooltipState, setTooltipStateAfter] = usePartiallyDelayedState<{
-  //     visible: boolean;
-  //     rect: Rect | null;
-  //     datum: CategoryValueDatum<CategoryT, number> | null;
-  //   }>({ visible: false, rect: null, datum: null });
+export function TempTabbableTooltipBarChartWithTooltip<CategoryT extends AxisDomain>(
+  props: TempTabbableTooltipBarChartWithTooltipProps<CategoryT>
+): ReactElement | null {
+  const svgRef = useRef<SVGSVGElement>(null);
 
   const [tooltipState, setTooltipState] = useState<{
     visible: boolean;
@@ -120,7 +134,7 @@ export function VerticalBarChartWithTooltip<CategoryT extends AxisDomain>(
 
   return (
     <>
-      <VerticalBarChart
+      <TempTabbableTooltipBarChart
         svgRef={svgRef}
         {...props}
         onMouseOver={(datum, rect) => {
@@ -155,26 +169,8 @@ export function VerticalBarChartWithTooltip<CategoryT extends AxisDomain>(
         //   animate(opacity, 0, { type: 'tween', duration: 0.15, onComplete: unmount });
         // }}
         popperOptions={popperOptions}
-        // render={(attrs) => (
-        //   <motion.div
-        //     {...attrs}
-        //     style={{ opacity }}
-        //     className="max-w-xs p-2 text-xs leading-tight text-left text-white border border-gray-800 rounded-sm opacity-0 bg-gray-999 shadow-nav"
-        //   >
-        //     {tooltipState.datum && renderTooltipContent(tooltipState.datum)}
-        //     <TooltipArrow {...attrs} />
-        //   </motion.div>
-        // )}
         render={(attrs) => (
-          <div
-            {...attrs}
-            // style={{ opacity }}
-            aria-hidden
-            className="max-w-xs p-2 text-xs leading-tight text-left border rounded shadow-sm select-none border-slate-600 bg-slate-900"
-          >
-            {tooltipState.datum && props.renderTooltipContent(tooltipState.datum)}
-            <TooltipArrow {...attrs} />
-          </div>
+          <Tooltip {...attrs}>{tooltipState.datum && props.renderTooltipContent(tooltipState.datum)}</Tooltip>
         )}
       />
     </>

@@ -6,7 +6,7 @@ import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 import type { CategoryValueDatum, Margins } from '@/types';
 
-import { VerticalBarChart } from './VerticalBarChart';
+import { HorizontalBarChart } from './HorizontalBarChart';
 
 const dataSets = [
   [
@@ -29,24 +29,20 @@ const dataSets = [
   ]
 ];
 
-const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
+const margins: Margins = { left: 64, right: 40, top: 40, bottom: 64 };
 
 function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
   return datum.category;
 }
 
-export type VerticalBarChartExamplesProps = {
-  transitionSeconds: number;
-};
-
-export const VerticalBarChartExamples: FC<VerticalBarChartExamplesProps> = ({ transitionSeconds }) => {
+export const HorizontalBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
-      <ExampleChartWrapper title="Vertical Bar Chart" sizerClassName="h-96">
+      <ExampleChartWrapper title="Horizontal Bar Chart" sizerClassName="h-96">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
-            <VerticalBarChart
+            <HorizontalBarChart
               ariaLabelledby={ariaLabelledby}
               data={data}
               width={width}

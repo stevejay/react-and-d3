@@ -1,16 +1,16 @@
 import { HorizontalRule } from '@/components/HorizontalRule';
 import { PageHeading } from '@/components/PageHeading';
 
-import { HorizontalBarChartExamples } from './HorizontalBarChartExamples';
-import { VerticalBarChartExamples } from './VerticalBarChartExamples';
+import { HorizontalBarChartExample } from './HorizontalBarChartExample';
+import { VerticalBarChartExample } from './VerticalBarChartExample';
 
 const BarChartPage = () => (
   <>
     <PageHeading>Bar Chart</PageHeading>
     <div className="w-full max-w-3xl p-4 mx-auto space-y-8 md:p-8">
-      <VerticalBarChartExamples transitionSeconds={0.5} />
+      <VerticalBarChartExample />
       <HorizontalRule />
-      <HorizontalBarChartExamples transitionSeconds={0.5} />
+      <HorizontalBarChartExample />
     </div>
   </>
 );

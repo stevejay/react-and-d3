@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import { Header, NavigationSection } from './components/Header';
 import { LoadingPlaceholder } from './components/LoadingPlaceholder';
-import { ScrollToTop } from './components/ScrollToTop';
+import { ScrollToTopOnNavigation } from './components/ScrollToTopOnNavigation';
 
 const navigationData: NavigationSection[] = [
   {
@@ -39,7 +39,7 @@ const Sparkline = lazy(() => import('@/pages/Sparkline'));
 
 export const App: FC = () => (
   <>
-    <ScrollToTop />
+    <ScrollToTopOnNavigation />
     <Header navigationData={navigationData} />
     <main className="mx-auto max-w-screen-2xl">
       <Suspense fallback={<LoadingPlaceholder />}>

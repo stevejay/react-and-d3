@@ -1,13 +1,13 @@
-import { ReactElement, useRef } from 'react';
+import { ReactElement } from 'react';
 import type { AxisDomain, AxisScale } from 'd3-axis';
 
 import type { CategoryValueDatum, ChartOrientation, Rect } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 
-import { createBarDataGenerator } from './SvgBars';
-import { SvgGroup } from './SvgGroup';
+import { createBarDataGenerator } from '../../components/SvgBars';
+import { SvgGroup } from '../../components/SvgGroup';
 
-type SvgInteractionBarProps<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
+type SvgTabbableTooltipInteractionBarProps<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
   datum: CategoryValueDatum<CategoryT, ValueT>;
   translateX: number;
   translateY: number;
@@ -18,14 +18,14 @@ type SvgInteractionBarProps<CategoryT extends AxisDomain, ValueT extends AxisDom
   onBlur?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
 };
 
-function SvgInteractionBar<CategoryT extends AxisDomain, ValueT extends AxisDomain>({
+function SvgTabbableTooltipInteractionBar<CategoryT extends AxisDomain, ValueT extends AxisDomain>({
   datum,
   translateX,
   translateY,
   generator,
   onMouseOver,
   onMouseOut
-}: SvgInteractionBarProps<CategoryT, ValueT>) {
+}: SvgTabbableTooltipInteractionBarProps<CategoryT, ValueT>) {
   const interactionRect = generator(datum, true);
   const barRect = generator(datum, false);
   // TODO improve this
@@ -33,7 +33,6 @@ function SvgInteractionBar<CategoryT extends AxisDomain, ValueT extends AxisDoma
     barRect.x = barRect.x + translateX;
     barRect.y = barRect.y + translateY;
   }
-  const touchMovedRef = useRef(false);
   return (
     <rect
       {...interactionRect}
@@ -53,30 +52,11 @@ function SvgInteractionBar<CategoryT extends AxisDomain, ValueT extends AxisDoma
       // onBlur={() => barRect && onBlur?.(d, barRect)}
 
       // This is the default for Tippy.
-      // tabIndex={0} // Required because a rect does not naturally receive focus.
-      // onMouseEnter={() => barRect && onMouseOver?.(d, barRect)}
-      // onFocus={() => barRect && onMouseOver?.(d, barRect)}
-      // onMouseLeave={() => barRect && onMouseOut?.(d, barRect)}
-      // onBlur={() => barRect && onMouseOut?.(d, barRect)}
-
-      // This is simple touch handling:
-      //   onTouchStart={(event) => {
-      //     barRect && onMouseOver?.(datum, barRect);
-      //   }}
-      //   // Temporarily call preventDefault here and not onTouchStart in order to get
-      //   // around a React warning: https://github.com/facebook/react/issues/9809
-      //   onTouchEnd={(e) => e.preventDefault()}
-
-      onTouchStart={() => (touchMovedRef.current = false)}
-      onTouchMove={() => (touchMovedRef.current = true)}
-      onTouchEnd={(event) => {
-        if (!touchMovedRef.current) {
-          barRect && onMouseOver?.(datum, barRect);
-        }
-        event.cancelable && event.preventDefault();
-      }}
-      onMouseOver={() => barRect && onMouseOver?.(datum, barRect)}
-      onMouseOut={() => barRect && onMouseOut?.(datum, barRect)}
+      tabIndex={0} // Required because a rect does not naturally receive focus.
+      onMouseEnter={() => barRect && onMouseOver?.(datum, barRect)}
+      onFocus={() => barRect && onMouseOver?.(datum, barRect)}
+      onMouseLeave={() => barRect && onMouseOut?.(datum, barRect)}
+      onBlur={() => barRect && onMouseOut?.(datum, barRect)}
     />
   );
 }
@@ -89,7 +69,10 @@ function SvgInteractionBar<CategoryT extends AxisDomain, ValueT extends AxisDoma
 //     { passive: false }
 //   );
 
-export type SvgInteractionBarsProps<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
+export type SvgTabbableTooltipInteractionBarsProps<
+  CategoryT extends AxisDomain,
+  ValueT extends AxisDomain
+> = {
   data: CategoryValueDatum<CategoryT, ValueT>[];
   translateX: number;
   translateY: number;
@@ -110,7 +93,7 @@ export type SvgInteractionBarsProps<CategoryT extends AxisDomain, ValueT extends
 };
 
 // TODO what about the case where the user does not want gaps in the bar interactions?
-export function SvgInteractionBars<CategoryT extends AxisDomain, ValueT extends AxisDomain>({
+export function SvgTabbableTooltipInteractionBars<CategoryT extends AxisDomain, ValueT extends AxisDomain>({
   data,
   translateX,
   translateY,
@@ -124,7 +107,7 @@ export function SvgInteractionBars<CategoryT extends AxisDomain, ValueT extends 
   onMouseOut,
   onFocus,
   onBlur
-}: SvgInteractionBarsProps<CategoryT, ValueT>): ReactElement<any, any> | null {
+}: SvgTabbableTooltipInteractionBarsProps<CategoryT, ValueT>): ReactElement<any, any> | null {
   const generator = createBarDataGenerator(
     categoryScale,
     valueScale,
@@ -142,7 +125,7 @@ export function SvgInteractionBars<CategoryT extends AxisDomain, ValueT extends 
       stroke="none"
     >
       {data.map((d) => (
-        <SvgInteractionBar
+        <SvgTabbableTooltipInteractionBar
           key={getAxisDomainAsReactKey(d.category)}
           datum={d}
           translateX={translateX}

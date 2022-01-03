@@ -5,7 +5,6 @@ import { SvgAxis } from '@/components/SvgAxis';
 import { SvgAxisLabel } from '@/components/SvgAxisLabel';
 import { SvgBars } from '@/components/SvgBars';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
-import { SvgInteractionBars } from '@/components/SvgInteractionBars';
 import { useBandScale } from '@/hooks/useBandScale';
 import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
@@ -122,7 +121,7 @@ function HorizontalBarChartCore<CategoryT extends AxisDomain>({
         align="center"
         className="text-sm text-slate-300"
       />
-      <SvgInteractionBars
+      {/* <SvgInteractionBars
         data={data}
         categoryScale={categoryScale}
         valueScale={valueScale}
@@ -131,7 +130,7 @@ function HorizontalBarChartCore<CategoryT extends AxisDomain>({
         chartWidth={chartArea.width}
         chartHeight={chartArea.height}
         orientation="horizontal"
-      />
+      /> */}
     </SvgChartRoot>
   );
 }

@@ -1,23 +1,24 @@
-import { memo, ReactElement, Ref } from 'react';
+import { memo, ReactElement, RefObject } from 'react';
 import type { AxisDomain } from 'd3-axis';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgAxisLabel } from '@/components/SvgAxisLabel';
 import { SvgBars } from '@/components/SvgBars';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
-import { SvgInteractionBars } from '@/components/SvgInteractionBars';
 import { useBandScale } from '@/hooks/useBandScale';
 import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
 import { useLinearScale } from '@/hooks/useLinearScale';
 import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
+import { SvgTabbableTooltipInteractionBars } from '@/pages/Tooltip/SvgTabbableTooltipInteractionBars';
 import type { CategoryValueDatum, Margins, Rect } from '@/types';
 
-export type VerticalBarChartProps<CategoryT extends AxisDomain> = {
+export type TempTabbableTooltipBarChartProps<CategoryT extends AxisDomain> = {
   data: CategoryValueDatum<CategoryT, number>[];
   width: number;
   height: number;
   margins: Margins;
+  svgRef: RefObject<SVGSVGElement>;
   ariaLabel?: string;
   ariaLabelledby?: string;
   ariaRoleDescription?: string;
@@ -26,7 +27,6 @@ export type VerticalBarChartProps<CategoryT extends AxisDomain> = {
   datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumAriaDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
-  svgRef?: Ref<SVGSVGElement>;
   transitionSeconds?: number;
   onMouseOver?: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
   onMouseOut?: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
@@ -34,11 +34,12 @@ export type VerticalBarChartProps<CategoryT extends AxisDomain> = {
   onBlur?: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
 };
 
-function VerticalBarChartCore<CategoryT extends AxisDomain>({
+function TempTabbableTooltipBarChartCore<CategoryT extends AxisDomain>({
   data,
   width,
   height,
   margins,
+  svgRef,
   ariaLabel,
   ariaLabelledby,
   ariaRoleDescription,
@@ -47,13 +48,12 @@ function VerticalBarChartCore<CategoryT extends AxisDomain>({
   datumAriaRoleDescription,
   datumAriaLabel,
   datumAriaDescription,
-  svgRef,
   transitionSeconds = 0.5,
   onMouseOver,
   onMouseOut,
   onFocus,
   onBlur
-}: VerticalBarChartProps<CategoryT>): ReactElement<any, any> | null {
+}: TempTabbableTooltipBarChartProps<CategoryT>): ReactElement<any, any> | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useContinuousDomain(data, (d) => d.value, { includeZeroInDomain: true });
   const valueScale = useLinearScale(valueDomain, chartArea.yRange, { nice: true, clamp: true });
@@ -130,7 +130,7 @@ function VerticalBarChartCore<CategoryT extends AxisDomain>({
         align="center"
         className="text-sm text-slate-300"
       />
-      <SvgInteractionBars
+      <SvgTabbableTooltipInteractionBars
         data={data}
         categoryScale={categoryScale}
         valueScale={valueScale}
@@ -148,11 +148,11 @@ function VerticalBarChartCore<CategoryT extends AxisDomain>({
   );
 }
 
-export const VerticalBarChart = memo(
-  VerticalBarChartCore,
+export const TempTabbableTooltipBarChart = memo(
+  TempTabbableTooltipBarChartCore,
   (prevProps, nextProps) =>
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
     prevProps.margins === nextProps.margins
-) as typeof VerticalBarChartCore;
+) as typeof TempTabbableTooltipBarChartCore;

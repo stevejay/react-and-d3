@@ -6,7 +6,7 @@ import { useLocation, useNavigationType } from 'react-router-dom';
  * when navigating normally (so not on a back button or forward button click).
  * An alternative is to use https://github.com/oaf-project/oaf-react-router
  */
-export const ScrollToTop: FC = () => {
+export const ScrollToTopOnNavigation: FC = () => {
   const location = useLocation();
   const action = useNavigationType();
 
