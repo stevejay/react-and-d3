@@ -1,5 +1,5 @@
 import { FC, memo, useMemo } from 'react';
-import * as d3 from 'd3';
+import { easeCubicInOut, max, min } from 'd3';
 import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '@/components/Svg';
@@ -24,8 +24,8 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
 
     const domain = useMemo(() => {
       const now = new Date();
-      const minDate = startOfThisMonth(d3.min(data) ?? now);
-      const maxDate = lastMomentOfThisMonth(d3.max(data) ?? now);
+      const minDate = startOfThisMonth(min(data) ?? now);
+      const maxDate = lastMomentOfThisMonth(max(data) ?? now);
       return [minDate, maxDate];
     }, [data]);
 
@@ -36,7 +36,7 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
     }
 
     return (
-      <MotionConfig transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}>
+      <MotionConfig transition={{ duration: transitionSeconds, ease: easeCubicInOut }}>
         <Svg
           width={width}
           height={height}

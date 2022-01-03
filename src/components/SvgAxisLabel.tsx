@@ -2,6 +2,7 @@ import { FC } from 'react';
 
 import type { AxisOrientation, ChartArea } from '@/types';
 
+// TODO the rest of the orientations and label orientations.
 function getAxisLabelOrientationProps(
   orientation: AxisOrientation,
   labelOrientation: SvgAxisLabelProps['align'],

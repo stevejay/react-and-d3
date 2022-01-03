@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { FiExternalLink } from 'react-icons/fi';
 import { NavLink } from 'react-router-dom';
 
-type NavigationMenuLinkProps = { href: string; title: string; onClick: () => void };
+export type NavigationMenuLinkProps = { href: string; title: string; onClick: () => void };
 
 export const NavigationMenuLink: FC<NavigationMenuLinkProps> = ({ href, title, onClick }) => {
   const isInternalLink = href.startsWith('/');

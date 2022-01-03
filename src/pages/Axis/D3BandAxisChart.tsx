@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import * as d3 from 'd3';
+import { axisBottom, scaleBand, select } from 'd3';
 
 import type { AxisLabelOrientation } from '@/types';
 
@@ -9,8 +9,8 @@ class D3BandAxisChartRenderer {
   transitionSeconds = 0.25;
   labelOrientation: AxisLabelOrientation = 'horizontal';
 
-  private scale = d3.scaleBand();
-  private axis = d3.axisBottom(this.scale);
+  private scale = scaleBand();
+  private axis = axisBottom(this.scale);
   private margins = { top: 20, bottom: 34, left: 30, right: 30 };
 
   render(svgElement: SVGSVGElement | null, data: string[]): void {
@@ -18,7 +18,7 @@ class D3BandAxisChartRenderer {
       return;
     }
 
-    const svg = d3.select(svgElement);
+    const svg = select(svgElement);
     svg.attr('width', this.width);
     svg.attr('height', this.height);
 

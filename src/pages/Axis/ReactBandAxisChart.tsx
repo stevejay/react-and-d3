@@ -1,5 +1,5 @@
 import { FC, memo } from 'react';
-import * as d3 from 'd3';
+import { easeCubicInOut } from 'd3';
 import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '@/components/Svg';
@@ -29,7 +29,7 @@ export const ReactBandAxisChart: FC<ReactBandAxisChartProps> = memo(
     }
 
     return (
-      <MotionConfig transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}>
+      <MotionConfig transition={{ duration: transitionSeconds, ease: easeCubicInOut }}>
         <Svg
           width={width}
           height={height}

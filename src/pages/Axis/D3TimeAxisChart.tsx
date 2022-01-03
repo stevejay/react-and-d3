@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import * as d3 from 'd3';
+import { axisBottom, max, min, scaleTime, select } from 'd3';
 
 import type { AxisLabelOrientation } from '@/types';
 
@@ -11,8 +11,8 @@ class D3TimeAxisChartRenderer {
   transitionSeconds = 0.25;
   labelOrientation: AxisLabelOrientation = 'horizontal';
 
-  private scale = d3.scaleTime();
-  private axis = d3.axisBottom<Date>(this.scale);
+  private scale = scaleTime();
+  private axis = axisBottom<Date>(this.scale);
   private margins = { top: 20, bottom: 48, left: 48, right: 32 };
 
   render(svgElement: SVGSVGElement | null, data: Date[]): void {
@@ -20,7 +20,7 @@ class D3TimeAxisChartRenderer {
       return;
     }
 
-    const svg = d3.select(svgElement);
+    const svg = select(svgElement);
     svg.attr('width', this.width);
     svg.attr('height', this.height);
 
@@ -31,7 +31,7 @@ class D3TimeAxisChartRenderer {
     const chartWidth = this.width - this.margins.left - this.margins.right;
     const chartHeight = this.height - this.margins.top - this.margins.bottom;
 
-    const domain = [d3.min(data) ?? 0, d3.max(data) ?? 0];
+    const domain = [min(data) ?? 0, max(data) ?? 0];
     this.scale.domain(domain).rangeRound([0, chartWidth]).nice();
 
     this.axis

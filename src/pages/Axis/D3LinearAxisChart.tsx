@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import * as d3 from 'd3';
+import { axisBottom, max, min, scaleLinear, select } from 'd3';
 
 import type { AxisLabelOrientation } from '@/types';
 
@@ -9,8 +9,8 @@ class D3LinearAxisChartRenderer {
   transitionSeconds = 0.25;
   labelOrientation: AxisLabelOrientation = 'horizontal';
 
-  private scale = d3.scaleLinear();
-  private axis = d3.axisBottom(this.scale);
+  private scale = scaleLinear();
+  private axis = axisBottom(this.scale);
   private margins = { top: 20, bottom: 34, left: 30, right: 30 };
 
   render(svgElement: SVGSVGElement | null, data: number[]): void {
@@ -18,7 +18,7 @@ class D3LinearAxisChartRenderer {
       return;
     }
 
-    const svg = d3.select(svgElement);
+    const svg = select(svgElement);
     svg.attr('width', this.width);
     svg.attr('height', this.height);
 
@@ -29,7 +29,7 @@ class D3LinearAxisChartRenderer {
     const chartWidth = this.width - this.margins.left - this.margins.right;
     const chartHeight = this.height - this.margins.top - this.margins.bottom;
 
-    const domain = [d3.min(data) ?? 0, d3.max(data) ?? 0];
+    const domain = [min(data) ?? 0, max(data) ?? 0];
     this.scale.domain(domain).rangeRound([0, chartWidth]).nice();
 
     this.axis.tickArguments([10]).tickSizeInner(6).tickSizeOuter(-chartHeight);

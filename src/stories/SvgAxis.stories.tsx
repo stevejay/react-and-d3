@@ -1,6 +1,6 @@
 import { ComponentMeta, Story } from '@storybook/react';
 import type { AxisScale } from 'd3';
-import * as d3 from 'd3';
+import { easeCubicInOut, scaleBand, scaleLinear, scalePoint, scaleTime, timeMonth } from 'd3';
 import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '@/components/Svg';
@@ -58,8 +58,7 @@ const LinearScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, labe
   const chartWidth = width - margins.left - margins.right;
   const chartHeight = height - margins.top - margins.bottom;
 
-  const scale = d3
-    .scaleLinear()
+  const scale = scaleLinear()
     .domain(domain)
     .range([0, orientation === 'top' || orientation === 'bottom' ? chartWidth : chartHeight])
     .nice() as AxisScale<number>;
@@ -79,7 +78,7 @@ const LinearScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, labe
       : margins.top;
 
   return (
-    <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
+    <MotionConfig transition={{ duration: 0.25, ease: easeCubicInOut }}>
       <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
         <SvgAxis
           scale={scale}
@@ -202,8 +201,7 @@ const BandScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, labelO
   const domain = ['Apple', 'Orange', 'Banana', 'Pear', 'Grape'];
   const chartWidth = width - margins.left - margins.right;
   const chartHeight = height - margins.top - margins.bottom;
-  const scale = d3
-    .scaleBand()
+  const scale = scaleBand()
     .domain(domain)
     .rangeRound([0, orientation === 'top' || orientation === 'bottom' ? chartWidth : chartHeight])
     .paddingOuter(0.5) as AxisScale<string>;
@@ -223,7 +221,7 @@ const BandScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, labelO
       : margins.top;
 
   return (
-    <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
+    <MotionConfig transition={{ duration: 0.25, ease: easeCubicInOut }}>
       <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
         <SvgAxis
           scale={scale}
@@ -345,8 +343,7 @@ const TimeScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, labelO
   const domain = [new Date(2000, 0, 1), new Date(2000, 9, 1)];
   const chartWidth = width - margins.left - margins.right;
   const chartHeight = height - margins.top - margins.bottom;
-  const scale = d3
-    .scaleTime()
+  const scale = scaleTime()
     .domain(domain)
     .range([0, orientation === 'top' || orientation === 'bottom' ? chartWidth : chartHeight])
     .nice() as AxisScale<Date>;
@@ -366,14 +363,14 @@ const TimeScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, labelO
       : margins.top;
 
   return (
-    <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
+    <MotionConfig transition={{ duration: 0.25, ease: easeCubicInOut }}>
       <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
         <SvgAxis
           scale={scale}
           translateX={translateX}
           translateY={translateY}
           orientation={orientation}
-          tickArguments={[d3.timeMonth.every(3)]}
+          tickArguments={[timeMonth.every(3)]}
           tickSizeInner={null}
           tickSizeOuter={orientation === 'top' || orientation === 'bottom' ? -chartHeight : -chartWidth}
           labelOrientation={labelOrientation}
@@ -489,8 +486,7 @@ const PointScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, label
   const domain = ['Red', 'Green', 'Black', 'Blue'];
   const chartWidth = width - margins.left - margins.right;
   const chartHeight = height - margins.top - margins.bottom;
-  const scale = d3
-    .scalePoint()
+  const scale = scalePoint()
     .domain(domain)
     .rangeRound([0, orientation === 'top' || orientation === 'bottom' ? chartWidth : chartHeight])
     .padding(0.5) as AxisScale<string>;
@@ -510,7 +506,7 @@ const PointScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, label
       : margins.top;
 
   return (
-    <MotionConfig transition={{ duration: 0.25, ease: d3.easeCubicInOut }}>
+    <MotionConfig transition={{ duration: 0.25, ease: easeCubicInOut }}>
       <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
         <SvgAxis
           scale={scale}

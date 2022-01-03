@@ -1,6 +1,6 @@
 import { FC, memo } from 'react';
 import { useId } from '@uifabric/react-hooks';
-import * as d3 from 'd3';
+import { area, line, max, min, scaleLinear, scaleTime } from 'd3';
 import { motion } from 'framer-motion';
 
 import type { Margins } from '@/types';
@@ -44,29 +44,23 @@ export const Sparkline: FC<SparklineProps> = memo(
     const chartWidth = width - margins.left - margins.right;
     const chartHeight = height - margins.top - margins.bottom;
 
-    const x = d3
-      .scaleTime()
+    const x = scaleTime()
       .domain(
-        hasData
-          ? [d3.min(data, (d) => d.date) ?? 0, d3.max(data, (d) => d.date) ?? 0]
-          : [new Date(), new Date()]
+        hasData ? [min(data, (d) => d.date) ?? 0, max(data, (d) => d.date) ?? 0] : [new Date(), new Date()]
       )
       .range([0, chartWidth]);
 
-    const y = d3
-      .scaleLinear()
-      .domain([d3.min(data, (d) => d.value) ?? 0, d3.max(data, (d) => d.value) ?? 0])
+    const y = scaleLinear()
+      .domain([min(data, (d) => d.value) ?? 0, max(data, (d) => d.value) ?? 0])
       .range([chartHeight, 0])
       .nice();
 
-    const gradientAreaGenerator = d3
-      .area<Datum>()
+    const gradientAreaGenerator = area<Datum>()
       .x((d) => x(d.date) ?? 0)
       .y0(chartHeight)
       .y1((d) => y(d.value));
 
-    const lineGenerator = d3
-      .line<Datum>()
+    const lineGenerator = line<Datum>()
       .x((d) => x(d.date) ?? 0)
       .y((d) => y(d.value));
 

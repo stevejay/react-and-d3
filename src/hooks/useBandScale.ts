@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { AxisDomain, AxisScale } from 'd3';
-import * as d3 from 'd3';
+import { scaleBand } from 'd3';
 
 // The domain and range need to be stable. The options object does not need to be stable.
 // paddingInner: the proportion of the range that is reserved for blank space between bands.
@@ -15,7 +15,7 @@ export function useBandScale<CategoryT extends AxisDomain>(
 ): AxisScale<CategoryT> {
   const { paddingInner = 0, paddingOuter = 0, rangeRound = false, align = 0.5 } = options ?? {};
   return useMemo<AxisScale<CategoryT>>(() => {
-    const scale = d3.scaleBand<CategoryT>();
+    const scale = scaleBand<CategoryT>();
     scale.domain(domain);
     scale.range(range);
     scale.paddingInner(paddingInner);

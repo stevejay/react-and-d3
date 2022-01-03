@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { AxisScale } from 'd3';
-import * as d3 from 'd3';
+import { interpolate, interpolateRound, scaleLinear } from 'd3';
 
 // This only supports continuous scales that have two values each in their domain and range.
 // The domain and range need to be stable. The options object does not need to be stable.
@@ -11,10 +11,10 @@ export function useLinearScale(
 ): AxisScale<number> {
   const { nice, rangeRound = false, clamp = false, unknown = undefined, ticks } = options ?? {};
   return useMemo<AxisScale<number>>(() => {
-    const scale = d3.scaleLinear();
+    const scale = scaleLinear();
     scale.domain(domain);
     scale.range(range);
-    scale.interpolate(rangeRound ? d3.interpolateRound : d3.interpolate);
+    scale.interpolate(rangeRound ? interpolateRound : interpolate);
     scale.clamp(clamp);
     scale.unknown(unknown);
     scale.ticks(ticks ?? 10);

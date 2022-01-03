@@ -1,5 +1,5 @@
 import { FC, memo } from 'react';
-import * as d3 from 'd3';
+import { easeCubicInOut } from 'd3';
 import { MotionConfig } from 'framer-motion';
 import { identity } from 'lodash-es';
 
@@ -38,7 +38,7 @@ export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
     }
 
     return (
-      <MotionConfig transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}>
+      <MotionConfig transition={{ duration: transitionSeconds, ease: easeCubicInOut }}>
         <Svg
           width={width}
           height={height}

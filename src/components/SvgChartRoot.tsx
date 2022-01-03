@@ -1,5 +1,5 @@
 import { forwardRef, ReactNode } from 'react';
-import * as d3 from 'd3';
+import { easeCubicInOut } from 'd3';
 import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '@/components/Svg';
@@ -37,7 +37,7 @@ export const SvgChartRoot = forwardRef<SVGSVGElement, SvgChartRootProps>(
       return null;
     }
     return (
-      <MotionConfig transition={{ duration: transitionSeconds, ease: d3.easeCubicInOut }}>
+      <MotionConfig transition={{ duration: transitionSeconds, ease: easeCubicInOut }}>
         <Svg
           ref={ref}
           width={width}

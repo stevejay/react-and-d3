@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import * as d3 from 'd3';
+import { max, min } from 'd3';
 import { identity, isNil } from 'lodash-es';
 
 // The domain will not be recalculated if you only change the accessor.
@@ -11,19 +11,19 @@ export function useContinuousDomain<Datum>(
 ): readonly number[] {
   const { includeZeroInDomain } = options ?? {};
   return useMemo(() => {
-    let min = d3.min(data, accessor) ?? 0;
-    let max = d3.max(data, accessor) ?? 0;
-    if (isNil(min) || isNil(max)) {
+    let minValue = min(data, accessor) ?? 0;
+    let maxValue = max(data, accessor) ?? 0;
+    if (isNil(minValue) || isNil(maxValue)) {
       return [];
     }
     if (includeZeroInDomain) {
-      if (min > 0) {
-        min = 0;
-      } else if (max < 0) {
-        max = 0;
+      if (minValue > 0) {
+        minValue = 0;
+      } else if (maxValue < 0) {
+        maxValue = 0;
       }
     }
-    return [min, max] as const;
+    return [minValue, maxValue] as const;
     // Deliberately ignore accessor in useMemo deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, includeZeroInDomain]);

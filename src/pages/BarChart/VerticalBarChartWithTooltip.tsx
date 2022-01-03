@@ -50,7 +50,7 @@ function createVirtualReference(container: RefObject<SVGSVGElement>, r: Rect) {
   };
 }
 
-type VerticalBarChartPropsWithTooltip<CategoryT extends AxisDomain> = Omit<
+export type VerticalBarChartPropsWithTooltip<CategoryT extends AxisDomain> = Omit<
   VerticalBarChartProps<CategoryT>,
   'SvgRef' | 'onMouseOver' | 'onMouseLeave'
 > & {

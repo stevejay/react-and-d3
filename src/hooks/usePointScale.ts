@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { AxisDomain, AxisScale } from 'd3';
-import * as d3 from 'd3';
+import { scalePoint } from 'd3';
 
 // The domain and range need to be stable. The options object does not need to be stable.
 // padding: specifies the amount of blank space, in terms of multiples of the step,
@@ -13,7 +13,7 @@ export function usePointScale<CategoryT extends AxisDomain>(
 ): AxisScale<CategoryT> {
   const { padding = 0, rangeRound = false, align = 0.5 } = options ?? {};
   return useMemo<AxisScale<CategoryT>>(() => {
-    const scale = d3.scalePoint<CategoryT>();
+    const scale = scalePoint<CategoryT>();
     scale.domain(domain);
     scale.range(range);
     scale.padding(padding);

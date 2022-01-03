@@ -1,8 +1,8 @@
 import { Fragment, memo, ReactElement } from 'react';
 import { useId } from '@uifabric/react-hooks';
+import type { AxisDomain } from 'd3';
 import {
   arc,
-  AxisDomain,
   curveLinearClosed,
   easeCubicInOut,
   lineRadial,
