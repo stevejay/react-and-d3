@@ -3,6 +3,7 @@ import { RadarChartSvg } from './illustrations/RadarChartSvg';
 import { ReactAndD3Svg } from './illustrations/ReactAndD3Svg';
 import { SparklineSvg } from './illustrations/SparklineSvg';
 import { StackedVerticalBarChartSvg } from './illustrations/StackedVerticalBarChartSvg';
+import { TooltipSvg } from './illustrations/TooltipSvg';
 import { VerticalBarChartSvg } from './illustrations/VerticalBarChartSvg';
 import { VerticalHistogramChartSvg } from './illustrations/VerticalHistogramChartSvg';
 import { PageCard } from './PageCard';
@@ -19,6 +20,7 @@ const Home = () => (
     </div>
     <div className="p-8 space-y-8 md:space-y-0 md:gap-8 md:grid md:grid-cols-2 lg:grid-cols-3">
       <PageCard href="/axis" title="Axis" illustration={AxisSvg} />
+      <PageCard href="/tooltip" title="Tooltip" illustration={TooltipSvg} />
       <PageCard href="/bar-chart" title="Bar Chart" illustration={VerticalBarChartSvg} />
       <PageCard
         href="/stacked-bar-chart"

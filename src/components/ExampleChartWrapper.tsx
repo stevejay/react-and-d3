@@ -8,6 +8,7 @@ import { useDebouncedMeasure } from '@/hooks/useDebouncedMeasure';
 export type ExampleChartWrapperProps = {
   title: string;
   subtitle?: string;
+  sizerClassName?: string;
   children: ({
     inView,
     width,
@@ -25,14 +26,19 @@ export type ExampleChartWrapperProps = {
  * Controls the size of the contained chart and only renders it if it
  * is in the viewport.
  */
-export const ExampleChartWrapper: FC<ExampleChartWrapperProps> = ({ title, subtitle, children }) => {
+export const ExampleChartWrapper: FC<ExampleChartWrapperProps> = ({
+  title,
+  subtitle,
+  sizerClassName,
+  children
+}) => {
   const { ref: inViewRef, inView } = useInView();
   const { ref: sizerRef, width, height } = useDebouncedMeasure();
   const id = useId();
   return (
     <div ref={inViewRef} className="space-y-3">
       <ChartTitle title={title} subtitle={subtitle} id={id} />
-      <div ref={sizerRef} className="w-full h-28">
+      <div ref={sizerRef} className={`w-full ${sizerClassName}`}>
         {children({ inView, width: width ?? 0, height: height ?? 0, ariaLabelledby: id })}
       </div>
     </div>

@@ -1,12 +1,12 @@
 import { FC } from 'react';
 
+import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 import type { CategoryValueDatum, Margins } from '@/types';
 
 import { HorizontalBarChart } from './HorizontalBarChart';
-import { TemporaryChartWrapper } from './TemporaryChartWrapper';
 
 const dataSets = [
   [
@@ -43,7 +43,7 @@ export const HorizontalBarChartExamples: FC<HorizontalBarChartExamplesProps> = (
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
-      <TemporaryChartWrapper title="Horizontal Bar Chart">
+      <ExampleChartWrapper title="Horizontal Bar Chart" sizerClassName="h-96">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <HorizontalBarChart
@@ -59,7 +59,7 @@ export const HorizontalBarChartExamples: FC<HorizontalBarChartExamplesProps> = (
             />
           )
         }
-      </TemporaryChartWrapper>
+      </ExampleChartWrapper>
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </ExamplesSectionWrapper>
   );

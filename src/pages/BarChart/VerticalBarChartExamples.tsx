@@ -1,12 +1,12 @@
 import { FC } from 'react';
 
+import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 import type { CategoryValueDatum, Margins } from '@/types';
 
-import { TemporaryChartWrapper } from './TemporaryChartWrapper';
-import { VerticalBarChartWithTooltip } from './VerticalBarChartWithTooltip';
+import { VerticalBarChart } from './VerticalBarChart';
 
 const dataSets = [
   [
@@ -43,10 +43,10 @@ export const VerticalBarChartExamples: FC<VerticalBarChartExamplesProps> = ({ tr
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
-      <TemporaryChartWrapper title="Vertical Bar Chart">
+      <ExampleChartWrapper title="Vertical Bar Chart" sizerClassName="h-96">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
-            <VerticalBarChartWithTooltip
+            <VerticalBarChart
               ariaLabelledby={ariaLabelledby}
               data={data}
               width={width}
@@ -56,15 +56,10 @@ export const VerticalBarChartExamples: FC<VerticalBarChartExamplesProps> = ({ tr
               datumAriaRoleDescription={getCategoryLabel}
               datumAriaLabel={(d) => `${d.value}`}
               datumAriaDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
-              renderTooltipContent={(d) => (
-                <>
-                  {getCategoryLabel(d)}: {d.value}
-                </>
-              )}
             />
           )
         }
-      </TemporaryChartWrapper>
+      </ExampleChartWrapper>
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </ExamplesSectionWrapper>
   );

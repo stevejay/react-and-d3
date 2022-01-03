@@ -51,3 +51,9 @@
     }
   }
 }
+
+/* Hide the popper when the reference is hidden */
+[data-popper-reference-hidden] {
+  visibility: hidden;
+  pointer-events: none;
+}

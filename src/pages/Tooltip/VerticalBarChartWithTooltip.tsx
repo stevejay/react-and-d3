@@ -1,4 +1,4 @@
-import { ReactElement, RefObject, useRef, useState } from 'react';
+import { ReactElement, RefObject, useEffect, useRef, useState } from 'react';
 import Tippy from '@tippyjs/react/headless';
 import type { AxisDomain } from 'd3-axis';
 
@@ -50,6 +50,20 @@ function createVirtualReference(container: RefObject<SVGSVGElement>, r: Rect) {
   };
 }
 
+/**
+ * A popper.js modifier that flips the popper position if it would be
+ * shown over the app's fixed header. This is useful if the tooltip
+ * is for an element that is within the page's main content area.
+ */
+const mainContentFlipModifier = {
+  name: 'flip',
+  enabled: true,
+  // Allow space for the app's fixed header. This cannot be a rem value.
+  options: { padding: { top: 63 } }
+};
+
+const popperOptions = { modifiers: [mainContentFlipModifier] };
+
 export type VerticalBarChartPropsWithTooltip<CategoryT extends AxisDomain> = Omit<
   VerticalBarChartProps<CategoryT>,
   'SvgRef' | 'onMouseOver' | 'onMouseLeave'
@@ -86,33 +100,29 @@ export function VerticalBarChartWithTooltip<CategoryT extends AxisDomain>(
     datum: CategoryValueDatum<CategoryT, number> | null;
   }>({ visible: false, rect: null, datum: null });
 
+  // Hide tooltip on any click
+  useEffect(() => {
+    if (tooltipState.visible) {
+      const callback = () => setTooltipState((prev) => ({ ...prev, visible: false }));
+      window.document.addEventListener('click', callback);
+      return () => window.document.removeEventListener('click', callback);
+    }
+  }, [tooltipState.visible, setTooltipState]);
+
   // Hide tooltip on scroll
-  //   useEffect(() => {
-  //     if (tooltipState.visible) {
-  //       const callback = () => setTooltipStateAfter((prev) => ({ ...prev, visible: false }), 0);
-  //       window.document.addEventListener('scroll', callback);
-  //       return () => window.document.removeEventListener('scroll', callback);
-  //     }
-  //   }, [tooltipState.visible, setTooltipStateAfter]);
+  useEffect(() => {
+    if (tooltipState.visible) {
+      const callback = () => setTooltipState((prev) => ({ ...prev, visible: false }));
+      window.document.addEventListener('scroll', callback);
+      return () => window.document.removeEventListener('scroll', callback);
+    }
+  }, [tooltipState.visible, setTooltipState]);
 
   return (
     <>
       <VerticalBarChart
         svgRef={svgRef}
         {...props}
-        // onMouseOver={(datum, rect) => {
-        //   setTooltipStateAfter({ visible: true, datum, rect }, 500);
-        // }}
-        // onMouseOut={() => {
-        //   setTooltipStateAfter((prev) => ({ ...prev, visible: false }), 0);
-        // }}
-        // onFocus={(datum, rect) => {
-        //   setTooltipStateAfter({ visible: true, datum, rect }, 0);
-        // }}
-        // onBlur={() => {
-        //   setTooltipStateAfter((prev) => ({ ...prev, visible: false }), 0);
-        // }}
-
         onMouseOver={(datum, rect) => {
           setTooltipState({ visible: true, datum, rect });
         }}
@@ -144,7 +154,7 @@ export function VerticalBarChartWithTooltip<CategoryT extends AxisDomain>(
         // onHide={({ unmount }) => {
         //   animate(opacity, 0, { type: 'tween', duration: 0.15, onComplete: unmount });
         // }}
-        // popperOptions={popperOptions}
+        popperOptions={popperOptions}
         // render={(attrs) => (
         //   <motion.div
         //     {...attrs}

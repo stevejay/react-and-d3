@@ -22,7 +22,7 @@ export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({ transitionSeco
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
-      <ExampleChartWrapper title="Linear Axis" subtitle="React">
+      <ExampleChartWrapper title="Linear Axis" subtitle="React" sizerClassName="h-28">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <ReactLinearAxisChart
@@ -36,7 +36,7 @@ export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({ transitionSeco
           )
         }
       </ExampleChartWrapper>
-      <ExampleChartWrapper title="Linear Axis" subtitle="D3">
+      <ExampleChartWrapper title="Linear Axis" subtitle="D3" sizerClassName="h-28">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <D3LinearAxisChart

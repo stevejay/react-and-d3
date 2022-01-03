@@ -9,13 +9,15 @@ export type PageCardProps = {
 
 export const PageCard: FC<PageCardProps> = ({ href, title, illustration: Illustration }) => (
   <article className="pb-4 space-y-3">
-    <Link to={href}>
+    <Link to={href} className="block outline-none ring-offset-slate-900 ring-offset-4 focus-visible:ring-2">
       <span className="block py-8 rounded-md bg-gradient-to-r from-blue-500 to-cyan-500">
         <Illustration />
       </span>
     </Link>
     <h2 className="text-xl font-thin leading-none text-slate-200">
-      <Link to={href}>{title}</Link>
+      <Link to={href} className="outline-none focus-visible:ring-2">
+        {title}
+      </Link>
     </h2>
   </article>
 );

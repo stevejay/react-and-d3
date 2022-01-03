@@ -44,9 +44,9 @@ class D3TimeAxisChartRenderer {
       .tickSizeOuter(-chartHeight)
       .tickFormat(yearMonthMultiFormat);
 
+    const groupTransition = transition<SVGGElement>().duration(this.transitionSeconds * 1000);
     let group = svg.selectAll<SVGGElement, null>('.axis').data([null]);
     group = group.enter().append('g').classed('axis', true).merge(group);
-    const groupTransition = transition<SVGGElement>().duration(this.transitionSeconds * 1000);
     group
       .attr('transform', `translate(${this.margins.left}, ${this.margins.top + chartHeight})`)
       .style('font-family', 'inherit')

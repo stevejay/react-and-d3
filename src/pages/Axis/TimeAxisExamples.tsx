@@ -22,7 +22,7 @@ export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ transitionSeconds 
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
-      <ExampleChartWrapper title="Time Axis" subtitle="React">
+      <ExampleChartWrapper title="Time Axis" subtitle="React" sizerClassName="h-28">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <ReactTimeAxisChart
@@ -36,7 +36,7 @@ export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ transitionSeconds 
           )
         }
       </ExampleChartWrapper>
-      <ExampleChartWrapper title="Time Axis" subtitle="D3">
+      <ExampleChartWrapper title="Time Axis" subtitle="D3" sizerClassName="h-28">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <D3TimeAxisChart
