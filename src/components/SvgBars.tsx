@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import type { AxisDomain, AxisScale } from 'd3-axis';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m as motion } from 'framer-motion';
 import { isNil } from 'lodash-es';
 
 import type { CategoryValueDatum, ChartOrientation, Rect } from '@/types';

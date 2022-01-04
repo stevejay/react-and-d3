@@ -5,7 +5,7 @@ import type { AxisDomain } from 'd3-axis';
 import { easeCubicInOut } from 'd3-ease';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import { arc, curveLinearClosed, lineRadial, pie } from 'd3-shape';
-import { motion, MotionConfig } from 'framer-motion';
+import { m as motion, MotionConfig } from 'framer-motion';
 import { every } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';

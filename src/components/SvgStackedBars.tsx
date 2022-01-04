@@ -3,7 +3,7 @@ import type { AxisDomain, AxisScale } from 'd3-axis';
 import type { ScaleOrdinal } from 'd3-scale';
 import type { SeriesPoint } from 'd3-shape';
 import { stack } from 'd3-shape';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m as motion } from 'framer-motion';
 import { isNil } from 'lodash-es';
 
 import type { CategoryValueListDatum, ChartOrientation, Rect } from '@/types';

@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { Dialog } from '@headlessui/react';
-import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
+import { AnimatePresence, m as motion, MotionConfig } from 'framer-motion';
 
 import { NavigationMenuLink } from './NavigationMenuLink';
 

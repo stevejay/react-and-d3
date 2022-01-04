@@ -1,6 +1,6 @@
 import { ReactElement, SVGAttributes, SVGProps, useEffect, useRef } from 'react';
 import type { AxisDomain } from 'd3-axis';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m as motion } from 'framer-motion';
 import { identity, isNil } from 'lodash-es';
 
 import type { AxisLabelOrientation, AxisOrientation, BaseAxisProps, ExpandedAxisScale } from '@/types';
