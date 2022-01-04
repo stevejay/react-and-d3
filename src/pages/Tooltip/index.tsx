@@ -24,6 +24,10 @@ const TooltipPage = () => (
         </li>
         <li>The tooltip has a short fade in/out animation.</li>
         <li>The tooltip hides on scroll.</li>
+        <li>
+          The trigger area for a bar encompasses the entire height of the chart area, not just the height of
+          the bar.
+        </li>
       </ul>
       <HorizontalRule />
       <TabbableTooltipBarChartExample />

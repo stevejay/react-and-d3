@@ -3885,6 +3885,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/d3-scale-chromatic@npm:^3":
+  version: 3.0.0
+  resolution: "@types/d3-scale-chromatic@npm:3.0.0"
+  checksum: e06afffd2725570aa90cb3050eb96a94727264948d9256e56807ab582aba379168d84d1d98bcaa275bf38375148b35dfe13697e06fc7565dd17ac7e2acb11980
+  languageName: node
+  linkType: hard
+
 "@types/d3-scale@npm:^4":
   version: 4.0.2
   resolution: "@types/d3-scale@npm:4.0.2"
@@ -7251,6 +7258,16 @@ __metadata:
   version: 3.0.1
   resolution: "d3-path@npm:3.0.1"
   checksum: 6347c7055e0af330acadbe7f02144963eecabff560a791ecfeaffb45662e4d38eedabc6109dc481478f136b41d03707d3a43321ca9a115962888c99732ceb41a
+  languageName: node
+  linkType: hard
+
+"d3-scale-chromatic@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "d3-scale-chromatic@npm:3.0.0"
+  dependencies:
+    d3-color: 1 - 3
+    d3-interpolate: 1 - 3
+  checksum: a8ce4cb0267a17b28ebbb929f5e3071d985908a9c13b6fcaa2a198e1e018f275804d691c5794b970df0049725b7944f32297b31603d235af6414004f0c7f82c0
   languageName: node
   linkType: hard
 
@@ -15241,6 +15258,7 @@ __metadata:
     "@types/d3-ease": ^3
     "@types/d3-interpolate": ^3
     "@types/d3-scale": ^4
+    "@types/d3-scale-chromatic": ^3
     "@types/d3-selection": ^3
     "@types/d3-shape": ^3
     "@types/d3-time": ^3
@@ -15268,6 +15286,7 @@ __metadata:
     d3-ease: ^3.0.1
     d3-interpolate: ^3.0.1
     d3-scale: ^4.0.2
+    d3-scale-chromatic: ^3.0.0
     d3-selection: ^3.0.0
     d3-shape: ^3.0.1
     d3-time: ^3.0.0

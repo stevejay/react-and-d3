@@ -9,8 +9,14 @@ export type AxisLabelOrientation = 'horizontal' | 'vertical' | 'angled';
 export type ChartOrientation = 'vertical' | 'horizontal';
 
 export type CategoryValueDatum<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
-  category: CategoryT;
-  value: ValueT;
+  readonly category: CategoryT;
+  readonly value: ValueT;
+};
+
+// Limitation here: key is always a string.
+export type CategoryValueListDatum<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
+  readonly category: CategoryT;
+  readonly values: { [key: string]: ValueT };
 };
 
 export type ChartArea = {

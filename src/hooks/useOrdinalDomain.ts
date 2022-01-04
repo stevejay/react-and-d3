@@ -5,7 +5,7 @@ import { identity } from 'lodash-es';
 // The domain will not be recalculated if you only change the accessor.
 // This means the accessor function does not need to be stable.
 export function useOrdinalDomain<Datum, CategoryT extends AxisDomain>(
-  data: Datum[],
+  data: readonly Datum[],
   accessor: (d: Datum) => CategoryT = identity
 ): readonly CategoryT[] {
   // Deliberately ignore accessor in useMemo deps.

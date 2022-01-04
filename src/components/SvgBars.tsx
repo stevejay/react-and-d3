@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef } from 'react';
+import { ReactElement } from 'react';
 import type { AxisDomain, AxisScale } from 'd3-axis';
 import { AnimatePresence, motion } from 'framer-motion';
 import { isNil } from 'lodash-es';
@@ -46,7 +46,7 @@ export function createBarDataGenerator<CategoryT extends AxisDomain, ValueT exte
       };
     } else {
       return {
-        x: 0,
+        x: 0 + offset,
         width: returnInteractionArea ? chartWidth : Math.max(valueValue, 0),
         y: categoryValue + offset,
         height: Math.max(bandwidth, 0)
@@ -98,13 +98,6 @@ export function SvgBars<CategoryT extends AxisDomain, ValueT extends AxisDomain>
     offset
   );
 
-  const previousGeneratorRef = useRef<typeof generator | null>(null);
-
-  // Always run.
-  useEffect(() => {
-    previousGeneratorRef.current = generator;
-  });
-
   return (
     <SvgGroup
       className={className}
@@ -137,7 +130,7 @@ export function SvgBars<CategoryT extends AxisDomain, ValueT extends AxisDomain>
                 ...toAnimatableRect(nextGenerator(d))
               })
             }}
-            shapeRendering="crispEdges"
+            // shapeRendering="crispEdges"
             role="graphics-symbol"
             aria-roledescription={datumAriaRoleDescription?.(d)}
             aria-label={datumAriaLabel?.(d)}

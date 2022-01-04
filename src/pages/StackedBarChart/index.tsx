@@ -1,17 +1,16 @@
 import { HorizontalRule } from '@/components/HorizontalRule';
 import { PageHeading } from '@/components/PageHeading';
 
-// import { HorizontalBarChartExamples } from './HorizontalBarChartExamples';
-// import { VerticalBarChartExamples } from './VerticalBarChartExamples';
+import { HorizontalStackedBarChartExample } from './HorizontalStackedBarChartExample';
+import { VerticalStackedBarChartExample } from './VerticalStackedBarChartExample';
 
 const StackedBarChartPage = () => (
   <>
     <PageHeading>Stacked Bar Chart</PageHeading>
     <div className="w-full max-w-3xl p-4 mx-auto space-y-8 md:p-8">
-      {/* <VerticalBarChartExamples transitionSeconds={0.5} /> */}
-      TODO
+      <VerticalStackedBarChartExample />
       <HorizontalRule />
-      {/* <HorizontalBarChartExamples transitionSeconds={0.5} /> */}
+      <HorizontalStackedBarChartExample />
     </div>
   </>
 );
