@@ -5,7 +5,7 @@ import { SparklineSvg } from './illustrations/SparklineSvg';
 import { StackedVerticalBarChartSvg } from './illustrations/StackedVerticalBarChartSvg';
 import { TooltipSvg } from './illustrations/TooltipSvg';
 import { VerticalBarChartSvg } from './illustrations/VerticalBarChartSvg';
-import { VerticalHistogramChartSvg } from './illustrations/VerticalHistogramChartSvg';
+// import { VerticalHistogramChartSvg } from './illustrations/VerticalHistogramChartSvg';
 import { PageCard } from './PageCard';
 
 const Home = () => (
@@ -27,7 +27,7 @@ const Home = () => (
         title="Stacked Bar Chart"
         illustration={StackedVerticalBarChartSvg}
       />
-      <PageCard href="/histogram" title="Histogram" illustration={VerticalHistogramChartSvg} />
+      {/* <PageCard href="/histogram" title="Histogram" illustration={VerticalHistogramChartSvg} /> */}
       <PageCard href="/radar-chart" title="Radar Chart" illustration={RadarChartSvg} />
       <PageCard href="/sparkline" title="Sparkline" illustration={SparklineSvg} />
     </div>

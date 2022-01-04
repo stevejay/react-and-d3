@@ -14,7 +14,7 @@ const navigationData: NavigationSection[] = [
       { href: '/tooltip', title: 'Tooltip' },
       { href: '/bar-chart', title: 'Bar Chart' },
       { href: '/stacked-bar-chart', title: 'Stacked Bar Chart' },
-      { href: '/histogram', title: 'Histogram' },
+      //   { href: '/histogram', title: 'Histogram' },
       { href: '/radar-chart', title: 'Radar Chart' },
       { href: '/sparkline', title: 'Sparkline' }
     ]
