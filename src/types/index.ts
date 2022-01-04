@@ -1,7 +1,7 @@
 // Same as AxisDomain type from 'd3-axis'.
 export type DomainValue = number | string | Date | { valueOf(): number };
 
-// Same as AxisScale from 'd3-axis
+// Same as AxisScale from 'd3-axis'.
 export interface AxisScale<DomainT> {
   (x: DomainT): number | undefined;
   domain(): DomainT[];
@@ -14,9 +14,11 @@ export type Margins = { top: number; bottom: number; left: number; right: number
 
 export type AxisOrientation = 'top' | 'bottom' | 'left' | 'right';
 
-export type AxisLabelOrientation = 'horizontal' | 'vertical' | 'angled';
+export type AxisLabelAlign = 'start' | 'center' | 'end';
 
-export type ChartOrientation = 'vertical' | 'horizontal';
+export type TickLabelOrientation = 'horizontal' | 'vertical' | 'angled';
+
+export type ChartOrientation = 'horizontal' | 'vertical';
 
 export type CategoryValueDatum<CategoryT extends DomainValue, ValueT extends DomainValue> = {
   readonly category: CategoryT;
@@ -32,11 +34,13 @@ export type CategoryValueListDatum<CategoryT extends DomainValue, ValueT extends
 export type ChartArea = {
   width: number;
   height: number;
-  translateX: number;
-  translateY: number;
-  xRange: readonly [number, number];
+  translateLeft: number;
+  translateRight: number;
+  translateTop: number;
+  translateBottom: number;
+  xRange: readonly [number, number]; // TODO rename these to rangeWidth,rangeHeight ?
   yRange: readonly [number, number];
-  yRangeReversed: readonly [number, number]; // TODO think about this solution
+  yRangeReversed: readonly [number, number];
 };
 
 export type Rect = {
@@ -60,23 +64,18 @@ export type BaseAxisProps<DomainT extends DomainValue> = {
    * The position of the axis relative to the chart that it annotates. Required.
    */
   orientation: AxisOrientation;
-  /*
-   * The horizontal distance in pixels to translate the axis by, relative to the
-   * SVG's origin.  Required.
+  /**
+   * The chart area around which the axis sits, according to the `orientation` property.
+   * Required.
    */
-  translateX: number;
-  /*
-   * The vertical distance in pixels to translate the axis by, relative to the
-   * SVG's origin.  Required.
-   */
-  translateY: number;
+  chartArea: ChartArea;
   /**
    * The offset in pixels. Used to ensure crisp edges on low-resolution devices.
    * Defaults to 0 on devices with a devicePixelRatio greater than 1, and 0.5px otherwise.
    */
   offset?: number | null;
   /**
-   * The spacing in pixels between a ticks and its label. Defaults to 3px.
+   * The spacing in pixels between a tick line and its label. Defaults to 3px.
    */
   tickPadding?: number | null;
   /**

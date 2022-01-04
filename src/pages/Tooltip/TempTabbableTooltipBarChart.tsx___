@@ -84,7 +84,7 @@ function TempTabbableTooltipBarChartCore<CategoryT extends AxisDomain>({
         tickSizeInner={-chartArea.width}
         tickPadding={10}
         className="text-xs"
-        domainClassName="text-transparent"
+        hideDomainPath
         tickLineClassName="text-slate-600"
         tickTextClassName="text-slate-200"
       />

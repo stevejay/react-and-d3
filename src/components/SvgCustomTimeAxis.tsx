@@ -3,7 +3,7 @@ import { utcMonth } from 'd3-time';
 import { AnimatePresence, m as motion } from 'framer-motion';
 import { identity, isNil, uniq } from 'lodash-es';
 
-import type { AxisScale, ExpandedAxisScale } from '@/types';
+import type { AxisScale, ChartArea, ExpandedAxisScale } from '@/types';
 import { createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
 import { getDefaultOffset } from '@/utils/renderUtils';
 
@@ -15,12 +15,11 @@ function conditionalClamp(coord: number, shouldClamp: boolean): number {
 
 export type SvgCustomTimeAxisProps = {
   scale: AxisScale<Date>;
-  translateX: number;
-  translateY: number;
+  chartArea: ChartArea;
 };
 
 export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
-  const { translateX, translateY } = props;
+  const { chartArea } = props;
   const scale = props.scale as ExpandedAxisScale<Date>;
 
   // The length of the inner ticks (which are the ticks with labels).
@@ -74,8 +73,8 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
 
   return (
     <SvgGroup
-      translateX={translateX}
-      translateY={translateY}
+      translateX={chartArea.translateLeft}
+      translateY={chartArea.translateBottom}
       className="text-[10px]"
       textAnchor="middle"
       fill="currentColor"

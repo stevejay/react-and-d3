@@ -6,7 +6,7 @@ import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
 import { useBandScale } from '@/hooks/useBandScale';
 import { useChartArea } from '@/hooks/useChartArea';
-import type { AxisLabelOrientation } from '@/types';
+import type { TickLabelOrientation } from '@/types';
 
 const margins = { top: 20, bottom: 34, left: 30, right: 30 };
 
@@ -16,11 +16,11 @@ export type ReactBandAxisChartProps = {
   height: number;
   ariaLabelledby: string;
   transitionSeconds?: number;
-  labelOrientation: AxisLabelOrientation;
+  tickLabelOrientation: TickLabelOrientation;
 };
 
 export const ReactBandAxisChart: FC<ReactBandAxisChartProps> = memo(
-  ({ data, width, height, ariaLabelledby, labelOrientation, transitionSeconds = 0.25 }) => {
+  ({ data, width, height, ariaLabelledby, tickLabelOrientation, transitionSeconds = 0.25 }) => {
     const chartArea = useChartArea(width, height, margins);
     const scale = useBandScale(data, chartArea.xRange, { rangeRound: true });
 
@@ -38,11 +38,10 @@ export const ReactBandAxisChart: FC<ReactBandAxisChartProps> = memo(
         >
           <SvgAxis
             scale={scale}
-            translateX={chartArea.translateX}
-            translateY={chartArea.translateY + chartArea.height}
+            chartArea={chartArea}
             orientation="bottom"
             tickSizeOuter={-chartArea.height}
-            labelOrientation={labelOrientation}
+            tickLabelOrientation={tickLabelOrientation}
             className="text-[10px]"
           />
         </Svg>
@@ -54,5 +53,5 @@ export const ReactBandAxisChart: FC<ReactBandAxisChartProps> = memo(
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
     prevProps.transitionSeconds === nextProps.transitionSeconds &&
-    prevProps.labelOrientation === nextProps.labelOrientation
+    prevProps.tickLabelOrientation === nextProps.tickLabelOrientation
 );

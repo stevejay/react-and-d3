@@ -1,29 +1,41 @@
-# react-and-d3
+# React & D3
 
-## Building the Web site Docker image
+This project demonstrates how D3 and React can be used together to render SVG data visualisations. D3 is used to calculate the element position data and React is used to actually render them. Animations are implemented using [Framer Motion](https://www.framer.com/motion/). Styling is added using [Tailwind CSS](https://tailwindcss.com/).
 
-The image currently needs to be manually built locally and then pushed to Docker Hub. The image is built and pushed with a tag of `latest`.
+## Deployment
 
-First log in to Docker:
+### Building the Web site Docker image
+
+The image is locally build and then pushed to Docker Hub with a tag of `latest`.
+
+First log in to Docker...
 
 ```bash
 docker login -u middleengine
 [enter your password]
 ```
 
-Then build and push the image:
+... then build and push the image:
 
 ```bash
 docker build --tag middleengine/dataviz-website:latest --file Dockerfile .
 docker push middleengine/dataviz-website:latest
 ```
 
-### Building and running locally
+### Testing the Docker image locally
 
-If you want to test building and running the image locally, then run the following command from the project root: `docker-compose up --force-recreate --build --detach`. You should now be able to access the Web site at `http://localhost:6008/`.
-
-## Building and running the storybook locally as a Docker image
+To test the Web site Docker image locally, run the following command from the project root:
 
 ```bash
-docker-compose --file docker-compose.storybook.yml up --build --detach
+docker-compose up --force-recreate --build --detach
+```
+
+You should now be able to access the Web site at `http://localhost:6008/`.
+
+## Storybook
+
+To build and run the Storybook Docker image locally, run the following command from the project root:
+
+```bash
+docker-compose --file docker-compose.storybook.yml up --force-recreate --build --detach
 ```

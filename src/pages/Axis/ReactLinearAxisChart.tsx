@@ -8,7 +8,7 @@ import { SvgAxis } from '@/components/SvgAxis';
 import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
 import { useLinearScale } from '@/hooks/useLinearScale';
-import type { AxisLabelOrientation } from '@/types';
+import type { TickLabelOrientation } from '@/types';
 
 const margins = { top: 20, bottom: 34, left: 30, right: 30 };
 
@@ -18,11 +18,11 @@ export type ReactLinearAxisChartProps = {
   height: number;
   ariaLabelledby: string;
   transitionSeconds?: number;
-  labelOrientation: AxisLabelOrientation;
+  tickLabelOrientation: TickLabelOrientation;
 };
 
 export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
-  ({ data, width, height, ariaLabelledby, labelOrientation, transitionSeconds = 0.25 }) => {
+  ({ data, width, height, ariaLabelledby, tickLabelOrientation, transitionSeconds = 0.25 }) => {
     const chartArea = useChartArea(width, height, margins);
     const domain = useContinuousDomain(data, identity);
     const scale = useLinearScale(domain, chartArea.xRange, {
@@ -44,11 +44,10 @@ export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
         >
           <SvgAxis
             scale={scale}
-            translateX={chartArea.translateX}
-            translateY={chartArea.translateY + chartArea.height}
+            chartArea={chartArea}
             orientation="bottom"
             tickSizeOuter={-chartArea.height}
-            labelOrientation={labelOrientation}
+            tickLabelOrientation={tickLabelOrientation}
             className="text-[10px]"
           />
         </Svg>
@@ -60,5 +59,5 @@ export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
     prevProps.transitionSeconds === nextProps.transitionSeconds &&
-    prevProps.labelOrientation === nextProps.labelOrientation
+    prevProps.tickLabelOrientation === nextProps.tickLabelOrientation
 );

@@ -5,13 +5,13 @@ import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { transition } from 'd3-transition';
 
-import type { AxisLabelOrientation } from '@/types';
+import type { TickLabelOrientation } from '@/types';
 
 class D3LinearAxisChartRenderer {
   width = 0;
   height = 0;
   transitionSeconds = 0.25;
-  labelOrientation: AxisLabelOrientation = 'horizontal';
+  tickLabelOrientation: TickLabelOrientation = 'horizontal';
 
   private scale = scaleLinear();
   private axis = axisBottom(this.scale);
@@ -55,7 +55,7 @@ export type D3LinearAxisChartProps = {
   height: number;
   ariaLabelledby: string;
   transitionSeconds?: number;
-  labelOrientation: AxisLabelOrientation;
+  tickLabelOrientation: TickLabelOrientation;
 };
 
 export const D3LinearAxisChart: FC<D3LinearAxisChartProps> = ({
@@ -63,7 +63,7 @@ export const D3LinearAxisChart: FC<D3LinearAxisChartProps> = ({
   width,
   height,
   ariaLabelledby,
-  labelOrientation,
+  tickLabelOrientation,
   transitionSeconds = 0.25
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -73,9 +73,9 @@ export const D3LinearAxisChart: FC<D3LinearAxisChartProps> = ({
     renderer.width = width;
     renderer.height = height;
     renderer.transitionSeconds = transitionSeconds;
-    renderer.labelOrientation = labelOrientation;
+    renderer.tickLabelOrientation = tickLabelOrientation;
     renderer.render(svgRef.current, data);
-  }, [renderer, data, width, height, transitionSeconds, labelOrientation]);
+  }, [renderer, data, width, height, transitionSeconds, tickLabelOrientation]);
 
   return (
     <svg

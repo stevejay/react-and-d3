@@ -44,11 +44,7 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
           className="font-sans select-none bg-slate-800"
           aria-labelledby={ariaLabelledby}
         >
-          <SvgCustomTimeAxis
-            scale={scale}
-            translateX={chartArea.translateX}
-            translateY={chartArea.translateY + chartArea.height}
-          />
+          <SvgCustomTimeAxis scale={scale} chartArea={chartArea} />
         </Svg>
       </MotionConfig>
     );

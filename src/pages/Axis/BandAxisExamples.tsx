@@ -31,7 +31,7 @@ export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ transitionSeconds 
               width={width}
               height={height}
               transitionSeconds={transitionSeconds}
-              labelOrientation="horizontal"
+              tickLabelOrientation="horizontal"
             />
           )
         }
@@ -45,7 +45,7 @@ export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ transitionSeconds 
               width={width}
               height={height}
               transitionSeconds={transitionSeconds}
-              labelOrientation="horizontal"
+              tickLabelOrientation="horizontal"
             />
           )
         }

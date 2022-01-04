@@ -5,7 +5,14 @@ import { stack } from 'd3-shape';
 import { AnimatePresence, m as motion } from 'framer-motion';
 import { isNil } from 'lodash-es';
 
-import type { AxisScale, CategoryValueListDatum, ChartOrientation, DomainValue, Rect } from '@/types';
+import type {
+  AxisScale,
+  CategoryValueListDatum,
+  ChartArea,
+  ChartOrientation,
+  DomainValue,
+  Rect
+} from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 import { getDefaultOffset, toAnimatableRect } from '@/utils/renderUtils';
 
@@ -15,8 +22,6 @@ import { SvgGroup } from './SvgGroup';
 export function createStackedBarGenerator<CategoryT extends DomainValue>(
   categoryScale: AxisScale<CategoryT>,
   valueScale: AxisScale<number>,
-  chartWidth: number,
-  chartHeight: number,
   orientation: ChartOrientation,
   offset: number
 ) {
@@ -64,10 +69,7 @@ export type SvgStackedBarsProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   subCategories: readonly string[];
   colorScale: ScaleOrdinal<string, string, never>;
-  translateX: number;
-  translateY: number;
-  chartWidth: number;
-  chartHeight: number;
+  chartArea: ChartArea;
   orientation: ChartOrientation;
   categoryScale: AxisScale<CategoryT>;
   valueScale: AxisScale<number>;
@@ -84,14 +86,11 @@ export type SvgStackedBarsProps<CategoryT extends DomainValue> = {
 export function SvgStackedBars<CategoryT extends DomainValue>({
   data,
   subCategories,
-  translateX,
-  translateY,
-  chartWidth,
-  chartHeight,
   categoryScale,
   valueScale,
   colorScale,
   orientation,
+  chartArea,
   offset: offsetProp,
   className = '',
   seriesAriaRoleDescription,
@@ -104,29 +103,22 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
   // Used to ensure crisp edges on low-resolution devices.
   const offset = offsetProp ?? getDefaultOffset();
 
-  const stackGenerator = stack<CategoryValueListDatum<CategoryT, number>, string>()
+  const stackSeries = stack<CategoryValueListDatum<CategoryT, number>, string>()
     .keys(subCategories)
     .value((d, key) => d.values[key]);
 
-  const generator = createStackedBarGenerator(
-    categoryScale,
-    valueScale,
-    chartWidth,
-    chartHeight,
-    orientation,
-    offset
-  );
+  const generator = createStackedBarGenerator(categoryScale, valueScale, orientation, offset);
 
   return (
     <SvgGroup
       className={className}
-      translateX={translateX}
-      translateY={translateY}
+      translateX={chartArea.translateLeft}
+      translateY={chartArea.translateTop}
       fill="currentColor"
       stroke="none"
     >
       {/* <AnimatePresence initial={false}> */}
-      {stackGenerator(data).map((series) => {
+      {stackSeries(data).map((series) => {
         const seriesKey = series.key;
         return (
           <g
@@ -160,7 +152,6 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
                       ...toAnimatableRect(nextGenerator(seriesPoint))
                     })
                   }}
-                  // shapeRendering="crispEdges"
                   role="graphics-symbol"
                   aria-roledescription={datumAriaRoleDescription?.(seriesPoint.data, seriesKey)}
                   aria-label={datumAriaLabel?.(seriesPoint.data, seriesKey)}
@@ -200,7 +191,6 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
                   ...toAnimatableRect(nextGenerator(seriesPoint))
                 })
               }}
-              // shapeRendering="crispEdges"
               role="graphics-symbol"
               aria-roledescription={datumAriaRoleDescription?.(seriesPoint.data)}
               aria-label={datumAriaLabel?.(seriesPoint.data)}

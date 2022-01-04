@@ -1,7 +1,6 @@
 import { memo, ReactElement, Ref } from 'react';
 
 import { SvgAxis } from '@/components/SvgAxis';
-import { SvgAxisLabel } from '@/components/SvgAxisLabel';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { SvgStackedBars } from '@/components/SvgStackedBars';
 import { useBandScale } from '@/hooks/useBandScale';
@@ -96,24 +95,19 @@ function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
     >
       <SvgAxis
         scale={valueScale}
-        translateX={chartArea.translateX}
-        translateY={chartArea.translateY + chartArea.height}
         orientation="bottom"
+        chartArea={chartArea}
         tickSizeOuter={0}
         tickSizeInner={-chartArea.height}
         tickPadding={10}
         className="text-xs"
-        domainClassName="text-transparent"
+        hideDomainPath
         tickLineClassName="text-slate-600"
         tickTextClassName="text-slate-200"
-      />
-      <SvgAxisLabel
-        label="X Axis Label"
-        chartArea={chartArea}
-        offset={32}
-        orientation="bottom"
-        align="center"
-        className="text-sm text-slate-300"
+        axisLabel="X Axis Label"
+        axisLabelClassName="text-sm text-slate-300"
+        axisLabelAlignment="center"
+        axisLabelSpacing={34}
       />
       <SvgStackedBars
         data={data}
@@ -121,10 +115,7 @@ function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
         categoryScale={categoryScale}
         valueScale={valueScale}
         colorScale={subCategoryScale}
-        translateX={chartArea.translateX}
-        translateY={chartArea.translateY}
-        chartWidth={chartArea.width}
-        chartHeight={chartArea.height}
+        chartArea={chartArea}
         orientation="horizontal"
         seriesAriaRoleDescription={seriesAriaRoleDescription}
         seriesAriaLabel={seriesAriaLabel}
@@ -136,22 +127,17 @@ function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
       {/* This axis is rendered after the bars so that its domain sits on top of them */}
       <SvgAxis
         scale={categoryScale}
-        translateX={chartArea.translateX}
-        translateY={chartArea.translateY}
         orientation="left"
+        chartArea={chartArea}
         tickSizeInner={0}
         tickSizeOuter={0}
         tickPadding={10}
         className="text-sm"
         domainClassName="text-slate-300"
-      />
-      <SvgAxisLabel
-        label="Y Axis Label"
-        chartArea={chartArea}
-        offset={40}
-        orientation="left"
-        align="center"
-        className="text-sm text-slate-300"
+        axisLabel="Y Axis Label"
+        axisLabelClassName="text-sm text-slate-300"
+        axisLabelAlignment="center"
+        axisLabelSpacing={44}
       />
     </SvgChartRoot>
   );

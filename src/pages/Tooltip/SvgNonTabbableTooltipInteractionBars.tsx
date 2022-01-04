@@ -2,7 +2,7 @@ import { ReactElement, useRef } from 'react';
 
 import { createBarDataGenerator } from '@/components/SvgBars';
 import { SvgGroup } from '@/components/SvgGroup';
-import type { AxisScale, CategoryValueDatum, ChartOrientation, DomainValue, Rect } from '@/types';
+import type { AxisScale, CategoryValueDatum, ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 
 type SvgNonTabbableTooltipInteractionBarProps<CategoryT extends DomainValue, ValueT extends DomainValue> = {
@@ -56,10 +56,7 @@ export type SvgNonTabbableTooltipInteractionBarsProps<
   ValueT extends DomainValue
 > = {
   data: CategoryValueDatum<CategoryT, ValueT>[];
-  translateX: number;
-  translateY: number;
-  chartWidth: number;
-  chartHeight: number;
+  chartArea: ChartArea;
   orientation: ChartOrientation;
   categoryScale: AxisScale<CategoryT>;
   valueScale: AxisScale<ValueT>;
@@ -75,10 +72,7 @@ export function SvgNonTabbableTooltipInteractionBars<
   ValueT extends DomainValue
 >({
   data,
-  translateX,
-  translateY,
-  chartWidth,
-  chartHeight,
+  chartArea,
   categoryScale,
   valueScale,
   orientation,
@@ -90,16 +84,16 @@ export function SvgNonTabbableTooltipInteractionBars<
   const generator = createBarDataGenerator(
     categoryScale,
     valueScale,
-    chartWidth,
-    chartHeight,
+    chartArea.width,
+    chartArea.height,
     orientation,
     0
   );
   return (
     <SvgGroup
       className={className}
-      translateX={translateX}
-      translateY={translateY}
+      translateX={chartArea.translateLeft}
+      translateY={chartArea.translateTop}
       fill="transparent"
       stroke="none"
     >
@@ -107,8 +101,8 @@ export function SvgNonTabbableTooltipInteractionBars<
         <SvgNonTabbableTooltipInteractionBar
           key={getAxisDomainAsReactKey(d.category)}
           datum={d}
-          translateX={translateX}
-          translateY={translateY}
+          translateX={chartArea.translateLeft}
+          translateY={chartArea.translateTop}
           generator={generator}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}

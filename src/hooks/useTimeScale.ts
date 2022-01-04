@@ -4,9 +4,7 @@ import { scaleTime, scaleUtc } from 'd3-scale';
 
 import type { AxisScale } from '@/types';
 
-// This only supports continuous scales that have two values each in their domain and range.
 // The domain and range need to be stable. The options object does not need to be stable.
-//
 // options.utc The returned time scale operates in Coordinated Universal Time rather than local time.
 export function useTimeScale(
   domain: readonly Date[],

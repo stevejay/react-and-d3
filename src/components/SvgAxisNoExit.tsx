@@ -4,7 +4,7 @@ import { AnimatePresence, m as motion } from 'framer-motion';
 import { differenceBy, identity, isNil, sortBy, unionBy } from 'lodash-es';
 import useDebouncedEffect from 'use-debounced-effect';
 
-import type { AxisLabelOrientation, BaseAxisProps, DomainValue, ExpandedAxisScale } from '@/types';
+import type { BaseAxisProps, DomainValue, ExpandedAxisScale, TickLabelOrientation } from '@/types';
 import { center, createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
 import { getDefaultOffset } from '@/utils/renderUtils';
 
@@ -21,20 +21,13 @@ function getExitingTickValues<DomainT extends DomainValue>(
 
 export type SvgAxisNoExitProps<DomainT extends DomainValue> = BaseAxisProps<DomainT> & {
   transitionSeconds?: number;
-  labelOrientation?: AxisLabelOrientation;
+  tickLabelOrientation?: TickLabelOrientation;
 };
 
 export function SvgAxisNoExit<DomainT extends DomainValue>(
   props: SvgAxisNoExitProps<DomainT>
 ): ReactElement<any, any> | null {
-  const {
-    orientation,
-    translateX,
-    translateY,
-    transitionSeconds = 0.25,
-    // labelOrientation = 'horizontal',
-    tickArguments = []
-  } = props;
+  const { orientation, chartArea, transitionSeconds = 0.25, tickArguments = [] } = props;
   const scale = props.scale as ExpandedAxisScale<DomainT>;
 
   const forceUpdate = useForceUpdate();
@@ -125,6 +118,9 @@ export function SvgAxisNoExit<DomainT extends DomainValue>(
       forceUpdate();
     }
   }, transitionSeconds * 1000);
+
+  const translateX = orientation === 'right' ? chartArea.translateRight : chartArea.translateLeft;
+  const translateY = orientation === 'bottom' ? chartArea.translateBottom : chartArea.translateTop;
 
   return (
     <SvgGroup

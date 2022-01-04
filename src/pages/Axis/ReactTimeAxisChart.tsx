@@ -8,7 +8,7 @@ import { SvgAxis } from '@/components/SvgAxis';
 import { useChartArea } from '@/hooks/useChartArea';
 import { useTimeDomain } from '@/hooks/useTimeDomain';
 import { useTimeScale } from '@/hooks/useTimeScale';
-import type { AxisLabelOrientation } from '@/types';
+import type { TickLabelOrientation } from '@/types';
 
 import { yearMonthMultiFormat } from './formatters';
 
@@ -20,11 +20,11 @@ export type ReactTimeAxisChartProps = {
   height: number;
   ariaLabelledby: string;
   transitionSeconds?: number;
-  labelOrientation: AxisLabelOrientation;
+  tickLabelOrientation: TickLabelOrientation;
 };
 
 export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
-  ({ data, width, height, ariaLabelledby, labelOrientation, transitionSeconds = 0.25 }) => {
+  ({ data, width, height, ariaLabelledby, tickLabelOrientation, transitionSeconds = 0.25 }) => {
     const chartArea = useChartArea(width, height, margins);
     const domain = useTimeDomain(data, identity);
     const scale = useTimeScale(domain, chartArea.xRange, {
@@ -47,11 +47,10 @@ export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
         >
           <SvgAxis
             scale={scale}
-            translateX={chartArea.translateX}
-            translateY={chartArea.translateY + chartArea.height}
+            chartArea={chartArea}
             orientation="bottom"
             tickSizeOuter={-chartArea.height}
-            labelOrientation={labelOrientation}
+            tickLabelOrientation={tickLabelOrientation}
             tickFormat={yearMonthMultiFormat}
             className="text-[10px]"
           />
@@ -64,5 +63,5 @@ export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
     prevProps.transitionSeconds === nextProps.transitionSeconds &&
-    prevProps.labelOrientation === nextProps.labelOrientation
+    prevProps.tickLabelOrientation === nextProps.tickLabelOrientation
 );

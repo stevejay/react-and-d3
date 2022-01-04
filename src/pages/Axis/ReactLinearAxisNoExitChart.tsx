@@ -8,7 +8,7 @@ import { SvgAxisNoExit } from '@/components/SvgAxisNoExit';
 import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
 import { useLinearScale } from '@/hooks/useLinearScale';
-import type { AxisLabelOrientation } from '@/types';
+import type { TickLabelOrientation } from '@/types';
 
 const margins = { top: 20, bottom: 34, left: 30, right: 30 };
 
@@ -18,11 +18,11 @@ export type ReactLinearAxisNoExitChartProps = {
   height: number;
   ariaLabelledby: string;
   transitionSeconds?: number;
-  labelOrientation: AxisLabelOrientation;
+  tickLabelOrientation: TickLabelOrientation;
 };
 
 export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = memo(
-  ({ data, width, height, ariaLabelledby, labelOrientation, transitionSeconds = 0.25 }) => {
+  ({ data, width, height, ariaLabelledby, tickLabelOrientation, transitionSeconds = 0.25 }) => {
     const chartArea = useChartArea(width, height, margins);
     const domain = useContinuousDomain(data, identity);
     const scale = useLinearScale(domain, chartArea.xRange, {
@@ -44,12 +44,11 @@ export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = m
         >
           <SvgAxisNoExit
             scale={scale}
-            translateX={chartArea.translateX}
-            translateY={chartArea.translateY + chartArea.height}
+            chartArea={chartArea}
             orientation="bottom"
             tickSizeOuter={-chartArea.height}
             transitionSeconds={transitionSeconds}
-            labelOrientation={labelOrientation}
+            tickLabelOrientation={tickLabelOrientation}
           />
         </Svg>
       </MotionConfig>
@@ -60,5 +59,5 @@ export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = m
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
     prevProps.transitionSeconds === nextProps.transitionSeconds &&
-    prevProps.labelOrientation === nextProps.labelOrientation
+    prevProps.tickLabelOrientation === nextProps.tickLabelOrientation
 );

@@ -2,7 +2,6 @@ import { memo, ReactElement } from 'react';
 import Tippy from '@tippyjs/react';
 
 import { SvgAxis } from '@/components/SvgAxis';
-import { SvgAxisLabel } from '@/components/SvgAxisLabel';
 import { SvgBars } from '@/components/SvgBars';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { useBandScale } from '@/hooks/useBandScale';
@@ -73,33 +72,25 @@ function NonTabbableTooltipBarChartCore<CategoryT extends DomainValue>({
       >
         <SvgAxis
           scale={valueScale}
-          translateX={chartArea.translateX}
-          translateY={chartArea.translateY}
+          chartArea={chartArea}
           orientation="left"
           tickSizeOuter={0}
           tickSizeInner={-chartArea.width}
           tickPadding={10}
           className="text-xs"
-          domainClassName="text-transparent"
+          hideDomainPath
           tickLineClassName="text-slate-600"
           tickTextClassName="text-slate-200"
-        />
-        <SvgAxisLabel
-          label="Y Axis Label"
-          chartArea={chartArea}
-          offset={48}
-          orientation="left"
-          align="center"
-          className="text-sm text-slate-300"
+          axisLabel="Y Axis Label"
+          axisLabelAlignment="center"
+          axisLabelClassName="text-sm text-slate-300"
+          axisLabelSpacing={53}
         />
         <SvgBars
           data={data}
           categoryScale={categoryScale}
           valueScale={valueScale}
-          translateX={chartArea.translateX}
-          translateY={chartArea.translateY}
-          chartWidth={chartArea.width}
-          chartHeight={chartArea.height}
+          chartArea={chartArea}
           orientation="vertical"
           className="text-slate-600"
           datumAriaRoleDescription={datumAriaRoleDescription}
@@ -109,31 +100,23 @@ function NonTabbableTooltipBarChartCore<CategoryT extends DomainValue>({
         {/* X-axis is rendered after the bars so that its domain sits on top of them */}
         <SvgAxis
           scale={categoryScale}
-          translateX={chartArea.translateX}
-          translateY={chartArea.translateY + chartArea.height}
+          chartArea={chartArea}
           orientation="bottom"
           tickSizeInner={0}
           tickSizeOuter={0}
           tickPadding={10}
           className="text-sm"
           domainClassName="text-slate-300"
-        />
-        <SvgAxisLabel
-          label="X Axis Label"
-          chartArea={chartArea}
-          offset={32}
-          orientation="bottom"
-          align="center"
-          className="text-sm text-slate-300"
+          axisLabel="X Axis Label"
+          axisLabelAlignment="center"
+          axisLabelClassName="text-sm text-slate-300"
+          axisLabelSpacing={34}
         />
         <SvgNonTabbableTooltipInteractionBars
           data={data}
           categoryScale={categoryScale}
           valueScale={valueScale}
-          translateX={chartArea.translateX}
-          translateY={chartArea.translateY}
-          chartWidth={chartArea.width}
-          chartHeight={chartArea.height}
+          chartArea={chartArea}
           orientation="vertical"
           {...interactionProps}
         />

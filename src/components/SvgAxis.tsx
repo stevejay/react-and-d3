@@ -3,111 +3,118 @@ import { AnimatePresence, m as motion } from 'framer-motion';
 import { identity, isNil } from 'lodash-es';
 
 import type {
-  AxisLabelOrientation,
+  AxisLabelAlign,
   AxisOrientation,
   BaseAxisProps,
+  ChartArea,
   DomainValue,
-  ExpandedAxisScale
+  ExpandedAxisScale,
+  TickLabelOrientation
 } from '@/types';
 import { center, createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
 import { getDefaultOffset } from '@/utils/renderUtils';
 
 import { SvgGroup } from './SvgGroup';
 
-// TODO see if I can create a more compact version of this function.
-function getTickLabelOrientationProps(
-  orientation: AxisOrientation,
-  labelOrientation: AxisLabelOrientation
-): SVGAttributes<SVGTextElement> {
-  switch (orientation) {
-    case 'top':
-      switch (labelOrientation) {
-        case 'horizontal':
-          return {
-            dy: '0em'
-          };
-        case 'angled':
-          return {
-            transform: 'rotate(-45)',
-            textAnchor: 'start',
-            dy: '0.32em',
-            dx: '0.32em'
-          };
-        case 'vertical':
-          return {
-            transform: 'rotate(-90)',
-            textAnchor: 'start',
-            dy: '0.32em'
-          };
-        default:
-          throw new Error(`invalid labelOrientation '${labelOrientation}'`);
-      }
-
+function getAxisLabelOrientationProps(
+  axisOrientation: AxisOrientation,
+  axisLabelAlignment: AxisLabelAlign,
+  chartArea: ChartArea,
+  axisLabelSpacing: number,
+  offset: number
+) {
+  switch (axisOrientation) {
     case 'bottom':
-      switch (labelOrientation) {
-        case 'horizontal':
+      switch (axisLabelAlignment) {
+        case 'center':
           return {
+            transform: `translate(${chartArea.width * 0.5},${axisLabelSpacing + offset})`,
+            textAnchor: 'middle',
             dy: '0.71em'
           };
-        case 'angled':
+        case 'end':
           return {
-            transform: 'rotate(-45)',
+            transform: `translate(${chartArea.width},${axisLabelSpacing + offset})`,
             textAnchor: 'end',
-            dy: '0.32em',
-            dx: '-0.32em'
+            dy: '0.71em'
           };
-        case 'vertical':
+        case 'start':
           return {
-            transform: 'rotate(-90)',
-            textAnchor: 'end',
-            dy: '0.32em'
-          };
-        default:
-          throw new Error(`invalid labelOrientation '${labelOrientation}'`);
-      }
-
-    case 'left':
-      switch (labelOrientation) {
-        case 'horizontal':
-          return {
-            dy: '0.32em'
-          };
-        case 'angled':
-          return {
-            transform: 'rotate(-45)',
-            textAnchor: 'end',
-            dx: '-0.32em',
-            dy: '0.32em'
-          };
-        case 'vertical':
-          return {
-            transform: 'rotate(-90)',
-            textAnchor: 'middle'
-          };
-        default:
-          throw new Error(`invalid labelOrientation '${labelOrientation}'`);
-      }
-
-    case 'right':
-      switch (labelOrientation) {
-        case 'horizontal':
-          return {
-            dy: '0.32em'
-          };
-        case 'angled':
-          return {
-            transform: 'rotate(-45)',
+            transform: `translate(${0},${axisLabelSpacing + offset})`,
             textAnchor: 'start',
-            dx: '0.32em',
-            dy: '0.32em'
-          };
-        case 'vertical':
-          return {
-            transform: 'rotate(90)',
-            textAnchor: 'middle'
+            dy: '0.71em'
           };
         default:
-          throw new Error(`invalid labelOrientation '${labelOrientation}'`);
+          throw new Error('not implemented');
+      }
+    case 'left':
+      switch (axisLabelAlignment) {
+        case 'center':
+          return {
+            transform: `translate(${-axisLabelSpacing + offset},${chartArea.height * 0.5}) rotate(-90)`,
+            textAnchor: 'middle',
+            dy: '0.71em'
+          };
+        case 'start':
+          return {
+            transform: `translate(${-axisLabelSpacing + offset},${chartArea.height}) rotate(-90)`,
+            textAnchor: 'start',
+            dy: '0.71em'
+          };
+        case 'end':
+          return {
+            transform: `translate(${-axisLabelSpacing + offset},${0}) rotate(-90)`,
+            textAnchor: 'end',
+            dy: '0.71em'
+          };
+        default:
+          throw new Error('not implemented');
+      }
+    default:
+      throw new Error('not implemented');
+  }
+}
+
+function getTickLabelOrientationProps(
+  axisOrientation: AxisOrientation,
+  tickLabelOrientation: TickLabelOrientation
+): SVGAttributes<SVGTextElement> {
+  switch (axisOrientation) {
+    case 'top':
+      switch (tickLabelOrientation) {
+        case 'horizontal':
+          return { dy: '0em' };
+        case 'angled':
+          return { transform: 'rotate(-45)', textAnchor: 'start', dy: '0.32em', dx: '0.32em' };
+        default:
+          return { transform: 'rotate(-90)', textAnchor: 'start', dy: '0.32em' };
+      }
+    case 'bottom':
+      switch (tickLabelOrientation) {
+        case 'horizontal':
+          return { dy: '0.71em' };
+        case 'angled':
+          return { transform: 'rotate(-45)', textAnchor: 'end', dy: '0.32em', dx: '-0.32em' };
+        default:
+          return { transform: 'rotate(-90)', textAnchor: 'end', dy: '0.32em' };
+      }
+    case 'left':
+      switch (tickLabelOrientation) {
+        case 'horizontal':
+          return { dy: '0.32em' };
+        case 'angled':
+          return { transform: 'rotate(-45)', textAnchor: 'end', dx: '-0.32em', dy: '0.32em' };
+        default:
+          return { transform: 'rotate(-90)', textAnchor: 'middle' };
+      }
+    case 'right':
+      switch (tickLabelOrientation) {
+        case 'horizontal':
+          return { dy: '0.32em' };
+        case 'angled':
+          return { transform: 'rotate(-45)', textAnchor: 'start', dx: '0.32em', dy: '0.32em' };
+        default:
+          return { transform: 'rotate(90)', textAnchor: 'middle' };
       }
   }
 }
@@ -134,16 +141,24 @@ export type SvgAxisProps<DomainT extends DomainValue> = BaseAxisProps<DomainT> &
     SVGProps<SVGTextElement>,
     'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag' | 'ref'
   >;
-  labelOrientation?: AxisLabelOrientation;
+  tickLabelOrientation?: TickLabelOrientation;
+  /**
+   * Pass `true` to entirely remove the axis domain line. This line includes
+   * the outer ticks, so in that case `tickSizeOuter` will have no effect and
+   * `tickSize` will only affect the inner tick size.
+   * Defaults to `false`.
+   */
+  hideDomainPath?: boolean;
+  axisLabel?: string;
+  axisLabelAlignment?: AxisLabelAlign;
+  axisLabelSpacing?: number;
+  axisLabelClassName?: string;
 };
 
-// TODO include a way to not render the domain at all, rather than having to
-// make it transparent to hide it.
 export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT>): ReactElement | null {
   const {
     orientation,
-    translateX,
-    translateY,
+    chartArea,
     domainProps,
     tickGroupProps,
     tickLineProps,
@@ -153,8 +168,13 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
     tickGroupClassName = '',
     tickLineClassName = '',
     tickTextClassName = '',
-    labelOrientation = 'horizontal',
-    tickArguments = []
+    tickLabelOrientation = 'horizontal',
+    tickArguments = [],
+    hideDomainPath = false,
+    axisLabel,
+    axisLabelAlignment = 'center',
+    axisLabelSpacing = 30,
+    axisLabelClassName = ''
   } = props;
 
   const scale = props.scale as ExpandedAxisScale<DomainT>;
@@ -219,8 +239,19 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
     previousPositionRef.current = position;
   });
 
-  const labelOrientationProps = getTickLabelOrientationProps(orientation, labelOrientation);
+  const tickLabelOrientationProps = getTickLabelOrientationProps(orientation, tickLabelOrientation);
   const labelGroupTransform = `${translate === 'translateX' ? 'translateY' : 'translateX'}(${k * spacing}px)`;
+
+  const translateX = orientation === 'right' ? chartArea.translateRight : chartArea.translateLeft;
+  const translateY = orientation === 'bottom' ? chartArea.translateBottom : chartArea.translateTop;
+
+  const axisLabelOrientationProps = getAxisLabelOrientationProps(
+    orientation,
+    axisLabelAlignment,
+    chartArea,
+    axisLabelSpacing,
+    offset
+  );
 
   return (
     <SvgGroup
@@ -231,17 +262,18 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
       stroke="currentColor"
       className={className}
     >
-      <motion.path
-        fill="none"
-        stroke="currentColor"
-        role="presentation"
-        animate={{
-          d: createAxisDomainPathData(orientation, tickSizeOuter, offset, range0, range1, k)
-        }}
-        className={domainClassName}
-        // shapeRendering="crispEdges"
-        {...domainProps}
-      />
+      {!hideDomainPath && (
+        <motion.path
+          fill="none"
+          stroke="currentColor"
+          role="presentation"
+          animate={{
+            d: createAxisDomainPathData(orientation, tickSizeOuter, offset, range0, range1, k)
+          }}
+          className={domainClassName}
+          {...domainProps}
+        />
+      )}
       {/* Send the current position to the tick exit animation variant. */}
       <AnimatePresence custom={position} initial={false}>
         {tickValues.map((tickValue, index) => (
@@ -276,7 +308,6 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
               stroke="currentColor"
               role="presentation"
               className={tickLineClassName}
-              //   shapeRendering="crispEdges"
               {...tickLineProps}
             />
             <g style={{ transform: labelGroupTransform }}>
@@ -286,7 +317,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
                 role="presentation"
                 aria-hidden
                 className={tickTextClassName}
-                {...labelOrientationProps}
+                {...tickLabelOrientationProps}
                 {...tickTextProps}
               >
                 {tickFormat(tickValue, index)}
@@ -295,6 +326,21 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
           </motion.g>
         ))}
       </AnimatePresence>
+      {axisLabel && (
+        <g transform={axisLabelOrientationProps.transform}>
+          <text
+            stroke="none"
+            fill="currentColor"
+            className={axisLabelClassName}
+            textAnchor={axisLabelOrientationProps.textAnchor}
+            dy={axisLabelOrientationProps.dy}
+            role="presentation"
+            aria-hidden
+          >
+            {axisLabel}
+          </text>
+        </g>
+      )}
     </SvgGroup>
   );
 }

@@ -2,7 +2,7 @@ import { ReactElement } from 'react';
 import { AnimatePresence, m as motion } from 'framer-motion';
 import { isNil } from 'lodash-es';
 
-import type { AxisScale, CategoryValueDatum, ChartOrientation, DomainValue, Rect } from '@/types';
+import type { AxisScale, CategoryValueDatum, ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 import { getDefaultOffset, toAnimatableRect } from '@/utils/renderUtils';
 
@@ -56,10 +56,7 @@ export function createBarDataGenerator<CategoryT extends DomainValue, ValueT ext
 
 export type SvgBarsProps<CategoryT extends DomainValue, ValueT extends DomainValue> = {
   data: CategoryValueDatum<CategoryT, ValueT>[];
-  translateX: number;
-  translateY: number;
-  chartWidth: number;
-  chartHeight: number;
+  chartArea: ChartArea;
   orientation: ChartOrientation;
   categoryScale: AxisScale<CategoryT>;
   valueScale: AxisScale<ValueT>;
@@ -72,10 +69,7 @@ export type SvgBarsProps<CategoryT extends DomainValue, ValueT extends DomainVal
 
 export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValue>({
   data,
-  translateX,
-  translateY,
-  chartWidth,
-  chartHeight,
+  chartArea,
   categoryScale,
   valueScale,
   orientation,
@@ -91,8 +85,8 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
   const generator = createBarDataGenerator(
     categoryScale,
     valueScale,
-    chartWidth,
-    chartHeight,
+    chartArea.width,
+    chartArea.height,
     orientation,
     offset
   );
@@ -100,8 +94,8 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
   return (
     <SvgGroup
       className={className}
-      translateX={translateX}
-      translateY={translateY}
+      translateX={chartArea.translateLeft}
+      translateY={chartArea.translateTop}
       fill="currentColor"
       stroke="none"
     >
@@ -129,7 +123,6 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
                 ...toAnimatableRect(nextGenerator(d))
               })
             }}
-            // shapeRendering="crispEdges"
             role="graphics-symbol"
             aria-roledescription={datumAriaRoleDescription?.(d)}
             aria-label={datumAriaLabel?.(d)}

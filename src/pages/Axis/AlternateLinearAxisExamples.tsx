@@ -33,7 +33,7 @@ export const AlternateLinearAxisExamples: FC<AlternateLinearAxisExamplesProps> =
               width={width}
               height={height}
               transitionSeconds={transitionSeconds}
-              labelOrientation="horizontal"
+              tickLabelOrientation="horizontal"
             />
           )
         }
@@ -47,7 +47,7 @@ export const AlternateLinearAxisExamples: FC<AlternateLinearAxisExamplesProps> =
               width={width}
               height={height}
               transitionSeconds={transitionSeconds}
-              labelOrientation="horizontal"
+              tickLabelOrientation="horizontal"
             />
           )
         }
