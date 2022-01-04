@@ -1,5 +1,6 @@
 import { ReactElement, RefObject, useEffect, useMemo, useRef } from 'react';
 import type { TippyProps } from '@tippyjs/react/headless';
+import { animate, useMotionValue } from 'framer-motion';
 
 import type { Rect } from '@/types';
 
@@ -30,6 +31,7 @@ export function useNonTabbableTooltip<DatumT>(renderContent: (datum: DatumT) => 
   TippyProps
 ] {
   const svgRef = useRef<SVGSVGElement>(null);
+  const opacity = useMotionValue(0);
 
   const [tooltipState, setTooltipState] = usePartiallyDelayedState<TooltipState<DatumT>>({
     visible: false,
@@ -79,15 +81,23 @@ export function useNonTabbableTooltip<DatumT>(renderContent: (datum: DatumT) => 
         appendTo: 'parent',
         placement: 'top',
         offset: [0, 10],
-        animation: false,
+        animation: true,
+        onShow: () => {
+          animate(opacity, 1, { type: 'tween', duration: 0.15 });
+        },
+        onHide: ({ unmount }) => {
+          animate(opacity, 0, { type: 'tween', duration: 0.15, onComplete: unmount });
+        },
         visible: tooltipState.visible,
         getReferenceClientRect: () => createVirtualReference(svgRef, tooltipState.rect!) as any,
         popperOptions,
         render: (attrs) => (
-          <Tooltip {...attrs}>{tooltipState.datum && renderContent(tooltipState.datum)}</Tooltip>
+          <Tooltip {...attrs} style={{ opacity }}>
+            {tooltipState.datum && renderContent(tooltipState.datum)}
+          </Tooltip>
         )
       } as TippyProps),
-    [tooltipState, renderContent]
+    [tooltipState, renderContent, opacity]
   );
 
   return [eventHandlers, { ref: svgRef }, tippyProps];

@@ -38,22 +38,7 @@ function SvgTabbableTooltipInteractionBar<CategoryT extends AxisDomain, ValueT e
   return (
     <rect
       {...interactionRect}
-      className="outline-none cursor-pointer"
-      // mouseover used instead of mouseenter.
-      // Can't use onMouseEnter as it doesn't work well in Safari. If you click on a
-      // bar, scroll down the page, scroll back up and then click again on the same
-      // bar, the onMouseEnter event doesn't seem to fire.
-      // onMouseOver={() => barRect && onMouseOver?.(d, barRect)}
-      // onMouseOut={() => barRect && onMouseOut?.(d, barRect)}
-
-      // This is the approach that react-bootstrap takes to tooltips.
-      // They are made focusable (tabIndex=0). This means they work
-      // on touch and display for keyboard users.
-      // tabIndex={0}
-      // onFocus={() => barRect && onFocus?.(d, barRect)}
-      // onBlur={() => barRect && onBlur?.(d, barRect)}
-
-      // This is the default for Tippy.
+      className="cursor-pointer focus-visible:outline outline-2"
       tabIndex={0} // Required because a rect does not naturally receive focus.
       onMouseOver={() => barRect && onMouseEnter?.(datum, barRect)}
       onMouseOut={() => barRect && onMouseLeave?.(datum, barRect)}
@@ -67,14 +52,6 @@ function SvgTabbableTooltipInteractionBar<CategoryT extends AxisDomain, ValueT e
     />
   );
 }
-
-// ref.current.addEventListener(
-//     "touchstart",
-//     function(e) {
-//       e.preventDefault();
-//     },
-//     { passive: false }
-//   );
 
 export type SvgTabbableTooltipInteractionBarsProps<
   CategoryT extends AxisDomain,
