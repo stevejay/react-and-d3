@@ -9,19 +9,22 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, { hasError: boo
   }
 
   static getDerivedStateFromError(error: any) {
-    // Update state so the next render will show the fallback UI.
     return { hasError: true };
   }
 
-  // componentDidCatch(error, errorInfo) {
-  //   // You can also log the error to an error reporting service
-  //   logErrorToMyService(error, errorInfo);
-  // }
-
   render() {
     if (this.state.hasError) {
-      // You can render any custom fallback UI
-      return <h1>Oops, Something went wrong</h1>;
+      return (
+        <div className="flex items-center justify-center w-full mt-24">
+          <h1 className="text-[72px] text-center">
+            <span className="inline-block mb-2 font-bold text-slate-200">Hmm&hellip;</span>
+            <br />
+            <span className="inline-block text-2xl text-transparent bg-gradient-to-r from-blue-500 to-green-700 bg-clip-text">
+              Something went wrong
+            </span>
+          </h1>
+        </div>
+      );
     }
 
     return this.props.children;
