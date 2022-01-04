@@ -1,7 +1,6 @@
 import { Fragment, memo, ReactElement } from 'react';
 import { useId } from '@uifabric/react-hooks';
 import { max, min } from 'd3-array';
-import type { AxisDomain } from 'd3-axis';
 import { easeCubicInOut } from 'd3-ease';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import { arc, curveLinearClosed, lineRadial, pie } from 'd3-shape';
@@ -9,14 +8,14 @@ import { m as motion, MotionConfig } from 'framer-motion';
 import { every } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';
-import type { CategoryValueDatum, Margins } from '@/types';
+import type { CategoryValueDatum, DomainValue, Margins } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 
 import { CategorySlice } from './CategorySlice';
 
 const margins: Margins = { left: 1, right: 1, top: 1, bottom: 1 };
 
-export type RadarChartProps<CategoryT extends AxisDomain> = {
+export type RadarChartProps<CategoryT extends DomainValue> = {
   title: string;
   categoryLabel: (datum: CategoryValueDatum<CategoryT, number>) => string;
   selectedCategory: CategoryT;
@@ -34,7 +33,7 @@ export type RadarChartProps<CategoryT extends AxisDomain> = {
   datumAriaDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
 };
 
-const RadarChartImpl = <CategoryT extends AxisDomain>({
+const RadarChartImpl = <CategoryT extends DomainValue>({
   title,
   categoryLabel,
   compact,
@@ -92,7 +91,7 @@ const RadarChartImpl = <CategoryT extends AxisDomain>({
 
   // X-scale is generated from the categories (keys).
 
-  const x = scaleBand<AxisDomain>()
+  const x = scaleBand<DomainValue>()
     .range([0, 2 * Math.PI]) // [0 degrees, 360 degrees]
     .domain(data.map((d) => d.category));
 

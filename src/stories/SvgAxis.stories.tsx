@@ -1,5 +1,4 @@
 import { ComponentMeta, Story } from '@storybook/react';
-import type { AxisScale } from 'd3-axis';
 import { easeCubicInOut } from 'd3-ease';
 import { scaleBand, scaleLinear, scalePoint, scaleTime } from 'd3-scale';
 import { timeMonth } from 'd3-time';
@@ -7,7 +6,7 @@ import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
-import type { AxisLabelOrientation } from '@/types';
+import type { AxisLabelOrientation, AxisScale } from '@/types';
 
 export default {
   title: 'Chart/SvgAxis',

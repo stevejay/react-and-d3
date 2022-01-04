@@ -1,9 +1,14 @@
 import { ReactElement, SVGAttributes, SVGProps, useEffect, useRef } from 'react';
-import type { AxisDomain } from 'd3-axis';
 import { AnimatePresence, m as motion } from 'framer-motion';
 import { identity, isNil } from 'lodash-es';
 
-import type { AxisLabelOrientation, AxisOrientation, BaseAxisProps, ExpandedAxisScale } from '@/types';
+import type {
+  AxisLabelOrientation,
+  AxisOrientation,
+  BaseAxisProps,
+  DomainValue,
+  ExpandedAxisScale
+} from '@/types';
 import { center, createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
 import { getDefaultOffset } from '@/utils/renderUtils';
 
@@ -107,7 +112,7 @@ function getTickLabelOrientationProps(
   }
 }
 
-export type SvgAxisProps<Domain extends AxisDomain> = BaseAxisProps<Domain> & {
+export type SvgAxisProps<DomainT extends DomainValue> = BaseAxisProps<DomainT> & {
   className?: string;
   domainClassName?: string;
   domainProps?: Omit<
@@ -134,7 +139,7 @@ export type SvgAxisProps<Domain extends AxisDomain> = BaseAxisProps<Domain> & {
 
 // TODO include a way to not render the domain at all, rather than having to
 // make it transparent to hide it.
-export function SvgAxis<Domain extends AxisDomain>(props: SvgAxisProps<Domain>): ReactElement | null {
+export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT>): ReactElement | null {
   const {
     orientation,
     translateX,
@@ -152,7 +157,7 @@ export function SvgAxis<Domain extends AxisDomain>(props: SvgAxisProps<Domain>):
     tickArguments = []
   } = props;
 
-  const scale = props.scale as ExpandedAxisScale<Domain>;
+  const scale = props.scale as ExpandedAxisScale<DomainT>;
 
   // The length of the inner ticks (which are the ticks with labels).
   const tickSizeInner = props.tickSize ?? props.tickSizeInner ?? 6;
@@ -256,7 +261,7 @@ export function SvgAxis<Domain extends AxisDomain>(props: SvgAxisProps<Domain>):
                   : { opacity: 0, [translate]: position(tickValue) + offset };
               },
               animate: () => ({ opacity: 1, [translate]: position(tickValue) + offset }),
-              exit: (custom: (d: Domain) => number) => {
+              exit: (custom: (d: DomainT) => number) => {
                 const exitPosition = custom(tickValue);
                 return isFinite(exitPosition)
                   ? { opacity: 0, [translate]: exitPosition + offset }

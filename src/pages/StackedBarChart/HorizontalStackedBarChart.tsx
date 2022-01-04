@@ -1,5 +1,4 @@
 import { memo, ReactElement, Ref } from 'react';
-import type { AxisDomain } from 'd3-axis';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgAxisLabel } from '@/components/SvgAxisLabel';
@@ -11,9 +10,9 @@ import { useContinuousDomain } from '@/hooks/useContinuousDomain';
 import { useLinearScale } from '@/hooks/useLinearScale';
 import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
 import { useOrdinalScale } from '@/hooks/useOrdinalScale';
-import type { CategoryValueListDatum, Margins } from '@/types';
+import type { CategoryValueListDatum, DomainValue, Margins } from '@/types';
 
-function getValuesTotal<CategoryT extends AxisDomain>(datum: CategoryValueListDatum<CategoryT, number>) {
+function getValuesTotal<CategoryT extends DomainValue>(datum: CategoryValueListDatum<CategoryT, number>) {
   let sum = 0;
   for (let property in datum.values) {
     sum += datum.values[property];
@@ -21,7 +20,7 @@ function getValuesTotal<CategoryT extends AxisDomain>(datum: CategoryValueListDa
   return sum;
 }
 
-export type HorizontalStackedBarChartProps<CategoryT extends AxisDomain> = {
+export type HorizontalStackedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   subCategories: readonly string[];
   colorRange: readonly string[];
@@ -43,7 +42,7 @@ export type HorizontalStackedBarChartProps<CategoryT extends AxisDomain> = {
   transitionSeconds?: number;
 };
 
-function HorizontalStackedBarChartCore<CategoryT extends AxisDomain>({
+function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
   data,
   subCategories,
   colorRange,

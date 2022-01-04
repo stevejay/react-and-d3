@@ -1,10 +1,9 @@
 import { useEffect, useRef } from 'react';
-import type { AxisScale } from 'd3-axis';
 import { utcMonth } from 'd3-time';
 import { AnimatePresence, m as motion } from 'framer-motion';
 import { identity, isNil, uniq } from 'lodash-es';
 
-import type { ExpandedAxisScale } from '@/types';
+import type { AxisScale, ExpandedAxisScale } from '@/types';
 import { createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
 import { getDefaultOffset } from '@/utils/renderUtils';
 

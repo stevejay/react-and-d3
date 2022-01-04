@@ -1,12 +1,11 @@
 import { ReactElement, useRef } from 'react';
-import type { AxisDomain, AxisScale } from 'd3-axis';
 
 import { createBarDataGenerator } from '@/components/SvgBars';
 import { SvgGroup } from '@/components/SvgGroup';
-import type { CategoryValueDatum, ChartOrientation, Rect } from '@/types';
+import type { AxisScale, CategoryValueDatum, ChartOrientation, DomainValue, Rect } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 
-type SvgNonTabbableTooltipInteractionBarProps<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
+type SvgNonTabbableTooltipInteractionBarProps<CategoryT extends DomainValue, ValueT extends DomainValue> = {
   datum: CategoryValueDatum<CategoryT, ValueT>;
   translateX: number;
   translateY: number;
@@ -16,7 +15,7 @@ type SvgNonTabbableTooltipInteractionBarProps<CategoryT extends AxisDomain, Valu
   onTouch?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
 };
 
-function SvgNonTabbableTooltipInteractionBar<CategoryT extends AxisDomain, ValueT extends AxisDomain>({
+function SvgNonTabbableTooltipInteractionBar<CategoryT extends DomainValue, ValueT extends DomainValue>({
   datum,
   translateX,
   translateY,
@@ -53,8 +52,8 @@ function SvgNonTabbableTooltipInteractionBar<CategoryT extends AxisDomain, Value
 }
 
 export type SvgNonTabbableTooltipInteractionBarsProps<
-  CategoryT extends AxisDomain,
-  ValueT extends AxisDomain
+  CategoryT extends DomainValue,
+  ValueT extends DomainValue
 > = {
   data: CategoryValueDatum<CategoryT, ValueT>[];
   translateX: number;
@@ -72,8 +71,8 @@ export type SvgNonTabbableTooltipInteractionBarsProps<
 
 // TODO what about the case where the user does not want gaps in the bar interactions?
 export function SvgNonTabbableTooltipInteractionBars<
-  CategoryT extends AxisDomain,
-  ValueT extends AxisDomain
+  CategoryT extends DomainValue,
+  ValueT extends DomainValue
 >({
   data,
   translateX,

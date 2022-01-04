@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
-import type { AxisDomain } from 'd3-axis';
 import { scaleOrdinal } from 'd3-scale';
 
-export function useOrdinalScale<CategoryT extends { toString(): string }, ValueT extends AxisDomain>(
+import type { DomainValue } from '@/types';
+
+export function useOrdinalScale<CategoryT extends { toString(): string }, ValueT extends DomainValue>(
   domain: readonly CategoryT[],
   range: readonly ValueT[]
 ) {

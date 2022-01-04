@@ -1,4 +1,14 @@
-import type { AxisDomain, AxisScale } from 'd3-axis';
+// Same as AxisDomain type from 'd3-axis'.
+export type DomainValue = number | string | Date | { valueOf(): number };
+
+// Same as AxisScale from 'd3-axis
+export interface AxisScale<DomainT> {
+  (x: DomainT): number | undefined;
+  domain(): DomainT[];
+  range(): number[];
+  copy(): this;
+  bandwidth?(): number;
+}
 
 export type Margins = { top: number; bottom: number; left: number; right: number };
 
@@ -8,13 +18,13 @@ export type AxisLabelOrientation = 'horizontal' | 'vertical' | 'angled';
 
 export type ChartOrientation = 'vertical' | 'horizontal';
 
-export type CategoryValueDatum<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
+export type CategoryValueDatum<CategoryT extends DomainValue, ValueT extends DomainValue> = {
   readonly category: CategoryT;
   readonly value: ValueT;
 };
 
 // Limitation here: key is always a string.
-export type CategoryValueListDatum<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
+export type CategoryValueListDatum<CategoryT extends DomainValue, ValueT extends DomainValue> = {
   readonly category: CategoryT;
   readonly values: { [key: string]: ValueT };
 };
@@ -36,16 +46,16 @@ export type Rect = {
   height: number;
 };
 
-export type ExpandedAxisScale<Domain extends AxisDomain> = AxisScale<Domain> & {
-  ticks?(...args: any[]): Domain[];
-  tickFormat?(...args: any[]): (d: Domain) => string;
+export type ExpandedAxisScale<DomainT extends DomainValue> = AxisScale<DomainT> & {
+  ticks?(...args: any[]): DomainT[];
+  tickFormat?(...args: any[]): (d: DomainT) => string;
 };
 
-export type BaseAxisProps<Domain extends AxisDomain> = {
+export type BaseAxisProps<DomainT extends DomainValue> = {
   /**
    * The scale used to render the axis. Required.
    */
-  scale: AxisScale<Domain>;
+  scale: AxisScale<DomainT>;
   /**
    * The position of the axis relative to the chart that it annotates. Required.
    */
@@ -92,10 +102,10 @@ export type BaseAxisProps<Domain extends AxisDomain> = {
    * Sets the formatter function. Pass `null` to explicitly use the scale's
    * default formatter. Defaults to the scale's default formatter.
    */
-  tickFormat?: (domainValue: Domain, index: number) => string | null;
+  tickFormat?: (domainValue: DomainT, index: number) => string | null;
   /**
    * The ticks values to use for ticks instead of those returned by the scale’s
    * automatic tick generator
    */
-  tickValues?: Domain[] | null;
+  tickValues?: DomainT[] | null;
 };

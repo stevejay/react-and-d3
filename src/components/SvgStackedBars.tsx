@@ -1,19 +1,18 @@
 import { ReactElement } from 'react';
-import type { AxisDomain, AxisScale } from 'd3-axis';
 import type { ScaleOrdinal } from 'd3-scale';
 import type { SeriesPoint } from 'd3-shape';
 import { stack } from 'd3-shape';
 import { AnimatePresence, m as motion } from 'framer-motion';
 import { isNil } from 'lodash-es';
 
-import type { CategoryValueListDatum, ChartOrientation, Rect } from '@/types';
+import type { AxisScale, CategoryValueListDatum, ChartOrientation, DomainValue, Rect } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 import { getDefaultOffset, toAnimatableRect } from '@/utils/renderUtils';
 
 import { SvgGroup } from './SvgGroup';
 
 // TODO extract
-export function createStackedBarGenerator<CategoryT extends AxisDomain>(
+export function createStackedBarGenerator<CategoryT extends DomainValue>(
   categoryScale: AxisScale<CategoryT>,
   valueScale: AxisScale<number>,
   chartWidth: number,
@@ -61,7 +60,7 @@ export function createStackedBarGenerator<CategoryT extends AxisDomain>(
   };
 }
 
-export type SvgStackedBarsProps<CategoryT extends AxisDomain> = {
+export type SvgStackedBarsProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   subCategories: readonly string[];
   colorScale: ScaleOrdinal<string, string, never>;
@@ -82,7 +81,7 @@ export type SvgStackedBarsProps<CategoryT extends AxisDomain> = {
   datumAriaDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
 };
 
-export function SvgStackedBars<CategoryT extends AxisDomain>({
+export function SvgStackedBars<CategoryT extends DomainValue>({
   data,
   subCategories,
   translateX,

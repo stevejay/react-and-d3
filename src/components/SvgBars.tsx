@@ -1,16 +1,15 @@
 import { ReactElement } from 'react';
-import type { AxisDomain, AxisScale } from 'd3-axis';
 import { AnimatePresence, m as motion } from 'framer-motion';
 import { isNil } from 'lodash-es';
 
-import type { CategoryValueDatum, ChartOrientation, Rect } from '@/types';
+import type { AxisScale, CategoryValueDatum, ChartOrientation, DomainValue, Rect } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 import { getDefaultOffset, toAnimatableRect } from '@/utils/renderUtils';
 
 import { SvgGroup } from './SvgGroup';
 
 // TODO extract
-export function createBarDataGenerator<CategoryT extends AxisDomain, ValueT extends AxisDomain>(
+export function createBarDataGenerator<CategoryT extends DomainValue, ValueT extends DomainValue>(
   categoryScale: AxisScale<CategoryT>,
   valueScale: AxisScale<ValueT>,
   chartWidth: number,
@@ -55,7 +54,7 @@ export function createBarDataGenerator<CategoryT extends AxisDomain, ValueT exte
   };
 }
 
-export type SvgBarsProps<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
+export type SvgBarsProps<CategoryT extends DomainValue, ValueT extends DomainValue> = {
   data: CategoryValueDatum<CategoryT, ValueT>[];
   translateX: number;
   translateY: number;
@@ -71,7 +70,7 @@ export type SvgBarsProps<CategoryT extends AxisDomain, ValueT extends AxisDomain
   datumAriaDescription?: (datum: CategoryValueDatum<CategoryT, ValueT>) => string;
 };
 
-export function SvgBars<CategoryT extends AxisDomain, ValueT extends AxisDomain>({
+export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValue>({
   data,
   translateX,
   translateY,

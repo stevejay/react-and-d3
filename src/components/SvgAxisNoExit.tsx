@@ -1,32 +1,31 @@
 import { ReactElement, useEffect, useRef } from 'react';
 import { useForceUpdate } from '@uifabric/react-hooks';
-import type { AxisDomain } from 'd3-axis';
 import { AnimatePresence, m as motion } from 'framer-motion';
 import { differenceBy, identity, isNil, sortBy, unionBy } from 'lodash-es';
 import useDebouncedEffect from 'use-debounced-effect';
 
-import type { AxisLabelOrientation, BaseAxisProps, ExpandedAxisScale } from '@/types';
+import type { AxisLabelOrientation, BaseAxisProps, DomainValue, ExpandedAxisScale } from '@/types';
 import { center, createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
 import { getDefaultOffset } from '@/utils/renderUtils';
 
 import { SvgGroup } from './SvgGroup';
 
-function getExitingTickValues<Domain extends AxisDomain>(
-  tickValues: Domain[],
-  previousTickValues: Domain[],
-  exitingTickValues: Domain[]
+function getExitingTickValues<DomainT extends DomainValue>(
+  tickValues: DomainT[],
+  previousTickValues: DomainT[],
+  exitingTickValues: DomainT[]
 ) {
-  const iteratee = (x: Domain) => (x.valueOf ? x.valueOf() : x);
+  const iteratee = (x: DomainT) => (x.valueOf ? x.valueOf() : x);
   return differenceBy(unionBy(previousTickValues, exitingTickValues, iteratee), tickValues, iteratee);
 }
 
-export type SvgAxisNoExitProps<Domain extends AxisDomain> = BaseAxisProps<Domain> & {
+export type SvgAxisNoExitProps<DomainT extends DomainValue> = BaseAxisProps<DomainT> & {
   transitionSeconds?: number;
   labelOrientation?: AxisLabelOrientation;
 };
 
-export function SvgAxisNoExit<Domain extends AxisDomain>(
-  props: SvgAxisNoExitProps<Domain>
+export function SvgAxisNoExit<DomainT extends DomainValue>(
+  props: SvgAxisNoExitProps<DomainT>
 ): ReactElement<any, any> | null {
   const {
     orientation,
@@ -36,7 +35,7 @@ export function SvgAxisNoExit<Domain extends AxisDomain>(
     // labelOrientation = 'horizontal',
     tickArguments = []
   } = props;
-  const scale = props.scale as ExpandedAxisScale<Domain>;
+  const scale = props.scale as ExpandedAxisScale<DomainT>;
 
   const forceUpdate = useForceUpdate();
 
@@ -95,8 +94,8 @@ export function SvgAxisNoExit<Domain extends AxisDomain>(
   // from the position they would have been in if they were already in the DOM.
   const previousPositionRef = useRef<typeof position | null>(null);
 
-  const exitingTickValuesRef = useRef<Domain[]>([]);
-  const previousTickValuesRef = useRef<Domain[]>([]);
+  const exitingTickValuesRef = useRef<DomainT[]>([]);
+  const previousTickValuesRef = useRef<DomainT[]>([]);
 
   // Updated exiting is current exiting plus any new exiting minus any resurrected ones.
   const exiting = getExitingTickValues(

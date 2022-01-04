@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import type { AxisScale } from 'd3-axis';
 import { interpolate, interpolateRound } from 'd3-interpolate';
 import { scaleTime, scaleUtc } from 'd3-scale';
+
+import type { AxisScale } from '@/types';
 
 // This only supports continuous scales that have two values each in their domain and range.
 // The domain and range need to be stable. The options object does not need to be stable.

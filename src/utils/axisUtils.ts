@@ -1,14 +1,12 @@
-import type { AxisDomain, AxisScale } from 'd3-axis';
-
-import type { AxisOrientation } from '@/types';
+import type { AxisOrientation, AxisScale, DomainValue } from '@/types';
 
 /**
  * Returns a function that transforms a domain value into a position in pixels
  * using the given scale object to do so. This is the transform used when the
  * scale is not a band scale.
  */
-export function number<Domain extends AxisDomain>(scale: AxisScale<Domain>) {
-  return (d: Domain) => +(scale(d) ?? NaN);
+export function number<DomainT extends DomainValue>(scale: AxisScale<DomainT>) {
+  return (d: DomainT) => +(scale(d) ?? NaN);
 }
 
 /**
@@ -16,21 +14,21 @@ export function number<Domain extends AxisDomain>(scale: AxisScale<Domain>) {
  * using the given scale object to do so. This is the transform used when the
  * scale is a band scale.
  */
-export function center<Domain extends AxisDomain>(
-  scale: AxisScale<Domain> & { round?: () => boolean },
+export function center<DomainT extends DomainValue>(
+  scale: AxisScale<DomainT> & { round?: () => boolean },
   offset: number
 ) {
   offset = Math.max(0, scale.bandwidth ? scale.bandwidth() - offset * 2 : 0) * 0.5;
   if (scale.round?.()) {
     offset = Math.round(offset);
   }
-  return (d: Domain) => +(scale(d) ?? NaN) + offset;
+  return (d: DomainT) => +(scale(d) ?? NaN) + offset;
 }
 
 /**
  * Get the key value for an AxisDomain object, for use as the key prop on a React element.
  */
-export function getAxisDomainAsReactKey(value: AxisDomain): string {
+export function getAxisDomainAsReactKey(value: DomainValue): string {
   return value.toString();
 }
 

@@ -1,13 +1,11 @@
 import { ReactElement } from 'react';
-import type { AxisDomain, AxisScale } from 'd3-axis';
 
-import type { CategoryValueDatum, ChartOrientation, Rect } from '@/types';
+import { createBarDataGenerator } from '@/components/SvgBars';
+import { SvgGroup } from '@/components/SvgGroup';
+import type { AxisScale, CategoryValueDatum, ChartOrientation, DomainValue, Rect } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 
-import { createBarDataGenerator } from '../../components/SvgBars';
-import { SvgGroup } from '../../components/SvgGroup';
-
-type SvgTabbableTooltipInteractionBarProps<CategoryT extends AxisDomain, ValueT extends AxisDomain> = {
+type SvgTabbableTooltipInteractionBarProps<CategoryT extends DomainValue, ValueT extends DomainValue> = {
   datum: CategoryValueDatum<CategoryT, ValueT>;
   translateX: number;
   translateY: number;
@@ -18,7 +16,7 @@ type SvgTabbableTooltipInteractionBarProps<CategoryT extends AxisDomain, ValueT 
   onBlur?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
 };
 
-function SvgTabbableTooltipInteractionBar<CategoryT extends AxisDomain, ValueT extends AxisDomain>({
+function SvgTabbableTooltipInteractionBar<CategoryT extends DomainValue, ValueT extends DomainValue>({
   datum,
   translateX,
   translateY,
@@ -54,8 +52,8 @@ function SvgTabbableTooltipInteractionBar<CategoryT extends AxisDomain, ValueT e
 }
 
 export type SvgTabbableTooltipInteractionBarsProps<
-  CategoryT extends AxisDomain,
-  ValueT extends AxisDomain
+  CategoryT extends DomainValue,
+  ValueT extends DomainValue
 > = {
   data: CategoryValueDatum<CategoryT, ValueT>[];
   translateX: number;
@@ -73,7 +71,7 @@ export type SvgTabbableTooltipInteractionBarsProps<
 };
 
 // TODO what about the case where the user does not want gaps in the bar interactions?
-export function SvgTabbableTooltipInteractionBars<CategoryT extends AxisDomain, ValueT extends AxisDomain>({
+export function SvgTabbableTooltipInteractionBars<CategoryT extends DomainValue, ValueT extends DomainValue>({
   data,
   translateX,
   translateY,

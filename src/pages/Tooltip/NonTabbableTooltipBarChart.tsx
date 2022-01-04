@@ -1,6 +1,5 @@
 import { memo, ReactElement } from 'react';
 import Tippy from '@tippyjs/react';
-import type { AxisDomain } from 'd3-axis';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgAxisLabel } from '@/components/SvgAxisLabel';
@@ -11,12 +10,12 @@ import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
 import { useLinearScale } from '@/hooks/useLinearScale';
 import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
-import type { CategoryValueDatum, Margins } from '@/types';
+import type { CategoryValueDatum, DomainValue, Margins } from '@/types';
 
 import { SvgNonTabbableTooltipInteractionBars } from './SvgNonTabbableTooltipInteractionBars';
 import { useNonTabbableTooltip } from './useNonTabbableTooltip';
 
-export type NonTabbableTooltipBarChartProps<CategoryT extends AxisDomain> = {
+export type NonTabbableTooltipBarChartProps<CategoryT extends DomainValue> = {
   data: CategoryValueDatum<CategoryT, number>[];
   width: number;
   height: number;
@@ -33,7 +32,7 @@ export type NonTabbableTooltipBarChartProps<CategoryT extends AxisDomain> = {
   transitionSeconds?: number;
 };
 
-function NonTabbableTooltipBarChartCore<CategoryT extends AxisDomain>({
+function NonTabbableTooltipBarChartCore<CategoryT extends DomainValue>({
   data,
   width,
   height,

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import type { AxisDomain, AxisScale } from 'd3-axis';
 import { scaleBand } from 'd3-scale';
+
+import type { AxisScale, DomainValue } from '@/types';
 
 // The domain and range need to be stable. The options object does not need to be stable.
 // paddingInner: the proportion of the range that is reserved for blank space between bands.
@@ -8,7 +9,7 @@ import { scaleBand } from 'd3-scale';
 // paddingOuter: the amount of blank space, in terms of multiples of the step,
 // to reserve before the first band and after the last band.
 // rangeRound: If true, the start and stop of each band will be integers.
-export function useBandScale<CategoryT extends AxisDomain>(
+export function useBandScale<CategoryT extends DomainValue>(
   domain: readonly CategoryT[],
   range: readonly number[],
   options?: { paddingInner?: number; paddingOuter?: number; rangeRound?: boolean; align?: number }

@@ -1,5 +1,4 @@
 import { memo, ReactElement, Ref } from 'react';
-import type { AxisDomain } from 'd3-axis';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgAxisLabel } from '@/components/SvgAxisLabel';
@@ -10,9 +9,9 @@ import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
 import { useLinearScale } from '@/hooks/useLinearScale';
 import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
-import type { CategoryValueDatum, Margins } from '@/types';
+import type { CategoryValueDatum, DomainValue, Margins } from '@/types';
 
-export type VerticalBarChartProps<CategoryT extends AxisDomain> = {
+export type VerticalBarChartProps<CategoryT extends DomainValue> = {
   data: CategoryValueDatum<CategoryT, number>[];
   width: number;
   height: number;
@@ -29,7 +28,7 @@ export type VerticalBarChartProps<CategoryT extends AxisDomain> = {
   transitionSeconds?: number;
 };
 
-function VerticalBarChartCore<CategoryT extends AxisDomain>({
+function VerticalBarChartCore<CategoryT extends DomainValue>({
   data,
   width,
   height,
