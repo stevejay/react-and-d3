@@ -10,7 +10,7 @@ import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
 import { useLinearScale } from '@/hooks/useLinearScale';
 import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
-import type { CategoryValueDatum, Margins, Rect } from '@/types';
+import type { CategoryValueDatum, Margins } from '@/types';
 
 export type VerticalBarChartProps<CategoryT extends AxisDomain> = {
   data: CategoryValueDatum<CategoryT, number>[];
@@ -27,10 +27,6 @@ export type VerticalBarChartProps<CategoryT extends AxisDomain> = {
   datumAriaDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   svgRef?: Ref<SVGSVGElement>;
   transitionSeconds?: number;
-  onMouseOver?: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
-  onMouseOut?: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
-  onFocus?: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
-  onBlur?: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
 };
 
 function VerticalBarChartCore<CategoryT extends AxisDomain>({
@@ -47,12 +43,8 @@ function VerticalBarChartCore<CategoryT extends AxisDomain>({
   datumAriaLabel,
   datumAriaDescription,
   svgRef,
-  transitionSeconds = 0.5,
-  onMouseOver,
-  onMouseOut,
-  onFocus,
-  onBlur
-}: VerticalBarChartProps<CategoryT>): ReactElement<any, any> | null {
+  transitionSeconds = 0.5
+}: VerticalBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useContinuousDomain(data, (d) => d.value, { includeZeroInDomain: true });
   const valueScale = useLinearScale(valueDomain, chartArea.yRange, { nice: true, clamp: true });
@@ -129,20 +121,6 @@ function VerticalBarChartCore<CategoryT extends AxisDomain>({
         align="center"
         className="text-sm text-slate-300"
       />
-      {/* <SvgInteractionBars
-        data={data}
-        categoryScale={categoryScale}
-        valueScale={valueScale}
-        translateX={chartArea.translateX}
-        translateY={chartArea.translateY}
-        chartWidth={chartArea.width}
-        chartHeight={chartArea.height}
-        orientation="vertical"
-        onMouseOver={onMouseOver}
-        onMouseOut={onMouseOut}
-        onFocus={onFocus}
-        onBlur={onBlur}
-      /> */}
     </SvgChartRoot>
   );
 }

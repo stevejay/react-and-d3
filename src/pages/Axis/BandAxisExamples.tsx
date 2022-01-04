@@ -22,7 +22,7 @@ export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ transitionSeconds 
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
-      <ExampleChartWrapper title="Band Axis" subtitle="React" sizerClassName="h-28">
+      <ExampleChartWrapper title="Band Axis" subtitle="React" sizerClassName="h-[112px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <ReactBandAxisChart
@@ -36,7 +36,7 @@ export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ transitionSeconds 
           )
         }
       </ExampleChartWrapper>
-      <ExampleChartWrapper title="Band Axis" subtitle="D3" sizerClassName="h-28">
+      <ExampleChartWrapper title="Band Axis" subtitle="D3" sizerClassName="h-[112px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <D3BandAxisChart

@@ -12,8 +12,8 @@ type SvgTabbableTooltipInteractionBarProps<CategoryT extends AxisDomain, ValueT 
   translateX: number;
   translateY: number;
   generator: (d: CategoryValueDatum<CategoryT, ValueT>, returnInteractionArea?: boolean) => Rect | null;
-  onMouseOver?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
-  onMouseOut?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  onMouseEnter?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  onMouseLeave?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
   onFocus?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
   onBlur?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
 };
@@ -23,8 +23,10 @@ function SvgTabbableTooltipInteractionBar<CategoryT extends AxisDomain, ValueT e
   translateX,
   translateY,
   generator,
-  onMouseOver,
-  onMouseOut
+  onMouseEnter,
+  onMouseLeave,
+  onFocus,
+  onBlur
 }: SvgTabbableTooltipInteractionBarProps<CategoryT, ValueT>) {
   const interactionRect = generator(datum, true);
   const barRect = generator(datum, false);
@@ -53,10 +55,15 @@ function SvgTabbableTooltipInteractionBar<CategoryT extends AxisDomain, ValueT e
 
       // This is the default for Tippy.
       tabIndex={0} // Required because a rect does not naturally receive focus.
-      onMouseEnter={() => barRect && onMouseOver?.(datum, barRect)}
-      onFocus={() => barRect && onMouseOver?.(datum, barRect)}
-      onMouseLeave={() => barRect && onMouseOut?.(datum, barRect)}
-      onBlur={() => barRect && onMouseOut?.(datum, barRect)}
+      onMouseOver={() => barRect && onMouseEnter?.(datum, barRect)}
+      onMouseOut={() => barRect && onMouseLeave?.(datum, barRect)}
+      onFocus={() => barRect && onFocus?.(datum, barRect)}
+      onBlur={() => barRect && onBlur?.(datum, barRect)}
+      // Hide on scroll on a touch device is problematic.
+      // onFocus is used to show the tooltip. If the user then scrolls
+      // the tooltip is hidden. If they then touch again on the same bar,
+      // the bar already has focus and so onFocus is not fired.
+      onClick={() => barRect && onFocus?.(datum, barRect)}
     />
   );
 }
@@ -82,12 +89,8 @@ export type SvgTabbableTooltipInteractionBarsProps<
   categoryScale: AxisScale<CategoryT>;
   valueScale: AxisScale<ValueT>;
   className?: string;
-  onMouseOver?: (
-    datum: CategoryValueDatum<CategoryT, ValueT>,
-    rect: Rect
-    // pointerType: PointerEvent<SVGRectElement>['pointerType']
-  ) => void;
-  onMouseOut?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  onMouseEnter?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  onMouseLeave?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
   onFocus?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
   onBlur?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
 };
@@ -103,11 +106,11 @@ export function SvgTabbableTooltipInteractionBars<CategoryT extends AxisDomain, 
   valueScale,
   orientation,
   className = '',
-  onMouseOver,
-  onMouseOut,
+  onMouseEnter,
+  onMouseLeave,
   onFocus,
   onBlur
-}: SvgTabbableTooltipInteractionBarsProps<CategoryT, ValueT>): ReactElement<any, any> | null {
+}: SvgTabbableTooltipInteractionBarsProps<CategoryT, ValueT>): ReactElement | null {
   const generator = createBarDataGenerator(
     categoryScale,
     valueScale,
@@ -131,8 +134,8 @@ export function SvgTabbableTooltipInteractionBars<CategoryT extends AxisDomain, 
           translateX={translateX}
           translateY={translateY}
           generator={generator}
-          onMouseOver={onMouseOver}
-          onMouseOut={onMouseOut}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
           onFocus={onFocus}
           onBlur={onBlur}
         />

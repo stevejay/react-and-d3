@@ -3,9 +3,9 @@ import type { TippyProps } from '@tippyjs/react';
 
 import './Tooltip.css';
 
-export type TooltipArrowProps = Parameters<NonNullable<TippyProps['render']>>[0];
+type TooltipArrowProps = Parameters<NonNullable<TippyProps['render']>>[0];
 
-export const TooltipArrow: FC<TooltipArrowProps> = (props) => (
+const TooltipArrow: FC<TooltipArrowProps> = (props) => (
   <div data-popper-arrow {...props} className="tooltip-arrow" />
 );
 
@@ -18,7 +18,7 @@ export const Tooltip: FC<TooltipProps> = ({ ariaHidden = false, children, ...res
     {...rest}
     // style={{ opacity }}
     aria-hidden={ariaHidden}
-    className="max-w-xs p-2 text-xs leading-tight text-left border rounded shadow-sm select-none border-slate-600 bg-slate-900"
+    className="max-w-xs p-2 text-base leading-tight text-left border rounded shadow-sm select-none border-slate-600 bg-slate-900"
   >
     {children}
     <TooltipArrow {...rest} />

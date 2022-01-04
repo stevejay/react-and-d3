@@ -39,7 +39,7 @@ export const VerticalBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
-      <ExampleChartWrapper title="Vertical Bar Chart" sizerClassName="h-96">
+      <ExampleChartWrapper title="Vertical Bar Chart" sizerClassName="h-[384px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <VerticalBarChart

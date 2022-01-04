@@ -13,10 +13,10 @@ import { useLinearScale } from '@/hooks/useLinearScale';
 import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
 import type { CategoryValueDatum, Margins } from '@/types';
 
-import { SvgTabbableTooltipInteractionBars } from './SvgTabbableTooltipInteractionBars';
-import { useTabbableTooltip } from './useTabbableTooltip';
+import { SvgNonTabbableTooltipInteractionBars } from './SvgNonTabbableTooltipInteractionBars';
+import { useNonTabbableTooltip } from './useNonTabbableTooltip';
 
-export type TabbableTooltipBarChartProps<CategoryT extends AxisDomain> = {
+export type NonTabbableTooltipBarChartProps<CategoryT extends AxisDomain> = {
   data: CategoryValueDatum<CategoryT, number>[];
   width: number;
   height: number;
@@ -33,7 +33,7 @@ export type TabbableTooltipBarChartProps<CategoryT extends AxisDomain> = {
   transitionSeconds?: number;
 };
 
-function TabbableTooltipBarChartCore<CategoryT extends AxisDomain>({
+function NonTabbableTooltipBarChartCore<CategoryT extends AxisDomain>({
   data,
   width,
   height,
@@ -48,7 +48,7 @@ function TabbableTooltipBarChartCore<CategoryT extends AxisDomain>({
   datumAriaDescription,
   renderTooltipContent,
   transitionSeconds = 0.5
-}: TabbableTooltipBarChartProps<CategoryT>): ReactElement | null {
+}: NonTabbableTooltipBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useContinuousDomain(data, (d) => d.value, { includeZeroInDomain: true });
   const valueScale = useLinearScale(valueDomain, chartArea.yRange, { nice: true, clamp: true });
@@ -57,7 +57,7 @@ function TabbableTooltipBarChartCore<CategoryT extends AxisDomain>({
     paddingInner: 0.3,
     paddingOuter: 0.2
   });
-  const [interactionProps, referenceProps, tippyProps] = useTabbableTooltip(renderTooltipContent);
+  const [interactionProps, referenceProps, tippyProps] = useNonTabbableTooltip(renderTooltipContent);
   return (
     <>
       <SvgChartRoot
@@ -127,7 +127,7 @@ function TabbableTooltipBarChartCore<CategoryT extends AxisDomain>({
           align="center"
           className="text-sm text-slate-300"
         />
-        <SvgTabbableTooltipInteractionBars
+        <SvgNonTabbableTooltipInteractionBars
           data={data}
           categoryScale={categoryScale}
           valueScale={valueScale}
@@ -144,11 +144,11 @@ function TabbableTooltipBarChartCore<CategoryT extends AxisDomain>({
   );
 }
 
-export const TabbableTooltipBarChart = memo(
-  TabbableTooltipBarChartCore,
+export const NonTabbableTooltipBarChart = memo(
+  NonTabbableTooltipBarChartCore,
   (prevProps, nextProps) =>
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
     prevProps.margins === nextProps.margins
-) as typeof TabbableTooltipBarChartCore;
+) as typeof NonTabbableTooltipBarChartCore;

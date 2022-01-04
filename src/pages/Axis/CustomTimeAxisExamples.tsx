@@ -22,7 +22,7 @@ export const CustomTimeAxisExamples: FC<CustomTimeAxisExamplesProps> = ({ transi
   const data = dataSets[dataIndex];
   return (
     <ExamplesSectionWrapper>
-      <ExampleChartWrapper title="Custom Time Axis" subtitle="React" sizerClassName="h-28">
+      <ExampleChartWrapper title="Custom Time Axis" subtitle="React" sizerClassName="h-[112px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <ReactCustomTimeAxisChart

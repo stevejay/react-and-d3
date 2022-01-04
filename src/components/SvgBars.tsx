@@ -85,7 +85,7 @@ export function SvgBars<CategoryT extends AxisDomain, ValueT extends AxisDomain>
   datumAriaRoleDescription,
   datumAriaLabel,
   datumAriaDescription
-}: SvgBarsProps<CategoryT, ValueT>): ReactElement<any, any> | null {
+}: SvgBarsProps<CategoryT, ValueT>): ReactElement | null {
   // Used to ensure crisp edges on low-resolution devices.
   const offset = offsetProp ?? getDefaultOffset();
 

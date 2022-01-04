@@ -7,7 +7,7 @@ import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 import type { CategoryValueDatum, Margins } from '@/types';
 
-import { TabbableTooltipBarChart } from './TabbableTooltipBarChart';
+import { NonTabbableTooltipBarChart } from './NonTabbableTooltipBarChart';
 
 const dataSets = [
   [
@@ -36,14 +36,14 @@ function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
   return datum.category;
 }
 
-export const TabbableTooltipBarChartExample: FC = () => {
+export const NonTabbableTooltipBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <ExamplesSectionWrapper>
-      <ExampleChartWrapper title="Tabbable Tooltip" sizerClassName="h-[384px]">
+      <ExampleChartWrapper title="Non-Tabbable Tooltip" sizerClassName="h-[384px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
-            <TabbableTooltipBarChart
+            <NonTabbableTooltipBarChart
               ariaLabelledby={ariaLabelledby}
               data={data}
               width={width}

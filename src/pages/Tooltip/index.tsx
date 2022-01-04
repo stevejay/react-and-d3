@@ -2,6 +2,7 @@ import { HorizontalRule } from '@/components/HorizontalRule';
 import { PageHeading } from '@/components/PageHeading';
 import { Paragraph } from '@/components/Paragraph';
 
+import { NonTabbableTooltipBarChartExample } from './NonTabbableTooltipBarChartExample';
 import { TabbableTooltipBarChartExample } from './TabbableTooltipBarChartExample';
 
 const TooltipPage = () => (
@@ -14,6 +15,8 @@ const TooltipPage = () => (
       </Paragraph>
       <TabbableTooltipBarChartExample />
       <HorizontalRule />
+      <Paragraph>This second example has a tooltip that shows on hover and touch tap only.</Paragraph>
+      <NonTabbableTooltipBarChartExample />
     </div>
   </>
 );

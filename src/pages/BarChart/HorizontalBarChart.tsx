@@ -44,7 +44,7 @@ function HorizontalBarChartCore<CategoryT extends AxisDomain>({
   datumAriaDescription,
   svgRef,
   transitionSeconds = 0.5
-}: HorizontalBarChartProps<CategoryT>): ReactElement<any, any> | null {
+}: HorizontalBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useContinuousDomain(data, (d) => d.value, { includeZeroInDomain: true });
   const valueScale = useLinearScale(valueDomain, chartArea.xRange, { nice: true, clamp: true });

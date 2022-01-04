@@ -53,7 +53,7 @@ function TempTabbableTooltipBarChartCore<CategoryT extends AxisDomain>({
   onMouseOut,
   onFocus,
   onBlur
-}: TempTabbableTooltipBarChartProps<CategoryT>): ReactElement<any, any> | null {
+}: TempTabbableTooltipBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useContinuousDomain(data, (d) => d.value, { includeZeroInDomain: true });
   const valueScale = useLinearScale(valueDomain, chartArea.yRange, { nice: true, clamp: true });
