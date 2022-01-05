@@ -5,7 +5,7 @@ import { identity, isNil, uniq } from 'lodash-es';
 
 import type { AxisScale, ChartArea, ExpandedAxisScale } from '@/types';
 import { createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
-import { getDefaultOffset } from '@/utils/renderUtils';
+import { getDefaultRenderingOffset } from '@/utils/renderUtils';
 
 import { SvgGroup } from './SvgGroup';
 
@@ -30,7 +30,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
   const tickSizeOuter = 0;
 
   // Used to ensure crisp edges on low-resolution devices.
-  const offset = getDefaultOffset();
+  const offset = getDefaultRenderingOffset();
 
   // Three constants to allow the axis function to support all of the four orientations.
   const k = 1;

@@ -1,58 +1,12 @@
 import { ReactElement } from 'react';
 import { AnimatePresence, m as motion } from 'framer-motion';
-import { isNil } from 'lodash-es';
 
-import type { AxisScale, CategoryValueDatum, ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
+import { createBarGenerator } from '@/generators/barGenerator';
+import type { AxisScale, CategoryValueDatum, ChartArea, ChartOrientation, DomainValue } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
-import { getDefaultOffset, toAnimatableRect } from '@/utils/renderUtils';
+import { getDefaultRenderingOffset, toAnimatableRect } from '@/utils/renderUtils';
 
 import { SvgGroup } from './SvgGroup';
-
-// TODO extract
-export function createBarDataGenerator<CategoryT extends DomainValue, ValueT extends DomainValue>(
-  categoryScale: AxisScale<CategoryT>,
-  valueScale: AxisScale<ValueT>,
-  chartWidth: number,
-  chartHeight: number,
-  orientation: ChartOrientation,
-  offset: number
-) {
-  const clonedCategoryScale = categoryScale.copy();
-  const clonedValueScale = valueScale.copy();
-
-  return (d: CategoryValueDatum<CategoryT, ValueT>, returnInteractionArea: boolean = false): Rect | null => {
-    const categoryValue = clonedCategoryScale(d.category);
-    const valueValue = clonedValueScale(d.value);
-    const bandwidth = clonedCategoryScale.bandwidth?.();
-
-    if (
-      isNil(categoryValue) ||
-      isNil(valueValue) ||
-      isNil(bandwidth) ||
-      !isFinite(categoryValue) ||
-      !isFinite(valueValue) ||
-      !isFinite(bandwidth)
-    ) {
-      return null;
-    }
-
-    if (orientation === 'vertical') {
-      return {
-        x: categoryValue + offset,
-        width: Math.max(bandwidth, 0),
-        y: returnInteractionArea ? offset : valueValue + offset,
-        height: returnInteractionArea ? chartHeight : Math.max(chartHeight - valueValue, 0)
-      };
-    } else {
-      return {
-        x: 0 + offset,
-        width: returnInteractionArea ? chartWidth : Math.max(valueValue, 0),
-        y: categoryValue + offset,
-        height: Math.max(bandwidth, 0)
-      };
-    }
-  };
-}
 
 export type SvgBarsProps<CategoryT extends DomainValue, ValueT extends DomainValue> = {
   data: CategoryValueDatum<CategoryT, ValueT>[];
@@ -80,9 +34,9 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
   datumDescription
 }: SvgBarsProps<CategoryT, ValueT>): ReactElement | null {
   // Used to ensure crisp edges on low-resolution devices.
-  const offset = offsetProp ?? getDefaultOffset();
+  const offset = offsetProp ?? getDefaultRenderingOffset();
 
-  const generator = createBarDataGenerator(
+  const barGenerator = createBarGenerator(
     categoryScale,
     valueScale,
     chartArea.width,
@@ -99,28 +53,28 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
       fill="currentColor"
       stroke="none"
     >
-      <AnimatePresence custom={generator} initial={false}>
+      <AnimatePresence custom={barGenerator} initial={false}>
         {data.map((d) => (
           <motion.rect
             key={getAxisDomainAsReactKey(d.category)}
             fill="currentColor"
             className={className}
-            custom={generator}
+            custom={barGenerator}
             initial="initial"
             animate="animate"
             exit="exit"
             variants={{
               initial: () => ({
                 opacity: 0,
-                ...toAnimatableRect(generator(d))
+                ...toAnimatableRect(barGenerator(d))
               }),
               animate: () => ({
                 opacity: 1,
-                ...toAnimatableRect(generator(d))
+                ...toAnimatableRect(barGenerator(d))
               }),
-              exit: (nextGenerator: typeof generator) => ({
+              exit: (nextBarGenerator: typeof barGenerator) => ({
                 opacity: 0,
-                ...toAnimatableRect(nextGenerator(d))
+                ...toAnimatableRect(nextBarGenerator(d))
               })
             }}
             role="graphics-symbol"

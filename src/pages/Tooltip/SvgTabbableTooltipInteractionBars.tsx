@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 
-import { createBarDataGenerator } from '@/components/SvgBars';
 import { SvgGroup } from '@/components/SvgGroup';
+import { createBarGenerator } from '@/generators/barGenerator';
 import type { AxisScale, CategoryValueDatum, ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 
@@ -84,13 +84,12 @@ export function SvgTabbableTooltipInteractionBars<CategoryT extends DomainValue,
   onBlur,
   supportHideOnScroll = false
 }: SvgTabbableTooltipInteractionBarsProps<CategoryT, ValueT>): ReactElement | null {
-  const generator = createBarDataGenerator(
+  const barGenerator = createBarGenerator(
     categoryScale,
     valueScale,
     chartArea.width,
     chartArea.height,
-    orientation,
-    0
+    orientation
   );
   return (
     <SvgGroup
@@ -106,7 +105,7 @@ export function SvgTabbableTooltipInteractionBars<CategoryT extends DomainValue,
           datum={d}
           translateX={chartArea.translateLeft}
           translateY={chartArea.translateTop}
-          generator={generator}
+          generator={barGenerator}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           onFocus={onFocus}

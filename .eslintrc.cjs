@@ -70,6 +70,7 @@ module.exports = {
       }
     ],
     'testing-library/no-node-access': 0,
+    'testing-library/render-result-naming-convention': 0,
     // Can't enable this until https://github.com/microsoft/tsdoc/issues/220 is fixed:
     'tsdoc/syntax': 0,
     'react/display-name': 'off', // forwardRef causing a problem here

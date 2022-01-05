@@ -6,7 +6,7 @@ import useDebouncedEffect from 'use-debounced-effect';
 
 import type { BaseAxisProps, DomainValue, ExpandedAxisScale, TickLabelOrientation } from '@/types';
 import { center, createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
-import { getDefaultOffset } from '@/utils/renderUtils';
+import { getDefaultRenderingOffset } from '@/utils/renderUtils';
 
 import { SvgGroup } from './SvgGroup';
 
@@ -42,7 +42,7 @@ export function SvgAxisNoExit<DomainT extends DomainValue>(
   const tickPadding = props.tickPadding ?? 3;
 
   // Used to ensure crisp edges on low-resolution devices.
-  const offset = props.offset ?? getDefaultOffset();
+  const offset = props.offset ?? getDefaultRenderingOffset();
 
   // Three constants to allow the axis function to support all of the four orientations.
   const k = orientation === 'top' || orientation === 'left' ? -1 : 1;
