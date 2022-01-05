@@ -1,7 +1,11 @@
-import { FC } from 'react';
+import type { FC, HTMLAttributes } from 'react';
 
-export const PageHeading: FC = ({ children }) => (
-  <header className="px-4 py-8 space-y-4 border-b md:py-12 md:p-8 border-slate-600 bg-gradient-to-r from-slate-900 to-slate-800">
-    <h1 className="text-3xl uppercase text-slate-300">{children}</h1>
-  </header>
+export const PageHeading: FC<HTMLAttributes<HTMLHeadingElement>> = ({
+  className = '',
+  children,
+  ...rest
+}) => (
+  <h1 className={`mb-3 text-lg text-blue-500 uppercase ${className}`} {...rest}>
+    {children}
+  </h1>
 );

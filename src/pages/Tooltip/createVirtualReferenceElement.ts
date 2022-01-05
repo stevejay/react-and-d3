@@ -2,8 +2,12 @@ import type { RefObject } from 'react';
 
 import type { Rect } from '@/types';
 
-// https://github.com/keplergl/kepler.gl/blob/612e18a9988b580f9258eb427e76bbdcfc49072b/src/components/map/map-popover.js#L129
-export function createVirtualReference(container: RefObject<SVGSVGElement>, r: Rect) {
+/**
+ * This function is used to generate a virtual reference element for use with Tippy.js
+ * (which uses Popper.js internally).
+ * Inspired by: https://github.com/keplergl/kepler.gl/blob/612e18a9988b580f9258eb427e76bbdcfc49072b/src/components/map/map-popover.js#L129
+ */
+export function createVirtualReferenceElement(container: RefObject<SVGSVGElement>, r: Rect) {
   const bounds =
     container.current && container.current.getBoundingClientRect
       ? container.current.getBoundingClientRect()

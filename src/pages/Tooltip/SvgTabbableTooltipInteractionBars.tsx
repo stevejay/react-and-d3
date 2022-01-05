@@ -14,6 +14,7 @@ type SvgTabbableTooltipInteractionBarProps<CategoryT extends DomainValue, ValueT
   onMouseLeave?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
   onFocus?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
   onBlur?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  supportHideOnScroll: boolean;
 };
 
 function SvgTabbableTooltipInteractionBar<CategoryT extends DomainValue, ValueT extends DomainValue>({
@@ -24,7 +25,8 @@ function SvgTabbableTooltipInteractionBar<CategoryT extends DomainValue, ValueT 
   onMouseEnter,
   onMouseLeave,
   onFocus,
-  onBlur
+  onBlur,
+  supportHideOnScroll
 }: SvgTabbableTooltipInteractionBarProps<CategoryT, ValueT>) {
   const interactionRect = generator(datum, true);
   const barRect = generator(datum, false);
@@ -36,7 +38,8 @@ function SvgTabbableTooltipInteractionBar<CategoryT extends DomainValue, ValueT 
   return (
     <rect
       {...interactionRect}
-      className="cursor-pointer focus-visible:outline outline-2"
+      //   className="cursor-pointer focus-visible:outline outline-2"
+      className="outline-none cursor-pointer"
       tabIndex={0} // Required because a rect does not naturally receive focus.
       onMouseOver={() => barRect && onMouseEnter?.(datum, barRect)}
       onMouseOut={() => barRect && onMouseLeave?.(datum, barRect)}
@@ -46,7 +49,7 @@ function SvgTabbableTooltipInteractionBar<CategoryT extends DomainValue, ValueT 
       // onFocus is used to show the tooltip. If the user then scrolls
       // the tooltip is hidden. If they then touch again on the same bar,
       // the bar already has focus and so onFocus is not fired.
-      onClick={() => barRect && onFocus?.(datum, barRect)}
+      onClick={() => barRect && supportHideOnScroll && onFocus?.(datum, barRect)}
     />
   );
 }
@@ -65,6 +68,7 @@ export type SvgTabbableTooltipInteractionBarsProps<
   onMouseLeave?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
   onFocus?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
   onBlur?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  supportHideOnScroll?: boolean;
 };
 
 // TODO what about the case where the user does not want gaps in the bar interactions?
@@ -78,10 +82,13 @@ export function SvgTabbableTooltipInteractionBars<CategoryT extends DomainValue,
   onMouseEnter,
   onMouseLeave,
   onFocus,
-  onBlur
+  onBlur,
+  supportHideOnScroll = false
 }: SvgTabbableTooltipInteractionBarsProps<CategoryT, ValueT>): ReactElement | null {
+  const categoryScaleCopy = categoryScale.copy();
+  (categoryScaleCopy as any).padding(0); // TODO fix
   const generator = createBarDataGenerator(
-    categoryScale,
+    categoryScaleCopy,
     valueScale,
     chartArea.width,
     chartArea.height,
@@ -107,6 +114,7 @@ export function SvgTabbableTooltipInteractionBars<CategoryT extends DomainValue,
           onMouseLeave={onMouseLeave}
           onFocus={onFocus}
           onBlur={onBlur}
+          supportHideOnScroll={supportHideOnScroll}
         />
       ))}
     </SvgGroup>

@@ -1,10 +1,10 @@
 import { FC } from 'react';
 
-import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
-import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 
+import { AxisExampleChartWrapper } from './AxisExampleChartWrapper';
+import { AxisExamplesWrapper } from './AxisExamplesWrapper';
 import { D3TimeAxisChart } from './D3TimeAxisChart';
 import { ReactTimeAxisChart } from './ReactTimeAxisChart';
 
@@ -21,8 +21,8 @@ export type TimeAxisExamplesProps = {
 export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ transitionSeconds = 0.25 }) => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
-    <ExamplesSectionWrapper>
-      <ExampleChartWrapper title="Time Axis" subtitle="React" sizerClassName="h-[112px]">
+    <AxisExamplesWrapper>
+      <AxisExampleChartWrapper title="React-rendered" sizerClassName="h-[112px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <ReactTimeAxisChart
@@ -35,8 +35,8 @@ export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ transitionSeconds 
             />
           )
         }
-      </ExampleChartWrapper>
-      <ExampleChartWrapper title="Time Axis" subtitle="D3" sizerClassName="h-[112px]">
+      </AxisExampleChartWrapper>
+      <AxisExampleChartWrapper title="D3-rendered" sizerClassName="h-[112px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <D3TimeAxisChart
@@ -49,8 +49,10 @@ export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ transitionSeconds 
             />
           )
         }
-      </ExampleChartWrapper>
-      <ExampleUpdateButton onClick={nextDataSet}>Update time axis data</ExampleUpdateButton>
-    </ExamplesSectionWrapper>
+      </AxisExampleChartWrapper>
+      <ExampleUpdateButton variant="secondary" onClick={nextDataSet}>
+        Update axis data
+      </ExampleUpdateButton>
+    </AxisExamplesWrapper>
   );
 };

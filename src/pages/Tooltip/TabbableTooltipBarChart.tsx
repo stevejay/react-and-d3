@@ -29,6 +29,7 @@ export type TabbableTooltipBarChartProps<CategoryT extends DomainValue> = {
   datumAriaDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   renderTooltipContent: (datum: CategoryValueDatum<CategoryT, number>) => ReactElement | null;
   transitionSeconds?: number;
+  hideOnScroll: boolean;
 };
 
 function TabbableTooltipBarChartCore<CategoryT extends DomainValue>({
@@ -45,7 +46,8 @@ function TabbableTooltipBarChartCore<CategoryT extends DomainValue>({
   datumAriaLabel,
   datumAriaDescription,
   renderTooltipContent,
-  transitionSeconds = 0.5
+  transitionSeconds = 0.5,
+  hideOnScroll
 }: TabbableTooltipBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useContinuousDomain(data, (d) => d.value, { includeZeroInDomain: true });
@@ -55,7 +57,10 @@ function TabbableTooltipBarChartCore<CategoryT extends DomainValue>({
     paddingInner: 0.3,
     paddingOuter: 0.2
   });
-  const [interactionProps, referenceProps, tippyProps] = useTabbableTooltip(renderTooltipContent);
+  const [interactionProps, referenceProps, tippyProps] = useTabbableTooltip(
+    renderTooltipContent,
+    hideOnScroll
+  );
   return (
     <>
       <SvgChartRoot
@@ -92,7 +97,7 @@ function TabbableTooltipBarChartCore<CategoryT extends DomainValue>({
           valueScale={valueScale}
           chartArea={chartArea}
           orientation="vertical"
-          className="text-slate-600"
+          className="text-blue-600"
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumAriaDescription={datumAriaDescription}
@@ -118,6 +123,7 @@ function TabbableTooltipBarChartCore<CategoryT extends DomainValue>({
           valueScale={valueScale}
           chartArea={chartArea}
           orientation="vertical"
+          supportHideOnScroll={hideOnScroll}
           {...interactionProps}
         />
       </SvgChartRoot>

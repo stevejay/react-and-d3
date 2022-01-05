@@ -48,7 +48,7 @@ function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
   }
 }
 
-export const RadarChartExamples: FC = () => {
+export const RadarChartExample: FC = () => {
   const onShowTooltip = useCallback(() => console.log('onShowTooltip'), []);
   const onHideTooltip = useCallback(() => console.log('onHideTooltip'), []);
   const [data, nextDataSet] = useDataSets(dataSets);

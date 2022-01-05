@@ -2,7 +2,6 @@ import { FC } from 'react';
 import { round } from 'lodash-es';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
-import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 import type { CategoryValueDatum, Margins } from '@/types';
@@ -39,8 +38,8 @@ function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
 export const TabbableTooltipBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
-    <ExamplesSectionWrapper>
-      <ExampleChartWrapper title="Tabbable Tooltip" sizerClassName="h-[384px]">
+    <div className="my-8">
+      <ExampleChartWrapper title="Example: Tabbable Tooltip" sizerClassName="h-[384px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <TabbableTooltipBarChart
@@ -58,11 +57,12 @@ export const TabbableTooltipBarChartExample: FC = () => {
                   {getCategoryLabel(d)}: {round(d.value, 2)}
                 </>
               )}
+              hideOnScroll={false}
             />
           )
         }
       </ExampleChartWrapper>
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
-    </ExamplesSectionWrapper>
+    </div>
   );
 };

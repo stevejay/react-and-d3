@@ -47,7 +47,7 @@ export const Header: FC<HeaderProps> = ({ navigationData }) => {
                 static
                 open={isOpen}
                 onClose={close}
-                className="fixed z-[10000] inset-0 p-8 overflow-y-auto md:p-12 bg-gradient-to-br from-pink-700 via-pink-700 to-pink-600"
+                className="fixed z-[10000] inset-0 p-8 overflow-y-auto md:p-12 bg-gradient-to-br from-slate-800 via-slate-800 to-slate-600"
                 variants={variants}
                 initial="enter"
                 animate="animate"
@@ -65,7 +65,9 @@ export const Header: FC<HeaderProps> = ({ navigationData }) => {
                 <div className="flex flex-col gap-6 mx-auto max-w-screen-2xl md:flex-row md:gap-12">
                   {navigationData.map((section) => (
                     <div key={section.title} className="space-y-2">
-                      <h2 className="font-bold text-pink-300 uppercase text-md">{section.title}</h2>
+                      <h2 className="font-light font-bold text-blue-500 uppercase text-md">
+                        {section.title}
+                      </h2>
                       <ul className="-ml-4 space-y-2 text-2xl md:text-3xl font-extralight">
                         {section.links.map((link) => (
                           <li key={link.href}>

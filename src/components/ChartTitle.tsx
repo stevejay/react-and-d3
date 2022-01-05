@@ -1,13 +1,7 @@
-import type { FC } from 'react';
+import type { FC, HTMLAttributes } from 'react';
 
-export const ChartTitle: FC<{ title: string; subtitle?: string; id: string }> = ({ title, subtitle, id }) => (
-  <h3 id={id} className="text-slate-200">
-    <span className="tracking-tight uppercase">{title}</span>
-    {subtitle && (
-      <>
-        <span className="text-slate-400"> / </span>
-        {subtitle}
-      </>
-    )}
+export const ChartTitle: FC<HTMLAttributes<HTMLHeadingElement>> = ({ className, children, ...rest }) => (
+  <h3 className={`mt-8 -mb-6 text-base text-slate-300 ${className}`} {...rest}>
+    {children}
   </h3>
 );

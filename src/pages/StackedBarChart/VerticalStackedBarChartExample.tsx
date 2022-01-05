@@ -3,7 +3,6 @@ import { schemeSet3 } from 'd3-scale-chromatic';
 import { capitalize } from 'lodash-es';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
-import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 import type { CategoryValueListDatum, Margins } from '@/types';
@@ -46,8 +45,8 @@ const subCategories = ['one', 'two', 'three'];
 export const VerticalStackedBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
-    <ExamplesSectionWrapper>
-      <ExampleChartWrapper title="Vertical Stacked Bar Chart" sizerClassName="h-[384px]">
+    <div className="my-8">
+      <ExampleChartWrapper title="Example: Vertical Stacked Bar Chart" sizerClassName="h-[384px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <VerticalStackedBarChart
@@ -70,6 +69,6 @@ export const VerticalStackedBarChartExample: FC = () => {
         }
       </ExampleChartWrapper>
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
-    </ExamplesSectionWrapper>
+    </div>
   );
 };

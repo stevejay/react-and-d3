@@ -84,7 +84,7 @@ export const Sparkline: FC<SparklineProps> = memo(
       >
         <defs>
           <linearGradient id={gradientDefId} x1={0} y2="100%" x2={0} y1={0}>
-            <stop offset="0%" stopColor="currentColor" stopOpacity={0.2}></stop>
+            <stop offset="0%" stopColor="currentColor" stopOpacity={0.4}></stop>
             <stop offset="100%" stopColor="currentColor" stopOpacity={0}></stop>
           </linearGradient>
           <mask id={clipPathDefId}>

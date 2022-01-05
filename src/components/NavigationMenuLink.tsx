@@ -12,8 +12,8 @@ export const NavigationMenuLink: FC<NavigationMenuLinkProps> = ({ href, title, o
       end
       onClick={onClick}
       className={({ isActive }) =>
-        ` inline-block px-4 py-2 transition-transform outline-none hover:scale-110 focus-visible:bg-pink-600 ${
-          isActive ? 'bg-pink-600' : ''
+        ` inline-block px-4 py-2 transition-transform outline-none hover:scale-110 focus-visible:bg-slate-600 ${
+          isActive ? 'bg-slate-600' : ''
         }`
       }
     >
@@ -25,10 +25,10 @@ export const NavigationMenuLink: FC<NavigationMenuLinkProps> = ({ href, title, o
       rel="nofollow noreferrer"
       target="_blank"
       onClick={onClick}
-      className="inline-block px-4 py-2 transition-transform outline-none hover:scale-110 focus-visible:bg-pink-600"
+      className="inline-block px-4 py-2 transition-transform outline-none hover:scale-110 focus-visible:bg-slate-600"
     >
       {title}&nbsp;
-      <FiExternalLink className="inline-block text-xl text-pink-400 align-top" />
+      <FiExternalLink className="inline-block text-xl align-top text-slate-400" />
     </a>
   );
 };

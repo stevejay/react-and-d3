@@ -1,11 +1,10 @@
 import { FC, ReactNode } from 'react';
 import { useId } from '@uifabric/react-hooks';
 
-import { ChartTitle } from '@/components/ChartTitle';
+import { ChartSizer } from '@/components/ChartSizer';
+import { AxisChartTitle } from '@/pages/Axis/AxisChartTitle';
 
-import { ChartSizer } from './ChartSizer';
-
-export type ExampleChartWrapperProps = {
+export type AxisExampleChartWrapperProps = {
   title: string;
   subtitle?: string;
   sizerClassName: string;
@@ -26,12 +25,17 @@ export type ExampleChartWrapperProps = {
  * Controls the size of the contained chart and only renders it if it
  * is in the viewport.
  */
-export const ExampleChartWrapper: FC<ExampleChartWrapperProps> = ({ title, sizerClassName, children }) => {
+export const AxisExampleChartWrapper: FC<AxisExampleChartWrapperProps> = ({
+  title,
+  subtitle,
+  sizerClassName,
+  children
+}) => {
   const id = useId();
   return (
     <>
-      <ChartTitle id={id}>{title}</ChartTitle>
-      <ChartSizer className={`${sizerClassName} my-8`} intersectOptions={{ rootMargin: '200px 0px' }}>
+      <AxisChartTitle title={title} subtitle={subtitle} id={id} />
+      <ChartSizer className={sizerClassName} intersectOptions={{ rootMargin: '200px 0px' }}>
         {({ inView, width, height }) => <>{children({ inView, width, height, ariaLabelledby: id })}</>}
       </ChartSizer>
     </>

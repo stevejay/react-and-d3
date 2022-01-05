@@ -1,5 +1,8 @@
 const circumference = 282.74;
 
+/**
+ * A simple spinner.
+ */
 export const LoadingPlaceholder = () => (
   <div
     role="progressbar"

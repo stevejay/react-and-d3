@@ -4,7 +4,7 @@ import { animate, useMotionValue } from 'framer-motion';
 
 import type { Rect } from '@/types';
 
-import { createVirtualReference } from './createVirtualReference';
+import { createVirtualReferenceElement } from './createVirtualReferenceElement';
 import { Tooltip } from './Tooltip';
 import { usePartiallyDelayedState } from './usePartiallyDelayedState';
 
@@ -21,7 +21,10 @@ const popperOptions = {
 
 type TooltipState<DatumT> = { visible: boolean; rect: Rect | null; datum: DatumT | null };
 
-export function useNonTabbableTooltip<DatumT>(renderContent: (datum: DatumT) => ReactElement | null): [
+export function useNonTabbableTooltip<DatumT>(
+  renderContent: (datum: DatumT) => ReactElement | null,
+  hideOnScroll: boolean
+): [
   {
     onMouseEnter: (datum: DatumT, rect: Rect) => void;
     onMouseLeave: () => void;
@@ -50,14 +53,14 @@ export function useNonTabbableTooltip<DatumT>(renderContent: (datum: DatumT) => 
 
   // Hide tooltip on scroll
   useEffect(() => {
-    if (tooltipState.visible) {
+    if (tooltipState.visible && hideOnScroll) {
       const callback = () => {
         setTooltipState((prev) => ({ ...prev, visible: false }), 0);
       };
       window.document.addEventListener('scroll', callback);
       return () => window.document.removeEventListener('scroll', callback);
     }
-  }, [tooltipState.visible, setTooltipState]);
+  }, [tooltipState.visible, setTooltipState, hideOnScroll]);
 
   const eventHandlers = useMemo(
     () => ({
@@ -89,7 +92,7 @@ export function useNonTabbableTooltip<DatumT>(renderContent: (datum: DatumT) => 
           animate(opacity, 0, { type: 'tween', duration: 0.15, onComplete: unmount });
         },
         visible: tooltipState.visible,
-        getReferenceClientRect: () => createVirtualReference(svgRef, tooltipState.rect!) as any,
+        getReferenceClientRect: () => createVirtualReferenceElement(svgRef, tooltipState.rect!) as any,
         popperOptions,
         render: (attrs) => (
           <Tooltip {...attrs} style={{ opacity }}>

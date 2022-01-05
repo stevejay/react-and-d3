@@ -1,9 +1,9 @@
 import { FC, useState } from 'react';
 
-import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
-import { ExamplesSectionWrapper } from '@/components/ExamplesSectionWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 
+import { AxisExampleChartWrapper } from './AxisExampleChartWrapper';
+import { AxisExamplesWrapper } from './AxisExamplesWrapper';
 import { ReactCustomTimeAxisChart } from './ReactCustomTimeAxisChart';
 
 const dataSets = [
@@ -21,8 +21,8 @@ export const CustomTimeAxisExamples: FC<CustomTimeAxisExamplesProps> = ({ transi
   const cycleDataIndex = () => setDataIndex((i) => (i === dataSets.length - 1 ? 0 : i + 1));
   const data = dataSets[dataIndex];
   return (
-    <ExamplesSectionWrapper>
-      <ExampleChartWrapper title="Custom Time Axis" subtitle="React" sizerClassName="h-[112px]">
+    <AxisExamplesWrapper>
+      <AxisExampleChartWrapper title="React-rendered" sizerClassName="h-[112px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <ReactCustomTimeAxisChart
@@ -34,8 +34,10 @@ export const CustomTimeAxisExamples: FC<CustomTimeAxisExamplesProps> = ({ transi
             />
           )
         }
-      </ExampleChartWrapper>
-      <ExampleUpdateButton onClick={cycleDataIndex}>Update axis data</ExampleUpdateButton>
-    </ExamplesSectionWrapper>
+      </AxisExampleChartWrapper>
+      <ExampleUpdateButton variant="secondary" onClick={cycleDataIndex}>
+        Update axis data
+      </ExampleUpdateButton>
+    </AxisExamplesWrapper>
   );
 };

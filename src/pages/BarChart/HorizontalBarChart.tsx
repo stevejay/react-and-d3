@@ -86,7 +86,7 @@ function HorizontalBarChartCore<CategoryT extends DomainValue>({
         valueScale={valueScale}
         chartArea={chartArea}
         orientation="horizontal"
-        className="text-slate-600"
+        className="text-blue-400"
         datumAriaRoleDescription={datumAriaRoleDescription}
         datumAriaLabel={datumAriaLabel}
         datumAriaDescription={datumAriaDescription}
