@@ -7,7 +7,7 @@ import { transition } from 'd3-transition';
 
 import type { TickLabelOrientation } from '@/types';
 
-import { yearMonthMultiFormat } from './formatters';
+import { yearMonthMultiFormat } from './format';
 
 class D3TimeAxisChartRenderer {
   width = 0;

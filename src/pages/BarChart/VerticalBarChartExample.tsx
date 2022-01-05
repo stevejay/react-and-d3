@@ -50,7 +50,7 @@ export const VerticalBarChartExample: FC = () => {
               ariaRoleDescription="Bar chart"
               datumAriaRoleDescription={getCategoryLabel}
               datumAriaLabel={(d) => `${d.value}`}
-              datumAriaDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
+              datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
             />
           )
         }

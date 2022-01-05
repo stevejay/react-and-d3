@@ -1,6 +1,7 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
+import { useDataSets } from '@/hooks/useDataSets';
 
 import { AxisExampleChartWrapper } from './AxisExampleChartWrapper';
 import { AxisExamplesWrapper } from './AxisExamplesWrapper';
@@ -17,9 +18,7 @@ export type CustomTimeAxisExamplesProps = {
 };
 
 export const CustomTimeAxisExamples: FC<CustomTimeAxisExamplesProps> = ({ transitionSeconds = 0.25 }) => {
-  const [dataIndex, setDataIndex] = useState(0);
-  const cycleDataIndex = () => setDataIndex((i) => (i === dataSets.length - 1 ? 0 : i + 1));
-  const data = dataSets[dataIndex];
+  const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <AxisExamplesWrapper>
       <AxisExampleChartWrapper title="React-rendered" sizerClassName="h-[112px]">
@@ -35,7 +34,7 @@ export const CustomTimeAxisExamples: FC<CustomTimeAxisExamplesProps> = ({ transi
           )
         }
       </AxisExampleChartWrapper>
-      <ExampleUpdateButton variant="secondary" onClick={cycleDataIndex}>
+      <ExampleUpdateButton variant="secondary" onClick={nextDataSet}>
         Update axis data
       </ExampleUpdateButton>
     </AxisExamplesWrapper>

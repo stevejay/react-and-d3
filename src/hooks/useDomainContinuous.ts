@@ -4,7 +4,7 @@ import { identity, isNil } from 'lodash-es';
 
 // The domain will not be recalculated if you only change the accessor.
 // This means the accessor function does not need to be stable.
-export function useContinuousDomain<Datum>(
+export function useDomainContinuous<Datum>(
   data: readonly Datum[],
   accessor: (d: Datum) => number = identity,
   options?: { includeZeroInDomain?: boolean }

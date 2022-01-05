@@ -60,10 +60,10 @@ export const VerticalStackedBarChartExample: FC = () => {
               ariaRoleDescription="Bar chart"
               seriesAriaRoleDescription={(series) => `Series ${getSeriesLabel(series)}`}
               seriesAriaLabel={getSeriesLabel}
-              seriesAriaDescription={(series) => `This is the description for ${getSeriesLabel(series)}`}
+              seriesDescription={(series) => `This is the description for ${getSeriesLabel(series)}`}
               datumAriaRoleDescription={getCategoryLabel}
               datumAriaLabel={(d, series) => `${d.values[series]}`}
-              datumAriaDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
+              datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
             />
           )
         }

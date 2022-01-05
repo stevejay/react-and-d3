@@ -77,10 +77,10 @@ export type SvgStackedBarsProps<CategoryT extends DomainValue> = {
   offset?: number;
   seriesAriaRoleDescription?: (series: string) => string;
   seriesAriaLabel?: (series: string) => string;
-  seriesAriaDescription?: (series: string) => string;
+  seriesDescription?: (series: string) => string;
   datumAriaRoleDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
-  datumAriaDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
+  datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
 };
 
 export function SvgStackedBars<CategoryT extends DomainValue>({
@@ -95,10 +95,10 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
   className = '',
   seriesAriaRoleDescription,
   seriesAriaLabel,
-  seriesAriaDescription,
+  seriesDescription,
   datumAriaRoleDescription,
   datumAriaLabel,
-  datumAriaDescription
+  datumDescription
 }: SvgStackedBarsProps<CategoryT>): ReactElement | null {
   // Used to ensure crisp edges on low-resolution devices.
   const offset = offsetProp ?? getDefaultOffset();
@@ -128,7 +128,7 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
             aria-roledescription={seriesAriaRoleDescription?.(seriesKey)}
             aria-label={seriesAriaLabel?.(seriesKey)}
           >
-            {seriesAriaDescription && <desc>{seriesAriaDescription(seriesKey)}</desc>}
+            {seriesDescription && <desc>{seriesDescription(seriesKey)}</desc>}
             <AnimatePresence custom={generator} initial={false}>
               {series.map((seriesPoint) => (
                 <motion.rect
@@ -156,7 +156,7 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
                   aria-roledescription={datumAriaRoleDescription?.(seriesPoint.data, seriesKey)}
                   aria-label={datumAriaLabel?.(seriesPoint.data, seriesKey)}
                 >
-                  {datumAriaDescription && <desc>{datumAriaDescription(seriesPoint.data, seriesKey)}</desc>}
+                  {datumDescription && <desc>{datumDescription(seriesPoint.data, seriesKey)}</desc>}
                 </motion.rect>
               ))}
             </AnimatePresence>
@@ -195,7 +195,7 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
               aria-roledescription={datumAriaRoleDescription?.(seriesPoint.data)}
               aria-label={datumAriaLabel?.(seriesPoint.data)}
             >
-              {datumAriaDescription && <desc>{datumAriaDescription(seriesPoint.data)}</desc>}
+              {datumDescription && <desc>{datumDescription(seriesPoint.data)}</desc>}
             </motion.rect>
           ));
         })}

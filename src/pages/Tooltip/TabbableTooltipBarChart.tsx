@@ -4,11 +4,11 @@ import Tippy from '@tippyjs/react';
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgBars } from '@/components/SvgBars';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
-import { useBandScale } from '@/hooks/useBandScale';
 import { useChartArea } from '@/hooks/useChartArea';
-import { useContinuousDomain } from '@/hooks/useContinuousDomain';
-import { useLinearScale } from '@/hooks/useLinearScale';
-import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
+import { useDomainContinuous } from '@/hooks/useDomainContinuous';
+import { useDomainOrdinal } from '@/hooks/useDomainOrdinal';
+import { useScaleBand } from '@/hooks/useScaleBand';
+import { useScaleLinear } from '@/hooks/useScaleLinear';
 import type { CategoryValueDatum, DomainValue, Margins } from '@/types';
 
 import { SvgTabbableTooltipInteractionBars } from './SvgTabbableTooltipInteractionBars';
@@ -26,7 +26,7 @@ export type TabbableTooltipBarChartProps<CategoryT extends DomainValue> = {
   ariaDescribedby?: string;
   datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
-  datumAriaDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   renderTooltipContent: (datum: CategoryValueDatum<CategoryT, number>) => ReactElement | null;
   transitionSeconds?: number;
   hideOnScroll: boolean;
@@ -44,16 +44,16 @@ function TabbableTooltipBarChartCore<CategoryT extends DomainValue>({
   ariaDescribedby,
   datumAriaRoleDescription,
   datumAriaLabel,
-  datumAriaDescription,
+  datumDescription,
   renderTooltipContent,
   transitionSeconds = 0.5,
   hideOnScroll
 }: TabbableTooltipBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
-  const valueDomain = useContinuousDomain(data, (d) => d.value, { includeZeroInDomain: true });
-  const valueScale = useLinearScale(valueDomain, chartArea.yRange, { nice: true, clamp: true });
-  const categoryDomain = useOrdinalDomain(data, (d) => d.category);
-  const categoryScale = useBandScale(categoryDomain, chartArea.xRange, {
+  const valueDomain = useDomainContinuous(data, (d) => d.value, { includeZeroInDomain: true });
+  const valueScale = useScaleLinear(valueDomain, chartArea.yRange, { nice: true, clamp: true });
+  const categoryDomain = useDomainOrdinal(data, (d) => d.category);
+  const categoryScale = useScaleBand(categoryDomain, chartArea.xRange, {
     paddingInner: 0.3,
     paddingOuter: 0.2
   });
@@ -100,7 +100,7 @@ function TabbableTooltipBarChartCore<CategoryT extends DomainValue>({
           className="text-blue-600"
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
-          datumAriaDescription={datumAriaDescription}
+          datumDescription={datumDescription}
         />
         {/* X-axis is rendered after the bars so that its domain sits on top of them */}
         <SvgAxis

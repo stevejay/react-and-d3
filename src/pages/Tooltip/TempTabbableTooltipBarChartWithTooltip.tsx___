@@ -20,7 +20,7 @@ export type TempTabbableTooltipBarChartWithTooltipProps<CategoryT extends AxisDo
   ariaDescribedby?: string;
   datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
-  datumAriaDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   transitionSeconds?: number;
   renderTooltipContent: (datum: CategoryValueDatum<CategoryT, number>) => ReactElement | null;
 };

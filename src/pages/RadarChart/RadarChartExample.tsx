@@ -70,7 +70,7 @@ export const RadarChartExample: FC = () => {
         onHideTooltip={onHideTooltip}
         datumAriaRoleDescription={getCategoryLabel}
         datumAriaLabel={(d) => `${d.value}`}
-        datumAriaDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
+        datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
       />
       <ExampleUpdateButton onClick={nextDataSet}>Update radar chart data</ExampleUpdateButton>
     </div>

@@ -3,12 +3,12 @@ import { memo, ReactElement, Ref } from 'react';
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { SvgStackedBars } from '@/components/SvgStackedBars';
-import { useBandScale } from '@/hooks/useBandScale';
 import { useChartArea } from '@/hooks/useChartArea';
-import { useContinuousDomain } from '@/hooks/useContinuousDomain';
-import { useLinearScale } from '@/hooks/useLinearScale';
-import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
-import { useOrdinalScale } from '@/hooks/useOrdinalScale';
+import { useDomainContinuous } from '@/hooks/useDomainContinuous';
+import { useDomainOrdinal } from '@/hooks/useDomainOrdinal';
+import { useScaleBand } from '@/hooks/useScaleBand';
+import { useScaleLinear } from '@/hooks/useScaleLinear';
+import { useScaleOrdinal } from '@/hooks/useScaleOrdinal';
 import type { CategoryValueListDatum, DomainValue, Margins } from '@/types';
 
 function getValuesTotal<CategoryT extends DomainValue>(datum: CategoryValueListDatum<CategoryT, number>) {
@@ -33,10 +33,10 @@ export type VerticalStackedBarChartProps<CategoryT extends DomainValue> = {
   ariaDescribedby?: string;
   seriesAriaRoleDescription?: (series: string) => string;
   seriesAriaLabel?: (series: string) => string;
-  seriesAriaDescription?: (series: string) => string;
+  seriesDescription?: (series: string) => string;
   datumAriaRoleDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
-  datumAriaDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
+  datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   svgRef?: Ref<SVGSVGElement>;
   transitionSeconds?: number;
 };
@@ -55,30 +55,30 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
   ariaDescribedby,
   seriesAriaRoleDescription,
   seriesAriaLabel,
-  seriesAriaDescription,
+  seriesDescription,
   datumAriaRoleDescription,
   datumAriaLabel,
-  datumAriaDescription,
+  datumDescription,
   svgRef,
   transitionSeconds = 0.5
 }: VerticalStackedBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
 
-  const valueDomain = useContinuousDomain(data, (d) => getValuesTotal(d), { includeZeroInDomain: true });
-  const valueScale = useLinearScale(valueDomain, chartArea.yRange, {
+  const valueDomain = useDomainContinuous(data, (d) => getValuesTotal(d), { includeZeroInDomain: true });
+  const valueScale = useScaleLinear(valueDomain, chartArea.yRange, {
     nice: true,
     rangeRound: true
   });
 
-  const categoryDomain = useOrdinalDomain(data, (d) => d.category);
-  const categoryScale = useBandScale(categoryDomain, chartArea.xRange, {
+  const categoryDomain = useDomainOrdinal(data, (d) => d.category);
+  const categoryScale = useScaleBand(categoryDomain, chartArea.xRange, {
     paddingInner: 0.3,
     paddingOuter: 0.2,
     rangeRound: true
   });
 
-  const subCategoryDomain = useOrdinalDomain<string, string>(subCategories);
-  const subCategoryScale = useOrdinalScale(subCategoryDomain, colorRange);
+  const subCategoryDomain = useDomainOrdinal<string, string>(subCategories);
+  const subCategoryScale = useScaleOrdinal(subCategoryDomain, colorRange);
 
   return (
     <SvgChartRoot
@@ -119,10 +119,10 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
         orientation="vertical"
         seriesAriaRoleDescription={seriesAriaRoleDescription}
         seriesAriaLabel={seriesAriaLabel}
-        seriesAriaDescription={seriesAriaDescription}
+        seriesDescription={seriesDescription}
         datumAriaRoleDescription={datumAriaRoleDescription}
         datumAriaLabel={datumAriaLabel}
-        datumAriaDescription={datumAriaDescription}
+        datumDescription={datumDescription}
       />
       {/* X-axis is rendered after the bars so that its domain sits on top of them */}
       <SvgAxis

@@ -9,7 +9,7 @@ import type { DomainValue } from '@/types';
 // paddingOuter: the amount of blank space, in terms of multiples of the step,
 // to reserve before the first band and after the last band.
 // rangeRound: If true, the start and stop of each band will be integers.
-export function useBandScale<CategoryT extends DomainValue>(
+export function useScaleBand<CategoryT extends DomainValue>(
   domain: readonly CategoryT[],
   range: readonly number[],
   options?: { paddingInner?: number; paddingOuter?: number; rangeRound?: boolean; align?: number }

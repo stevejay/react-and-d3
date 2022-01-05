@@ -3,7 +3,7 @@ import { interpolate, interpolateRound } from 'd3-interpolate';
 import { scaleLinear } from 'd3-scale';
 
 // The domain and range need to be stable. The options object does not need to be stable.
-export function useLinearScale(
+export function useScaleLinear(
   domain: readonly number[],
   range: readonly number[],
   options?: { nice?: boolean; rangeRound?: boolean; clamp?: boolean; unknown?: number; ticks?: number }

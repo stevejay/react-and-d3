@@ -1,16 +1,15 @@
 import { FC, memo } from 'react';
 import { easeCubicInOut } from 'd3-ease';
 import { MotionConfig } from 'framer-motion';
-import { identity } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
 import { useChartArea } from '@/hooks/useChartArea';
-import { useTimeDomain } from '@/hooks/useTimeDomain';
-import { useTimeScale } from '@/hooks/useTimeScale';
+import { useDomainTime } from '@/hooks/useDomainTime';
+import { useScaleTime } from '@/hooks/useScaleTime';
 import type { TickLabelOrientation } from '@/types';
 
-import { yearMonthMultiFormat } from './formatters';
+import { yearMonthMultiFormat } from './format';
 
 const margins = { top: 20, bottom: 48, left: 48, right: 32 };
 
@@ -26,8 +25,8 @@ export type ReactTimeAxisChartProps = {
 export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
   ({ data, width, height, ariaLabelledby, tickLabelOrientation, transitionSeconds = 0.25 }) => {
     const chartArea = useChartArea(width, height, margins);
-    const domain = useTimeDomain(data, identity);
-    const scale = useTimeScale(domain, chartArea.xRange, {
+    const domain = useDomainTime(data);
+    const scale = useScaleTime(domain, chartArea.xRange, {
       nice: true,
       rangeRound: true,
       utc: true

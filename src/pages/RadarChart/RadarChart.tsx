@@ -30,7 +30,7 @@ export type RadarChartProps<CategoryT extends DomainValue> = {
   onHideTooltip: () => void;
   datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
-  datumAriaDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
 };
 
 const RadarChartImpl = <CategoryT extends DomainValue>({
@@ -45,7 +45,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
   onHideTooltip,
   datumAriaRoleDescription,
   datumAriaLabel,
-  datumAriaDescription
+  datumDescription
 }: RadarChartProps<CategoryT>): ReactElement | null => {
   const id = useId();
 
@@ -354,7 +354,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
                   opacity: isZeroState ? 0 : 1
                 }}
               >
-                {datumAriaDescription && <desc>{datumAriaDescription(d)}</desc>}
+                {datumDescription && <desc>{datumDescription(d)}</desc>}
               </motion.circle>
             </Fragment>
           ))}

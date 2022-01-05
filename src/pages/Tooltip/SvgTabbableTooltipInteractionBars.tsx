@@ -84,11 +84,8 @@ export function SvgTabbableTooltipInteractionBars<CategoryT extends DomainValue,
   onBlur,
   supportHideOnScroll = false
 }: SvgTabbableTooltipInteractionBarsProps<CategoryT, ValueT>): ReactElement | null {
-  const categoryScaleCopy = categoryScale.copy();
-  (categoryScaleCopy as any).padding(0); // TODO fix
-
   const generator = createBarDataGenerator(
-    categoryScaleCopy,
+    categoryScale,
     valueScale,
     chartArea.width,
     chartArea.height,

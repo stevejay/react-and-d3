@@ -6,8 +6,8 @@ import { identity } from 'lodash-es';
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
 import { useChartArea } from '@/hooks/useChartArea';
-import { useContinuousDomain } from '@/hooks/useContinuousDomain';
-import { useLinearScale } from '@/hooks/useLinearScale';
+import { useDomainContinuous } from '@/hooks/useDomainContinuous';
+import { useScaleLinear } from '@/hooks/useScaleLinear';
 import type { TickLabelOrientation } from '@/types';
 
 const margins = { top: 20, bottom: 34, left: 30, right: 30 };
@@ -24,8 +24,8 @@ export type ReactLinearAxisChartProps = {
 export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
   ({ data, width, height, ariaLabelledby, tickLabelOrientation, transitionSeconds = 0.25 }) => {
     const chartArea = useChartArea(width, height, margins);
-    const domain = useContinuousDomain(data, identity);
-    const scale = useLinearScale(domain, chartArea.xRange, {
+    const domain = useDomainContinuous(data, identity);
+    const scale = useScaleLinear(domain, chartArea.xRange, {
       nice: true,
       rangeRound: true
     });

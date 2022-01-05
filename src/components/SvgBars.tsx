@@ -64,7 +64,7 @@ export type SvgBarsProps<CategoryT extends DomainValue, ValueT extends DomainVal
   offset?: number;
   datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, ValueT>) => string;
   datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, ValueT>) => string;
-  datumAriaDescription?: (datum: CategoryValueDatum<CategoryT, ValueT>) => string;
+  datumDescription?: (datum: CategoryValueDatum<CategoryT, ValueT>) => string;
 };
 
 export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValue>({
@@ -77,7 +77,7 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
   className = '',
   datumAriaRoleDescription,
   datumAriaLabel,
-  datumAriaDescription
+  datumDescription
 }: SvgBarsProps<CategoryT, ValueT>): ReactElement | null {
   // Used to ensure crisp edges on low-resolution devices.
   const offset = offsetProp ?? getDefaultOffset();
@@ -127,7 +127,7 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
             aria-roledescription={datumAriaRoleDescription?.(d)}
             aria-label={datumAriaLabel?.(d)}
           >
-            {datumAriaDescription && <desc>{datumAriaDescription(d)}</desc>}
+            {datumDescription && <desc>{datumDescription(d)}</desc>}
           </motion.rect>
         ))}
       </AnimatePresence>
