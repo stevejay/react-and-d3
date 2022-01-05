@@ -92,7 +92,7 @@ export function useNonTabbableTooltip<DatumT>(
           animate(opacity, 0, { type: 'tween', duration: 0.15, onComplete: unmount });
         },
         visible: tooltipState.visible,
-        getReferenceClientRect: () => createVirtualReferenceElement(svgRef, tooltipState.rect!) as any,
+        getReferenceClientRect: () => createVirtualReferenceElement(svgRef, tooltipState.rect!),
         popperOptions,
         render: (attrs) => (
           <Tooltip {...attrs} style={{ opacity }}>

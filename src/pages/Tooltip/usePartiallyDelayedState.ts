@@ -28,11 +28,11 @@ export function usePartiallyDelayedState<StateT>(
       if (delay === 0) {
         clearTimeoutAndRef(doNotDelayTimeoutRef);
 
-        doNotDelayTimeoutRef.current = setTimeout(() => {
+        doNotDelayTimeoutRef.current = window.setTimeout(() => {
           doNotDelayTimeoutRef.current = null;
           doNotDelayRef.current = false;
           //   console.log('  doNotDelay is now false');
-        }, 1000) as any; // TODO fix
+        }, 1000);
       } else {
         clearTimeoutAndRef(doNotDelayTimeoutRef);
         //   console.log('    cleared do not delay timeout');
@@ -40,12 +40,12 @@ export function usePartiallyDelayedState<StateT>(
     } else {
       //   console.log('  queueing up set state timeout');
 
-      setStateTimeoutRef.current = setTimeout(() => {
+      setStateTimeoutRef.current = window.setTimeout(() => {
         setState(newState);
         setStateTimeoutRef.current = null;
         doNotDelayRef.current = true;
         // console.log('---- delayed setstate', 'doNotDelay is now true');
-      }, delay) as any; // TODO fix
+      }, delay);
 
       clearTimeoutAndRef(doNotDelayTimeoutRef);
       // console.log('    cleared do not delay timeout');

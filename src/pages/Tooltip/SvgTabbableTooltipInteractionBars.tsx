@@ -71,7 +71,6 @@ export type SvgTabbableTooltipInteractionBarsProps<
   supportHideOnScroll?: boolean;
 };
 
-// TODO what about the case where the user does not want gaps in the bar interactions?
 export function SvgTabbableTooltipInteractionBars<CategoryT extends DomainValue, ValueT extends DomainValue>({
   data,
   chartArea,
@@ -87,6 +86,7 @@ export function SvgTabbableTooltipInteractionBars<CategoryT extends DomainValue,
 }: SvgTabbableTooltipInteractionBarsProps<CategoryT, ValueT>): ReactElement | null {
   const categoryScaleCopy = categoryScale.copy();
   (categoryScaleCopy as any).padding(0); // TODO fix
+
   const generator = createBarDataGenerator(
     categoryScaleCopy,
     valueScale,

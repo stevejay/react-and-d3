@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { scaleBand } from 'd3-scale';
 
-import type { AxisScale, DomainValue } from '@/types';
+import { AxisScale, DomainValue } from '@/types';
 
 // The domain and range need to be stable. The options object does not need to be stable.
 // paddingInner: the proportion of the range that is reserved for blank space between bands.

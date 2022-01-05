@@ -16,6 +16,8 @@ export default defineConfig({
   build: {
     minify: true,
     sourcemap: true,
+    // Don't allow small assets to be included as inline base64 URLs.
+    // These are rejected by the site's CSP.
     assetsInlineLimit: 0
   }
 });

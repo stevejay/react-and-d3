@@ -5,21 +5,18 @@ import { ChartTitle } from '@/components/ChartTitle';
 
 import { ChartSizer } from './ChartSizer';
 
+type RenderProps = {
+  inView: boolean;
+  width: number;
+  height: number;
+  ariaLabelledby: string;
+};
+
 export type ExampleChartWrapperProps = {
   title: string;
   subtitle?: string;
   sizerClassName: string;
-  children: ({
-    inView,
-    width,
-    height,
-    ariaLabelledby
-  }: {
-    inView: boolean;
-    width: number;
-    height: number;
-    ariaLabelledby: string;
-  }) => ReactNode;
+  children: ({ inView, width, height, ariaLabelledby }: RenderProps) => ReactNode;
 };
 
 /**
@@ -31,7 +28,10 @@ export const ExampleChartWrapper: FC<ExampleChartWrapperProps> = ({ title, sizer
   return (
     <>
       <ChartTitle id={id}>{title}</ChartTitle>
-      <ChartSizer className={`${sizerClassName} my-8`} intersectOptions={{ rootMargin: '200px 0px' }}>
+      <ChartSizer
+        className={`${sizerClassName} my-8`}
+        intersectOptions={{ triggerOnce: true, rootMargin: '200px 0px' }}
+      >
         {({ inView, width, height }) => <>{children({ inView, width, height, ariaLabelledby: id })}</>}
       </ChartSizer>
     </>

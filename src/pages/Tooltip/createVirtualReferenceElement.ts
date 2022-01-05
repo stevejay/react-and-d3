@@ -1,4 +1,5 @@
 import type { RefObject } from 'react';
+import type { TippyProps } from '@tippyjs/react/headless';
 
 import type { Rect } from '@/types';
 
@@ -7,7 +8,10 @@ import type { Rect } from '@/types';
  * (which uses Popper.js internally).
  * Inspired by: https://github.com/keplergl/kepler.gl/blob/612e18a9988b580f9258eb427e76bbdcfc49072b/src/components/map/map-popover.js#L129
  */
-export function createVirtualReferenceElement(container: RefObject<SVGSVGElement>, r: Rect) {
+export function createVirtualReferenceElement(
+  container: RefObject<SVGSVGElement>,
+  r: Rect
+): ReturnType<NonNullable<TippyProps['getReferenceClientRect']>> {
   const bounds =
     container.current && container.current.getBoundingClientRect
       ? container.current.getBoundingClientRect()
@@ -21,5 +25,5 @@ export function createVirtualReferenceElement(container: RefObject<SVGSVGElement
     bottom: top + r.height,
     width: r.width,
     height: r.height
-  };
+  } as DOMRect;
 }

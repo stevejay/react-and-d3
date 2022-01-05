@@ -4,21 +4,18 @@ import { useId } from '@uifabric/react-hooks';
 import { ChartSizer } from '@/components/ChartSizer';
 import { AxisChartTitle } from '@/pages/Axis/AxisChartTitle';
 
+type RenderProps = {
+  inView: boolean;
+  width: number;
+  height: number;
+  ariaLabelledby: string;
+};
+
 export type AxisExampleChartWrapperProps = {
   title: string;
   subtitle?: string;
   sizerClassName: string;
-  children: ({
-    inView,
-    width,
-    height,
-    ariaLabelledby
-  }: {
-    inView: boolean;
-    width: number;
-    height: number;
-    ariaLabelledby: string;
-  }) => ReactNode;
+  children: ({ inView, width, height, ariaLabelledby }: RenderProps) => ReactNode;
 };
 
 /**
@@ -35,7 +32,10 @@ export const AxisExampleChartWrapper: FC<AxisExampleChartWrapperProps> = ({
   return (
     <>
       <AxisChartTitle title={title} subtitle={subtitle} id={id} />
-      <ChartSizer className={sizerClassName} intersectOptions={{ rootMargin: '200px 0px' }}>
+      <ChartSizer
+        className={sizerClassName}
+        intersectOptions={{ triggerOnce: true, rootMargin: '200px 0px' }}
+      >
         {({ inView, width, height }) => <>{children({ inView, width, height, ariaLabelledby: id })}</>}
       </ChartSizer>
     </>
