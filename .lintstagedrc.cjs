@@ -12,7 +12,7 @@ module.exports = {
   // explicitly add those declaration files here, e.g. 'tsc-files --noEmit
   // src/types/use-debounced-effect.d.ts'. See
   // https://github.com/gustavopch/tsc-files/issues/20 for more info.
-  '**/*.{ts,tsx}': 'tsc-files --noEmit src/types/use-debounced-effect.d.ts',
+  '**/*.{ts,tsx}': 'tsc-files --noEmit src/types/use-debounced-effect.d.ts src/types/image.d.ts',
   '*.css': 'yarn stylelint --cache',
   '**/*': 'yarn pretty-quick --staged',
   '*.md': 'yarn markdownlint --config ./.markdownlint.json',
