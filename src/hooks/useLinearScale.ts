@@ -2,16 +2,14 @@ import { useMemo } from 'react';
 import { interpolate, interpolateRound } from 'd3-interpolate';
 import { scaleLinear } from 'd3-scale';
 
-import type { AxisScale } from '@/types';
-
 // The domain and range need to be stable. The options object does not need to be stable.
 export function useLinearScale(
   domain: readonly number[],
   range: readonly number[],
   options?: { nice?: boolean; rangeRound?: boolean; clamp?: boolean; unknown?: number; ticks?: number }
-): AxisScale<number> {
+) {
   const { nice, rangeRound = false, clamp = false, unknown = undefined, ticks } = options ?? {};
-  return useMemo<AxisScale<number>>(() => {
+  return useMemo(() => {
     const scale = scaleLinear();
     scale.domain(domain);
     scale.range(range);

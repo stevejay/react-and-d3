@@ -1,6 +1,5 @@
 import { Paragraph } from '@/components/Paragraph';
 
-import { AxisSvg } from './illustrations/AxisSvg';
 import circuitBoardSvgUrl from './illustrations/circuitBoard.svg';
 import { RadarChartSvg } from './illustrations/RadarChartSvg';
 import { ReactAndD3Svg } from './illustrations/ReactAndD3Svg';
@@ -30,7 +29,13 @@ const Home = () => (
       the links below to explore the various example components and visualisations.
     </Paragraph>
     <div className="p-8 space-y-8 md:space-y-0 md:gap-8 md:grid md:grid-cols-2 lg:grid-cols-3">
-      <PageCard href="/axis" title="Axis" illustration={AxisSvg} />
+      <PageCard
+        href="/axis"
+        title="Axis"
+        illustration={() => (
+          <div className="mx-auto border-b-2 border-l-2 text-slate-50 border-slate-50 w-[256px] h-[152px]" />
+        )}
+      />
       <PageCard href="/tooltip" title="Tooltip" illustration={TooltipSvg} />
       <PageCard href="/bar-chart" title="Bar Chart" illustration={VerticalBarChartSvg} />
       <PageCard

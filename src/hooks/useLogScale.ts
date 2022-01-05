@@ -2,8 +2,6 @@ import { useMemo } from 'react';
 import { interpolate, interpolateRound } from 'd3-interpolate';
 import { scaleLog } from 'd3-scale';
 
-import type { AxisScale } from '@/types';
-
 // The domain and range need to be stable. The options object does not need to be stable.
 export function useLogScale(
   domain: readonly number[],
@@ -16,9 +14,9 @@ export function useLogScale(
     ticks?: number;
     base?: number;
   }
-): AxisScale<number> {
+) {
   const { nice, rangeRound = false, clamp = false, unknown = undefined, ticks, base = 10 } = options ?? {};
-  return useMemo<AxisScale<number>>(() => {
+  return useMemo(() => {
     const scale = scaleLog();
     scale.domain(domain);
     scale.range(range);

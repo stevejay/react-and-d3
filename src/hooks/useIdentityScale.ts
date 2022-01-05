@@ -1,16 +1,14 @@
 import { useMemo } from 'react';
 import { scaleIdentity } from 'd3-scale';
 
-import type { AxisScale } from '@/types';
-
 // The domain and range need to be stable. The options object does not need to be stable.
 export function useIdentityScale(
   domain: readonly number[],
   range: readonly number[],
   options?: { nice?: boolean; unknown?: number; ticks?: number }
-): AxisScale<number> {
+) {
   const { nice, unknown = undefined, ticks } = options ?? {};
-  return useMemo<AxisScale<number>>(() => {
+  return useMemo(() => {
     const scale = scaleIdentity();
     scale.domain(domain);
     scale.range(range);

@@ -2,8 +2,6 @@ import { useMemo } from 'react';
 import { interpolate, interpolateRound } from 'd3-interpolate';
 import { scaleTime, scaleUtc } from 'd3-scale';
 
-import type { AxisScale } from '@/types';
-
 // The domain and range need to be stable. The options object does not need to be stable.
 // options.utc The returned time scale operates in Coordinated Universal Time rather than local time.
 export function useTimeScale(
@@ -17,9 +15,9 @@ export function useTimeScale(
     ticks?: number;
     utc?: boolean;
   }
-): AxisScale<Date> {
+) {
   const { nice, rangeRound = false, clamp = false, unknown = undefined, ticks, utc } = options ?? {};
-  return useMemo<AxisScale<Date>>(() => {
+  return useMemo(() => {
     const factory = utc ? scaleUtc : scaleTime;
     const scale = factory();
     scale.domain(domain);
