@@ -15,6 +15,7 @@ export default defineConfig({
   },
   build: {
     minify: true,
-    sourcemap: true
+    sourcemap: true,
+    assetsInlineLimit: 0
   }
 });
