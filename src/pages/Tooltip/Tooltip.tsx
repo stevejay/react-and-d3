@@ -20,7 +20,7 @@ export const Tooltip: FC<TooltipProps> = ({ ariaHidden = false, style, children,
     {...rest}
     style={style}
     aria-hidden={ariaHidden}
-    className="max-w-xs p-2 text-base leading-tight text-left border rounded shadow-sm opacity-0 select-none border-slate-600 bg-slate-900"
+    className="max-w-xs p-2 text-base text-left border rounded shadow-sm opacity-0 select-none border-slate-600 bg-slate-900"
   >
     {children}
     <TooltipArrow {...rest} />

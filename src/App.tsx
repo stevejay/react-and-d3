@@ -13,6 +13,7 @@ const navigationData: NavigationSection[] = [
       { href: '/', title: 'Home' },
       { href: '/axis', title: 'Axis' },
       { href: '/tooltip', title: 'Tooltip' },
+      { href: '/accessibility', title: 'Accessibility' },
       { href: '/bar-chart', title: 'Bar Chart' },
       { href: '/stacked-bar-chart', title: 'Stacked Bar Chart' },
       //   { href: '/histogram', title: 'Histogram' },
@@ -32,6 +33,7 @@ const navigationData: NavigationSection[] = [
 const Home = lazy(() => import('@/pages/Home'));
 const Axis = lazy(() => import('@/pages/Axis'));
 const Tooltip = lazy(() => import('@/pages/Tooltip'));
+const Accessibility = lazy(() => import('@/pages/Accessibility'));
 const BarChart = lazy(() => import('@/pages/BarChart'));
 const StackedBarChart = lazy(() => import('@/pages/StackedBarChart'));
 const Histogram = lazy(() => import('@/pages/Histogram'));
@@ -49,6 +51,7 @@ export const App: FC = () => (
             <Route path="/" element={<Home />} />
             <Route path="/axis" element={<Axis />} />
             <Route path="/tooltip" element={<Tooltip />} />
+            <Route path="/accessibility" element={<Accessibility />} />
             <Route path="/bar-chart" element={<BarChart />} />
             <Route path="/stacked-bar-chart" element={<StackedBarChart />} />
             <Route path="/histogram" element={<Histogram />} />

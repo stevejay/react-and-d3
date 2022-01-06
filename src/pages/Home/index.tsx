@@ -1,3 +1,5 @@
+import { FaUniversalAccess } from 'react-icons/fa';
+
 import { Paragraph } from '@/components/Paragraph';
 
 import circuitBoardSvgUrl from './illustrations/circuitBoard.svg';
@@ -25,8 +27,8 @@ const Home = () => (
     <Paragraph className="px-8 pt-8 mx-auto text-xl">
       This site demonstrates how <span className="font-normal text-slate-200">D3</span> and{' '}
       <span className="font-normal text-slate-200">React</span> can be together to create SVG data
-      visualisations. D3 is used to calculate element positions and React is used to render them. Please use
-      the links below to explore the various example components and visualisations.
+      visualisations. D3 is used to calculate element positions and React is used to render them. Use the
+      links below to explore the various example components and visualisations.
     </Paragraph>
     <div className="p-8 space-y-8 md:space-y-0 md:gap-8 md:grid md:grid-cols-2 lg:grid-cols-3">
       <PageCard
@@ -37,6 +39,11 @@ const Home = () => (
         )}
       />
       <PageCard href="/tooltip" title="Tooltip" illustration={TooltipSvg} />
+      <PageCard
+        href="/accessibility"
+        title="Accessibility"
+        illustration={() => <FaUniversalAccess className="w-[152px] h-[152px]" />}
+      />
       <PageCard href="/bar-chart" title="Bar Chart" illustration={VerticalBarChartSvg} />
       <PageCard
         href="/stacked-bar-chart"
