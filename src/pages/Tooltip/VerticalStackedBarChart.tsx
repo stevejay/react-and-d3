@@ -12,7 +12,7 @@ import { useScaleOrdinal } from '@/hooks/useScaleOrdinal';
 import type { CategoryValueListDatum, DomainValue, Margins, Rect } from '@/types';
 import { getSumOfValues } from '@/utils/dataUtils';
 
-// import { SvgBandScaleEventSource } from './SvgBandScaleEventSource';
+import { SvgBandScaleEventSource } from './SvgBandScaleEventSource';
 
 export type VerticalStackedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
@@ -140,7 +140,7 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={34}
       />
-      {/* <SvgBandScaleEventSource
+      <SvgBandScaleEventSource
         svgRef={svgRef}
         data={data}
         categoryScale={categoryScale}
@@ -149,7 +149,7 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onClick={onClick}
-      /> */}
+      />
     </SvgChartRoot>
   );
 }

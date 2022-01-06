@@ -1,6 +1,6 @@
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 import { schemeSet3 } from 'd3-scale-chromatic';
-import { round } from 'lodash-es';
+import { capitalize, round } from 'lodash-es';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
@@ -41,10 +41,7 @@ export const VerticalStackedBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
-      <ExampleChartWrapper
-        title="Example 1: The &lsquo;follow on hover&rsquo; tooltip"
-        sizerClassName="h-[384px]"
-      >
+      <ExampleChartWrapper title="Example 2: A stacked bar chart with a tooltip" sizerClassName="h-[384px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <VerticalStackedBarChartWithTooltip
@@ -61,13 +58,14 @@ export const VerticalStackedBarChartExample: FC = () => {
               datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
               renderTooltipContent={(d) => (
                 <>
-                  <span className="text-sky-600">{getCategoryLabel(d)}:</span>
+                  <span className="text-lg font-bold text-sky-600">Category {getCategoryLabel(d)}</span>
                   <br />
                   {subCategories.map((subCategory) => (
-                    <>
-                      {subCategory}: {round(d.values[subCategory], 2)}
+                    <Fragment key={subCategory}>
+                      <span className="text-slate-400">{capitalize(subCategory)}:</span>{' '}
+                      {round(d.values[subCategory], 2)}
                       <br />
-                    </>
+                    </Fragment>
                   ))}
                 </>
               )}

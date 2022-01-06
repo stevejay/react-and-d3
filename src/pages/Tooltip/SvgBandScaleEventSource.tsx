@@ -2,7 +2,7 @@ import { MouseEvent as ReactMouseEvent, ReactElement, RefObject } from 'react';
 import type { ScaleBand } from 'd3-scale';
 
 import { SvgGroup } from '@/components/SvgGroup';
-import type { CategoryValueDatum, ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
+import type { ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
 import { createScaleBandInverter } from '@/utils/renderUtils';
 
 function createTooltipRect(event: ReactMouseEvent<SVGRectElement, MouseEvent>, svgRect?: DOMRect) {
@@ -15,19 +15,25 @@ function createTooltipRect(event: ReactMouseEvent<SVGRectElement, MouseEvent>, s
 }
 
 // TODO is there some way to make this work for stacked values?
-export type SvgBandScaleEventSourceProps<CategoryT extends DomainValue, ValueT extends DomainValue> = {
-  data: CategoryValueDatum<CategoryT, ValueT>[];
+export type SvgBandScaleEventSourceProps<
+  CategoryT extends DomainValue,
+  DatumT extends { category: CategoryT }
+> = {
+  data: readonly DatumT[];
   chartArea: ChartArea;
   orientation: ChartOrientation;
   categoryScale: ScaleBand<CategoryT>;
   className?: string;
-  onMouseEnter: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  onMouseEnter: (datum: DatumT, rect: Rect) => void;
   onMouseLeave: () => void;
-  onClick: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  onClick: (datum: DatumT, rect: Rect) => void;
   svgRef: RefObject<SVGSVGElement>;
 };
 
-export function SvgBandScaleEventSource<CategoryT extends DomainValue, ValueT extends DomainValue>({
+export function SvgBandScaleEventSource<
+  CategoryT extends DomainValue,
+  DatumT extends { category: CategoryT }
+>({
   data,
   chartArea,
   categoryScale,
@@ -37,10 +43,10 @@ export function SvgBandScaleEventSource<CategoryT extends DomainValue, ValueT ex
   onMouseEnter,
   onMouseLeave,
   onClick
-}: SvgBandScaleEventSourceProps<CategoryT, ValueT>): ReactElement | null {
+}: SvgBandScaleEventSourceProps<CategoryT, DatumT>): ReactElement | null {
   const categoryInverter = createScaleBandInverter(categoryScale);
 
-  const datumLookup = new Map<DomainValue, CategoryValueDatum<CategoryT, ValueT>>();
+  const datumLookup = new Map<DomainValue, DatumT>();
   data.forEach((datum) => datumLookup.set(datum.category, datum));
 
   function getCategoryData(event: ReactMouseEvent<SVGRectElement, MouseEvent>) {

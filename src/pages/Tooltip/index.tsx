@@ -34,10 +34,12 @@ const TooltipPage = () => (
       <li>Hide on scroll.</li>
     </ul>
     <FollowOnHoverTooltipBarChartExample />
+    <Paragraph>The following is an example of a stacked bar chart with a tooltip:</Paragraph>
+    <VerticalStackedBarChartExample />
     <Paragraph>
-      The tooltip has to re-render on every movement of the mouse when the user is hovering over the chart.
-      This could be a performance issue. Take care that only the tooltip gets re-rendered and not the chart as
-      well.
+      Be aware of a potential performance issue with this type of tooltip. It has to re-render on every
+      movement of the mouse when the user is hovering over the chart. Ensure that only the tooltip gets
+      re-rendered and not the chart as well.
     </Paragraph>
     {/* <SectionHeading>The Tabbable Tooltip</SectionHeading>
     <Paragraph>
@@ -59,7 +61,6 @@ const TooltipPage = () => (
     <Paragraph>
       An option is to hide the tooltip on scroll, but I found this behaviour comes with visibility quirks.
     </Paragraph> */}
-    <VerticalStackedBarChartExample />
   </div>
 );
 
