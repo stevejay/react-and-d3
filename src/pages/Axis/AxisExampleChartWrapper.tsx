@@ -30,7 +30,7 @@ export const AxisExampleChartWrapper: FC<AxisExampleChartWrapperProps> = ({
 }) => {
   const id = useId();
   return (
-    <>
+    <div>
       <AxisChartTitle title={title} subtitle={subtitle} id={id} />
       <ChartSizer
         className={sizerClassName}
@@ -38,6 +38,6 @@ export const AxisExampleChartWrapper: FC<AxisExampleChartWrapperProps> = ({
       >
         {({ inView, width, height }) => <>{children({ inView, width, height, ariaLabelledby: id })}</>}
       </ChartSizer>
-    </>
+    </div>
   );
 };

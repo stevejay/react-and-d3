@@ -39,7 +39,7 @@ export const TabbableTooltipBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
-      <ExampleChartWrapper title="Example 1: Tabbable tooltip" sizerClassName="h-[384px]">
+      <ExampleChartWrapper title="Example 2: The tabbable tooltip" sizerClassName="h-[384px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <TabbableTooltipBarChart

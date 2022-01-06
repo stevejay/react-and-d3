@@ -6,7 +6,7 @@ import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 import type { CategoryValueDatum, Margins } from '@/types';
 
-import { SingleAreaTooltipBarChartWithTooltip } from './SingleAreaTooltipBarChartWithTooltip';
+import { FollowOnHoverTooltipBarChartWithTooltip } from './FollowOnHoverTooltipBarChartWithTooltip';
 
 const dataSets = [
   [
@@ -35,14 +35,17 @@ function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
   return datum.category;
 }
 
-export const SingleAreaTooltipBarChartExample: FC = () => {
+export const FollowOnHoverTooltipBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
-      <ExampleChartWrapper title="Example 2: Follow-on-hover tooltip" sizerClassName="h-[384px]">
+      <ExampleChartWrapper
+        title="Example 1: The &lsquo;follow on hover&rsquo; tooltip"
+        sizerClassName="h-[384px]"
+      >
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
-            <SingleAreaTooltipBarChartWithTooltip
+            <FollowOnHoverTooltipBarChartWithTooltip
               ariaLabelledby={ariaLabelledby}
               data={data}
               width={width}
@@ -57,7 +60,7 @@ export const SingleAreaTooltipBarChartExample: FC = () => {
                   {getCategoryLabel(d)}: {round(d.value, 2)}
                 </>
               )}
-              hideOnScroll={false}
+              hideOnScroll={true}
             />
           )
         }

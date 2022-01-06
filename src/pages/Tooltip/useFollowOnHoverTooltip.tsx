@@ -3,8 +3,9 @@ import type { TippyProps } from '@tippyjs/react/headless';
 import { animate, useMotionValue } from 'framer-motion';
 
 import type { Rect } from '@/types';
-import { createDOMRectFromRect, rectsAreEqual } from '@/utils/renderUtils';
+import { rectsAreEqual } from '@/utils/renderUtils';
 
+import { createVirtualReferenceElement } from './createVirtualReferenceElement';
 import { Tooltip } from './Tooltip';
 import { usePartiallyDelayedState } from './usePartiallyDelayedState';
 
@@ -14,16 +15,16 @@ const popperOptions = {
 
 type TooltipState<DatumT> = { visible: boolean; rect: Rect | null; datum: DatumT | null };
 
-export function useFollowingTooltip<DatumT>(
+export function useFollowOnHoverTooltip<DatumT>(
   renderContent: (datum: DatumT) => ReactElement | null,
   hideOnScroll: boolean
 ): [
   {
     onMouseEnter: (datum: DatumT, rect: Rect) => void;
     onMouseLeave: () => void;
-    onTouch: (datum: DatumT, rect: Rect) => void;
+    onClick: (datum: DatumT, rect: Rect) => void;
   },
-  { ref: RefObject<SVGSVGElement> },
+  RefObject<SVGSVGElement>,
   TippyProps
 ] {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -62,12 +63,12 @@ export function useFollowingTooltip<DatumT>(
           return prev.visible && prev.datum === datum && rectsAreEqual(prev.rect, rect)
             ? prev
             : { visible: true, datum, rect };
-        }, 500);
+        }, 100);
       },
       onMouseLeave: () => {
         setTooltipState((prev) => (prev.visible ? { ...prev, visible: false } : prev), 0);
       },
-      onTouch: (datum: DatumT, rect: Rect) => {
+      onClick: (datum: DatumT, rect: Rect) => {
         setTooltipState((prev) => {
           return prev.visible && prev.datum === datum && rectsAreEqual(prev.rect, rect)
             ? prev
@@ -84,7 +85,7 @@ export function useFollowingTooltip<DatumT>(
         reference: svgRef.current,
         appendTo: 'parent',
         placement: 'top',
-        offset: [0, 20],
+        offset: [0, 18],
         animation: true,
         onShow: () => {
           animate(opacity, 1, { type: 'tween', duration: 0.15 });
@@ -93,10 +94,10 @@ export function useFollowingTooltip<DatumT>(
           animate(opacity, 0, { type: 'tween', duration: 0.15, onComplete: unmount });
         },
         visible: tooltipState.visible,
-        getReferenceClientRect: () => createDOMRectFromRect(tooltipState.rect!),
+        getReferenceClientRect: () => createVirtualReferenceElement(svgRef, tooltipState.rect!),
         popperOptions,
         render: (attrs) => (
-          <Tooltip {...attrs} style={{ opacity }}>
+          <Tooltip {...attrs} style={{ opacity }} ariaHidden>
             {tooltipState.datum && renderContent(tooltipState.datum)}
           </Tooltip>
         )
@@ -104,5 +105,5 @@ export function useFollowingTooltip<DatumT>(
     [tooltipState, renderContent, opacity]
   );
 
-  return [eventHandlers, { ref: svgRef }, tippyProps];
+  return [eventHandlers, svgRef, tippyProps];
 }

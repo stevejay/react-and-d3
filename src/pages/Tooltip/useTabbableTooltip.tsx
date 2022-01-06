@@ -99,7 +99,7 @@ export function useTabbableTooltip<DatumT>(
         getReferenceClientRect: () => createVirtualReferenceElement(svgRef, tooltipState.rect!),
         popperOptions,
         render: (attrs) => (
-          <Tooltip {...attrs} style={{ opacity }}>
+          <Tooltip {...attrs} style={{ opacity }} ariaHidden={false}>
             {tooltipState.datum && renderContent(tooltipState.datum)}
           </Tooltip>
         )

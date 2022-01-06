@@ -10,14 +10,7 @@ import { useScaleBand } from '@/hooks/useScaleBand';
 import { useScaleLinear } from '@/hooks/useScaleLinear';
 import { useScaleOrdinal } from '@/hooks/useScaleOrdinal';
 import type { CategoryValueListDatum, DomainValue, Margins } from '@/types';
-
-function getValuesTotal<CategoryT extends DomainValue>(datum: CategoryValueListDatum<CategoryT, number>) {
-  let sum = 0;
-  for (let property in datum.values) {
-    sum += datum.values[property];
-  }
-  return sum;
-}
+import { getSumOfValues } from '@/utils/dataUtils';
 
 export type HorizontalStackedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
@@ -64,7 +57,7 @@ function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
 }: HorizontalStackedBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
 
-  const valueDomain = useDomainContinuous(data, (d) => getValuesTotal(d), { includeZeroInDomain: true });
+  const valueDomain = useDomainContinuous(data, getSumOfValues, { includeZeroInDomain: true });
   const valueScale = useScaleLinear(valueDomain, chartArea.xRange, {
     nice: true,
     rangeRound: true

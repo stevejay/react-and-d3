@@ -12,7 +12,7 @@ import type { CategoryValueDatum, DomainValue, Margins, Rect } from '@/types';
 
 import { SvgBandScaleEventSource } from './SvgBandScaleEventSource';
 
-export type SingleAreaTooltipBarChartProps<CategoryT extends DomainValue> = {
+export type FollowOnHoverTooltipBarChartProps<CategoryT extends DomainValue> = {
   data: CategoryValueDatum<CategoryT, number>[];
   width: number;
   height: number;
@@ -29,10 +29,10 @@ export type SingleAreaTooltipBarChartProps<CategoryT extends DomainValue> = {
   svgRef: RefObject<SVGSVGElement>;
   onMouseEnter: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
   onMouseLeave: () => void;
-  onTouch: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
+  onClick: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
 };
 
-function SingleAreaTooltipBarChartCore<CategoryT extends DomainValue>({
+function FollowOnHoverTooltipBarChartCore<CategoryT extends DomainValue>({
   data,
   width,
   height,
@@ -49,8 +49,8 @@ function SingleAreaTooltipBarChartCore<CategoryT extends DomainValue>({
   svgRef,
   onMouseEnter,
   onMouseLeave,
-  onTouch
-}: SingleAreaTooltipBarChartProps<CategoryT>): ReactElement | null {
+  onClick
+}: FollowOnHoverTooltipBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useDomainContinuous(data, (d) => d.value, { includeZeroInDomain: true });
   const valueScale = useScaleLinear(valueDomain, chartArea.yRange, { nice: true, clamp: true });
@@ -59,10 +59,6 @@ function SingleAreaTooltipBarChartCore<CategoryT extends DomainValue>({
     paddingInner: 0.3,
     paddingOuter: 0.2
   });
-  //   const [interactionProps, referenceProps, tippyProps] = useFollowingTooltip(
-  //     renderTooltipContent,
-  //     hideOnScroll
-  //   );
   return (
     <>
       <SvgChartRoot
@@ -123,23 +119,22 @@ function SingleAreaTooltipBarChartCore<CategoryT extends DomainValue>({
           svgRef={svgRef}
           data={data}
           categoryScale={categoryScale}
-          valueScale={valueScale}
           chartArea={chartArea}
           orientation="vertical"
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
-          onTouch={onTouch}
+          onClick={onClick}
         />
       </SvgChartRoot>
     </>
   );
 }
 
-export const SingleAreaTooltipBarChart = memo(
-  SingleAreaTooltipBarChartCore,
+export const FollowOnHoverTooltipBarChart = memo(
+  FollowOnHoverTooltipBarChartCore,
   (prevProps, nextProps) =>
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
     prevProps.margins === nextProps.margins
-) as typeof SingleAreaTooltipBarChartCore;
+) as typeof FollowOnHoverTooltipBarChartCore;

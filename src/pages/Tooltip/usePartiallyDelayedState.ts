@@ -32,7 +32,7 @@ export function usePartiallyDelayedState<StateT>(
           doNotDelayTimeoutRef.current = null;
           doNotDelayRef.current = false;
           //   console.log('  doNotDelay is now false');
-        }, 1000);
+        }, 500);
       } else {
         clearTimeoutAndRef(doNotDelayTimeoutRef);
         //   console.log('    cleared do not delay timeout');

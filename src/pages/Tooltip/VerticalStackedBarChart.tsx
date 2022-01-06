@@ -1,4 +1,4 @@
-import { memo, ReactElement, Ref } from 'react';
+import { memo, ReactElement, RefObject } from 'react';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
@@ -9,8 +9,10 @@ import { useDomainOrdinal } from '@/hooks/useDomainOrdinal';
 import { useScaleBand } from '@/hooks/useScaleBand';
 import { useScaleLinear } from '@/hooks/useScaleLinear';
 import { useScaleOrdinal } from '@/hooks/useScaleOrdinal';
-import type { CategoryValueListDatum, DomainValue, Margins } from '@/types';
+import type { CategoryValueListDatum, DomainValue, Margins, Rect } from '@/types';
 import { getSumOfValues } from '@/utils/dataUtils';
+
+// import { SvgBandScaleEventSource } from './SvgBandScaleEventSource';
 
 export type VerticalStackedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
@@ -30,8 +32,11 @@ export type VerticalStackedBarChartProps<CategoryT extends DomainValue> = {
   datumAriaRoleDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
-  svgRef?: Ref<SVGSVGElement>;
   transitionSeconds?: number;
+  svgRef: RefObject<SVGSVGElement>;
+  onMouseEnter: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
+  onMouseLeave: () => void;
+  onClick: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
 };
 
 function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
@@ -52,8 +57,11 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
   datumAriaRoleDescription,
   datumAriaLabel,
   datumDescription,
+  transitionSeconds = 0.5,
   svgRef,
-  transitionSeconds = 0.5
+  onMouseEnter,
+  onMouseLeave,
+  onClick
 }: VerticalStackedBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
 
@@ -132,6 +140,16 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={34}
       />
+      {/* <SvgBandScaleEventSource
+        svgRef={svgRef}
+        data={data}
+        categoryScale={categoryScale}
+        chartArea={chartArea}
+        orientation="vertical"
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onClick={onClick}
+      /> */}
     </SvgChartRoot>
   );
 }
