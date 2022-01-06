@@ -2,12 +2,11 @@ import { ReactElement, RefObject, useEffect, useMemo, useRef } from 'react';
 import type { TippyProps } from '@tippyjs/react/headless';
 import { animate, useMotionValue } from 'framer-motion';
 
+import { Tooltip } from '@/tooltip';
+import { createVirtualReferenceElement } from '@/tooltip/createVirtualReferenceElement';
+import { usePartiallyDelayedState } from '@/tooltip/usePartiallyDelayedState';
 import type { Rect } from '@/types';
 import { rectsAreEqual } from '@/utils/renderUtils';
-
-import { createVirtualReferenceElement } from './createVirtualReferenceElement';
-import { Tooltip } from './Tooltip';
-import { usePartiallyDelayedState } from './usePartiallyDelayedState';
 
 const popperOptions = {
   modifiers: [

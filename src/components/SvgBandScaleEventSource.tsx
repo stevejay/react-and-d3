@@ -14,7 +14,6 @@ function createTooltipRect(event: ReactMouseEvent<SVGRectElement, MouseEvent>, s
   };
 }
 
-// TODO is there some way to make this work for stacked values?
 export type SvgBandScaleEventSourceProps<
   CategoryT extends DomainValue,
   DatumT extends { category: CategoryT }

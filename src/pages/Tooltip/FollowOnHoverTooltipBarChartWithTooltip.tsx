@@ -1,13 +1,13 @@
 import { ReactElement } from 'react';
 import Tippy from '@tippyjs/react';
 
+import { useFollowOnHoverTooltip } from '@/tooltip';
 import type { CategoryValueDatum, DomainValue } from '@/types';
 
 import {
   FollowOnHoverTooltipBarChart,
   FollowOnHoverTooltipBarChartProps
 } from './FollowOnHoverTooltipBarChart';
-import { useFollowOnHoverTooltip } from './useFollowOnHoverTooltip';
 
 export type FollowOnHoverTooltipBarChartWithTooltipProps<CategoryT extends DomainValue> = Omit<
   FollowOnHoverTooltipBarChartProps<CategoryT>,

@@ -1,9 +1,9 @@
 import { ReactElement } from 'react';
 import Tippy from '@tippyjs/react';
 
+import { useFollowOnHoverTooltip } from '@/tooltip';
 import type { CategoryValueListDatum, DomainValue } from '@/types';
 
-import { useFollowOnHoverTooltip } from './useFollowOnHoverTooltip';
 import { VerticalStackedBarChart, VerticalStackedBarChartProps } from './VerticalStackedBarChart';
 
 export type VerticalStackedBarChartWithTooltipProps<CategoryT extends DomainValue> = Omit<

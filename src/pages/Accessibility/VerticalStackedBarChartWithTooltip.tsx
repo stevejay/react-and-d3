@@ -1,10 +1,8 @@
 import { ReactElement } from 'react';
 import Tippy from '@tippyjs/react';
 
+import { useFollowOnHoverTooltip } from '@/tooltip';
 import type { CategoryValueListDatum, DomainValue } from '@/types';
-
-// TODO fix this
-import { useFollowOnHoverTooltip } from '../Tooltip/useFollowOnHoverTooltip';
 
 import { VerticalStackedBarChart, VerticalStackedBarChartProps } from './VerticalStackedBarChart';
 

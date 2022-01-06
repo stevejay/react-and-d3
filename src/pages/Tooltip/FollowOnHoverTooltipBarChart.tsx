@@ -1,6 +1,7 @@
 import { memo, ReactElement, RefObject } from 'react';
 
 import { SvgAxis } from '@/components/SvgAxis';
+import { SvgBandScaleEventSource } from '@/components/SvgBandScaleEventSource';
 import { SvgBars } from '@/components/SvgBars';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { useChartArea } from '@/hooks/useChartArea';
@@ -9,8 +10,6 @@ import { useDomainOrdinal } from '@/hooks/useDomainOrdinal';
 import { useScaleBand } from '@/hooks/useScaleBand';
 import { useScaleLinear } from '@/hooks/useScaleLinear';
 import type { CategoryValueDatum, DomainValue, Margins, Rect } from '@/types';
-
-import { SvgBandScaleEventSource } from './SvgBandScaleEventSource';
 
 export type FollowOnHoverTooltipBarChartProps<CategoryT extends DomainValue> = {
   data: CategoryValueDatum<CategoryT, number>[];

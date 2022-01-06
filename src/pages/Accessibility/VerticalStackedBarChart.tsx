@@ -1,6 +1,7 @@
 import { memo, ReactElement, RefObject } from 'react';
 
 import { SvgAxis, SvgAxisProps } from '@/components/SvgAxis';
+import { SvgBandScaleEventSource } from '@/components/SvgBandScaleEventSource';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { SvgStackedBars } from '@/components/SvgStackedBars';
 import { useChartArea } from '@/hooks/useChartArea';
@@ -11,9 +12,6 @@ import { useScaleLinear } from '@/hooks/useScaleLinear';
 import { useScaleOrdinal } from '@/hooks/useScaleOrdinal';
 import type { CategoryValueListDatum, DomainValue, Margins, Rect } from '@/types';
 import { getSumOfValues } from '@/utils/dataUtils';
-
-// TODO fix this
-import { SvgBandScaleEventSource } from '../Tooltip/SvgBandScaleEventSource';
 
 export type VerticalStackedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
