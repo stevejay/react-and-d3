@@ -40,7 +40,7 @@ function getSeriesLabel(series: string) {
   return capitalize(series);
 }
 
-const subCategories = ['one', 'two', 'three'];
+const seriesKeys = ['one', 'two', 'three'];
 
 export const HorizontalStackedBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
@@ -52,12 +52,12 @@ export const HorizontalStackedBarChartExample: FC = () => {
             <HorizontalStackedBarChart
               ariaLabelledby={ariaLabelledby}
               data={data}
-              subCategories={subCategories}
+              seriesKeys={seriesKeys}
               colorRange={schemeSet3}
               width={width}
               height={height}
               margins={margins}
-              ariaRoleDescription="Bar chart"
+              ariaRoleDescription="Stacked bar chart"
               seriesAriaRoleDescription={(series) => `Series ${getSeriesLabel(series)}`}
               seriesAriaLabel={getSeriesLabel}
               seriesDescription={(series) => `This is the description for ${getSeriesLabel(series)}`}

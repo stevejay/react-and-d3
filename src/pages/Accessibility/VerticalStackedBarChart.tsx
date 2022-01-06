@@ -1,6 +1,6 @@
 import { memo, ReactElement, RefObject } from 'react';
 
-import { SvgAxis } from '@/components/SvgAxis';
+import { SvgAxis, SvgAxisProps } from '@/components/SvgAxis';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { SvgStackedBars } from '@/components/SvgStackedBars';
 import { useChartArea } from '@/hooks/useChartArea';
@@ -17,7 +17,7 @@ import { SvgBandScaleEventSource } from '../Tooltip/SvgBandScaleEventSource';
 
 export type VerticalStackedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
-  subCategories: readonly string[];
+  seriesKeys: readonly string[];
   colorRange: readonly string[];
   width: number;
   height: number;
@@ -27,6 +27,9 @@ export type VerticalStackedBarChartProps<CategoryT extends DomainValue> = {
   ariaRoleDescription?: string;
   description?: string;
   ariaDescribedby?: string;
+  independentAxisLabel?: string;
+  independentAxisTickFormat?: SvgAxisProps<CategoryT>['tickFormat'];
+  dependentAxisLabel?: string;
   seriesAriaRoleDescription?: (series: string) => string;
   seriesAriaLabel?: (series: string) => string;
   seriesDescription?: (series: string) => string;
@@ -42,7 +45,7 @@ export type VerticalStackedBarChartProps<CategoryT extends DomainValue> = {
 
 function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
   data,
-  subCategories,
+  seriesKeys,
   colorRange,
   width,
   height,
@@ -52,6 +55,9 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
   ariaRoleDescription,
   description,
   ariaDescribedby,
+  independentAxisLabel,
+  independentAxisTickFormat,
+  dependentAxisLabel,
   seriesAriaRoleDescription,
   seriesAriaLabel,
   seriesDescription,
@@ -79,8 +85,8 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
     rangeRound: true
   });
 
-  const subCategoryDomain = useDomainOrdinal<string, string>(subCategories);
-  const subCategoryScale = useScaleOrdinal(subCategoryDomain, colorRange);
+  const seriesDomain = useDomainOrdinal<string, string>(seriesKeys);
+  const seriesScale = useScaleOrdinal(seriesDomain, colorRange);
 
   return (
     <SvgChartRoot
@@ -106,17 +112,17 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
         hideDomainPath
         tickLineClassName="text-slate-600"
         tickTextClassName="text-slate-200"
-        axisLabel="Y Axis Label"
+        axisLabel={dependentAxisLabel}
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={53}
       />
       <SvgStackedBars
         data={data}
-        subCategories={subCategories}
+        seriesKeys={seriesKeys}
         categoryScale={categoryScale}
         valueScale={valueScale}
-        colorScale={subCategoryScale}
+        colorScale={seriesScale}
         chartArea={chartArea}
         orientation="vertical"
         seriesAriaRoleDescription={seriesAriaRoleDescription}
@@ -134,12 +140,13 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
         tickSizeInner={0}
         tickSizeOuter={0}
         tickPadding={10}
-        className="text-sm"
+        className="text-xs"
         domainClassName="text-slate-300"
-        axisLabel="X Axis Label"
+        axisLabel={independentAxisLabel}
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={34}
+        tickFormat={independentAxisTickFormat}
       />
       <SvgBandScaleEventSource
         svgRef={svgRef}

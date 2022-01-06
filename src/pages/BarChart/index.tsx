@@ -1,6 +1,6 @@
 import { PageHeading } from '@/components/PageHeading';
 import { Paragraph } from '@/components/Paragraph';
-import { ProseLink } from '@/components/ProseLink';
+import { ProseInternalLink } from '@/components/ProseInternalLink';
 import { SectionHeading } from '@/components/SectionHeading';
 
 import { HorizontalBarChartExample } from './HorizontalBarChartExample';
@@ -12,13 +12,13 @@ const BarChartPage = () => (
     <SectionHeading>Vertical Bar Chart</SectionHeading>
     <Paragraph>
       This is an example of a vertical bar chart. You can see a version with tooltips on the{' '}
-      <ProseLink to="/tooltip">tooltip page</ProseLink>.
+      <ProseInternalLink to="/tooltip">tooltip page</ProseInternalLink>.
     </Paragraph>
     <VerticalBarChartExample />
     <SectionHeading>Horizontal Bar Chart</SectionHeading>
     <Paragraph>
       This is an example of a horizontal bar chart. You can see a version with tooltips on the{' '}
-      <ProseLink to="/tooltip">tooltip page</ProseLink>.
+      <ProseInternalLink to="/tooltip">tooltip page</ProseInternalLink>.
     </Paragraph>
     <HorizontalBarChartExample />
   </div>

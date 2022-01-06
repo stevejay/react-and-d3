@@ -31,7 +31,7 @@ const dataSets: readonly CategoryValueListDatum<string, number>[][] = [
 ];
 
 const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
-const subCategories = ['one', 'two', 'three'];
+const seriesKeys = ['one', 'two', 'three'];
 
 function getCategoryLabel(datum: CategoryValueListDatum<string, number>) {
   return datum.category;
@@ -40,10 +40,9 @@ function getCategoryLabel(datum: CategoryValueListDatum<string, number>) {
 function renderTooltipContent(d: CategoryValueListDatum<string, number>) {
   return (
     <>
-      {subCategories.map((subCategory, index) => (
-        <Fragment key={subCategory}>
-          <span style={{ color: schemeSet3[index] }}>{capitalize(subCategory)}:</span>{' '}
-          {round(d.values[subCategory], 2)}
+      {seriesKeys.map((series, index) => (
+        <Fragment key={series}>
+          <span style={{ color: schemeSet3[index] }}>{capitalize(series)}:</span> {round(d.values[series], 2)}
           <br />
         </Fragment>
       ))}
@@ -61,12 +60,12 @@ export const VerticalStackedBarChartExample: FC = () => {
             <VerticalStackedBarChartWithTooltip
               ariaLabelledby={ariaLabelledby}
               data={data}
-              subCategories={subCategories}
+              seriesKeys={seriesKeys}
               colorRange={schemeSet3}
               width={width}
               height={height}
               margins={margins}
-              ariaRoleDescription="Bar chart"
+              ariaRoleDescription="Stacked bar chart"
               datumAriaRoleDescription={getCategoryLabel}
               datumAriaLabel={(d, series) => `${d.values[series]}`}
               datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}

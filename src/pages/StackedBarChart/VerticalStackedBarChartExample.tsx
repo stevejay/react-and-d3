@@ -40,7 +40,7 @@ function getSeriesLabel(series: string) {
   return capitalize(series);
 }
 
-const subCategories = ['one', 'two', 'three'];
+const seriesKeys = ['one', 'two', 'three'];
 
 export const VerticalStackedBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
@@ -52,7 +52,7 @@ export const VerticalStackedBarChartExample: FC = () => {
             <VerticalStackedBarChart
               ariaLabelledby={ariaLabelledby}
               data={data}
-              subCategories={subCategories}
+              seriesKeys={seriesKeys}
               colorRange={schemeSet3}
               width={width}
               height={height}

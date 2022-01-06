@@ -12,7 +12,7 @@ import { SvgGroup } from './SvgGroup';
 
 export type SvgStackedBarsProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
-  subCategories: readonly string[];
+  seriesKeys: readonly string[];
   colorScale: ScaleOrdinal<string, string, never>;
   chartArea: ChartArea;
   orientation: ChartOrientation;
@@ -30,7 +30,7 @@ export type SvgStackedBarsProps<CategoryT extends DomainValue> = {
 
 export function SvgStackedBars<CategoryT extends DomainValue>({
   data,
-  subCategories,
+  seriesKeys,
   categoryScale,
   valueScale,
   colorScale,
@@ -49,7 +49,7 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
   const offset = offsetProp ?? getDefaultRenderingOffset();
 
   const stackSeries = stack<CategoryValueListDatum<CategoryT, number>, string>()
-    .keys(subCategories)
+    .keys(seriesKeys)
     .value((d, key) => d.values[key]);
 
   const generator = createStackedBarGenerator(categoryScale, valueScale, orientation, offset);
