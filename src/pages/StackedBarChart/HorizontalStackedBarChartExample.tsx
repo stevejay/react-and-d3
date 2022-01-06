@@ -46,7 +46,7 @@ export const HorizontalStackedBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
-      <ExampleChartWrapper title="Example: Horizontal Stacked Bar Chart" sizerClassName="h-[384px]">
+      <ExampleChartWrapper title="Example 2: Horizontal Stacked Bar Chart" sizerClassName="h-[384px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <HorizontalStackedBarChart

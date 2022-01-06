@@ -38,7 +38,7 @@ export const HorizontalBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
-      <ExampleChartWrapper title="Example: Horizontal Bar Chart" sizerClassName="h-[384px]">
+      <ExampleChartWrapper title="Example 2: Horizontal Bar Chart" sizerClassName="h-[384px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <HorizontalBarChart

@@ -2,7 +2,8 @@ import { PageHeading } from '@/components/PageHeading';
 import { Paragraph } from '@/components/Paragraph';
 import { SectionHeading } from '@/components/SectionHeading';
 
-import { NonTabbableTooltipBarChartExample } from './NonTabbableTooltipBarChartExample';
+// import { NonTabbableTooltipBarChartExample } from './NonTabbableTooltipBarChartExample';
+import { SingleAreaTooltipBarChartExample } from './SingleAreaTooltipBarChartExample';
 import { TabbableTooltipBarChartExample } from './TabbableTooltipBarChartExample';
 
 const TooltipPage = () => (
@@ -28,13 +29,24 @@ const TooltipPage = () => (
     <Paragraph>
       An option is to hide the tooltip on scroll, but I found this behaviour comes with visibility quirks.
     </Paragraph>
-    <SectionHeading>Non-tabbable Tooltip</SectionHeading>
+    {/* <SectionHeading>Non-tabbable Tooltip</SectionHeading>
     <Paragraph>
       The example chart below has a tooltip that shows on hover and touch tap only. It has the same visibility
       behaviour as the previous example. It also prevents the tooltip showing when a touch user is swiping
       rather than tapping.
     </Paragraph>
-    <NonTabbableTooltipBarChartExample />
+    <NonTabbableTooltipBarChartExample /> */}
+    <SectionHeading>Follow-On-Hover Tooltip</SectionHeading>
+    <Paragraph>
+      The example chart below has a tooltip that shows on hover and click only. On hover it follows the mouse
+      pointer, so the tooltip is always alongside where the user&apos;s attention is currently. In the
+      previous example, the tooltip could be positioned significantly away from where the user is hovering.
+    </Paragraph>
+    <SingleAreaTooltipBarChartExample />
+    <Paragraph>
+      The tooltip re-renders on hover every time the user moves the mouse within the chart area. Care needs to
+      be taken that only the tooltip itself re-renders, not the entire chart as well.
+    </Paragraph>
   </div>
 );
 

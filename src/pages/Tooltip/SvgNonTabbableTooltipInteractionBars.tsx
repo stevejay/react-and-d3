@@ -1,17 +1,18 @@
-import { ReactElement, useRef } from 'react';
+import { ReactElement } from 'react';
 
 import { SvgGroup } from '@/components/SvgGroup';
 import { createBarGenerator } from '@/generators/barGenerator';
 import type { AxisScale, CategoryValueDatum, ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
+import { translateRect } from '@/utils/renderUtils';
 
 type SvgNonTabbableTooltipInteractionBarProps<CategoryT extends DomainValue, ValueT extends DomainValue> = {
   datum: CategoryValueDatum<CategoryT, ValueT>;
   translateX: number;
   translateY: number;
-  generator: (d: CategoryValueDatum<CategoryT, ValueT>, returnInteractionArea?: boolean) => Rect | null;
+  barGenerator: (d: CategoryValueDatum<CategoryT, ValueT>, returnInteractionArea?: boolean) => Rect | null;
   onMouseEnter?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
-  onMouseLeave?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  onMouseLeave?: () => void;
   onTouch?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
 };
 
@@ -19,34 +20,34 @@ function SvgNonTabbableTooltipInteractionBar<CategoryT extends DomainValue, Valu
   datum,
   translateX,
   translateY,
-  generator,
+  barGenerator,
   onMouseEnter,
   onMouseLeave,
   onTouch
 }: SvgNonTabbableTooltipInteractionBarProps<CategoryT, ValueT>) {
-  const interactionRect = generator(datum, true);
-  const barRect = generator(datum, false);
-  // TODO improve this
-  if (barRect) {
-    barRect.x = barRect.x + translateX;
-    barRect.y = barRect.y + translateY;
-  }
+  const interactionRect = barGenerator(datum, true);
+  let barRect = barGenerator(datum, false);
+  barRect = translateRect(barRect, translateX, translateY);
   // Used to stop the tooltip showing on a swipe on a touch device.
-  const touchMovedRef = useRef(false);
+  //   const touchMovedRef = useRef(false);
   return (
     <rect
       {...interactionRect}
-      className="outline-none cursor-pointer"
-      onTouchStart={() => (touchMovedRef.current = false)}
-      onTouchMove={() => (touchMovedRef.current = true)}
-      onTouchEnd={(event) => {
-        if (!touchMovedRef.current) {
-          barRect && onTouch?.(datum, barRect);
-        }
-        event.cancelable && event.preventDefault();
-      }}
+      className="cursor-pointer"
+      //   onTouchStart={() => (touchMovedRef.current = false)}
+      //   onTouchMove={() => (touchMovedRef.current = true)}
+      //   onTouchEnd={(event) => {
+      //     if (!touchMovedRef.current) {
+      //       barRect && onTouch?.(datum, barRect);
+      //     }
+      //     event.cancelable && event.preventDefault();
+      //   }}
       onMouseEnter={() => barRect && onMouseEnter?.(datum, barRect)}
-      onMouseLeave={() => barRect && onMouseLeave?.(datum, barRect)}
+      onMouseLeave={() => onMouseLeave?.()}
+      onClick={(event) => {
+        barRect && onTouch?.(datum, barRect);
+        event.stopPropagation();
+      }}
     />
   );
 }
@@ -62,7 +63,7 @@ export type SvgNonTabbableTooltipInteractionBarsProps<
   valueScale: AxisScale<ValueT>;
   className?: string;
   onMouseEnter?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
-  onMouseLeave?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  onMouseLeave?: () => void;
   onTouch?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
 };
 
@@ -81,13 +82,12 @@ export function SvgNonTabbableTooltipInteractionBars<
   onMouseLeave,
   onTouch
 }: SvgNonTabbableTooltipInteractionBarsProps<CategoryT, ValueT>): ReactElement | null {
-  const generator = createBarGenerator(
+  const barGenerator = createBarGenerator(
     categoryScale,
     valueScale,
     chartArea.width,
     chartArea.height,
-    orientation,
-    0
+    orientation
   );
   return (
     <SvgGroup
@@ -103,7 +103,7 @@ export function SvgNonTabbableTooltipInteractionBars<
           datum={d}
           translateX={chartArea.translateLeft}
           translateY={chartArea.translateTop}
-          generator={generator}
+          barGenerator={barGenerator}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           onTouch={onTouch}

@@ -3,6 +3,7 @@ import type { TippyProps } from '@tippyjs/react/headless';
 import { animate, useMotionValue } from 'framer-motion';
 
 import type { Rect } from '@/types';
+import { rectsAreEqual } from '@/utils/renderUtils';
 
 import { createVirtualReferenceElement } from './createVirtualReferenceElement';
 import { Tooltip } from './Tooltip';
@@ -57,16 +58,24 @@ export function useTabbableTooltip<DatumT>(
   const eventHandlers = useMemo(
     () => ({
       onMouseEnter: (datum: DatumT, rect: Rect) => {
-        setTooltipState({ visible: true, datum, rect }, 500);
+        setTooltipState((prev) => {
+          return prev.visible && prev.datum === datum && rectsAreEqual(prev.rect, rect)
+            ? prev
+            : { visible: true, datum, rect };
+        }, 500);
       },
       onMouseLeave: () => {
-        setTooltipState((prev) => ({ ...prev, visible: false }), 0);
+        setTooltipState((prev) => (prev.visible ? { ...prev, visible: false } : prev), 0);
       },
       onFocus: (datum: DatumT, rect: Rect) => {
-        setTooltipState({ visible: true, datum, rect }, 0);
+        setTooltipState((prev) => {
+          return prev.visible && prev.datum === datum && rectsAreEqual(prev.rect, rect)
+            ? prev
+            : { visible: true, datum, rect };
+        }, 0);
       },
       onBlur: () => {
-        setTooltipState((prev) => ({ ...prev, visible: false }), 0);
+        setTooltipState((prev) => (prev.visible ? { ...prev, visible: false } : prev), 0);
       }
     }),
     [setTooltipState]

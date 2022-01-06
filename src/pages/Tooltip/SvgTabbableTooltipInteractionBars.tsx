@@ -11,9 +11,9 @@ type SvgTabbableTooltipInteractionBarProps<CategoryT extends DomainValue, ValueT
   translateY: number;
   generator: (d: CategoryValueDatum<CategoryT, ValueT>, returnInteractionArea?: boolean) => Rect | null;
   onMouseEnter?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
-  onMouseLeave?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  onMouseLeave?: () => void;
   onFocus?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
-  onBlur?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  onBlur?: () => void;
   supportHideOnScroll: boolean;
 };
 
@@ -42,9 +42,9 @@ function SvgTabbableTooltipInteractionBar<CategoryT extends DomainValue, ValueT 
       className="outline-none cursor-pointer"
       tabIndex={0} // Required because a rect does not naturally receive focus.
       onMouseOver={() => barRect && onMouseEnter?.(datum, barRect)}
-      onMouseOut={() => barRect && onMouseLeave?.(datum, barRect)}
+      onMouseOut={() => onMouseLeave?.()}
       onFocus={() => barRect && onFocus?.(datum, barRect)}
-      onBlur={() => barRect && onBlur?.(datum, barRect)}
+      onBlur={() => onBlur?.()}
       // Hide on scroll on a touch device is problematic.
       // onFocus is used to show the tooltip. If the user then scrolls
       // the tooltip is hidden. If they then touch again on the same bar,
@@ -65,9 +65,9 @@ export type SvgTabbableTooltipInteractionBarsProps<
   valueScale: AxisScale<ValueT>;
   className?: string;
   onMouseEnter?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
-  onMouseLeave?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  onMouseLeave?: () => void;
   onFocus?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
-  onBlur?: (datum: CategoryValueDatum<CategoryT, ValueT>, rect: Rect) => void;
+  onBlur?: () => void;
   supportHideOnScroll?: boolean;
 };
 

@@ -97,7 +97,7 @@ function NonTabbableTooltipBarChartCore<CategoryT extends DomainValue>({
           valueScale={valueScale}
           chartArea={chartArea}
           orientation="vertical"
-          className="text-blue-600"
+          className="text-sky-500"
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumDescription={datumDescription}

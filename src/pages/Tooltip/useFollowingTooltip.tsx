@@ -3,26 +3,18 @@ import type { TippyProps } from '@tippyjs/react/headless';
 import { animate, useMotionValue } from 'framer-motion';
 
 import type { Rect } from '@/types';
-import { rectsAreEqual } from '@/utils/renderUtils';
+import { createDOMRectFromRect, rectsAreEqual } from '@/utils/renderUtils';
 
-import { createVirtualReferenceElement } from './createVirtualReferenceElement';
 import { Tooltip } from './Tooltip';
 import { usePartiallyDelayedState } from './usePartiallyDelayedState';
 
 const popperOptions = {
-  modifiers: [
-    {
-      name: 'flip',
-      enabled: true,
-      // Allow space for the sticky header. This cannot be a rem value.
-      options: { padding: { top: 63 } } // 54 on mobile
-    }
-  ]
+  modifiers: [{ name: 'flip', enabled: true }]
 };
 
 type TooltipState<DatumT> = { visible: boolean; rect: Rect | null; datum: DatumT | null };
 
-export function useNonTabbableTooltip<DatumT>(
+export function useFollowingTooltip<DatumT>(
   renderContent: (datum: DatumT) => ReactElement | null,
   hideOnScroll: boolean
 ): [
@@ -92,7 +84,7 @@ export function useNonTabbableTooltip<DatumT>(
         reference: svgRef.current,
         appendTo: 'parent',
         placement: 'top',
-        offset: [0, 10],
+        offset: [0, 20],
         animation: true,
         onShow: () => {
           animate(opacity, 1, { type: 'tween', duration: 0.15 });
@@ -101,7 +93,7 @@ export function useNonTabbableTooltip<DatumT>(
           animate(opacity, 0, { type: 'tween', duration: 0.15, onComplete: unmount });
         },
         visible: tooltipState.visible,
-        getReferenceClientRect: () => createVirtualReferenceElement(svgRef, tooltipState.rect!),
+        getReferenceClientRect: () => createDOMRectFromRect(tooltipState.rect!),
         popperOptions,
         render: (attrs) => (
           <Tooltip {...attrs} style={{ opacity }}>

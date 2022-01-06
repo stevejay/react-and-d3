@@ -1,5 +1,4 @@
-import { memo, ReactElement } from 'react';
-import Tippy from '@tippyjs/react';
+import { memo, ReactElement, RefObject } from 'react';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgBars } from '@/components/SvgBars';
@@ -9,12 +8,11 @@ import { useDomainContinuous } from '@/hooks/useDomainContinuous';
 import { useDomainOrdinal } from '@/hooks/useDomainOrdinal';
 import { useScaleBand } from '@/hooks/useScaleBand';
 import { useScaleLinear } from '@/hooks/useScaleLinear';
-import type { CategoryValueDatum, DomainValue, Margins } from '@/types';
+import type { CategoryValueDatum, DomainValue, Margins, Rect } from '@/types';
 
-import { SvgTabbableTooltipInteractionBars } from './SvgTabbableTooltipInteractionBars';
-import { useTabbableTooltip } from './useTabbableTooltip';
+import { SvgBandScaleEventSource } from './SvgBandScaleEventSource';
 
-export type TabbableTooltipBarChartProps<CategoryT extends DomainValue> = {
+export type SingleAreaTooltipBarChartProps<CategoryT extends DomainValue> = {
   data: CategoryValueDatum<CategoryT, number>[];
   width: number;
   height: number;
@@ -27,12 +25,14 @@ export type TabbableTooltipBarChartProps<CategoryT extends DomainValue> = {
   datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
-  renderTooltipContent: (datum: CategoryValueDatum<CategoryT, number>) => ReactElement | null;
   transitionSeconds?: number;
-  hideOnScroll: boolean;
+  svgRef: RefObject<SVGSVGElement>;
+  onMouseEnter: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
+  onMouseLeave: () => void;
+  onTouch: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
 };
 
-function TabbableTooltipBarChartCore<CategoryT extends DomainValue>({
+function SingleAreaTooltipBarChartCore<CategoryT extends DomainValue>({
   data,
   width,
   height,
@@ -45,10 +45,12 @@ function TabbableTooltipBarChartCore<CategoryT extends DomainValue>({
   datumAriaRoleDescription,
   datumAriaLabel,
   datumDescription,
-  renderTooltipContent,
   transitionSeconds = 0.5,
-  hideOnScroll
-}: TabbableTooltipBarChartProps<CategoryT>): ReactElement | null {
+  svgRef,
+  onMouseEnter,
+  onMouseLeave,
+  onTouch
+}: SingleAreaTooltipBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useDomainContinuous(data, (d) => d.value, { includeZeroInDomain: true });
   const valueScale = useScaleLinear(valueDomain, chartArea.yRange, { nice: true, clamp: true });
@@ -57,14 +59,14 @@ function TabbableTooltipBarChartCore<CategoryT extends DomainValue>({
     paddingInner: 0.3,
     paddingOuter: 0.2
   });
-  const [interactionProps, referenceProps, tippyProps] = useTabbableTooltip(
-    renderTooltipContent,
-    hideOnScroll
-  );
+  //   const [interactionProps, referenceProps, tippyProps] = useFollowingTooltip(
+  //     renderTooltipContent,
+  //     hideOnScroll
+  //   );
   return (
     <>
       <SvgChartRoot
-        {...referenceProps}
+        ref={svgRef}
         width={width}
         height={height}
         transitionSeconds={transitionSeconds}
@@ -117,26 +119,27 @@ function TabbableTooltipBarChartCore<CategoryT extends DomainValue>({
           axisLabelClassName="text-sm text-slate-300"
           axisLabelSpacing={34}
         />
-        <SvgTabbableTooltipInteractionBars
+        <SvgBandScaleEventSource
+          svgRef={svgRef}
           data={data}
           categoryScale={categoryScale}
           valueScale={valueScale}
           chartArea={chartArea}
           orientation="vertical"
-          supportHideOnScroll={hideOnScroll}
-          {...interactionProps}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+          onTouch={onTouch}
         />
       </SvgChartRoot>
-      <Tippy {...tippyProps} />
     </>
   );
 }
 
-export const TabbableTooltipBarChart = memo(
-  TabbableTooltipBarChartCore,
+export const SingleAreaTooltipBarChart = memo(
+  SingleAreaTooltipBarChartCore,
   (prevProps, nextProps) =>
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
     prevProps.margins === nextProps.margins
-) as typeof TabbableTooltipBarChartCore;
+) as typeof SingleAreaTooltipBarChartCore;
