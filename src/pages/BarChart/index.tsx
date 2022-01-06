@@ -11,13 +11,13 @@ const BarChartPage = () => (
     <PageHeading>Bar Chart</PageHeading>
     <SectionHeading>Vertical Bar Chart</SectionHeading>
     <Paragraph>
-      This is an example of a vertical bar chart. You can see a version with tooltips on the{' '}
+      The following is an example of a vertical bar chart. You can see a version with tooltips on the{' '}
       <ProseInternalLink to="/tooltip">tooltip page</ProseInternalLink>.
     </Paragraph>
     <VerticalBarChartExample />
     <SectionHeading>Horizontal Bar Chart</SectionHeading>
     <Paragraph>
-      This is an example of a horizontal bar chart. You can see a version with tooltips on the{' '}
+      The following is an example of a horizontal bar chart. You can see a version with tooltips on the{' '}
       <ProseInternalLink to="/tooltip">tooltip page</ProseInternalLink>.
     </Paragraph>
     <HorizontalBarChartExample />
