@@ -1,4 +1,4 @@
-import { Fragment, memo, MouseEvent as ReactMouseEvent, ReactElement, RefObject } from 'react';
+import { Fragment, memo, ReactElement, RefObject } from 'react';
 import { useId } from '@uifabric/react-hooks';
 import { max, min } from 'd3-array';
 import { easeCubicInOut } from 'd3-ease';
@@ -15,15 +15,6 @@ import { CategorySlice } from './CategorySlice';
 
 const margins: Margins = { left: 1, right: 1, top: 1, bottom: 1 };
 
-function createTooltipRect(event: ReactMouseEvent<SVGElement, MouseEvent>, svgRect?: DOMRect) {
-  return {
-    x: event.clientX - (svgRect?.x ?? 0),
-    y: event.clientY - (svgRect?.y ?? 0),
-    width: 0,
-    height: 0
-  };
-}
-
 export type RadarChartProps<CategoryT extends DomainValue> = {
   title: string;
   categoryLabel: (datum: CategoryValueDatum<CategoryT, number>) => string;
@@ -31,12 +22,7 @@ export type RadarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueDatum<CategoryT, number>[];
   compact: boolean;
   diameter: number;
-  /** Needs to be a stable callback. */
   onSelect: (datum: CategoryValueDatum<CategoryT, number>) => void;
-  //   /** Needs to be a stable callback. */
-  //   onShowTooltip: (element: Element, datum: CategoryValueDatum<CategoryT, number>) => void;
-  //   /** Needs to be a stable callback. */
-  //   onHideTooltip: () => void;
   datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
@@ -59,19 +45,15 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
   datumDescription,
   svgRef,
   onMouseEnter,
-  onMouseLeave
+  onMouseLeave,
+  onClick
 }: RadarChartProps<CategoryT>): ReactElement | null => {
   const id = useId();
 
   // ----- DATA PREPARATION -----
 
   const isZeroState = every(data, (d) => d.value === 0);
-
   const selectedDatum = data.find((d) => d.category === selectedCategory);
-  if (!selectedDatum) {
-    return null;
-  }
-
   const degreesLookup = new Map(data.map((d, index) => [d.category, (360 / data.length) * index]));
 
   // ----- CHART SIZING -----
@@ -84,12 +66,12 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
   const centerRingRadiusPx = centerRingFontSizePx + 6;
   const centerRingStrokeWidthPx = 8;
   const activePointRadiusPx = 13;
+  const tooltipPointRadiusPx = activePointRadiusPx + 12;
   const yAxisMarginTopPx = 12;
   const yAxisMarginBottomPx = yAxisMarginTopPx + centerRingStrokeWidthPx * 0.5;
   const slicePadAngleRadians = 0.0075;
   const sliceHeightPx = compact ? 24 : 32;
   const sliceLabelFontSizePx = compact ? 11 : 14;
-
   const chartAreaRadius =
     (diameter - margins.left - margins.right - sliceHeightPx * 2 - yAxisMarginTopPx * 2) * 0.5;
 
@@ -106,7 +88,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
   // X-scale is generated from the categories (keys).
 
   const x = scaleBand<DomainValue>()
-    .range([0, 2 * Math.PI]) // [0 degrees, 360 degrees]
+    .range([0, 2 * Math.PI]) // a.k.a. [0 degrees, 360 degrees]
     .domain(data.map((d) => d.category));
 
   // ----- RADIAL POINTS -----
@@ -121,7 +103,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
     ])
   );
 
-  const gradientId = `${id}_radial_gradient`;
+  const radialGradientId = `${id}_radial_gradient`;
 
   // ----- ARC DEFINITIONS FOR THE SLICE LABELS -----
 
@@ -184,11 +166,11 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
         {/* Definitions */}
         <defs>
           <radialGradient
-            id={gradientId}
+            id={radialGradientId}
             gradientUnits="userSpaceOnUse"
             r={150}
-            cx={radialPointLookup.get(selectedDatum.category)?.[0]}
-            cy={radialPointLookup.get(selectedDatum.category)?.[1]}
+            cx={radialPointLookup.get(selectedCategory)?.[0]}
+            cy={radialPointLookup.get(selectedCategory)?.[1]}
           >
             <stop offset="0%" stopColor="currentColor" stopOpacity="0.8" />
             <stop offset="100%" stopColor="currentColor" stopOpacity="0.1" />
@@ -231,7 +213,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
           className="pointer-events-none fill-current"
           role="presentation"
           d={(indicatorSliceArc as any)()}
-          style={{ transform: `rotate(${degreesLookup.get(selectedDatum.category) ?? 0}deg)` }}
+          style={{ transform: `rotate(${degreesLookup.get(selectedCategory) ?? 0}deg)` }}
         />
 
         {/* Y-scale circles */}
@@ -284,7 +266,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
           {
             <motion.path
               className="stroke-current text-slate-400"
-              fill={`url(#${gradientId})`}
+              fill={`url(#${radialGradientId})`}
               strokeWidth={2}
               role="presentation"
               animate={{
@@ -337,7 +319,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
             fill="currentColor"
             style={{ fontSize: centerRingFontSizePx }}
           >
-            {Math.round(selectedDatum.value)}
+            {Math.round(selectedDatum?.value ?? 0)}
           </text>
         </g>
 
@@ -380,23 +362,24 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
           {!isZeroState &&
             data.map((d) => {
               const circleId = `${id}_tooltip_${d.category}`;
+              const cx = radialPointLookup.get(d.category)?.[0] ?? 0;
+              const cy = radialPointLookup.get(d.category)?.[1] ?? 0;
+              const rect: Rect = { x: diameter * 0.5 + cx, y: diameter * 0.5 + cy, width: 0, height: 0 };
               return (
                 <circle
                   key={getAxisDomainAsReactKey(d.category)}
                   id={circleId}
                   className="fill-transparent"
                   role="presentation"
-                  cx={radialPointLookup.get(d.category)?.[0] ?? 0}
-                  cy={radialPointLookup.get(d.category)?.[1] ?? 0}
-                  r={activePointRadiusPx}
-                  onMouseEnter={(event) => {
-                    const svgRect = svgRef.current?.getBoundingClientRect();
-                    const rect = createTooltipRect(event, svgRect);
-                    onMouseEnter(d, rect);
-                    // const element = document.getElementById(circleId);
-                    // element && onShowTooltip(element, d);
-                  }}
+                  cx={cx}
+                  cy={cy}
+                  r={tooltipPointRadiusPx}
+                  onMouseEnter={() => onMouseEnter(d, rect)}
                   onMouseLeave={onMouseLeave}
+                  onClick={(event) => {
+                    onClick(d, rect);
+                    event.stopPropagation();
+                  }}
                 />
               );
             })}
