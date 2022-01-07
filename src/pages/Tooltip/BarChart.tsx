@@ -11,7 +11,7 @@ import { useScaleBand } from '@/hooks/useScaleBand';
 import { useScaleLinear } from '@/hooks/useScaleLinear';
 import type { CategoryValueDatum, DomainValue, Margins, Rect } from '@/types';
 
-export type FollowOnHoverTooltipBarChartProps<CategoryT extends DomainValue> = {
+export type BarChartProps<CategoryT extends DomainValue> = {
   data: CategoryValueDatum<CategoryT, number>[];
   width: number;
   height: number;
@@ -31,7 +31,7 @@ export type FollowOnHoverTooltipBarChartProps<CategoryT extends DomainValue> = {
   onClick: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
 };
 
-function FollowOnHoverTooltipBarChartCore<CategoryT extends DomainValue>({
+function BarChartCore<CategoryT extends DomainValue>({
   data,
   width,
   height,
@@ -49,7 +49,7 @@ function FollowOnHoverTooltipBarChartCore<CategoryT extends DomainValue>({
   onMouseEnter,
   onMouseLeave,
   onClick
-}: FollowOnHoverTooltipBarChartProps<CategoryT>): ReactElement | null {
+}: BarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useDomainContinuous(data, (d) => d.value, { includeZeroInDomain: true });
   const valueScale = useScaleLinear(valueDomain, chartArea.yRange, { nice: true, clamp: true });
@@ -129,11 +129,11 @@ function FollowOnHoverTooltipBarChartCore<CategoryT extends DomainValue>({
   );
 }
 
-export const FollowOnHoverTooltipBarChart = memo(
-  FollowOnHoverTooltipBarChartCore,
+export const BarChart = memo(
+  BarChartCore,
   (prevProps, nextProps) =>
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
     prevProps.margins === nextProps.margins
-) as typeof FollowOnHoverTooltipBarChartCore;
+) as typeof BarChartCore;

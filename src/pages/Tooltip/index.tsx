@@ -3,8 +3,8 @@ import { Paragraph } from '@/components/Paragraph';
 import { ProseInternalLink } from '@/components/ProseInternalLink';
 import { SectionHeading } from '@/components/SectionHeading';
 
-import { FollowOnHoverTooltipBarChartExample } from './FollowOnHoverTooltipBarChartExample';
-import { VerticalStackedBarChartExample } from './VerticalStackedBarChartExample';
+import { BarChartWithTooltipExample } from './BarChartWithTooltipExample';
+import { StackedBarChartWithTooltipExample } from './StackedBarChartWithTooltipExample';
 
 const TooltipPage = () => (
   <div className="w-full max-w-3xl p-4 mx-auto md:p-8">
@@ -33,12 +33,12 @@ const TooltipPage = () => (
       <li>Hide on scroll.</li>
       <li>Hide on a click or tap outside of the chart area.</li>
     </ul>
-    <FollowOnHoverTooltipBarChartExample />
+    <BarChartWithTooltipExample />
     <Paragraph>
       The following is an example of a stacked bar chart with a tooltip. The values for multiple series are
       shown in a single tooltip.
     </Paragraph>
-    <VerticalStackedBarChartExample />
+    <StackedBarChartWithTooltipExample />
     <Paragraph>
       Be aware of a potential performance issue with this type of tooltip. It has to re-render on every
       movement of the mouse when the user is hovering over the chart. Ensure that only the tooltip gets

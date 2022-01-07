@@ -6,7 +6,7 @@ import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 import type { CategoryValueDatum, Margins } from '@/types';
 
-import { FollowOnHoverTooltipBarChartWithTooltip } from './FollowOnHoverTooltipBarChartWithTooltip';
+import { BarChartWithTooltip } from './BarChartWithTooltip';
 
 const dataSets = [
   [
@@ -35,7 +35,7 @@ function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
   return datum.category;
 }
 
-export const FollowOnHoverTooltipBarChartExample: FC = () => {
+export const BarChartWithTooltipExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
@@ -45,7 +45,7 @@ export const FollowOnHoverTooltipBarChartExample: FC = () => {
       >
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
-            <FollowOnHoverTooltipBarChartWithTooltip
+            <BarChartWithTooltip
               ariaLabelledby={ariaLabelledby}
               data={data}
               width={width}

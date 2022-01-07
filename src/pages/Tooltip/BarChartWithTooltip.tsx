@@ -4,28 +4,27 @@ import Tippy from '@tippyjs/react';
 import { useFollowOnHoverTooltip } from '@/tooltip';
 import type { CategoryValueDatum, DomainValue } from '@/types';
 
-import {
-  FollowOnHoverTooltipBarChart,
-  FollowOnHoverTooltipBarChartProps
-} from './FollowOnHoverTooltipBarChart';
+import { BarChart, BarChartProps } from './BarChart';
 
-export type FollowOnHoverTooltipBarChartWithTooltipProps<CategoryT extends DomainValue> = Omit<
-  FollowOnHoverTooltipBarChartProps<CategoryT>,
+export type BarChartWithTooltipProps<CategoryT extends DomainValue> = Omit<
+  BarChartProps<CategoryT>,
   'svgRef' | 'onMouseEnter' | 'onMouseLeave' | 'onClick'
 > & {
   renderTooltipContent: (datum: CategoryValueDatum<CategoryT, number>) => ReactElement | null;
   hideOnScroll: boolean;
 };
 
-export function FollowOnHoverTooltipBarChartWithTooltip<CategoryT extends DomainValue>({
+// For rendering performance, the tooltip has to be rendered separately from the
+// chart.
+export function BarChartWithTooltip<CategoryT extends DomainValue>({
   renderTooltipContent,
   hideOnScroll,
   ...rest
-}: FollowOnHoverTooltipBarChartWithTooltipProps<CategoryT>): ReactElement | null {
+}: BarChartWithTooltipProps<CategoryT>): ReactElement | null {
   const [interactionProps, svgRef, tippyProps] = useFollowOnHoverTooltip(renderTooltipContent, hideOnScroll);
   return (
     <>
-      <FollowOnHoverTooltipBarChart svgRef={svgRef} {...rest} {...interactionProps} />
+      <BarChart svgRef={svgRef} {...rest} {...interactionProps} />
       <Tippy {...tippyProps} />
     </>
   );

@@ -7,7 +7,7 @@ import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 import type { CategoryValueListDatum, Margins } from '@/types';
 
-import { VerticalStackedBarChartWithTooltip } from './VerticalStackedBarChartWithTooltip';
+import { StackedBarChartWithTooltip } from './StackedBarChartWithTooltip';
 
 const dataSets: readonly CategoryValueListDatum<string, number>[][] = [
   [
@@ -50,14 +50,14 @@ function renderTooltipContent(d: CategoryValueListDatum<string, number>) {
   );
 }
 
-export const VerticalStackedBarChartExample: FC = () => {
+export const StackedBarChartWithTooltipExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
       <ExampleChartWrapper title="Example 2: A stacked bar chart with a tooltip" sizerClassName="h-[384px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
-            <VerticalStackedBarChartWithTooltip
+            <StackedBarChartWithTooltip
               ariaLabelledby={ariaLabelledby}
               data={data}
               seriesKeys={seriesKeys}
