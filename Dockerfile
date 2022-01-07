@@ -19,6 +19,7 @@ COPY ./vite.config.ts .
 COPY ./tailwind.config.js .
 COPY ./postcss.config.js .
 COPY ./src ./src
+COPY ./public ./public
 
 RUN yarn build
 

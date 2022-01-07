@@ -51,5 +51,5 @@ npx fuite https://dataviz.middle-engine.com/
 Lighthouse:
 
 ```bash
-npx lighthouse https://dataviz.middle-engine.com/
+npx lighthouse --view https://dataviz.middle-engine.com/
 ```
