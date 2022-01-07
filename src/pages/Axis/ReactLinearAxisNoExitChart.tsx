@@ -25,7 +25,7 @@ export const ReactLinearAxisNoExitChart: FC<ReactLinearAxisNoExitChartProps> = m
   ({ data, width, height, ariaLabelledby, tickLabelOrientation, transitionSeconds = 0.25 }) => {
     const chartArea = useChartArea(width, height, margins);
     const domain = useDomainContinuous(data, identity);
-    const scale = useScaleLinear(domain, chartArea.xRange, {
+    const scale = useScaleLinear(domain, chartArea.rangeWidth, {
       nice: true,
       rangeRound: true
     });

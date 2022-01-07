@@ -1,6 +1,7 @@
 import { memo, ReactElement, Ref } from 'react';
 
 import { SvgAxis } from '@/components/SvgAxis';
+import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { SvgStackedBars } from '@/components/SvgStackedBars';
 import { useChartArea } from '@/hooks/useChartArea';
@@ -58,13 +59,13 @@ function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
   const chartArea = useChartArea(width, height, margins);
 
   const valueDomain = useDomainContinuous(data, getSumOfValues, { includeZeroInDomain: true });
-  const valueScale = useScaleLinear(valueDomain, chartArea.xRange, {
+  const valueScale = useScaleLinear(valueDomain, chartArea.rangeWidth, {
     nice: true,
     rangeRound: true
   });
 
   const categoryDomain = useDomainOrdinal(data, (d) => d.category);
-  const categoryScale = useScaleBand(categoryDomain, chartArea.yRangeReversed, {
+  const categoryScale = useScaleBand(categoryDomain, chartArea.rangeHeightReversed, {
     paddingInner: 0.3,
     paddingOuter: 0.2,
     rangeRound: true
@@ -102,21 +103,23 @@ function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
         axisLabelAlignment="center"
         axisLabelSpacing={34}
       />
-      <SvgStackedBars
-        data={data}
-        seriesKeys={seriesKeys}
-        categoryScale={categoryScale}
-        valueScale={valueScale}
-        colorScale={seriesScale}
-        chartArea={chartArea}
-        orientation="horizontal"
-        seriesAriaRoleDescription={seriesAriaRoleDescription}
-        seriesAriaLabel={seriesAriaLabel}
-        seriesDescription={seriesDescription}
-        datumAriaRoleDescription={datumAriaRoleDescription}
-        datumAriaLabel={datumAriaLabel}
-        datumDescription={datumDescription}
-      />
+      <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
+        <SvgStackedBars
+          data={data}
+          seriesKeys={seriesKeys}
+          categoryScale={categoryScale}
+          valueScale={valueScale}
+          colorScale={seriesScale}
+          chartArea={chartArea}
+          orientation="horizontal"
+          seriesAriaRoleDescription={seriesAriaRoleDescription}
+          seriesAriaLabel={seriesAriaLabel}
+          seriesDescription={seriesDescription}
+          datumAriaRoleDescription={datumAriaRoleDescription}
+          datumAriaLabel={datumAriaLabel}
+          datumDescription={datumDescription}
+        />
+      </SvgChartAreaGroup>
       {/* This axis is rendered after the bars so that its domain sits on top of them */}
       <SvgAxis
         scale={categoryScale}

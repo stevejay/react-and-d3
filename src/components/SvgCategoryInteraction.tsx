@@ -54,9 +54,9 @@ export function SvgCategoryInteraction<
 
   return (
     <SvgGroup
-      className={className}
       translateX={chartArea.translateLeft}
       translateY={chartArea.translateTop}
+      className={className}
       fill="transparent"
       stroke="none"
     >

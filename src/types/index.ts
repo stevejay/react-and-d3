@@ -31,16 +31,32 @@ export type CategoryValueListDatum<CategoryT extends DomainValue, ValueT extends
   readonly values: { [key: string]: ValueT };
 };
 
+/**
+ * Defines a chart area within a chart. This is an area that is used to actually
+ * display data, e.g., the central area in a bar chart where the bars are rendered.
+ */
 export type ChartArea = {
+  /** The width of the chart area. */
   width: number;
+  /** The height of the chart area. */
   height: number;
+  /** The x offset from the top left corner of the entire chart to the left edge of the chart area. */
   translateLeft: number;
+  /** The x offset from the top left corner of the entire chart to the right edge of the chart area. */
   translateRight: number;
+  /** The y offset from the top left corner of the entire chart to the top edge of the chart area. */
   translateTop: number;
+  /** The y offset from the top left corner of the entire chart to the bottom edge of the chart area. */
   translateBottom: number;
-  xRange: readonly [number, number]; // TODO rename these to rangeWidth,rangeHeight ?
-  yRange: readonly [number, number];
-  yRangeReversed: readonly [number, number];
+  /** A range array for the width of the chart area that can be used with a scale. */
+  rangeWidth: readonly [number, number];
+  /** A range array for the height of the chart area that can be used with a scale. */
+  rangeHeight: readonly [number, number];
+  /**
+   * A reversed range array for the height of the chart area that can be used with a scale.
+   * This is useful if you need to render a band scale with the categories in reverse order.
+   */
+  rangeHeightReversed: readonly [number, number];
 };
 
 export type Rect = {

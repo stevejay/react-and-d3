@@ -1,17 +1,16 @@
-import { memo, ReactElement, RefObject, useMemo } from 'react';
-import { useId } from '@uifabric/react-hooks';
+import { memo, ReactElement, RefObject } from 'react';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgBars } from '@/components/SvgBars';
 import { SvgCategoryInteraction } from '@/components/SvgCategoryInteraction';
+import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
-import { SvgGroup } from '@/components/SvgGroup';
 import { useChartArea } from '@/hooks/useChartArea';
 import { useDomainContinuous } from '@/hooks/useDomainContinuous';
 import { useDomainOrdinal } from '@/hooks/useDomainOrdinal';
 import { useScaleBand } from '@/hooks/useScaleBand';
 import { useScaleLinear } from '@/hooks/useScaleLinear';
-import type { CategoryValueDatum, ChartArea, DomainValue, Margins, Rect } from '@/types';
+import type { CategoryValueDatum, DomainValue, Margins, Rect } from '@/types';
 
 export type BarChartProps<CategoryT extends DomainValue> = {
   data: CategoryValueDatum<CategoryT, number>[];
@@ -32,26 +31,6 @@ export type BarChartProps<CategoryT extends DomainValue> = {
   onMouseLeave: () => void;
   onClick: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
 };
-
-// function useSvgDefId() {
-//   const id = useId();
-//   return [id, `url(#${id})`];
-// }
-
-function useChartAreaClipPath(chartArea: ChartArea): [ReactElement, string] {
-  const id = useId();
-
-  const clipPathJsx = useMemo(
-    () => (
-      <clipPath id={id}>
-        <rect x={0} y={0} width={chartArea.width} height={chartArea.height} />
-      </clipPath>
-    ),
-    [chartArea, id]
-  );
-
-  return [clipPathJsx, `url(#${id})`];
-}
 
 function BarChartCore<CategoryT extends DomainValue>({
   data,
@@ -74,14 +53,12 @@ function BarChartCore<CategoryT extends DomainValue>({
 }: BarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useDomainContinuous(data, (d) => d.value, { includeZeroInDomain: true });
-  const valueScale = useScaleLinear(valueDomain, chartArea.yRange, { nice: true, clamp: true });
+  const valueScale = useScaleLinear(valueDomain, chartArea.rangeHeight, { nice: true, clamp: true });
   const categoryDomain = useDomainOrdinal(data, (d) => d.category);
-  const categoryScale = useScaleBand(categoryDomain, chartArea.xRange, {
+  const categoryScale = useScaleBand(categoryDomain, chartArea.rangeWidth, {
     paddingInner: 0.3,
     paddingOuter: 0.2
   });
-  //   const [clipPathId, clipPathUrl] = useSvgDefId();
-  const [chartAreaClipPathDef, chartAreaClipPathUrl] = useChartAreaClipPath(chartArea);
   return (
     <>
       <SvgChartRoot
@@ -96,12 +73,6 @@ function BarChartCore<CategoryT extends DomainValue>({
         ariaDescribedby={ariaDescribedby}
         className="font-sans select-none bg-slate-800"
       >
-        <defs>
-          {chartAreaClipPathDef}
-          {/* <clipPath id={clipPathId}>
-            <rect x={0} y={0} width={chartArea.width} height={chartArea.height} />
-          </clipPath> */}
-        </defs>
         <SvgAxis
           scale={valueScale}
           chartArea={chartArea}
@@ -118,23 +89,19 @@ function BarChartCore<CategoryT extends DomainValue>({
           axisLabelClassName="text-sm text-slate-300"
           axisLabelSpacing={53}
         />
-        <SvgGroup
-          translateX={chartArea.translateLeft}
-          translateY={chartArea.translateTop}
-          clipPath={chartAreaClipPathUrl}
-        >
+        <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
           <SvgBars
             data={data}
             categoryScale={categoryScale}
             valueScale={valueScale}
             chartArea={chartArea}
             orientation="vertical"
-            className="stroke-[10] fill-sky-500 stroke-sky-300"
+            className="stroke-1 fill-sky-500 stroke-sky-200"
             datumAriaRoleDescription={datumAriaRoleDescription}
             datumAriaLabel={datumAriaLabel}
             datumDescription={datumDescription}
           />
-        </SvgGroup>
+        </SvgChartAreaGroup>
         {/* X-axis is rendered after the bars so that its domain sits on top of them */}
         <SvgAxis
           scale={categoryScale}

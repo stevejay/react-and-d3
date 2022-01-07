@@ -2,6 +2,7 @@ import { memo, ReactElement, Ref } from 'react';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgBars } from '@/components/SvgBars';
+import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { useChartArea } from '@/hooks/useChartArea';
 import { useDomainContinuous } from '@/hooks/useDomainContinuous';
@@ -45,9 +46,9 @@ function HorizontalBarChartCore<CategoryT extends DomainValue>({
 }: HorizontalBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useDomainContinuous(data, (d) => d.value, { includeZeroInDomain: true });
-  const valueScale = useScaleLinear(valueDomain, chartArea.xRange, { nice: true, clamp: true });
+  const valueScale = useScaleLinear(valueDomain, chartArea.rangeWidth, { nice: true, clamp: true });
   const categoryDomain = useDomainOrdinal(data, (d) => d.category);
-  const categoryScale = useScaleBand(categoryDomain, chartArea.yRangeReversed, {
+  const categoryScale = useScaleBand(categoryDomain, chartArea.rangeHeightReversed, {
     paddingInner: 0.3,
     paddingOuter: 0.2
   });
@@ -80,17 +81,19 @@ function HorizontalBarChartCore<CategoryT extends DomainValue>({
         axisLabelAlignment="center"
         axisLabelSpacing={34}
       />
-      <SvgBars
-        data={data}
-        categoryScale={categoryScale}
-        valueScale={valueScale}
-        chartArea={chartArea}
-        orientation="horizontal"
-        className="text-sky-500"
-        datumAriaRoleDescription={datumAriaRoleDescription}
-        datumAriaLabel={datumAriaLabel}
-        datumDescription={datumDescription}
-      />
+      <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
+        <SvgBars
+          data={data}
+          categoryScale={categoryScale}
+          valueScale={valueScale}
+          chartArea={chartArea}
+          orientation="horizontal"
+          className="text-sky-500"
+          datumAriaRoleDescription={datumAriaRoleDescription}
+          datumAriaLabel={datumAriaLabel}
+          datumDescription={datumDescription}
+        />
+      </SvgChartAreaGroup>
       {/* This axis is rendered after the bars so that its domain sits on top of them */}
       <SvgAxis
         scale={categoryScale}

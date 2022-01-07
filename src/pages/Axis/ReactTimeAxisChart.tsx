@@ -26,7 +26,7 @@ export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
   ({ data, width, height, ariaLabelledby, tickLabelOrientation, transitionSeconds = 0.25 }) => {
     const chartArea = useChartArea(width, height, margins);
     const domain = useDomainTime(data);
-    const scale = useScaleTime(domain, chartArea.xRange, {
+    const scale = useScaleTime(domain, chartArea.rangeWidth, {
       nice: true,
       rangeRound: true,
       utc: true

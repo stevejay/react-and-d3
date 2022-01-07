@@ -10,21 +10,19 @@ export function useChartArea(svgWidth: number, svgHeight: number, margins: Margi
     const translateTop = margins.top;
     const translateRight = translateLeft + width;
     const translateBottom = translateTop + height;
-    const xRange = [0, width] as const;
-    const yRange = [height, 0] as const;
-    const yRangeReversed = [0, height] as const;
+    const rangeWidth = [0, width] as const;
+    const rangeHeight = [height, 0] as const;
+    const rangeHeightReversed = [0, height] as const;
     return {
       width,
       height,
-      //   translate: { left, right, top, bottom }, // TODO think about this approach.
-      //   range: { width, height, heightReversed }
       translateLeft,
       translateRight,
       translateTop,
       translateBottom,
-      xRange,
-      yRange,
-      yRangeReversed
+      rangeWidth,
+      rangeHeight,
+      rangeHeightReversed
     };
   }, [svgWidth, svgHeight, margins.left, margins.right, margins.top, margins.bottom]);
 }

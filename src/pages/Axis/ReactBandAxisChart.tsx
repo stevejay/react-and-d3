@@ -22,7 +22,7 @@ export type ReactBandAxisChartProps = {
 export const ReactBandAxisChart: FC<ReactBandAxisChartProps> = memo(
   ({ data, width, height, ariaLabelledby, tickLabelOrientation, transitionSeconds = 0.25 }) => {
     const chartArea = useChartArea(width, height, margins);
-    const scale = useScaleBand(data, chartArea.xRange, { rangeRound: true });
+    const scale = useScaleBand(data, chartArea.rangeWidth, { rangeRound: true });
 
     if (!width || !height) {
       return null;

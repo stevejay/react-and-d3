@@ -8,8 +8,6 @@ import type { AxisScale, CategoryValueListDatum, ChartArea, ChartOrientation, Do
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 import { getDefaultRenderingOffset, toAnimatableRect } from '@/utils/renderUtils';
 
-import { SvgGroup } from './SvgGroup';
-
 export type SvgStackedBarsProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
@@ -55,13 +53,7 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
   const generator = createStackedBarGenerator(categoryScale, valueScale, orientation, offset);
 
   return (
-    <SvgGroup
-      className={className}
-      translateX={chartArea.translateLeft}
-      translateY={chartArea.translateTop}
-      fill="currentColor"
-      stroke="none"
-    >
+    <g className={className} fill="currentColor" stroke="none">
       {stackSeries(data).map((series) => {
         const seriesKey = series.key;
         return (
@@ -107,6 +99,6 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
           </g>
         );
       })}
-    </SvgGroup>
+    </g>
   );
 }

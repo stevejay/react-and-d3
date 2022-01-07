@@ -30,7 +30,7 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
       return [minDate, maxDate];
     }, [data]);
 
-    const scale = useScaleTime(domain, chartArea.xRange, { utc: true, rangeRound: true });
+    const scale = useScaleTime(domain, chartArea.rangeWidth, { utc: true, rangeRound: true });
 
     if (!width || !height) {
       return null;
