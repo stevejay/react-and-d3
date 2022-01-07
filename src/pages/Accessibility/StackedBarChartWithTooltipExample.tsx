@@ -21,7 +21,7 @@ const compactMargins = { left: 64, right: 20, top: 24, bottom: 72 };
 const seriesKeys = ['a', 'b', 'c'];
 
 function isCompact(width: number) {
-  return Boolean(width) && width < 450;
+  return Boolean(width) && width < 500;
 }
 
 function getCategoryLabel(datum: CategoryValueListDatum<string, number>) {

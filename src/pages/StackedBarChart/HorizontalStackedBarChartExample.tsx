@@ -44,7 +44,7 @@ const dataSets: {
 const margins: Margins = { left: 64, right: 40, top: 40, bottom: 64 };
 
 function isCompact(width: number) {
-  return Boolean(width) && width < 450;
+  return Boolean(width) && width < 500;
 }
 
 function getCategoryLabel(datum: CategoryValueListDatum<string, number>) {
