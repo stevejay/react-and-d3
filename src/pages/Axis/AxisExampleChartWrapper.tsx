@@ -31,7 +31,7 @@ export const AxisExampleChartWrapper: FC<AxisExampleChartWrapperProps> = ({
   const id = useId();
   return (
     <div>
-      <AxisChartTitle title={title} subtitle={subtitle} id={id} />
+      <AxisChartTitle title={title} id={id} />
       <ChartSizer
         className={sizerClassName}
         intersectOptions={{ triggerOnce: true, rootMargin: '200px 0px' }}

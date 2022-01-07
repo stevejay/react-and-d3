@@ -16,17 +16,17 @@ const Home = () => (
   <div>
     <h1 className="sr-only">Home Page</h1>
     <div className="bg-center" style={{ backgroundImage: `url("${circuitBoardSvgUrl}")` }}>
-      <div className="flex flex-col-reverse items-center justify-between px-16 py-8 overflow-hidden border-b lg:flex-row border-slate-600 bg-gradient-to-t lg:bg-gradient-to-r from-slate-800 lg:via-slate-800 to-transparent">
-        <p className="max-w-screen-sm text-2xl font-bold leading-relaxed text-center lg:text-left md:text-3xl text-slate-300">
-          Combining the best of React and D3 to create <span className="text-teal-400">declarative</span> and{' '}
-          <span className="text-cyan-400">maintainable</span> data visualisations
+      <div className="flex flex-col-reverse items-center justify-between px-4 py-8 overflow-hidden border-b lg:px-16 lg:flex-row border-slate-600 bg-gradient-to-t lg:bg-gradient-to-r from-slate-800 lg:via-slate-800 to-transparent">
+        <p className="max-w-screen-sm text-2xl font-semibold text-center md:leading-relaxed lg:text-left md:text-3xl text-slate-300">
+          Combining React and D3 to create <span className="text-teal-400">declarative</span> and{' '}
+          <span className="text-cyan-400">maintainable</span> custom data visualisations
         </p>
-        <ReactAndD3Svg className="w-[300px] h-[250px] flex-shrink-0" />
+        <ReactAndD3Svg className="w-[250px] h-[200px] flex-shrink-0 mb-4 lg:mb-0" />
       </div>
     </div>
     <Paragraph className="px-8 pt-8 mx-auto text-xl">
       This site demonstrates how <span className="font-normal text-slate-200">D3</span> and{' '}
-      <span className="font-normal text-slate-200">React</span> can be together to create SVG data
+      <span className="font-normal text-slate-200">React</span> can be used together to create SVG data
       visualisations. D3 is used to calculate element positions and React is used to render them. Use the
       links below to explore the various example components and visualisations.
     </Paragraph>

@@ -9,7 +9,7 @@ import { useChartArea } from '@/hooks/useChartArea';
 import { useScaleTime } from '@/hooks/useScaleTime';
 import { lastMomentOfThisMonth, startOfThisMonth } from '@/utils/dateUtils';
 
-const margins = { top: 20, bottom: 60, left: 30, right: 30 };
+const margins = { top: 20, bottom: 70, left: 20, right: 20 };
 
 export type ReactCustomTimeAxisChartProps = {
   data: Date[];

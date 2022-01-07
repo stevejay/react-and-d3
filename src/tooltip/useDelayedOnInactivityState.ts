@@ -10,8 +10,7 @@ function clearTimeoutRef(ref: MutableRefObject<number | null>) {
 export type ReturnValue<StateT> = [
   StateT,
   (newState: SetStateAction<StateT>, showDelayMs: number) => void,
-  (newState: SetStateAction<StateT>) => void,
-  () => void
+  (newState: SetStateAction<StateT>) => void
 ];
 
 /**
@@ -22,7 +21,7 @@ export type ReturnValue<StateT> = [
  * argument. This is how long in milliseconds that the setting of state should
  * be delayed by if state has not been set for
  * `delayBeforeWaitingForInactivityMs` milliseconds. If you need to change state
- * immediately then pass `0` as the `showDelayMs` value.
+ * immediately use the third value in the result array: setStateImmediately.
  */
 // Derived from https://github.com/makannew/use-delayed-state/blob/master/src/index.js
 export function useDelayedOnInactivityState<StateT>(
@@ -73,10 +72,5 @@ export function useDelayedOnInactivityState<StateT>(
     };
   }, [delayBeforeWaitingForInactivityMs]);
 
-  // Support cancelling a pending state set.
-  const cancelSetState = useCallback(() => {
-    clearTimeoutRef(setStateTimeoutRef);
-  }, []);
-
-  return [state, setStateAfter, setStateImmediately, cancelSetState];
+  return [state, setStateAfter, setStateImmediately];
 }

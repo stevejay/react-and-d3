@@ -11,7 +11,7 @@ import type { TickLabelOrientation } from '@/types';
 
 import { yearMonthMultiFormat } from './format';
 
-const margins = { top: 20, bottom: 48, left: 48, right: 32 };
+const margins = { top: 20, bottom: 48, left: 32, right: 24 };
 
 export type ReactTimeAxisChartProps = {
   data: Date[];

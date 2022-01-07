@@ -313,7 +313,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
             y={0}
             textAnchor="middle"
             dy="0.35em"
-            className="font-medium text-white"
+            className="font-semibold text-white"
             role="presentation"
             aria-hidden
             fill="currentColor"

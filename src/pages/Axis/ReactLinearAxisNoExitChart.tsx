@@ -10,7 +10,7 @@ import { useDomainContinuous } from '@/hooks/useDomainContinuous';
 import { useScaleLinear } from '@/hooks/useScaleLinear';
 import type { TickLabelOrientation } from '@/types';
 
-const margins = { top: 20, bottom: 34, left: 30, right: 30 };
+const margins = { top: 20, bottom: 34, left: 24, right: 24 };
 
 export type ReactLinearAxisNoExitChartProps = {
   data: number[];

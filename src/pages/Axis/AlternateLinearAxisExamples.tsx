@@ -24,7 +24,7 @@ export const AlternateLinearAxisExamples: FC<AlternateLinearAxisExamplesProps> =
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <AxisExamplesWrapper>
-      <AxisExampleChartWrapper title="React-rendered" sizerClassName="h-[112px]">
+      <AxisExampleChartWrapper title="Rendered using React" sizerClassName="h-[112px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <ReactLinearAxisNoExitChart
@@ -38,7 +38,7 @@ export const AlternateLinearAxisExamples: FC<AlternateLinearAxisExamplesProps> =
           )
         }
       </AxisExampleChartWrapper>
-      <AxisExampleChartWrapper title="D3-rendered" sizerClassName="h-[112px]">
+      <AxisExampleChartWrapper title="Rendered using D3" sizerClassName="h-[112px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <D3LinearAxisChart

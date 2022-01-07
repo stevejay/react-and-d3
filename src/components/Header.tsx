@@ -25,7 +25,7 @@ export const Header: FC<HeaderProps> = ({ navigationData }) => {
   return (
     <header className="sticky top-0 border-b bg-slate-900 border-slate-600">
       <div className="flex items-center justify-between px-4 py-1 mx-auto md:px-6 md:py-2 max-w-screen-2xl">
-        <h2 className="text-2xl font-thin text-transparent uppercase bg-clip-text bg-gradient-to-r from-blue-500 to-green-500">
+        <h2 className="text-2xl font-light text-transparent uppercase bg-clip-text bg-gradient-to-r from-blue-500 to-green-500">
           <Link to="/" className="outline-none focus-visible:ring-2">
             React &amp; D3
           </Link>
@@ -76,8 +76,8 @@ export const Header: FC<HeaderProps> = ({ navigationData }) => {
                 <div className="flex flex-col gap-6 mx-auto max-w-screen-2xl md:flex-row md:gap-12">
                   {navigationData.map((section) => (
                     <div key={section.title} className="space-y-2">
-                      <h2 className="font-bold text-blue-500 uppercase text-md">{section.title}</h2>
-                      <ul className="-ml-4 space-y-2 text-2xl md:text-3xl font-extralight">
+                      <h2 className="font-semibold text-blue-500 uppercase text-md">{section.title}</h2>
+                      <ul className="-ml-4 space-y-0 text-2xl md:text-3xl font-extralight">
                         {section.links.map((link) => (
                           <li key={link.href}>
                             <NavigationMenuLink {...link} onClick={close} />

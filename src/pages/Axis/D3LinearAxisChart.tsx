@@ -15,7 +15,7 @@ class D3LinearAxisChartRenderer {
 
   private scale = scaleLinear();
   private axis = axisBottom(this.scale);
-  private margins = { top: 20, bottom: 34, left: 30, right: 30 };
+  private margins = { top: 20, bottom: 34, left: 24, right: 24 };
 
   render(svgElement: SVGSVGElement | null, data: number[]): void {
     if (!svgElement) {

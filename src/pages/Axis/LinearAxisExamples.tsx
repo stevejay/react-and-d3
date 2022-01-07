@@ -11,7 +11,7 @@ import { ReactLinearAxisChart } from './ReactLinearAxisChart';
 const dataSets = [
   [-34, 5, -45, 30, 0, 17, -7, 19, -14, -8],
   [42, 183, 200, 102, 134, 38, 79, 10, 193, 107],
-  [-200, -13, -3, -99]
+  [-160, -13, -3, -99]
 ];
 
 export type LinearAxisExamplesProps = {
@@ -22,7 +22,7 @@ export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({ transitionSeco
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <AxisExamplesWrapper>
-      <AxisExampleChartWrapper title="React-rendered" sizerClassName="h-[112px]">
+      <AxisExampleChartWrapper title="Rendered using React" sizerClassName="h-[112px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <ReactLinearAxisChart
@@ -36,7 +36,7 @@ export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({ transitionSeco
           )
         }
       </AxisExampleChartWrapper>
-      <AxisExampleChartWrapper title="D3-rendered" sizerClassName="h-[112px]">
+      <AxisExampleChartWrapper title="Rendered using D3" sizerClassName="h-[112px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
             <D3LinearAxisChart

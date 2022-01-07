@@ -17,7 +17,7 @@ class D3TimeAxisChartRenderer {
 
   private scale = scaleTime();
   private axis = axisBottom<Date>(this.scale);
-  private margins = { top: 20, bottom: 48, left: 48, right: 32 };
+  private margins = { top: 20, bottom: 48, left: 32, right: 24 };
 
   render(svgElement: SVGSVGElement | null, data: Date[]): void {
     if (!svgElement) {
