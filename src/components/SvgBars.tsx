@@ -6,8 +6,6 @@ import type { AxisScale, CategoryValueDatum, ChartArea, ChartOrientation, Domain
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 import { getDefaultRenderingOffset, toAnimatableRect } from '@/utils/renderUtils';
 
-import { SvgGroup } from './SvgGroup';
-
 export type SvgBarsProps<CategoryT extends DomainValue, ValueT extends DomainValue> = {
   data: CategoryValueDatum<CategoryT, ValueT>[];
   chartArea: ChartArea;
@@ -46,19 +44,14 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
   );
 
   return (
-    <SvgGroup
-      className={className}
-      translateX={chartArea.translateLeft}
-      translateY={chartArea.translateTop}
-      fill="currentColor"
-      stroke="none"
-    >
+    <g className={className} fill="currentColor" stroke="none">
       <AnimatePresence custom={barGenerator} initial={false}>
         {data.map((d) => (
           <motion.rect
             key={getAxisDomainAsReactKey(d.category)}
-            fill="currentColor"
             className={className}
+            // strokeWidth={2}
+            // stroke="red"
             custom={barGenerator}
             initial="initial"
             animate="animate"
@@ -85,6 +78,6 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
           </motion.rect>
         ))}
       </AnimatePresence>
-    </SvgGroup>
+    </g>
   );
 }

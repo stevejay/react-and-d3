@@ -37,7 +37,9 @@ export function useFollowOnHoverTooltip<DatumT>(
   const svgRef = useRef<SVGSVGElement>(null);
   const opacity = useMotionValue(0);
 
-  const [tooltipState, setTooltipState] = useDelayedOnInactivityState<TooltipState<DatumT>>({
+  const [tooltipState, setTooltipStateAfter, setTooltipStateImmediately] = useDelayedOnInactivityState<
+    TooltipState<DatumT>
+  >({
     visible: false,
     rect: null,
     datum: null
@@ -46,44 +48,50 @@ export function useFollowOnHoverTooltip<DatumT>(
   // Hide tooltip on any click
   useEffect(() => {
     if (tooltipState.visible) {
-      const callback = () => setTooltipState((prev) => ({ ...prev, visible: false }), 0);
+      const callback = () => setTooltipStateAfter((prev) => ({ ...prev, visible: false }), 0);
       window.document.addEventListener('click', callback);
       return () => window.document.removeEventListener('click', callback);
     }
-  }, [tooltipState.visible, setTooltipState]);
+  }, [tooltipState.visible, setTooltipStateAfter]);
 
   // Hide tooltip on scroll
   useEffect(() => {
     if (tooltipState.visible && hideOnScroll) {
       const callback = () => {
-        setTooltipState((prev) => ({ ...prev, visible: false }), 0);
+        setTooltipStateAfter((prev) => ({ ...prev, visible: false }), 0);
       };
       window.document.addEventListener('scroll', callback);
       return () => window.document.removeEventListener('scroll', callback);
     }
-  }, [tooltipState.visible, setTooltipState, hideOnScroll]);
+  }, [tooltipState.visible, setTooltipStateAfter, hideOnScroll]);
 
   const eventHandlers = useMemo(
     () => ({
       onMouseEnter: (datum: DatumT, rect: Rect) => {
-        setTooltipState((prev) => {
+        setTooltipStateAfter((prev) => {
           return prev.visible && prev.datum === datum && rectsAreEqual(prev.rect, rect)
             ? prev
             : { visible: true, datum, rect };
         }, 100);
       },
       onMouseLeave: () => {
-        setTooltipState((prev) => (prev.visible ? { ...prev, visible: false } : prev), 0);
+        setTooltipStateAfter((prev) => (prev.visible ? { ...prev, visible: false } : prev), 0);
       },
       onClick: (datum: DatumT, rect: Rect) => {
-        setTooltipState((prev) => {
+        setTooltipStateImmediately((prev) => {
           return prev.visible && prev.datum === datum && rectsAreEqual(prev.rect, rect)
             ? prev
             : { visible: true, datum, rect };
-        }, 0);
+        });
+
+        // setTooltipStateAfter((prev) => {
+        //   return prev.visible && prev.datum === datum && rectsAreEqual(prev.rect, rect)
+        //     ? prev
+        //     : { visible: true, datum, rect };
+        // }, 0);
       }
     }),
-    [setTooltipState]
+    [setTooltipStateAfter, setTooltipStateImmediately]
   );
 
   const tippyProps = useMemo(

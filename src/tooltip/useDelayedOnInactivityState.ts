@@ -10,6 +10,7 @@ function clearTimeoutRef(ref: MutableRefObject<number | null>) {
 export type ReturnValue<StateT> = [
   StateT,
   (newState: SetStateAction<StateT>, showDelayMs: number) => void,
+  (newState: SetStateAction<StateT>) => void,
   () => void
 ];
 
@@ -30,39 +31,45 @@ export function useDelayedOnInactivityState<StateT>(
 ): ReturnValue<StateT> {
   const [state, setState] = useState<StateT>(initialState);
   const setStateTimeoutRef = useRef<number | null>(null);
-  const doNotDelayTimeoutRef = useRef<number | null>(null);
-  const doNotDelayRef = useRef<boolean>(false);
+  const showImmediatelyTimeoutRef = useRef<number | null>(null);
+  const showImmediately = useRef<boolean>(false);
 
   const setStateAfter = useCallback(
     (newState: SetStateAction<StateT>, showDelayMs: number) => {
       clearTimeoutRef(setStateTimeoutRef);
-      clearTimeoutRef(doNotDelayTimeoutRef);
+      clearTimeoutRef(showImmediatelyTimeoutRef);
 
-      if (!showDelayMs || doNotDelayRef.current) {
+      if (!showDelayMs || showImmediately.current) {
         setState(newState);
 
         if (showDelayMs === 0) {
-          doNotDelayTimeoutRef.current = window.setTimeout(() => {
-            clearTimeoutRef(doNotDelayTimeoutRef);
-            doNotDelayRef.current = false;
+          showImmediatelyTimeoutRef.current = window.setTimeout(() => {
+            clearTimeoutRef(showImmediatelyTimeoutRef);
+            showImmediately.current = false;
           }, delayBeforeWaitingForInactivityMs);
         }
       } else {
         setStateTimeoutRef.current = window.setTimeout(() => {
           setState(newState);
           clearTimeoutRef(setStateTimeoutRef);
-          doNotDelayRef.current = true;
+          showImmediately.current = true;
         }, showDelayMs);
       }
     },
     [delayBeforeWaitingForInactivityMs]
   );
 
+  const setStateImmediately = useCallback((newState: SetStateAction<StateT>) => {
+    clearTimeoutRef(setStateTimeoutRef);
+    clearTimeoutRef(showImmediatelyTimeoutRef);
+    setState(newState);
+  }, []);
+
   // Clear any active timeouts on unmount or a change to delayBeforeWaitingForInactivityMs.
   useEffect(() => {
     return () => {
       clearTimeoutRef(setStateTimeoutRef);
-      clearTimeoutRef(doNotDelayTimeoutRef);
+      clearTimeoutRef(showImmediatelyTimeoutRef);
     };
   }, [delayBeforeWaitingForInactivityMs]);
 
@@ -71,5 +78,5 @@ export function useDelayedOnInactivityState<StateT>(
     clearTimeoutRef(setStateTimeoutRef);
   }, []);
 
-  return [state, setStateAfter, cancelSetState];
+  return [state, setStateAfter, setStateImmediately, cancelSetState];
 }

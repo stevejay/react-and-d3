@@ -1,15 +1,14 @@
-import { ReactElement, RefObject, useRef } from 'react';
+import { MouseEvent as ReactMouseEvent, ReactElement, RefObject } from 'react';
 import type { ScaleBand } from 'd3-scale';
-import { round } from 'lodash-es';
 
 import { SvgGroup } from '@/components/SvgGroup';
 import type { ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
 import { createScaleBandInverter } from '@/utils/renderUtils';
 
-function createTooltipRect(event: { clientX: number; clientY: number }, svgRect?: DOMRect) {
+function createTooltipRect(event: ReactMouseEvent<SVGRectElement, MouseEvent>, svgRect?: DOMRect) {
   return {
-    x: round(event.clientX) - (svgRect?.x ?? 0),
-    y: round(event.clientY) - (svgRect?.y ?? 0),
+    x: event.clientX - (svgRect?.x ?? 0),
+    y: event.clientY - (svgRect?.y ?? 0),
     width: 0,
     height: 0
   };
@@ -50,7 +49,14 @@ export function SvgCategoryInteraction<
   const datumLookup = new Map<DomainValue, DatumT>();
   data.forEach((datum) => datumLookup.set(datum.category, datum));
 
-  const isSwiping = useRef(false);
+  function getCategoryData(event: ReactMouseEvent<SVGRectElement, MouseEvent>) {
+    const category = categoryInverter(
+      orientation === 'vertical'
+        ? event.nativeEvent.offsetX - chartArea.translateLeft
+        : event.nativeEvent.offsetY - chartArea.translateTop
+    );
+    return datumLookup.get(category);
+  }
 
   return (
     <SvgGroup
@@ -68,49 +74,16 @@ export function SvgCategoryInteraction<
         onMouseMove={(event) => {
           const svgRect = svgRef.current?.getBoundingClientRect();
           const rect = createTooltipRect(event, svgRect);
-          const category = categoryInverter(
-            orientation === 'vertical' ? rect.x - chartArea.translateLeft : rect.y - chartArea.translateTop
-          );
-          const datum = datumLookup.get(category);
+          const datum = getCategoryData(event);
           datum && onMouseEnter(datum, rect);
         }}
         onMouseLeave={onMouseLeave}
         onClick={(event) => {
-          // Prevent clicks from being picked up by the document.window
-          // onclick event listener, which closes the tooltip on a click
-          // outside of the chart area.
-          event.stopPropagation();
-        }}
-        onTouchStart={() => (isSwiping.current = false)}
-        onTouchMove={() => (isSwiping.current = true)}
-        onTouchEnd={(event) => {
-          event.preventDefault();
-          if (isSwiping.current) {
-            return;
-          }
           const svgRect = svgRef.current?.getBoundingClientRect();
-          const clientX = round(event.changedTouches[0].clientX);
-          const clientY = round(event.changedTouches[0].clientY);
-          const category = categoryInverter(
-            orientation === 'vertical'
-              ? clientX - (svgRect?.x ?? 0) - chartArea.translateLeft
-              : clientY - (svgRect?.y ?? 0) - chartArea.translateTop
-          );
-          const datum = datumLookup.get(category);
-
-          if (datum) {
-            const rect = {
-              x: round(
-                chartArea.translateLeft +
-                  (categoryScale(datum.category) ?? NaN) +
-                  categoryScale.bandwidth() * 0.5
-              ),
-              y: clientY - (svgRect?.y ?? 0),
-              width: 0,
-              height: 0
-            };
-            onClick(datum, rect);
-          }
+          const rect = createTooltipRect(event, svgRect);
+          const datum = getCategoryData(event);
+          datum && onClick(datum, rect);
+          event.stopPropagation();
         }}
       />
     </SvgGroup>
