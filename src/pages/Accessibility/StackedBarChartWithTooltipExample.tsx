@@ -5,7 +5,7 @@ import { round } from 'lodash-es';
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import type { CategoryValueListDatum, Margins } from '@/types';
 
-import { VerticalStackedBarChartWithTooltip } from './VerticalStackedBarChartWithTooltip';
+import { StackedBarChartWithTooltip } from './StackedBarChartWithTooltip';
 
 const data = [
   { category: '1', values: { a: 20, b: 0, c: 0 } },
@@ -40,11 +40,11 @@ function renderTooltipContent(d: CategoryValueListDatum<string, number>) {
   );
 }
 
-export const VerticalStackedBarChartExample: FC = () => (
+export const StackedBarChartWithTooltipExample: FC = () => (
   <ExampleChartWrapper title="Comparing sales strategies" sizerClassName="h-[384px]">
     {({ inView, width, height, ariaLabelledby }) =>
       inView && (
-        <VerticalStackedBarChartWithTooltip
+        <StackedBarChartWithTooltip
           data={data}
           seriesKeys={seriesKeys}
           colorRange={schemeSet3}

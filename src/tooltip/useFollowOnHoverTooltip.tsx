@@ -8,7 +8,7 @@ import { rectsAreEqual } from '@/utils/renderUtils';
 
 import { createVirtualReferenceElement } from './createVirtualReferenceElement';
 import { Tooltip } from './Tooltip';
-import { usePartiallyDelayedState } from './usePartiallyDelayedState';
+import { useDelayedOnInactivityState } from './useDelayedOnInactivityState';
 
 const popperOptions = {
   modifiers: [{ name: 'flip', enabled: true }]
@@ -16,7 +16,7 @@ const popperOptions = {
 
 type TooltipState<DatumT> = { visible: boolean; rect: Rect | null; datum: DatumT | null };
 
-type ReturnType<DatumT> = [
+type ReturnValue<DatumT> = [
   RefObject<SVGSVGElement>,
   {
     onMouseEnter: (datum: DatumT, rect: Rect) => void;
@@ -27,14 +27,17 @@ type ReturnType<DatumT> = [
   TippyProps
 ];
 
+/**
+ * @param renderContent Needs to be a stable function.
+ */
 export function useFollowOnHoverTooltip<DatumT>(
   renderContent: (datum: DatumT) => ReactElement | null,
   hideOnScroll: boolean
-): ReturnType<DatumT> {
+): ReturnValue<DatumT> {
   const svgRef = useRef<SVGSVGElement>(null);
   const opacity = useMotionValue(0);
 
-  const [tooltipState, setTooltipState] = usePartiallyDelayedState<TooltipState<DatumT>>({
+  const [tooltipState, setTooltipState] = useDelayedOnInactivityState<TooltipState<DatumT>>({
     visible: false,
     rect: null,
     datum: null

@@ -13,7 +13,7 @@ import { useScaleOrdinal } from '@/hooks/useScaleOrdinal';
 import type { CategoryValueListDatum, DomainValue, Margins, Rect } from '@/types';
 import { getSumOfValues } from '@/utils/dataUtils';
 
-export type VerticalStackedBarChartProps<CategoryT extends DomainValue> = {
+export type StackedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
   colorRange: readonly string[];
@@ -41,7 +41,7 @@ export type VerticalStackedBarChartProps<CategoryT extends DomainValue> = {
   onClick: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
 };
 
-function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
+function StackedBarChartCore<CategoryT extends DomainValue>({
   data,
   seriesKeys,
   colorRange,
@@ -67,7 +67,7 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
   onMouseEnter,
   onMouseLeave,
   onClick
-}: VerticalStackedBarChartProps<CategoryT>): ReactElement | null {
+}: StackedBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
 
   const valueDomain = useDomainContinuous(data, getSumOfValues, { includeZeroInDomain: true });
@@ -160,11 +160,11 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
   );
 }
 
-export const VerticalStackedBarChart = memo(
-  VerticalStackedBarChartCore,
+export const StackedBarChart = memo(
+  StackedBarChartCore,
   (prevProps, nextProps) =>
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
     prevProps.margins === nextProps.margins
-) as typeof VerticalStackedBarChartCore;
+) as typeof StackedBarChartCore;

@@ -39,3 +39,17 @@ To build and run the Storybook Docker image locally, run the following command f
 ```bash
 docker-compose --file docker-compose.storybook.yml up --force-recreate --build --detach
 ```
+
+## Analysis
+
+Memory leak detection:
+
+```bash
+npx fuite https://dataviz.middle-engine.com/
+```
+
+Lighthouse:
+
+```bash
+npx lighthouse https://dataviz.middle-engine.com/
+```

@@ -1,4 +1,4 @@
-import { Fragment, memo, ReactElement } from 'react';
+import { Fragment, memo, MouseEvent as ReactMouseEvent, ReactElement, RefObject } from 'react';
 import { useId } from '@uifabric/react-hooks';
 import { max, min } from 'd3-array';
 import { easeCubicInOut } from 'd3-ease';
@@ -8,12 +8,21 @@ import { m as motion, MotionConfig } from 'framer-motion';
 import { every } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';
-import type { CategoryValueDatum, DomainValue, Margins } from '@/types';
+import type { CategoryValueDatum, DomainValue, Margins, Rect } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 
 import { CategorySlice } from './CategorySlice';
 
 const margins: Margins = { left: 1, right: 1, top: 1, bottom: 1 };
+
+function createTooltipRect(event: ReactMouseEvent<SVGElement, MouseEvent>, svgRect?: DOMRect) {
+  return {
+    x: event.clientX - (svgRect?.x ?? 0),
+    y: event.clientY - (svgRect?.y ?? 0),
+    width: 0,
+    height: 0
+  };
+}
 
 export type RadarChartProps<CategoryT extends DomainValue> = {
   title: string;
@@ -24,13 +33,17 @@ export type RadarChartProps<CategoryT extends DomainValue> = {
   diameter: number;
   /** Needs to be a stable callback. */
   onSelect: (datum: CategoryValueDatum<CategoryT, number>) => void;
-  /** Needs to be a stable callback. */
-  onShowTooltip: (element: Element, datum: CategoryValueDatum<CategoryT, number>) => void;
-  /** Needs to be a stable callback. */
-  onHideTooltip: () => void;
+  //   /** Needs to be a stable callback. */
+  //   onShowTooltip: (element: Element, datum: CategoryValueDatum<CategoryT, number>) => void;
+  //   /** Needs to be a stable callback. */
+  //   onHideTooltip: () => void;
   datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  svgRef: RefObject<SVGSVGElement>;
+  onMouseEnter: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
+  onMouseLeave: () => void;
+  onClick: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
 };
 
 const RadarChartImpl = <CategoryT extends DomainValue>({
@@ -41,11 +54,12 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
   data,
   diameter,
   onSelect,
-  onShowTooltip,
-  onHideTooltip,
   datumAriaRoleDescription,
   datumAriaLabel,
-  datumDescription
+  datumDescription,
+  svgRef,
+  onMouseEnter,
+  onMouseLeave
 }: RadarChartProps<CategoryT>): ReactElement | null => {
   const id = useId();
 
@@ -158,6 +172,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
   return (
     <MotionConfig transition={{ duration: 0.3, ease: easeCubicInOut }}>
       <Svg
+        ref={svgRef}
         width={diameter}
         height={diameter}
         role="graphics-document"
@@ -374,11 +389,14 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
                   cx={radialPointLookup.get(d.category)?.[0] ?? 0}
                   cy={radialPointLookup.get(d.category)?.[1] ?? 0}
                   r={activePointRadiusPx}
-                  onMouseEnter={() => {
-                    const element = document.getElementById(circleId);
-                    element && onShowTooltip(element, d);
+                  onMouseEnter={(event) => {
+                    const svgRect = svgRef.current?.getBoundingClientRect();
+                    const rect = createTooltipRect(event, svgRect);
+                    onMouseEnter(d, rect);
+                    // const element = document.getElementById(circleId);
+                    // element && onShowTooltip(element, d);
                   }}
-                  onMouseLeave={onHideTooltip}
+                  onMouseLeave={onMouseLeave}
                 />
               );
             })}

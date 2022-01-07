@@ -35,6 +35,14 @@ function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
   return datum.category;
 }
 
+function renderTooltipContent(d: CategoryValueDatum<string, number>) {
+  return (
+    <>
+      {getCategoryLabel(d)}: {round(d.value, 2)}
+    </>
+  );
+}
+
 export const BarChartWithTooltipExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
@@ -55,11 +63,7 @@ export const BarChartWithTooltipExample: FC = () => {
               datumAriaRoleDescription={getCategoryLabel}
               datumAriaLabel={(d) => `${d.value}`}
               datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
-              renderTooltipContent={(d) => (
-                <>
-                  {getCategoryLabel(d)}: {round(d.value, 2)}
-                </>
-              )}
+              renderTooltipContent={renderTooltipContent}
               hideOnScroll={true}
             />
           )

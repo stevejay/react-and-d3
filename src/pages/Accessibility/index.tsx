@@ -5,7 +5,7 @@ import { Paragraph } from '@/components/Paragraph';
 import { ProseExternalLink } from '@/components/ProseExternalLink';
 import { SectionHeading } from '@/components/SectionHeading';
 
-import { VerticalStackedBarChartExample } from './VerticalStackedBarChartExample';
+import { StackedBarChartWithTooltipExample } from './StackedBarChartWithTooltipExample';
 
 const VoiceOverText: FC = ({ children }) => (
   <blockquote className="px-4 py-2 my-4 italic font-light leading-relaxed rounded max-w-prose text-slate-300">
@@ -26,7 +26,7 @@ const AccessibilityPage = () => (
       below follows these recommendations. Use a screenreader with its preferred browser to hear the result.
       On macOS you can use VoiceOver with the Safari Web browser.
     </Paragraph>
-    <VerticalStackedBarChartExample />
+    <StackedBarChartWithTooltipExample />
     <Paragraph>I hear the following when I use VoiceOver and navigate to the chart:</Paragraph>
     <VoiceOverText>Comparing sales strategies, Stacked bar chart</VoiceOverText>
     <Paragraph>After a short pause I then hear the chart description:</Paragraph>

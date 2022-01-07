@@ -1,11 +1,11 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useState } from 'react';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useDataSets } from '@/hooks/useDataSets';
 import type { CategoryValueDatum } from '@/types';
 
-import { RadarChart } from './RadarChart';
+import { RadarChartWithTooltip } from './RadarChartWithTooltip';
 
 const dataSets: readonly CategoryValueDatum<string, number>[][] = [
   [
@@ -48,17 +48,22 @@ function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
   }
 }
 
-export const RadarChartExample: FC = () => {
-  const onShowTooltip = useCallback(() => console.log('onShowTooltip'), []);
-  const onHideTooltip = useCallback(() => console.log('onHideTooltip'), []);
+function renderTooltipContent(d: CategoryValueDatum<string, number>) {
+  return (
+    <>
+      <span className="text-slate-400">{getCategoryLabel(d)}:</span> {d.value}
+    </>
+  );
+}
+
+export const RadarChartWithTooltipExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   const [selectedCategory, setSelectedCategory] = useState(data[0].category);
   const { breakpoint } = useBreakpoint();
   const isMobile = breakpoint === 'mobile';
-
   return (
     <div className="flex flex-col items-center w-full py-8 space-y-8 bg-slate-900">
-      <RadarChart
+      <RadarChartWithTooltip
         data={data}
         title="This is the radar chart label"
         categoryLabel={getCategoryLabel}
@@ -66,11 +71,11 @@ export const RadarChartExample: FC = () => {
         compact={isMobile}
         diameter={isMobile ? 340 : 420}
         onSelect={(d) => setSelectedCategory(d.category)}
-        onShowTooltip={onShowTooltip}
-        onHideTooltip={onHideTooltip}
         datumAriaRoleDescription={getCategoryLabel}
         datumAriaLabel={(d) => `${d.value}`}
         datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
+        hideOnScroll
+        renderTooltipContent={renderTooltipContent}
       />
       <ExampleUpdateButton onClick={nextDataSet}>Update radar chart data</ExampleUpdateButton>
     </div>

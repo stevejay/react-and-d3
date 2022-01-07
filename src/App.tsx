@@ -30,15 +30,15 @@ const navigationData: NavigationSection[] = [
   }
 ];
 
-const Home = lazy(() => import('@/pages/Home'));
-const Axis = lazy(() => import('@/pages/Axis'));
-const Tooltip = lazy(() => import('@/pages/Tooltip'));
-const Accessibility = lazy(() => import('@/pages/Accessibility'));
-const BarChart = lazy(() => import('@/pages/BarChart'));
-const StackedBarChart = lazy(() => import('@/pages/StackedBarChart'));
-const Histogram = lazy(() => import('@/pages/Histogram'));
-const RadarChart = lazy(() => import('@/pages/RadarChart'));
-const Sparkline = lazy(() => import('@/pages/Sparkline'));
+const HomePage = lazy(() => import('@/pages/Home'));
+const AxisPage = lazy(() => import('@/pages/Axis'));
+const TooltipPage = lazy(() => import('@/pages/Tooltip'));
+const AccessibilityPage = lazy(() => import('@/pages/Accessibility'));
+const BarChartPage = lazy(() => import('@/pages/BarChart'));
+const StackedBarChartPage = lazy(() => import('@/pages/StackedBarChart'));
+const HistogramPage = lazy(() => import('@/pages/Histogram'));
+const RadarChartPage = lazy(() => import('@/pages/RadarChart'));
+const SparklinePage = lazy(() => import('@/pages/Sparkline'));
 
 export const App: FC = () => (
   <>
@@ -48,15 +48,15 @@ export const App: FC = () => (
       <ErrorBoundary>
         <Suspense fallback={<LoadingPlaceholder />}>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/axis" element={<Axis />} />
-            <Route path="/tooltip" element={<Tooltip />} />
-            <Route path="/accessibility" element={<Accessibility />} />
-            <Route path="/bar-chart" element={<BarChart />} />
-            <Route path="/stacked-bar-chart" element={<StackedBarChart />} />
-            <Route path="/histogram" element={<Histogram />} />
-            <Route path="/radar-chart" element={<RadarChart />} />
-            <Route path="/sparkline" element={<Sparkline />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/axis" element={<AxisPage />} />
+            <Route path="/tooltip" element={<TooltipPage />} />
+            <Route path="/accessibility" element={<AccessibilityPage />} />
+            <Route path="/bar-chart" element={<BarChartPage />} />
+            <Route path="/stacked-bar-chart" element={<StackedBarChartPage />} />
+            <Route path="/histogram" element={<HistogramPage />} />
+            <Route path="/radar-chart" element={<RadarChartPage />} />
+            <Route path="/sparkline" element={<SparklinePage />} />
           </Routes>
         </Suspense>
       </ErrorBoundary>
