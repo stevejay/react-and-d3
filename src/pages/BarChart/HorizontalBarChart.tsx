@@ -26,6 +26,7 @@ export type HorizontalBarChartProps<CategoryT extends DomainValue> = {
   datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   svgRef?: Ref<SVGSVGElement>;
   transitionSeconds?: number;
+  compact: boolean;
 };
 
 function HorizontalBarChartCore<CategoryT extends DomainValue>({
@@ -42,7 +43,8 @@ function HorizontalBarChartCore<CategoryT extends DomainValue>({
   datumAriaLabel,
   datumDescription,
   svgRef,
-  transitionSeconds = 0.5
+  transitionSeconds = 0.5,
+  compact
 }: HorizontalBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useDomainContinuous(data, (d) => d.value, { includeZeroInDomain: true });
@@ -72,6 +74,7 @@ function HorizontalBarChartCore<CategoryT extends DomainValue>({
         tickSizeOuter={0}
         tickSizeInner={-chartArea.height}
         tickPadding={10}
+        tickArguments={[compact ? 5 : 10]}
         className="text-xs"
         hideDomainPath
         tickLineClassName="text-slate-600"

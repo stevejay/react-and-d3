@@ -3,7 +3,7 @@ import { schemeSet3 } from 'd3-scale-chromatic';
 import { round } from 'lodash-es';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
-import type { CategoryValueListDatum, Margins } from '@/types';
+import type { CategoryValueListDatum } from '@/types';
 
 import { StackedBarChartWithTooltip } from './StackedBarChartWithTooltip';
 
@@ -15,8 +15,14 @@ const data = [
   { category: '5', values: { a: 87.247, b: 0, c: 40 } }
 ];
 
-const margins: Margins = { left: 72, right: 32, top: 32, bottom: 48 };
+const margins = { left: 72, right: 32, top: 32, bottom: 48 };
+const compactMargins = { left: 64, right: 20, top: 24, bottom: 72 };
+
 const seriesKeys = ['a', 'b', 'c'];
+
+function isCompact(width: number) {
+  return Boolean(width) && width < 450;
+}
 
 function getCategoryLabel(datum: CategoryValueListDatum<string, number>) {
   return `Strategy ${datum.category}`;
@@ -50,7 +56,7 @@ export const StackedBarChartWithTooltipExample: FC = () => (
           colorRange={schemeSet3}
           width={width}
           height={height}
-          margins={margins}
+          margins={isCompact(width) ? compactMargins : margins}
           independentAxisTickFormat={(d) => `Strategy ${d}`}
           dependentAxisLabel="Sales (units)"
           ariaRoleDescription="Stacked bar chart"
@@ -61,9 +67,9 @@ export const StackedBarChartWithTooltipExample: FC = () => (
           seriesDescription={(series) => `The description for ${getSeriesLabel(series)} data series`}
           datumAriaRoleDescription={(_d, series) => getSeriesLabel(series)}
           datumAriaLabel={(d, series) => `${round(d.values[series])} units sold using ${getCategoryLabel(d)}`}
-          //   datumDescription={(d) => `The description for ${getCategoryLabel(d)}`}
           renderTooltipContent={renderTooltipContent}
           hideOnScroll
+          compact={isCompact(width)}
         />
       )
     }

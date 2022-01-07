@@ -37,6 +37,7 @@ export type StackedBarChartProps<CategoryT extends DomainValue> = {
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   transitionSeconds?: number;
   svgRef: RefObject<SVGSVGElement>;
+  compact: boolean;
   onMouseEnter: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
   onMouseLeave: () => void;
   onClick: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
@@ -65,6 +66,7 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
   datumDescription,
   transitionSeconds = 0.5,
   svgRef,
+  compact,
   onMouseEnter,
   onMouseLeave,
   onClick
@@ -141,6 +143,7 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
         tickSizeInner={0}
         tickSizeOuter={0}
         tickPadding={10}
+        tickLabelOrientation={compact ? 'angled' : 'horizontal'}
         className="text-xs"
         domainClassName="text-slate-300"
         axisLabel={independentAxisLabel}

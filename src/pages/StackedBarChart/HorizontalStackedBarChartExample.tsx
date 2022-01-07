@@ -41,7 +41,11 @@ const dataSets: {
   }
 ];
 
-const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
+const margins: Margins = { left: 64, right: 40, top: 40, bottom: 64 };
+
+function isCompact(width: number) {
+  return Boolean(width) && width < 450;
+}
 
 function getCategoryLabel(datum: CategoryValueListDatum<string, number>) {
   return datum.category;
@@ -76,6 +80,7 @@ export const HorizontalStackedBarChartExample: FC = () => {
               datumAriaRoleDescription={getCategoryLabel}
               datumAriaLabel={(d, series) => `${d.values[series]}`}
               datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
+              compact={isCompact(width)}
             />
           )
         }
