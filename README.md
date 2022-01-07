@@ -1,6 +1,6 @@
 # React & D3
 
-This project demonstrates how D3 and React can be used together to render SVG data visualisations. D3 is used to calculate the element position data and React is used to actually render them. Animations are implemented using [Framer Motion](https://www.framer.com/motion/). Styling is added using [Tailwind CSS](https://tailwindcss.com/).
+This project demonstrates how D3 and React can be used together to render SVG data visualisations. D3 is used to calculate the element position data and React is used to actually render them. Animations are implemented using [Framer Motion](https://www.framer.com/motion/).[Tailwind CSS](https://tailwindcss.com/) is used for styling.
 
 ## Deployment
 
