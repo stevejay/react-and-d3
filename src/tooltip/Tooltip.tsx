@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import type { TippyProps } from '@tippyjs/react';
+import type { TippyProps } from '@tippyjs/react/headless';
 import { m as motion, MotionStyle } from 'framer-motion';
 
 import './Tooltip.css';

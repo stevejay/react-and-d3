@@ -1,5 +1,4 @@
 import { ReactElement } from 'react';
-import Tippy from '@tippyjs/react';
 
 import { useFollowOnHoverTooltip } from '@/tooltip';
 import type { CategoryValueListDatum, DomainValue } from '@/types';
@@ -19,11 +18,14 @@ export function VerticalStackedBarChartWithTooltip<CategoryT extends DomainValue
   hideOnScroll,
   ...rest
 }: VerticalStackedBarChartWithTooltipProps<CategoryT>): ReactElement | null {
-  const [interactionProps, svgRef, tippyProps] = useFollowOnHoverTooltip(renderTooltipContent, hideOnScroll);
+  const [svgRef, interactionProps, TooltipComponent, tooltipProps] = useFollowOnHoverTooltip(
+    renderTooltipContent,
+    hideOnScroll
+  );
   return (
     <>
       <VerticalStackedBarChart svgRef={svgRef} {...rest} {...interactionProps} />
-      <Tippy {...tippyProps} />
+      <TooltipComponent {...tooltipProps} />
     </>
   );
 }

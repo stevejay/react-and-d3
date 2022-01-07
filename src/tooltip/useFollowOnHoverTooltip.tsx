@@ -1,5 +1,6 @@
 import { ReactElement, RefObject, useEffect, useMemo, useRef } from 'react';
 import type { TippyProps } from '@tippyjs/react/headless';
+import Tippy from '@tippyjs/react/headless';
 import { animate, useMotionValue } from 'framer-motion';
 
 import type { Rect } from '@/types';
@@ -15,18 +16,21 @@ const popperOptions = {
 
 type TooltipState<DatumT> = { visible: boolean; rect: Rect | null; datum: DatumT | null };
 
-export function useFollowOnHoverTooltip<DatumT>(
-  renderContent: (datum: DatumT) => ReactElement | null,
-  hideOnScroll: boolean
-): [
+type ReturnType<DatumT> = [
+  RefObject<SVGSVGElement>,
   {
     onMouseEnter: (datum: DatumT, rect: Rect) => void;
     onMouseLeave: () => void;
     onClick: (datum: DatumT, rect: Rect) => void;
   },
-  RefObject<SVGSVGElement>,
+  typeof Tippy,
   TippyProps
-] {
+];
+
+export function useFollowOnHoverTooltip<DatumT>(
+  renderContent: (datum: DatumT) => ReactElement | null,
+  hideOnScroll: boolean
+): ReturnType<DatumT> {
   const svgRef = useRef<SVGSVGElement>(null);
   const opacity = useMotionValue(0);
 
@@ -105,5 +109,5 @@ export function useFollowOnHoverTooltip<DatumT>(
     [tooltipState, renderContent, opacity]
   );
 
-  return [eventHandlers, svgRef, tippyProps];
+  return [svgRef, eventHandlers, Tippy, tippyProps];
 }
