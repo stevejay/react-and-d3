@@ -27,7 +27,7 @@ const AccessibilityPage = () => (
       On macOS you can use VoiceOver with the Safari Web browser.
     </Paragraph>
     <VerticalStackedBarChartExample />
-    <Paragraph>When I use VoiceOver and navigate to the chart, I hear the following:</Paragraph>
+    <Paragraph>I hear the following when I use VoiceOver and navigate to the chart:</Paragraph>
     <VoiceOverText>Comparing sales strategies, Stacked bar chart</VoiceOverText>
     <Paragraph>After a short pause I then hear the chart description:</Paragraph>
     <VoiceOverText>
@@ -36,15 +36,17 @@ const AccessibilityPage = () => (
     </VoiceOverText>
     <Paragraph>If I then navigate into the chart, the screen reader places me on the first series:</Paragraph>
     <VoiceOverText>Product A, Data series</VoiceOverText>
-    <Paragraph>Again, after a short pause I hear the series description:</Paragraph>
+    <Paragraph>After a short pause I hear the series description:</Paragraph>
     <VoiceOverText>
       The description for Product A data series, You are currently in a Data series
     </VoiceOverText>
     <Paragraph>If I navigate to the second series, I hear the following:</Paragraph>
     <VoiceOverText>Product B, Data series</VoiceOverText>
-    <Paragraph>If I now navigate into the second series, I hear the following:</Paragraph>
+    <Paragraph>
+      It also has a description. If I now navigate into that second series, I hear the first value in it:
+    </Paragraph>
     <VoiceOverText>0 units sold using Strategy 1, Product B</VoiceOverText>
-    <Paragraph>I can continue to navigate through the rest of the second series values:</Paragraph>
+    <Paragraph>I can continue to navigate through the rest of the values in the series:</Paragraph>
     <VoiceOverText>
       20 units sold using Strategy 2, Product B
       <br />
@@ -54,8 +56,8 @@ const AccessibilityPage = () => (
       <br />0 units sold using Strategy 5, Product B
     </VoiceOverText>
     <Paragraph>
-      Note that you cannot navigate to the axis labels, the axis tick labels, and the tooltip, and they are
-      not read out. I have deliberately hidden them from the screenreader as they do not add anything to the
+      Note that you cannot navigate to the axis labels, the axis tick labels and the tooltip, and they are not
+      read out. I have deliberately hidden them from the screenreader as they do not add anything to the
       experience.
     </Paragraph>
   </div>

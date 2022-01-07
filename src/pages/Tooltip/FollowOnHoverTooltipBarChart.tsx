@@ -1,8 +1,8 @@
 import { memo, ReactElement, RefObject } from 'react';
 
 import { SvgAxis } from '@/components/SvgAxis';
-import { SvgBandScaleEventSource } from '@/components/SvgBandScaleEventSource';
 import { SvgBars } from '@/components/SvgBars';
+import { SvgCategoryInteraction } from '@/components/SvgCategoryInteraction';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { useChartArea } from '@/hooks/useChartArea';
 import { useDomainContinuous } from '@/hooks/useDomainContinuous';
@@ -114,7 +114,7 @@ function FollowOnHoverTooltipBarChartCore<CategoryT extends DomainValue>({
           axisLabelClassName="text-sm text-slate-300"
           axisLabelSpacing={34}
         />
-        <SvgBandScaleEventSource
+        <SvgCategoryInteraction
           svgRef={svgRef}
           data={data}
           categoryScale={categoryScale}

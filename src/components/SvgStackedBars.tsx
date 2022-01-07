@@ -62,7 +62,6 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
       fill="currentColor"
       stroke="none"
     >
-      {/* <AnimatePresence initial={false}> */}
       {stackSeries(data).map((series) => {
         const seriesKey = series.key;
         return (
@@ -108,43 +107,6 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
           </g>
         );
       })}
-      {/* </AnimatePresence> */}
-
-      {/* <AnimatePresence custom={generator} initial={false}>
-        {stackGenerator(data).map((series) => {
-          const seriesKey = series.key;
-          return series.map((seriesPoint) => (
-            <motion.rect
-              key={`${getAxisDomainAsReactKey(seriesPoint.data.category)}_${seriesKey}`}
-              fill={colorScale(seriesKey)}
-              className={className}
-              custom={generator}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              variants={{
-                initial: () => ({
-                  opacity: 0,
-                  ...toAnimatableRect(generator(seriesPoint))
-                }),
-                animate: () => ({
-                  opacity: 1,
-                  ...toAnimatableRect(generator(seriesPoint))
-                }),
-                exit: (nextGenerator: typeof generator) => ({
-                  opacity: 0,
-                  ...toAnimatableRect(nextGenerator(seriesPoint))
-                })
-              }}
-              role="graphics-symbol"
-              aria-roledescription={datumAriaRoleDescription?.(seriesPoint.data)}
-              aria-label={datumAriaLabel?.(seriesPoint.data)}
-            >
-              {datumDescription && <desc>{datumDescription(seriesPoint.data)}</desc>}
-            </motion.rect>
-          ));
-        })}
-      </AnimatePresence> */}
     </SvgGroup>
   );
 }

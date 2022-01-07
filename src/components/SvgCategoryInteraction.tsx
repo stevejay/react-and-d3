@@ -14,7 +14,7 @@ function createTooltipRect(event: ReactMouseEvent<SVGRectElement, MouseEvent>, s
   };
 }
 
-export type SvgBandScaleEventSourceProps<
+export type SvgCategoryInteractionProps<
   CategoryT extends DomainValue,
   DatumT extends { category: CategoryT }
 > = {
@@ -29,7 +29,8 @@ export type SvgBandScaleEventSourceProps<
   svgRef: RefObject<SVGSVGElement>;
 };
 
-export function SvgBandScaleEventSource<
+// This works for both CategoryValueDatum and CategoryValueListDatum.
+export function SvgCategoryInteraction<
   CategoryT extends DomainValue,
   DatumT extends { category: CategoryT }
 >({
@@ -42,7 +43,7 @@ export function SvgBandScaleEventSource<
   onMouseEnter,
   onMouseLeave,
   onClick
-}: SvgBandScaleEventSourceProps<CategoryT, DatumT>): ReactElement | null {
+}: SvgCategoryInteractionProps<CategoryT, DatumT>): ReactElement | null {
   const categoryInverter = createScaleBandInverter(categoryScale);
 
   const datumLookup = new Map<DomainValue, DatumT>();
@@ -73,12 +74,6 @@ export function SvgBandScaleEventSource<
         onMouseMove={(event) => {
           const svgRect = svgRef.current?.getBoundingClientRect();
           const rect = createTooltipRect(event, svgRect);
-          //   const rect = {
-          //     x: event.clientX - (svgRect?.x ?? 0),
-          //     y: event.clientY - (svgRect?.y ?? 0),
-          //     width: 0,
-          //     height: 0
-          //   };
           const datum = getCategoryData(event);
           datum && onMouseEnter(datum, rect);
         }}

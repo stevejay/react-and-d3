@@ -1,7 +1,7 @@
 import { memo, ReactElement, RefObject } from 'react';
 
 import { SvgAxis } from '@/components/SvgAxis';
-import { SvgBandScaleEventSource } from '@/components/SvgBandScaleEventSource';
+import { SvgCategoryInteraction } from '@/components/SvgCategoryInteraction';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { SvgStackedBars } from '@/components/SvgStackedBars';
 import { useChartArea } from '@/hooks/useChartArea';
@@ -139,7 +139,7 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={34}
       />
-      <SvgBandScaleEventSource
+      <SvgCategoryInteraction
         svgRef={svgRef}
         data={data}
         categoryScale={categoryScale}
