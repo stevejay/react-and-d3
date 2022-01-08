@@ -7,7 +7,7 @@ export function createBarGenerator<CategoryT extends DomainValue, ValueT extends
   valueScale: AxisScale<ValueT>,
   chartArea: ChartArea,
   orientation: ChartOrientation,
-  offset: number = 0
+  renderingOffset: number = 0
 ) {
   const clonedCategoryScale = categoryScale.copy();
   const clonedValueScale = valueScale.copy();
@@ -30,16 +30,16 @@ export function createBarGenerator<CategoryT extends DomainValue, ValueT extends
 
     if (orientation === 'vertical') {
       return {
-        x: categoryValue + offset,
+        x: categoryValue + renderingOffset,
         width: Math.max(bandwidth, 0),
-        y: valueValue + offset,
+        y: valueValue + renderingOffset,
         height: Math.max(chartArea.height - valueValue, 0)
       };
     } else {
       return {
-        x: 0 + offset,
+        x: 0 + renderingOffset,
         width: Math.max(valueValue, 0),
-        y: categoryValue + offset,
+        y: categoryValue + renderingOffset,
         height: Math.max(bandwidth, 0)
       };
     }

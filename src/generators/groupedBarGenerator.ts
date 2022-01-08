@@ -7,7 +7,7 @@ export function createGroupedBarGenerator<CategoryT extends DomainValue>(
   valueScale: AxisScale<number>,
   chartArea: ChartArea,
   orientation: ChartOrientation,
-  offset: number
+  renderingOffset: number
 ) {
   const clonedSeriesScale = seriesScale.copy();
   const clonedValueScale = valueScale.copy();
@@ -30,15 +30,15 @@ export function createGroupedBarGenerator<CategoryT extends DomainValue>(
 
     if (orientation === 'vertical') {
       return {
-        x: seriesValue + offset,
-        y: valueValue + offset,
+        x: seriesValue + renderingOffset,
+        y: valueValue + renderingOffset,
         width: Math.max(bandwidth, 0),
         height: Math.max(chartArea.height - valueValue, 0)
       };
     } else {
       return {
-        x: offset,
-        y: seriesValue + offset,
+        x: renderingOffset,
+        y: seriesValue + renderingOffset,
         width: Math.max(valueValue, 0),
         height: Math.max(bandwidth, 0)
       };

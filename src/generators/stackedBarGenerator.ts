@@ -7,7 +7,7 @@ export function createStackedBarGenerator<CategoryT extends DomainValue>(
   categoryScale: AxisScale<CategoryT>,
   valueScale: AxisScale<number>,
   orientation: ChartOrientation,
-  offset: number
+  renderingOffset: number
 ) {
   const clonedCategoryScale = categoryScale.copy();
   const clonedValueScale = valueScale.copy();
@@ -33,15 +33,15 @@ export function createStackedBarGenerator<CategoryT extends DomainValue>(
 
     if (orientation === 'vertical') {
       return {
-        x: categoryValue + offset,
-        y: value1Value + offset,
+        x: categoryValue + renderingOffset,
+        y: value1Value + renderingOffset,
         width: Math.max(bandwidth, 0),
         height: Math.max(value0Value - value1Value, 0)
       };
     } else {
       return {
-        x: value0Value + offset,
-        y: categoryValue + offset,
+        x: value0Value + renderingOffset,
+        y: categoryValue + renderingOffset,
         width: Math.max(value1Value - value0Value, 0),
         height: Math.max(bandwidth, 0)
       };

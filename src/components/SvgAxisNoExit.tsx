@@ -42,7 +42,7 @@ export function SvgAxisNoExit<DomainT extends DomainValue>(
   const tickPadding = props.tickPadding ?? 3;
 
   // Used to ensure crisp edges on low-resolution devices.
-  const offset = props.offset ?? getDefaultRenderingOffset();
+  const renderingOffset = props.offset ?? getDefaultRenderingOffset();
 
   // Three constants to allow the axis function to support all of the four orientations.
   const k = orientation === 'top' || orientation === 'left' ? -1 : 1;
@@ -71,17 +71,17 @@ export function SvgAxisNoExit<DomainT extends DomainValue>(
   const range = scale.range();
 
   // The pixel position to start drawing the axis domain line at.
-  const range0 = +range[0] + offset;
+  const range0 = +range[0] + renderingOffset;
 
   // The pixel position to finish drawing the axis domain line at.
-  const range1 = +range[range.length - 1] + offset;
+  const range1 = +range[range.length - 1] + renderingOffset;
 
   // Get a function that can be used to calculate the pixel position for a tick
   // value. This has special handling if the scale is a band scale, in which case
   // the position is in the center of each band. The scale needs to be copied
   // (`scale.copy()`)because it will later be stored in the DOM to be used for
   // enter animations the next time that this axis component is rendered.
-  const position = (scale.bandwidth ? center : number)(scale.copy(), offset);
+  const position = (scale.bandwidth ? center : number)(scale.copy(), renderingOffset);
 
   // Store the position function so it can be used to animate the entering ticks
   // from the position they would have been in if they were already in the DOM.
@@ -134,7 +134,7 @@ export function SvgAxisNoExit<DomainT extends DomainValue>(
       <motion.path
         fill="none"
         animate={{
-          d: createAxisDomainPathData(orientation, tickSizeOuter, offset, range0, range1, k)
+          d: createAxisDomainPathData(orientation, tickSizeOuter, renderingOffset, range0, range1, k)
         }}
         role="presentation"
       />
@@ -150,14 +150,14 @@ export function SvgAxisNoExit<DomainT extends DomainValue>(
                   ? previousPositionRef.current(tickValue)
                   : null;
                 return !isNil(initialPosition) && isFinite(initialPosition)
-                  ? { opacity: 0, [translate]: initialPosition + offset }
-                  : { opacity: 0, [translate]: position(tickValue) + offset };
+                  ? { opacity: 0, [translate]: initialPosition + renderingOffset }
+                  : { opacity: 0, [translate]: position(tickValue) + renderingOffset };
               },
-              animate: () => ({ opacity: 1, [translate]: position(tickValue) + offset }),
+              animate: () => ({ opacity: 1, [translate]: position(tickValue) + renderingOffset }),
               exit: () => {
                 const exitPosition = position(tickValue);
                 return isFinite(exitPosition)
-                  ? { opacity: 0, [translate]: exitPosition + offset }
+                  ? { opacity: 0, [translate]: exitPosition + renderingOffset }
                   : { opacity: 0 };
               }
             }}

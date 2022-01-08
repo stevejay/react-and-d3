@@ -30,7 +30,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
   const tickSizeOuter = 0;
 
   // Used to ensure crisp edges on low-resolution devices.
-  const offset = getDefaultRenderingOffset();
+  const renderingOffset = getDefaultRenderingOffset();
 
   // Three constants to allow the axis function to support all of the four orientations.
   const k = 1;
@@ -51,10 +51,10 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
   const range = scale.range();
 
   // The pixel position to start drawing the axis domain line at:
-  const range0 = +range[0] + offset;
+  const range0 = +range[0] + renderingOffset;
 
   // The pixel position to finish drawing the axis domain line at:
-  const range1 = +range[range.length - 1] + offset;
+  const range1 = +range[range.length - 1] + renderingOffset;
 
   // Get a function that can be used to calculate the pixel position for a tick value.
   const position = number(scale.copy());
@@ -95,14 +95,14 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
                     ? previousPositionRef.current(tickValue)
                     : null;
                   return !isNil(initialPosition) && isFinite(initialPosition)
-                    ? { opacity: 0, [translate]: initialPosition + offset }
-                    : { opacity: 0, [translate]: position(tickValue) + offset };
+                    ? { opacity: 0, [translate]: initialPosition + renderingOffset }
+                    : { opacity: 0, [translate]: position(tickValue) + renderingOffset };
                 },
-                animate: () => ({ opacity: 1, [translate]: position(tickValue) + offset }),
+                animate: () => ({ opacity: 1, [translate]: position(tickValue) + renderingOffset }),
                 exit: (custom: (d: Date) => number) => {
                   const exitPosition = custom(tickValue);
                   return isFinite(exitPosition)
-                    ? { opacity: 0, [translate]: exitPosition + offset }
+                    ? { opacity: 0, [translate]: exitPosition + renderingOffset }
                     : { opacity: 0 };
                 }
               }}
@@ -156,20 +156,23 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
                       ? previousPositionRef.current(tickValue)
                       : null;
                     return !isNil(initialPosition) && isFinite(initialPosition)
-                      ? { opacity: 0, [translate]: conditionalClamp(initialPosition, isFirstTick) + offset }
+                      ? {
+                          opacity: 0,
+                          [translate]: conditionalClamp(initialPosition, isFirstTick) + renderingOffset
+                        }
                       : {
                           opacity: 0,
-                          [translate]: conditionalClamp(position(tickValue), isFirstTick) + offset
+                          [translate]: conditionalClamp(position(tickValue), isFirstTick) + renderingOffset
                         };
                   },
                   animate: () => ({
                     opacity: 1,
-                    [translate]: conditionalClamp(position(tickValue), isFirstTick) + offset
+                    [translate]: conditionalClamp(position(tickValue), isFirstTick) + renderingOffset
                   }),
                   exit: (custom: (d: Date) => number) => {
                     const exitPosition = custom(tickValue);
                     return isFinite(exitPosition)
-                      ? { opacity: 0, [translate]: exitPosition + offset }
+                      ? { opacity: 0, [translate]: exitPosition + renderingOffset }
                       : { opacity: 0 };
                   }
                 }}
@@ -194,7 +197,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
       <motion.path
         fill="none"
         animate={{
-          d: createAxisDomainPathData('bottom', tickSizeOuter, offset, range0, range1, k)
+          d: createAxisDomainPathData('bottom', tickSizeOuter, renderingOffset, range0, range1, k)
         }}
         shapeRendering="crispEdges"
         role="presentation"

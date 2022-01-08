@@ -16,13 +16,13 @@ export function number<DomainT extends DomainValue>(scale: AxisScale<DomainT>) {
  */
 export function center<DomainT extends DomainValue>(
   scale: AxisScale<DomainT> & { round?: () => boolean },
-  offset: number
+  renderingOffset: number
 ) {
-  offset = Math.max(0, scale.bandwidth ? scale.bandwidth() - offset * 2 : 0) * 0.5;
+  renderingOffset = Math.max(0, scale.bandwidth ? scale.bandwidth() - renderingOffset * 2 : 0) * 0.5;
   if (scale.round?.()) {
-    offset = Math.round(offset);
+    renderingOffset = Math.round(renderingOffset);
   }
-  return (d: DomainT) => +(scale(d) ?? NaN) + offset;
+  return (d: DomainT) => +(scale(d) ?? NaN) + renderingOffset;
 }
 
 /**
@@ -37,7 +37,7 @@ export function getAxisDomainAsReactKey(value: DomainValue): string {
  *
  * @param orientation Placement of the axis.
  * @param tickSizeOuter Length of the outer ticks.
- * @param offset Used to ensure crisp edges on low-resolution devices
+ * @param renderingOffset Used to ensure crisp edges on low-resolution devices
  * (i.e., ensures line edges are on pixel boundaries).
  * @param range0 Pixel position to start drawing the axis domain line at.
  * Might be a subpixel value.
@@ -49,16 +49,16 @@ export function getAxisDomainAsReactKey(value: DomainValue): string {
 export function createAxisDomainPathData(
   orientation: AxisOrientation,
   tickSizeOuter: number,
-  offset: number,
+  renderingOffset: number,
   range0: number,
   range1: number,
   k: number
 ): string {
   return orientation === 'left' || orientation === 'right'
     ? tickSizeOuter
-      ? `M${k * tickSizeOuter},${range0}H${offset}V${range1}H${k * tickSizeOuter}`
-      : `M${offset},${range0}V${range1}`
+      ? `M${k * tickSizeOuter},${range0}H${renderingOffset}V${range1}H${k * tickSizeOuter}`
+      : `M${renderingOffset},${range0}V${range1}`
     : tickSizeOuter
-    ? `M${range0},${k * tickSizeOuter}V${offset}H${range1}V${k * tickSizeOuter}`
-    : `M${range0},${offset}H${range1}`;
+    ? `M${range0},${k * tickSizeOuter}V${renderingOffset}H${range1}V${k * tickSizeOuter}`
+    : `M${range0},${renderingOffset}H${range1}`;
 }

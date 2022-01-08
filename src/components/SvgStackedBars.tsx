@@ -31,7 +31,7 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
   categoryScale,
   valueScale,
   orientation,
-  offset: offsetProp,
+  offset,
   className = '',
   seriesAriaRoleDescription,
   seriesAriaLabel,
@@ -41,13 +41,13 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
   datumDescription
 }: SvgStackedBarsProps<CategoryT>): ReactElement | null {
   // Used to ensure crisp edges on low-resolution devices.
-  const offset = offsetProp ?? getDefaultRenderingOffset();
+  const renderingOffset = offset ?? getDefaultRenderingOffset();
 
   const stackSeries = stack<CategoryValueListDatum<CategoryT, number>, string>()
     .keys(seriesKeys)
     .value((d, key) => d.values[key]);
 
-  const generator = createStackedBarGenerator(categoryScale, valueScale, orientation, offset);
+  const generator = createStackedBarGenerator(categoryScale, valueScale, orientation, renderingOffset);
 
   return (
     <g className={className} fill="currentColor" stroke="none">
