@@ -33,10 +33,6 @@ const dataSets: readonly CategoryValueListDatum<string, number>[][] = [
 const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
 const seriesKeys = ['one', 'two', 'three'];
 
-function getCategoryLabel(datum: CategoryValueListDatum<string, number>) {
-  return datum.category;
-}
-
 function getSeriesColor(series: string) {
   switch (series) {
     case 'one':
@@ -78,10 +74,6 @@ export const StackedBarChartWithTooltipExample: FC = () => {
               width={width}
               height={height}
               margins={margins}
-              ariaRoleDescription="Stacked bar chart"
-              datumAriaRoleDescription={getCategoryLabel}
-              datumAriaLabel={(d, series) => `${d.values[series]}`}
-              datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
               renderTooltipContent={renderTooltipContent}
               hideOnScroll
             />

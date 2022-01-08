@@ -28,9 +28,9 @@ export type StackedBarChartProps<CategoryT extends DomainValue> = {
   independentAxisLabel?: string;
   independentAxisTickFormat?: SvgAxisProps<CategoryT>['tickFormat'];
   dependentAxisLabel?: string;
-  seriesAriaRoleDescription?: (series: string) => string;
-  seriesAriaLabel?: (series: string) => string;
-  seriesDescription?: (series: string) => string;
+  categoryAriaRoleDescription?: (category: CategoryT) => string;
+  categoryAriaLabel?: (category: CategoryT) => string;
+  categoryDescription?: (category: CategoryT) => string;
   datumAriaRoleDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
@@ -57,9 +57,9 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
   independentAxisLabel,
   independentAxisTickFormat,
   dependentAxisLabel,
-  seriesAriaRoleDescription,
-  seriesAriaLabel,
-  seriesDescription,
+  categoryAriaRoleDescription,
+  categoryAriaLabel,
+  categoryDescription,
   datumAriaRoleDescription,
   datumAriaLabel,
   datumDescription,
@@ -129,9 +129,9 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
           valueScale={valueScale}
           categoryScale={categoryScale}
           orientation="vertical"
-          seriesAriaRoleDescription={seriesAriaRoleDescription}
-          seriesAriaLabel={seriesAriaLabel}
-          seriesDescription={seriesDescription}
+          categoryAriaRoleDescription={categoryAriaRoleDescription}
+          categoryAriaLabel={categoryAriaLabel}
+          categoryDescription={categoryDescription}
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumDescription={datumDescription}

@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
-import type { CategoryValueDatum, Margins } from '@/types';
+import type { Margins } from '@/types';
 
 import { VerticalBarChart } from './VerticalBarChart';
 
@@ -30,10 +30,6 @@ const dataSets = [
 
 const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
 
-function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
-  return datum.category;
-}
-
 export const VerticalBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
@@ -47,10 +43,6 @@ export const VerticalBarChartExample: FC = () => {
               width={width}
               height={height}
               margins={margins}
-              ariaRoleDescription="Bar chart"
-              datumAriaRoleDescription={getCategoryLabel}
-              datumAriaLabel={(d) => `${d.value}`}
-              datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
             />
           )
         }

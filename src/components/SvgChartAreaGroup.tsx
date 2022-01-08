@@ -28,12 +28,13 @@ export const SvgChartAreaGroup: FC<SvgChartAreaGroupProps> = ({
     <>
       {clipChartArea && (
         <defs>
-          <clipPath id={id}>
+          <clipPath data-test-id="chart-area-clip-path" id={id}>
             <rect role="presentation" x={0} y={0} width={chartArea.width} height={chartArea.height} />
           </clipPath>
         </defs>
       )}
       <g
+        data-test-id="chart-area"
         {...rest}
         clipPath={clipChartArea ? `url(#${id})` : undefined}
         transform={`translate(${chartArea.translateLeft}, ${chartArea.translateTop})`}

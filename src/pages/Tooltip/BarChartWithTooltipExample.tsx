@@ -59,10 +59,6 @@ export const BarChartWithTooltipExample: FC = () => {
               width={width}
               height={height}
               margins={margins}
-              ariaRoleDescription="Bar chart"
-              datumAriaRoleDescription={getCategoryLabel}
-              datumAriaLabel={(d) => `${d.value}`}
-              datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
               renderTooltipContent={renderTooltipContent}
               hideOnScroll={true}
             />

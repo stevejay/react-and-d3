@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import { schemeSet3 } from 'd3-scale-chromatic';
-import { capitalize } from 'lodash-es';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
@@ -32,14 +31,6 @@ const dataSets: readonly CategoryValueListDatum<string, number>[][] = [
 
 const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
 
-function getCategoryLabel(datum: CategoryValueListDatum<string, number>) {
-  return datum.category;
-}
-
-function getSeriesLabel(series: string) {
-  return capitalize(series);
-}
-
 function getSeriesColor(series: string) {
   switch (series) {
     case 'one':
@@ -70,13 +61,6 @@ export const VerticalStackedBarChartExample: FC = () => {
               width={width}
               height={height}
               margins={margins}
-              ariaRoleDescription="Bar chart"
-              seriesAriaRoleDescription={(series) => `Series ${getSeriesLabel(series)}`}
-              seriesAriaLabel={getSeriesLabel}
-              seriesDescription={(series) => `This is the description for ${getSeriesLabel(series)}`}
-              datumAriaRoleDescription={getCategoryLabel}
-              datumAriaLabel={(d, series) => `${d.values[series]}`}
-              datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
             />
           )
         }

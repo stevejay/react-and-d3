@@ -1,6 +1,5 @@
 import { FC, useState } from 'react';
 import { schemeSet3 } from 'd3-scale-chromatic';
-import { capitalize } from 'lodash-es';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
@@ -40,14 +39,6 @@ const dataSets = [
 
 const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
 
-function getCategoryLabel(category: string) {
-  return `Category ${category}`;
-}
-
-function getSeriesLabel(series: string) {
-  return `Series ${capitalize(series)}`;
-}
-
 function getSeriesColor(series: string, index: number) {
   switch (series) {
     case 'one':
@@ -78,12 +69,6 @@ export const VerticalGroupedBarChartExample: FC = () => {
               width={width}
               height={height}
               margins={margins}
-              ariaRoleDescription="Grouped Bar chart"
-              categoryAriaRoleDescription={() => 'Category'}
-              categoryAriaLabel={getCategoryLabel}
-              categoryDescription={(category) => `This is the description for ${getCategoryLabel(category)}`}
-              datumAriaRoleDescription={(d, series) => `${getSeriesLabel(series)} data point`}
-              datumAriaLabel={(d, series) => `${d.values[series]}`}
             />
           )
         }

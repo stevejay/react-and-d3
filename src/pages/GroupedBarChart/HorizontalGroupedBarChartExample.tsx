@@ -1,6 +1,5 @@
 import { FC, useState } from 'react';
 import { schemeSet3 } from 'd3-scale-chromatic';
-import { capitalize } from 'lodash-es';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
@@ -44,14 +43,6 @@ function isCompact(width: number) {
   return Boolean(width) && width < 500;
 }
 
-function getCategoryLabel(category: string) {
-  return `Category ${category}`;
-}
-
-function getSeriesLabel(series: string) {
-  return `Series ${capitalize(series)}`;
-}
-
 function getSeriesColor(series: string) {
   switch (series) {
     case 'one':
@@ -82,12 +73,6 @@ export const HorizontalGroupedBarChartExample: FC = () => {
               width={width}
               height={height}
               margins={margins}
-              ariaRoleDescription="Grouped Bar chart"
-              categoryAriaRoleDescription={() => 'Category'}
-              categoryAriaLabel={getCategoryLabel}
-              categoryDescription={(category) => `This is the description for ${getCategoryLabel(category)}`}
-              datumAriaRoleDescription={(d, series) => `${getSeriesLabel(series)} data point`}
-              datumAriaLabel={(d, series) => `${d.values[series]}`}
               compact={isCompact(width)}
             />
           )

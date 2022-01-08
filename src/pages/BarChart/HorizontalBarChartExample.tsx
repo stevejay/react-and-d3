@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
-import type { CategoryValueDatum, Margins } from '@/types';
+import type { Margins } from '@/types';
 
 import { HorizontalBarChart } from './HorizontalBarChart';
 
@@ -34,10 +34,6 @@ function isCompact(width: number) {
   return Boolean(width) && width < 500;
 }
 
-function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
-  return datum.category;
-}
-
 export const HorizontalBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
@@ -51,10 +47,6 @@ export const HorizontalBarChartExample: FC = () => {
               width={width}
               height={height}
               margins={margins}
-              ariaRoleDescription="Bar chart"
-              datumAriaRoleDescription={getCategoryLabel}
-              datumAriaLabel={(d) => `${d.value}`}
-              datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
               compact={isCompact(width)}
             />
           )

@@ -257,6 +257,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
 
   return (
     <SvgGroup
+      data-test-id={`axis-${orientation}`}
       translateX={translateX}
       translateY={translateY}
       textAnchor={orientation === 'right' ? 'start' : orientation === 'left' ? 'end' : 'middle'}
@@ -266,6 +267,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
     >
       {!hideDomainPath && (
         <motion.path
+          data-test-id="domain-path"
           fill="none"
           stroke="currentColor"
           role="presentation"
@@ -281,6 +283,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
         {tickValues.map((tickValue, index) => (
           <motion.g
             key={getAxisDomainAsReactKey(tickValue)}
+            data-test-id="tick-group"
             custom={position}
             initial="initial"
             animate="animate"
@@ -306,14 +309,16 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
             {...tickGroupProps}
           >
             <line
+              data-test-id="tick"
               {...{ [x + '2']: k * tickSizeInner }}
               stroke="currentColor"
               role="presentation"
               className={tickLineClassName}
               {...tickLineProps}
             />
-            <g style={{ transform: labelGroupTransform }}>
+            <g data-test-id="tick-label-group" style={{ transform: labelGroupTransform }}>
               <text
+                data-test-id="tick-label"
                 stroke="none"
                 fill="currentColor"
                 role="presentation"
@@ -329,8 +334,9 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
         ))}
       </AnimatePresence>
       {axisLabel && (
-        <g transform={axisLabelOrientationProps.transform}>
+        <g data-test-id="axis-label-group" transform={axisLabelOrientationProps.transform}>
           <text
+            data-test-id="axis-label"
             stroke="none"
             fill="currentColor"
             className={axisLabelClassName}

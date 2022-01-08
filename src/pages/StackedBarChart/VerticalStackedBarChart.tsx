@@ -24,9 +24,9 @@ export type VerticalStackedBarChartProps<CategoryT extends DomainValue> = {
   ariaRoleDescription?: string;
   description?: string;
   ariaDescribedby?: string;
-  seriesAriaRoleDescription?: (series: string) => string;
-  seriesAriaLabel?: (series: string) => string;
-  seriesDescription?: (series: string) => string;
+  categoryAriaRoleDescription?: (category: CategoryT) => string;
+  categoryAriaLabel?: (category: CategoryT) => string;
+  categoryDescription?: (category: CategoryT) => string;
   datumAriaRoleDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
@@ -46,9 +46,9 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
   ariaRoleDescription,
   description,
   ariaDescribedby,
-  seriesAriaRoleDescription,
-  seriesAriaLabel,
-  seriesDescription,
+  categoryAriaRoleDescription,
+  categoryAriaLabel,
+  categoryDescription,
   datumAriaRoleDescription,
   datumAriaLabel,
   datumDescription,
@@ -114,9 +114,9 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
           categoryScale={categoryScale}
           valueScale={valueScale}
           orientation="vertical"
-          seriesAriaRoleDescription={seriesAriaRoleDescription}
-          seriesAriaLabel={seriesAriaLabel}
-          seriesDescription={seriesDescription}
+          categoryAriaRoleDescription={categoryAriaRoleDescription}
+          categoryAriaLabel={categoryAriaLabel}
+          categoryDescription={categoryDescription}
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumDescription={datumDescription}

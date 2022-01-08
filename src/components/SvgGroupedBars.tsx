@@ -53,12 +53,12 @@ export function SvgGroupedBars<CategoryT extends DomainValue>({
   );
   const translateAxis = orientation === 'vertical' ? 'x' : 'y';
   return (
-    <g data-test-id="grouped-bars" className={className} fill="currentColor" stroke="none">
+    <g data-test-id="grouped-bars-group" className={className} fill="currentColor" stroke="none">
       <AnimatePresence initial={false}>
         {data.map((d) => (
           <motion.g
             key={getAxisDomainAsReactKey(d.category)}
-            data-test-id="grouped-bar-category"
+            data-test-id="series-group"
             role="graphics-object"
             initial="initial"
             animate="animate"

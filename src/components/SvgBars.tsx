@@ -34,11 +34,12 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
   const renderingOffset = offset ?? getDefaultRenderingOffset();
   const barGenerator = createBarGenerator(categoryScale, valueScale, chartArea, orientation, renderingOffset);
   return (
-    <g className={className} fill="currentColor" stroke="none">
+    <g data-test-id="bars-group" className={className} fill="currentColor" stroke="none">
       <AnimatePresence custom={barGenerator} initial={false}>
         {data.map((d) => (
           <motion.rect
             key={getAxisDomainAsReactKey(d.category)}
+            data-test-id="bar"
             className={className}
             custom={barGenerator}
             initial="initial"

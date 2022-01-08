@@ -75,9 +75,10 @@ export const StackedBarChartWithTooltipExample: FC = () => (
           ariaRoleDescription="Stacked bar chart"
           ariaLabelledby={ariaLabelledby}
           description="Analysing how different sales strategies affect the sales figures of our three most popular products"
-          seriesAriaRoleDescription={() => 'Data series'}
-          seriesAriaLabel={getSeriesLabel}
-          seriesDescription={(series) => `The description for ${getSeriesLabel(series)} data series`}
+          // TODO !!!
+          //   seriesAriaRoleDescription={() => 'Data series'}
+          //   seriesAriaLabel={getSeriesLabel}
+          //   seriesDescription={(series) => `The description for ${getSeriesLabel(series)} data series`}
           datumAriaRoleDescription={(_d, series) => getSeriesLabel(series)}
           datumAriaLabel={(d, series) => `${round(d.values[series])} units sold using ${getCategoryLabel(d)}`}
           renderTooltipContent={renderTooltipContent}
