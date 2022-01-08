@@ -2,14 +2,15 @@ import { FaUniversalAccess } from 'react-icons/fa';
 
 import { Paragraph } from '@/components/Paragraph';
 
+import { BarChartSvg } from './illustrations/BarChartSvg';
 import circuitBoardSvgUrl from './illustrations/circuitBoard.svg';
+import { GroupedBarChartSvg } from './illustrations/GroupedBarChartSvg';
 import { RadarChartSvg } from './illustrations/RadarChartSvg';
 import { ReactAndD3Svg } from './illustrations/ReactAndD3Svg';
 import { SparklineSvg } from './illustrations/SparklineSvg';
-import { StackedVerticalBarChartSvg } from './illustrations/StackedVerticalBarChartSvg';
+import { StackedBarChartSvg } from './illustrations/StackedBarChartSvg';
 import { TooltipSvg } from './illustrations/TooltipSvg';
-import { VerticalBarChartSvg } from './illustrations/VerticalBarChartSvg';
-// import { VerticalHistogramChartSvg } from './illustrations/VerticalHistogramChartSvg';
+// import { HistogramChartSvg } from './illustrations/HistogramChartSvg';
 import { PageCard } from './PageCard';
 
 const Home = () => (
@@ -30,27 +31,24 @@ const Home = () => (
       visualisations. D3 is used to calculate element positions and React is used to render them. Use the
       links below to explore the various example components and visualisations.
     </Paragraph>
-    <div className="p-8 space-y-8 md:space-y-0 md:gap-8 md:grid md:grid-cols-2 lg:grid-cols-3">
+    <div className="p-8 space-y-8 md:space-y-0 md:gap-8 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       <PageCard
         href="/axis"
         title="Axis"
         illustration={() => (
-          <div className="mx-auto border-b-2 border-l-2 text-slate-50 border-slate-50 w-[256px] h-[152px]" />
+          <div className="mx-auto border-b-2 border-l-2 text-slate-50 border-slate-50 w-[224px] h-[133px]" />
         )}
       />
       <PageCard href="/tooltip" title="Tooltip" illustration={TooltipSvg} />
       <PageCard
         href="/accessibility"
         title="Accessibility"
-        illustration={() => <FaUniversalAccess className="w-[152px] h-[152px]" />}
+        illustration={() => <FaUniversalAccess className="w-[133px] h-[133px]" />}
       />
-      <PageCard href="/bar-chart" title="Bar Chart" illustration={VerticalBarChartSvg} />
-      <PageCard
-        href="/stacked-bar-chart"
-        title="Stacked Bar Chart"
-        illustration={StackedVerticalBarChartSvg}
-      />
-      {/* <PageCard href="/histogram" title="Histogram" illustration={VerticalHistogramChartSvg} /> */}
+      <PageCard href="/bar-chart" title="Bar Chart" illustration={BarChartSvg} />
+      <PageCard href="/stacked-bar-chart" title="Stacked Bar Chart" illustration={StackedBarChartSvg} />
+      <PageCard href="/grouped-bar-chart" title="Grouped Bar Chart" illustration={GroupedBarChartSvg} />
+      {/* <PageCard href="/histogram" title="Histogram" illustration={HistogramChartSvg} /> */}
       <PageCard href="/radar-chart" title="Radar Chart" illustration={RadarChartSvg} />
       <PageCard href="/sparkline" title="Sparkline" illustration={SparklineSvg} />
     </div>

@@ -53,3 +53,9 @@ Lighthouse:
 ```bash
 npx lighthouse --view https://dataviz.middle-engine.com/
 ```
+
+PageSpeed Insights:
+
+```bash
+https://pagespeed.web.dev/report?url=https%3A%2F%2Fdataviz.middle-engine.com%2F&hl=en
+```

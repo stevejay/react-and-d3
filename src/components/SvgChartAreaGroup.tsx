@@ -29,7 +29,7 @@ export const SvgChartAreaGroup: FC<SvgChartAreaGroupProps> = ({
       {clipChartArea && (
         <defs>
           <clipPath id={id}>
-            <rect x={0} y={0} width={chartArea.width} height={chartArea.height} />
+            <rect role="presentation" x={0} y={0} width={chartArea.width} height={chartArea.height} />
           </clipPath>
         </defs>
       )}

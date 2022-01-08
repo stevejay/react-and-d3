@@ -1,8 +1,8 @@
 export const RadarChartSvg = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="256"
-    height="152"
+    width="224"
+    height="133"
     version="1.1"
     viewBox="-128 -76 256 152"
     className="mx-auto text-slate-50"

@@ -34,14 +34,7 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
   // Used to ensure crisp edges on low-resolution devices.
   const offset = offsetProp ?? getDefaultRenderingOffset();
 
-  const barGenerator = createBarGenerator(
-    categoryScale,
-    valueScale,
-    chartArea.width,
-    chartArea.height,
-    orientation,
-    offset
-  );
+  const barGenerator = createBarGenerator(categoryScale, valueScale, chartArea, orientation, offset);
 
   return (
     <g className={className} fill="currentColor" stroke="none">
@@ -50,8 +43,6 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
           <motion.rect
             key={getAxisDomainAsReactKey(d.category)}
             className={className}
-            // strokeWidth={2}
-            // stroke="red"
             custom={barGenerator}
             initial="initial"
             animate="animate"

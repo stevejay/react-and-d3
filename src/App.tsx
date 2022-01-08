@@ -16,6 +16,7 @@ const navigationData: NavigationSection[] = [
       { href: '/accessibility', title: 'Accessibility' },
       { href: '/bar-chart', title: 'Bar Chart' },
       { href: '/stacked-bar-chart', title: 'Stacked Bar Chart' },
+      { href: '/grouped-bar-chart', title: 'Grouped Bar Chart' },
       //   { href: '/histogram', title: 'Histogram' },
       { href: '/radar-chart', title: 'Radar Chart' },
       { href: '/sparkline', title: 'Sparkline' }
@@ -36,6 +37,7 @@ const TooltipPage = lazy(() => import('@/pages/Tooltip'));
 const AccessibilityPage = lazy(() => import('@/pages/Accessibility'));
 const BarChartPage = lazy(() => import('@/pages/BarChart'));
 const StackedBarChartPage = lazy(() => import('@/pages/StackedBarChart'));
+const GroupedBarChartPage = lazy(() => import('@/pages/GroupedBarChart'));
 const HistogramPage = lazy(() => import('@/pages/Histogram'));
 const RadarChartPage = lazy(() => import('@/pages/RadarChart'));
 const SparklinePage = lazy(() => import('@/pages/Sparkline'));
@@ -54,6 +56,7 @@ export const App: FC = () => (
             <Route path="/accessibility" element={<AccessibilityPage />} />
             <Route path="/bar-chart" element={<BarChartPage />} />
             <Route path="/stacked-bar-chart" element={<StackedBarChartPage />} />
+            <Route path="/grouped-bar-chart" element={<GroupedBarChartPage />} />
             <Route path="/histogram" element={<HistogramPage />} />
             <Route path="/radar-chart" element={<RadarChartPage />} />
             <Route path="/sparkline" element={<SparklinePage />} />
