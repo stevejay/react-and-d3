@@ -57,10 +57,10 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
       stroke="none"
     >
       <AnimatePresence initial={false}>
-        {data.map((d, dIndex) => (
+        {data.map((d, datumIndex) => (
           <motion.g
             key={getAxisDomainAsReactKey(d.category)}
-            data-test-id="series-group"
+            data-test-id="category-group"
             role="graphics-object"
             initial="initial"
             animate="animate"
@@ -85,41 +85,38 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
             <AnimatePresence initial={false}>
               {stackSeriesData
                 .map((series) => ({
-                  seriesPoint: series[dIndex],
+                  seriesPoint: series[datumIndex],
                   seriesKey: series.key
                 }))
-                .map(({ seriesPoint, seriesKey }, index) => {
-                  console.log('seriesPoint', seriesKey, seriesPoint);
-                  return (
-                    <motion.rect
-                      key={seriesKey}
-                      data-test-id="bar"
-                      className={className}
-                      fill={seriesColor(seriesKey, index)}
-                      role="graphics-symbol"
-                      aria-roledescription={datumAriaRoleDescription?.(d, seriesKey)}
-                      aria-label={datumAriaLabel?.(d, seriesKey)}
-                      initial="initial"
-                      animate="animate"
-                      exit="exit"
-                      variants={{
-                        initial: () => ({
-                          opacity: 0,
-                          ...toAnimatableRect(generator(seriesPoint))
-                        }),
-                        animate: () => ({
-                          opacity: 1,
-                          ...toAnimatableRect(generator(seriesPoint))
-                        }),
-                        exit: () => ({
-                          opacity: 0
-                        })
-                      }}
-                    >
-                      {datumDescription && <desc>{datumDescription(d, seriesKey)}</desc>}
-                    </motion.rect>
-                  );
-                })}
+                .map(({ seriesPoint, seriesKey }, index) => (
+                  <motion.rect
+                    key={seriesKey}
+                    data-test-id="bar"
+                    className={className}
+                    fill={seriesColor(seriesKey, index)}
+                    role="graphics-symbol"
+                    aria-roledescription={datumAriaRoleDescription?.(d, seriesKey)}
+                    aria-label={datumAriaLabel?.(d, seriesKey)}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    variants={{
+                      initial: () => ({
+                        opacity: 0,
+                        ...toAnimatableRect(generator(seriesPoint))
+                      }),
+                      animate: () => ({
+                        opacity: 1,
+                        ...toAnimatableRect(generator(seriesPoint))
+                      }),
+                      exit: () => ({
+                        opacity: 0
+                      })
+                    }}
+                  >
+                    {datumDescription && <desc>{datumDescription(d, seriesKey)}</desc>}
+                  </motion.rect>
+                ))}
             </AnimatePresence>
           </motion.g>
         ))}

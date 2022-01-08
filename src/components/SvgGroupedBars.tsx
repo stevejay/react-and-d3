@@ -58,7 +58,7 @@ export function SvgGroupedBars<CategoryT extends DomainValue>({
         {data.map((d) => (
           <motion.g
             key={getAxisDomainAsReactKey(d.category)}
-            data-test-id="series-group"
+            data-test-id="category-group"
             role="graphics-object"
             initial="initial"
             animate="animate"

@@ -2,26 +2,24 @@ import { ReactElement } from 'react';
 import { AnimatePresence, m as motion } from 'framer-motion';
 
 import { createBarGenerator } from '@/generators/barGenerator';
-import type { AxisScale, CategoryValueDatum, ChartArea, ChartOrientation, DomainValue } from '@/types';
+import type { AxisScale, CategoryValueDatum, ChartOrientation, DomainValue } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 import { getDefaultRenderingOffset, toAnimatableRect } from '@/utils/renderUtils';
 
-export type SvgBarsProps<CategoryT extends DomainValue, ValueT extends DomainValue> = {
-  data: CategoryValueDatum<CategoryT, ValueT>[];
-  chartArea: ChartArea;
+export type SvgBarsProps<CategoryT extends DomainValue> = {
+  data: CategoryValueDatum<CategoryT, number>[];
   orientation: ChartOrientation;
   categoryScale: AxisScale<CategoryT>;
-  valueScale: AxisScale<ValueT>;
+  valueScale: AxisScale<number>;
   className?: string;
   offset?: number;
-  datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, ValueT>) => string;
-  datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, ValueT>) => string;
-  datumDescription?: (datum: CategoryValueDatum<CategoryT, ValueT>) => string;
+  datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
 };
 
-export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValue>({
+export function SvgBars<CategoryT extends DomainValue>({
   data,
-  chartArea,
   categoryScale,
   valueScale,
   orientation,
@@ -30,9 +28,9 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
   datumAriaRoleDescription,
   datumAriaLabel,
   datumDescription
-}: SvgBarsProps<CategoryT, ValueT>): ReactElement | null {
+}: SvgBarsProps<CategoryT>): ReactElement | null {
   const renderingOffset = offset ?? getDefaultRenderingOffset();
-  const barGenerator = createBarGenerator(categoryScale, valueScale, chartArea, orientation, renderingOffset);
+  const barGenerator = createBarGenerator(categoryScale, valueScale, orientation, renderingOffset);
   return (
     <g data-test-id="bars-group" className={className} fill="currentColor" stroke="none">
       <AnimatePresence custom={barGenerator} initial={false}>

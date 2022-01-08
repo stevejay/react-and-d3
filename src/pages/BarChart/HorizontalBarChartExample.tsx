@@ -25,6 +25,12 @@ const dataSets = [
     { category: 'B', value: 10 },
     { category: 'D', value: 63 },
     { category: 'E', value: 24 }
+  ],
+  [
+    { category: 'A', value: 10 },
+    { category: 'B', value: -20 },
+    { category: 'D', value: -63 },
+    { category: 'E', value: -24 }
   ]
 ];
 

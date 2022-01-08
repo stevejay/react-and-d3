@@ -94,7 +94,6 @@ function BarChartCore<CategoryT extends DomainValue>({
             data={data}
             categoryScale={categoryScale}
             valueScale={valueScale}
-            chartArea={chartArea}
             orientation="vertical"
             className="fill-sky-500"
             datumAriaRoleDescription={datumAriaRoleDescription}

@@ -4,6 +4,7 @@ import { SvgAxis } from '@/components/SvgAxis';
 import { SvgBars } from '@/components/SvgBars';
 import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
+import { SvgLineAnnotation } from '@/components/SvgLineAnnotation';
 import { useBandScale } from '@/hooks/useBandScale';
 import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
@@ -72,8 +73,8 @@ function VerticalBarChartCore<CategoryT extends DomainValue>({
         tickSizeOuter={0}
         tickSizeInner={-chartArea.width}
         tickPadding={10}
-        className="text-xs"
         hideDomainPath
+        className="text-xs"
         tickLineClassName="text-slate-600"
         tickTextClassName="text-slate-200"
         axisLabel="Y Axis Label"
@@ -81,20 +82,6 @@ function VerticalBarChartCore<CategoryT extends DomainValue>({
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={53}
       />
-      <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
-        <SvgBars
-          data={data}
-          categoryScale={categoryScale}
-          valueScale={valueScale}
-          chartArea={chartArea}
-          orientation="vertical"
-          className="text-sky-500"
-          datumAriaRoleDescription={datumAriaRoleDescription}
-          datumAriaLabel={datumAriaLabel}
-          datumDescription={datumDescription}
-        />
-      </SvgChartAreaGroup>
-      {/* X-axis is rendered after the bars so that its domain sits on top of them */}
       <SvgAxis
         scale={categoryScale}
         chartArea={chartArea}
@@ -102,13 +89,32 @@ function VerticalBarChartCore<CategoryT extends DomainValue>({
         tickSizeInner={0}
         tickSizeOuter={0}
         tickPadding={10}
+        hideDomainPath
         className="text-sm"
-        domainClassName="text-slate-300"
         axisLabel="X Axis Label"
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={34}
       />
+      <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
+        <SvgBars
+          data={data}
+          categoryScale={categoryScale}
+          valueScale={valueScale}
+          orientation="vertical"
+          className="text-sky-500"
+          datumAriaRoleDescription={datumAriaRoleDescription}
+          datumAriaLabel={datumAriaLabel}
+          datumDescription={datumDescription}
+        />
+        <SvgLineAnnotation
+          orientation="horizontal"
+          value={0}
+          scale={valueScale}
+          chartArea={chartArea}
+          className="text-slate-300"
+        />
+      </SvgChartAreaGroup>
     </SvgChartRoot>
   );
 }
