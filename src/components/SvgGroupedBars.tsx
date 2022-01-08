@@ -1,5 +1,4 @@
 import { ReactElement } from 'react';
-import type { ScaleOrdinal } from 'd3-scale';
 import { AnimatePresence, m as motion } from 'framer-motion';
 
 import { createGroupedBarGenerator } from '@/generators/groupedBarGenerator';
@@ -10,12 +9,12 @@ import { getDefaultRenderingOffset, toAnimatableRect } from '@/utils/renderUtils
 export type SvgGroupedBarsProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
+  seriesColor: (series: string, index: number) => string;
   chartArea: ChartArea;
   orientation: ChartOrientation;
   categoryScale: AxisScale<CategoryT>;
   seriesScale: AxisScale<string>;
   valueScale: AxisScale<number>;
-  colorScale: ScaleOrdinal<string, string, never>;
   className?: string;
   offset?: number;
   categoryAriaRoleDescription?: (category: CategoryT) => string;
@@ -29,10 +28,10 @@ export type SvgGroupedBarsProps<CategoryT extends DomainValue> = {
 export function SvgGroupedBars<CategoryT extends DomainValue>({
   data,
   seriesKeys,
+  seriesColor,
   categoryScale,
   seriesScale,
   valueScale,
-  colorScale,
   orientation,
   chartArea,
   offset,
@@ -81,12 +80,12 @@ export function SvgGroupedBars<CategoryT extends DomainValue>({
           >
             {categoryDescription && <desc>{categoryDescription(d.category)}</desc>}
             <AnimatePresence initial={false}>
-              {seriesKeys.map((seriesKey) => (
+              {seriesKeys.map((seriesKey, index) => (
                 <motion.rect
                   key={seriesKey}
                   data-test-id="bar"
                   className={className}
-                  fill={colorScale(seriesKey)}
+                  fill={seriesColor(seriesKey, index)}
                   role="graphics-symbol"
                   aria-roledescription={datumAriaRoleDescription?.(d, seriesKey)}
                   aria-label={datumAriaLabel?.(d, seriesKey)}

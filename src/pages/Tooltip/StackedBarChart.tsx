@@ -6,13 +6,13 @@ import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { SvgStackedBars } from '@/components/SvgStackedBars';
 import { useChartArea } from '@/hooks/useChartArea';
-import { useDomainContinuous } from '@/hooks/useDomainContinuous';
+import { useDomainContinuousForSeriesData } from '@/hooks/useDomainContinuousForSeriesData';
 import { useDomainOrdinal } from '@/hooks/useDomainOrdinal';
 import { useScaleBand } from '@/hooks/useScaleBand';
 import { useScaleLinear } from '@/hooks/useScaleLinear';
 import { useScaleOrdinal } from '@/hooks/useScaleOrdinal';
 import type { CategoryValueListDatum, DomainValue, Margins, Rect } from '@/types';
-import { getSumOfValues } from '@/utils/dataUtils';
+import { getValueListDatumSum } from '@/utils/dataUtils';
 
 export type StackedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
@@ -65,7 +65,14 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
 }: StackedBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
 
-  const valueDomain = useDomainContinuous(data, getSumOfValues, { includeZeroInDomain: true });
+  const valueDomain = useDomainContinuousForSeriesData(
+    data,
+    seriesKeys,
+    getValueListDatumSum,
+    getValueListDatumSum,
+    { includeZeroInDomain: true }
+  );
+
   const valueScale = useScaleLinear(valueDomain, chartArea.rangeHeight, {
     nice: true,
     rangeRound: true

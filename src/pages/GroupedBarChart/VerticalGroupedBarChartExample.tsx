@@ -28,7 +28,7 @@ const dataSets = [
     ]
   },
   {
-    seriesKeys: ['one', 'two', 'three'],
+    seriesKeys: ['one', 'three', 'two'],
     data: [
       { category: 'A', values: { one: 0, two: 90, three: 10 } },
       { category: 'B', values: { one: 10, two: 45, three: 58 } },
@@ -48,6 +48,19 @@ function getSeriesLabel(series: string) {
   return `Series ${capitalize(series)}`;
 }
 
+function getSeriesColor(series: string, index: number) {
+  switch (series) {
+    case 'one':
+      return schemeSet3[0];
+    case 'two':
+      return schemeSet3[1];
+    case 'three':
+      return schemeSet3[2];
+    default:
+      return 'transparent';
+  }
+}
+
 export const VerticalGroupedBarChartExample: FC = () => {
   const [dataIndex, setDataIndex] = useState(0);
   const cycleDataIndex = () => setDataIndex((i) => (i === dataSets.length - 1 ? 0 : i + 1));
@@ -61,7 +74,7 @@ export const VerticalGroupedBarChartExample: FC = () => {
               ariaLabelledby={ariaLabelledby}
               data={dataSet.data}
               seriesKeys={dataSet.seriesKeys}
-              colorRange={schemeSet3}
+              seriesColor={getSeriesColor}
               width={width}
               height={height}
               margins={margins}

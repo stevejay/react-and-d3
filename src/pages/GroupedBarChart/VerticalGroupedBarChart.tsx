@@ -5,18 +5,17 @@ import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { SvgGroupedBars } from '@/components/SvgGroupedBars';
 import { useChartArea } from '@/hooks/useChartArea';
-import { useDomainContinuous } from '@/hooks/useDomainContinuous';
+import { useDomainContinuousForSeriesData } from '@/hooks/useDomainContinuousForSeriesData';
 import { useDomainOrdinal } from '@/hooks/useDomainOrdinal';
 import { useScaleBand } from '@/hooks/useScaleBand';
 import { useScaleLinear } from '@/hooks/useScaleLinear';
-import { useScaleOrdinal } from '@/hooks/useScaleOrdinal';
 import type { CategoryValueListDatum, DomainValue, Margins } from '@/types';
-import { getMaxOfValues } from '@/utils/dataUtils';
+import { getValueListDatumMaxValue, getValueListDatumMinValue } from '@/utils/dataUtils';
 
 export type VerticalGroupedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
-  colorRange: readonly string[];
+  seriesColor: (series: string, index: number) => string;
   width: number;
   height: number;
   margins: Margins;
@@ -38,7 +37,7 @@ export type VerticalGroupedBarChartProps<CategoryT extends DomainValue> = {
 function VerticalGroupedBarChartCore<CategoryT extends DomainValue>({
   data,
   seriesKeys,
-  colorRange,
+  seriesColor,
   width,
   height,
   margins,
@@ -58,8 +57,14 @@ function VerticalGroupedBarChartCore<CategoryT extends DomainValue>({
 }: VerticalGroupedBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
 
-  // TODO might need a better way of getting the domain here.
-  const valueDomain = useDomainContinuous(data, getMaxOfValues, { includeZeroInDomain: true });
+  const valueDomain = useDomainContinuousForSeriesData(
+    data,
+    seriesKeys,
+    getValueListDatumMinValue,
+    getValueListDatumMaxValue,
+    { includeZeroInDomain: true }
+  );
+
   const yScale = useScaleLinear(valueDomain, chartArea.rangeHeight, {
     nice: true,
     rangeRound: true
@@ -77,9 +82,6 @@ function VerticalGroupedBarChartCore<CategoryT extends DomainValue>({
     paddingOuter: 0.05,
     rangeRound: true
   });
-
-  // TODO mike doesn't seem to set the domain here
-  const zScale = useScaleOrdinal(seriesDomain, colorRange);
 
   return (
     <SvgChartRoot
@@ -114,10 +116,10 @@ function VerticalGroupedBarChartCore<CategoryT extends DomainValue>({
         <SvgGroupedBars
           data={data}
           seriesKeys={seriesKeys}
+          seriesColor={seriesColor}
           categoryScale={x0Scale}
           seriesScale={x1Scale}
           valueScale={yScale}
-          colorScale={zScale}
           chartArea={chartArea}
           orientation="vertical"
           categoryAriaRoleDescription={categoryAriaRoleDescription}
