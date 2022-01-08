@@ -6,7 +6,7 @@ import type { CategoryValueListDatum, DomainValue, GetValueListDatumSummaryValue
 
 // The two accessor functions need to be stable, or only change when `data` or
 // `seriesKeys` change.
-export function useDomainContinuousForSeriesData<CategoryT extends DomainValue, ValueT extends DomainValue>(
+export function useContinuousDomainForSeriesData<CategoryT extends DomainValue, ValueT extends DomainValue>(
   data: readonly CategoryValueListDatum<CategoryT, ValueT>[],
   seriesKeys: readonly string[],
   minAccessor: GetValueListDatumSummaryValue<CategoryT, ValueT>,

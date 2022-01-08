@@ -5,7 +5,7 @@ import type { DomainValue } from '@/types';
 
 // The domain will not be recalculated if you only change the accessor.
 // This means the accessor function does not need to be stable.
-export function useDomainOrdinal<DatumT, CategoryT extends DomainValue>(
+export function useOrdinalDomain<DatumT, CategoryT extends DomainValue>(
   data: readonly DatumT[],
   accessor: (d: DatumT) => CategoryT = identity
 ): readonly CategoryT[] {

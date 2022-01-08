@@ -4,7 +4,7 @@ import { scaleTime, scaleUtc } from 'd3-scale';
 
 // The domain and range need to be stable. The options object does not need to be stable.
 // options.utc The returned time scale operates in Coordinated Universal Time rather than local time.
-export function useScaleTime(
+export function useTimeScale(
   domain: readonly Date[],
   range: readonly number[],
   options?: {

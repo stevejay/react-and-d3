@@ -4,11 +4,11 @@ import { SvgAxis } from '@/components/SvgAxis';
 import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { SvgGroupedBars } from '@/components/SvgGroupedBars';
+import { useBandScale } from '@/hooks/useBandScale';
 import { useChartArea } from '@/hooks/useChartArea';
-import { useDomainContinuousForSeriesData } from '@/hooks/useDomainContinuousForSeriesData';
-import { useDomainOrdinal } from '@/hooks/useDomainOrdinal';
-import { useScaleBand } from '@/hooks/useScaleBand';
-import { useScaleLinear } from '@/hooks/useScaleLinear';
+import { useContinuousDomainForSeriesData } from '@/hooks/useContinuousDomainForSeriesData';
+import { useLinearScale } from '@/hooks/useLinearScale';
+import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
 import type { CategoryValueListDatum, DomainValue, Margins } from '@/types';
 import { getValueListDatumMaxValue, getValueListDatumMinValue } from '@/utils/dataUtils';
 
@@ -57,7 +57,7 @@ function VerticalGroupedBarChartCore<CategoryT extends DomainValue>({
 }: VerticalGroupedBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
 
-  const valueDomain = useDomainContinuousForSeriesData(
+  const valueDomain = useContinuousDomainForSeriesData(
     data,
     seriesKeys,
     getValueListDatumMinValue,
@@ -65,19 +65,19 @@ function VerticalGroupedBarChartCore<CategoryT extends DomainValue>({
     { includeZeroInDomain: true }
   );
 
-  const yScale = useScaleLinear(valueDomain, chartArea.rangeHeight, {
+  const yScale = useLinearScale(valueDomain, chartArea.rangeHeight, {
     nice: true,
     rangeRound: true
   });
 
-  const categoryDomain = useDomainOrdinal(data, (d) => d.category);
-  const x0Scale = useScaleBand(categoryDomain, chartArea.rangeWidth, {
+  const categoryDomain = useOrdinalDomain(data, (d) => d.category);
+  const x0Scale = useBandScale(categoryDomain, chartArea.rangeWidth, {
     paddingInner: 0.1,
     rangeRound: true
   });
 
-  const seriesDomain = useDomainOrdinal<string, string>(seriesKeys);
-  const x1Scale = useScaleBand(seriesDomain, [0, x0Scale.bandwidth()], {
+  const seriesDomain = useOrdinalDomain<string, string>(seriesKeys);
+  const x1Scale = useBandScale(seriesDomain, [0, x0Scale.bandwidth()], {
     paddingInner: 0.05,
     paddingOuter: 0.05,
     rangeRound: true

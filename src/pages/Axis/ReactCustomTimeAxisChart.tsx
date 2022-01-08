@@ -6,7 +6,7 @@ import { MotionConfig } from 'framer-motion';
 import { Svg } from '@/components/Svg';
 import { SvgCustomTimeAxis } from '@/components/SvgCustomTimeAxis';
 import { useChartArea } from '@/hooks/useChartArea';
-import { useScaleTime } from '@/hooks/useScaleTime';
+import { useTimeScale } from '@/hooks/useTimeScale';
 import { lastMomentOfThisMonth, startOfThisMonth } from '@/utils/dateUtils';
 
 const margins = { top: 20, bottom: 70, left: 20, right: 20 };
@@ -30,7 +30,7 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
       return [minDate, maxDate];
     }, [data]);
 
-    const scale = useScaleTime(domain, chartArea.rangeWidth, { utc: true, rangeRound: true });
+    const scale = useTimeScale(domain, chartArea.rangeWidth, { utc: true, rangeRound: true });
 
     if (!width || !height) {
       return null;

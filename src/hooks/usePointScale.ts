@@ -7,7 +7,7 @@ import type { DomainValue } from '@/types';
 // padding: specifies the amount of blank space, in terms of multiples of the step,
 // to reserve before the first point and after the last point.
 // rangeRound: If true, the start and stop of each band will be integers.
-export function useScalePoint<CategoryT extends DomainValue>(
+export function usePointScale<CategoryT extends DomainValue>(
   domain: readonly CategoryT[],
   range: readonly number[],
   options?: { padding?: number; rangeRound?: boolean; align?: number }

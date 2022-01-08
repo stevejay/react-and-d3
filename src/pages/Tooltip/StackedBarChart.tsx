@@ -5,12 +5,12 @@ import { SvgCategoryInteraction } from '@/components/SvgCategoryInteraction';
 import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { SvgStackedBars } from '@/components/SvgStackedBars';
+import { useBandScale } from '@/hooks/useBandScale';
 import { useChartArea } from '@/hooks/useChartArea';
-import { useDomainContinuousForSeriesData } from '@/hooks/useDomainContinuousForSeriesData';
-import { useDomainOrdinal } from '@/hooks/useDomainOrdinal';
-import { useScaleBand } from '@/hooks/useScaleBand';
-import { useScaleLinear } from '@/hooks/useScaleLinear';
-import { useScaleOrdinal } from '@/hooks/useScaleOrdinal';
+import { useContinuousDomainForSeriesData } from '@/hooks/useContinuousDomainForSeriesData';
+import { useLinearScale } from '@/hooks/useLinearScale';
+import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
+import { useOrdinalScale } from '@/hooks/useOrdinalScale';
 import type { CategoryValueListDatum, DomainValue, Margins, Rect } from '@/types';
 import { getValueListDatumSum } from '@/utils/dataUtils';
 
@@ -65,7 +65,7 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
 }: StackedBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
 
-  const valueDomain = useDomainContinuousForSeriesData(
+  const valueDomain = useContinuousDomainForSeriesData(
     data,
     seriesKeys,
     getValueListDatumSum,
@@ -73,20 +73,20 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
     { includeZeroInDomain: true }
   );
 
-  const valueScale = useScaleLinear(valueDomain, chartArea.rangeHeight, {
+  const valueScale = useLinearScale(valueDomain, chartArea.rangeHeight, {
     nice: true,
     rangeRound: true
   });
 
-  const categoryDomain = useDomainOrdinal(data, (d) => d.category);
-  const categoryScale = useScaleBand(categoryDomain, chartArea.rangeWidth, {
+  const categoryDomain = useOrdinalDomain(data, (d) => d.category);
+  const categoryScale = useBandScale(categoryDomain, chartArea.rangeWidth, {
     paddingInner: 0.3,
     paddingOuter: 0.2,
     rangeRound: true
   });
 
-  const seriesDomain = useDomainOrdinal<string, string>(seriesKeys);
-  const seriesScale = useScaleOrdinal(seriesDomain, colorRange);
+  const seriesDomain = useOrdinalDomain<string, string>(seriesKeys);
+  const seriesScale = useOrdinalScale(seriesDomain, colorRange);
 
   return (
     <SvgChartRoot

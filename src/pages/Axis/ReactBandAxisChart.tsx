@@ -4,8 +4,8 @@ import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
+import { useBandScale } from '@/hooks/useBandScale';
 import { useChartArea } from '@/hooks/useChartArea';
-import { useScaleBand } from '@/hooks/useScaleBand';
 import type { TickLabelOrientation } from '@/types';
 
 const margins = { top: 20, bottom: 34, left: 30, right: 30 };
@@ -22,7 +22,7 @@ export type ReactBandAxisChartProps = {
 export const ReactBandAxisChart: FC<ReactBandAxisChartProps> = memo(
   ({ data, width, height, ariaLabelledby, tickLabelOrientation, transitionSeconds = 0.25 }) => {
     const chartArea = useChartArea(width, height, margins);
-    const scale = useScaleBand(data, chartArea.rangeWidth, { rangeRound: true });
+    const scale = useBandScale(data, chartArea.rangeWidth, { rangeRound: true });
 
     if (!width || !height) {
       return null;
