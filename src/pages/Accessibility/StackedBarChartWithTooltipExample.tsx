@@ -9,10 +9,10 @@ import { StackedBarChartWithTooltip } from './StackedBarChartWithTooltip';
 
 const data = [
   { category: '1', values: { a: 20, b: 0, c: 0 } },
-  { category: '2', values: { a: 83.56, b: 20, c: 40 } },
-  { category: '3', values: { a: 81.32, b: 50, c: 60 } },
-  { category: '4', values: { a: 102.974, b: 10, c: 0 } },
-  { category: '5', values: { a: 87.247, b: 0, c: 40 } }
+  { category: '2', values: { a: 84, b: 20, c: 40 } },
+  { category: '3', values: { a: 81, b: 50, c: 60 } },
+  { category: '4', values: { a: 103, b: 10, c: 0 } },
+  { category: '5', values: { a: 87, b: 0, c: 40 } }
 ];
 
 const margins = { left: 72, right: 32, top: 32, bottom: 48 };
@@ -24,8 +24,8 @@ function isCompact(width: number) {
   return Boolean(width) && width < 500;
 }
 
-function getCategoryLabel(datum: CategoryValueListDatum<string, number>) {
-  return `Strategy ${datum.category}`;
+function getCategoryLabel(category: string) {
+  return `Strategy ${category}`;
 }
 
 function getSeriesLabel(series: string) {
@@ -34,11 +34,11 @@ function getSeriesLabel(series: string) {
 
 function getSeriesColor(series: string) {
   switch (series) {
-    case 'one':
+    case 'a':
       return schemeSet3[0];
-    case 'two':
+    case 'b':
       return schemeSet3[1];
-    case 'three':
+    case 'c':
       return schemeSet3[2];
     default:
       return 'transparent';
@@ -75,12 +75,11 @@ export const StackedBarChartWithTooltipExample: FC = () => (
           ariaRoleDescription="Stacked bar chart"
           ariaLabelledby={ariaLabelledby}
           description="Analysing how different sales strategies affect the sales figures of our three most popular products"
-          // TODO !!!
-          //   seriesAriaRoleDescription={() => 'Data series'}
-          //   seriesAriaLabel={getSeriesLabel}
-          //   seriesDescription={(series) => `The description for ${getSeriesLabel(series)} data series`}
+          categoryAriaRoleDescription={() => 'Sales strategy'}
+          categoryAriaLabel={getCategoryLabel}
+          categoryDescription={(category) => `Sales results for ${getCategoryLabel(category)}`}
           datumAriaRoleDescription={(_d, series) => getSeriesLabel(series)}
-          datumAriaLabel={(d, series) => `${round(d.values[series])} units sold using ${getCategoryLabel(d)}`}
+          datumAriaLabel={(d, series) => `${round(d.values[series])} units sold`}
           renderTooltipContent={renderTooltipContent}
           hideOnScroll
           compact={isCompact(width)}

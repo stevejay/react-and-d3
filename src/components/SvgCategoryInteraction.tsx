@@ -61,6 +61,7 @@ export function SvgCategoryInteraction<
       stroke="none"
     >
       <rect
+        role="presentation"
         x={0}
         y={0}
         width={chartArea.width}

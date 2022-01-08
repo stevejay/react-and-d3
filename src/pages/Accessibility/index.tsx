@@ -8,9 +8,14 @@ import { SectionHeading } from '@/components/SectionHeading';
 import { StackedBarChartWithTooltipExample } from './StackedBarChartWithTooltipExample';
 
 const VoiceOverText: FC = ({ children }) => (
-  <blockquote className="px-4 py-2 my-4 italic font-light leading-relaxed rounded max-w-prose text-slate-300">
-    {children}
-  </blockquote>
+  <figure>
+    <blockquote>
+      <p className="px-4 py-2 my-4 italic font-light leading-relaxed rounded max-w-prose text-slate-300">
+        {children}
+      </p>
+    </blockquote>
+    <figcaption className="sr-only">Text spoken by VoiceOver</figcaption>
+  </figure>
 );
 
 const AccessibilityPage = () => (
@@ -28,36 +33,31 @@ const AccessibilityPage = () => (
     </Paragraph>
     <StackedBarChartWithTooltipExample />
     <Paragraph>
-      Using that particular combination, I first hear the following when I navigate to the chart:
+      Using that particular combination, I hear the following when I navigate to the chart:
     </Paragraph>
     <VoiceOverText>Comparing sales strategies, Stacked bar chart</VoiceOverText>
     <Paragraph>After a short pause I hear the chart description:</Paragraph>
     <VoiceOverText>
       Analysing how different sales strategies affect the sales figures of our three most popular products,
-      You are currently in a Stacked bar chart.
+      You are currently on a Stacked bar chart.
     </VoiceOverText>
     <Paragraph>
-      If I then navigate into the chart, the first series is selected and announced by the screen reader:
+      If I then navigate into the chart, the first category is selected and announced by the screen reader:
     </Paragraph>
-    <VoiceOverText>Product A, Data series</VoiceOverText>
-    <Paragraph>After a short pause I hear the series description:</Paragraph>
-    <VoiceOverText>
-      The description for Product A data series, You are currently in a Data series
-    </VoiceOverText>
-    <Paragraph>If I now navigate to the second series, I hear the following:</Paragraph>
-    <VoiceOverText>Product B, Data series</VoiceOverText>
+    <VoiceOverText>Strategy 1, Sales strategy</VoiceOverText>
+    <Paragraph>After a short pause I hear the category description:</Paragraph>
+    <VoiceOverText>Sales results for Strategy 1, You are currently in a Sales strategy</VoiceOverText>
+    <Paragraph>If I now navigate to the second category, I hear the following:</Paragraph>
+    <VoiceOverText>Strategy 2, Sales strategy</VoiceOverText>
     <Paragraph>
-      If I navigate into this second series, the screen reader announces the first of its values:
+      If I navigate into this category, the screen reader announces the first of its values:
     </Paragraph>
-    <VoiceOverText>0 units sold using Strategy 1, Product B</VoiceOverText>
-    <Paragraph>I can then navigate through the rest of the series values:</Paragraph>
+    <VoiceOverText>84 units sold, Product A</VoiceOverText>
+    <Paragraph>I can then navigate through the rest of the category values:</Paragraph>
     <VoiceOverText>
-      20 units sold using Strategy 2, Product B
+      20 units sold, Product B
       <br />
-      50 units sold using Strategy 3, Product B
-      <br />
-      10 units sold using Strategy 4, Product B
-      <br />0 units sold using Strategy 5, Product B
+      40 units sold, Product C
     </VoiceOverText>
     <Paragraph>
       Note that you cannot navigate to the axis labels, the axis tick labels or the tooltip, and they are not
