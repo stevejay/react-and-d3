@@ -51,6 +51,7 @@ export function SvgGroupedBars<CategoryT extends DomainValue>({
     orientation,
     renderingOffset
   );
+  const translateAxis = orientation === 'vertical' ? 'x' : 'y';
   return (
     <g data-test-id="grouped-bars" className={className} fill="currentColor" stroke="none">
       <AnimatePresence initial={false}>
@@ -65,11 +66,11 @@ export function SvgGroupedBars<CategoryT extends DomainValue>({
             variants={{
               initial: () => ({
                 opacity: 0,
-                x: categoryScale(d.category)
+                [translateAxis]: categoryScale(d.category)
               }),
               animate: () => ({
                 opacity: 1,
-                x: categoryScale(d.category)
+                [translateAxis]: categoryScale(d.category)
               }),
               exit: () => ({
                 opacity: 0

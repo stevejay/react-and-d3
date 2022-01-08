@@ -6,7 +6,7 @@ import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import type { Margins } from '@/types';
 
-import { VerticalGroupedBarChart } from './VerticalGroupedBarChart';
+import { HorizontalGroupedBarChart } from './HorizontalGroupedBarChart';
 
 const dataSets = [
   {
@@ -40,6 +40,10 @@ const dataSets = [
 
 const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
 
+function isCompact(width: number) {
+  return Boolean(width) && width < 500;
+}
+
 function getCategoryLabel(category: string) {
   return `Category ${category}`;
 }
@@ -61,16 +65,16 @@ function getSeriesColor(series: string, index: number) {
   }
 }
 
-export const VerticalGroupedBarChartExample: FC = () => {
+export const HorizontalGroupedBarChartExample: FC = () => {
   const [dataIndex, setDataIndex] = useState(0);
   const cycleDataIndex = () => setDataIndex((i) => (i === dataSets.length - 1 ? 0 : i + 1));
   const dataSet = dataSets[dataIndex];
   return (
     <div className="my-8">
-      <ExampleChartWrapper title="Example 2: Vertical Grouped Bar Chart" sizerClassName="h-[384px]">
+      <ExampleChartWrapper title="Example 1: Horizontal Grouped Bar Chart" sizerClassName="h-[384px]">
         {({ inView, width, height, ariaLabelledby }) =>
           inView && (
-            <VerticalGroupedBarChart
+            <HorizontalGroupedBarChart
               ariaLabelledby={ariaLabelledby}
               data={dataSet.data}
               seriesKeys={dataSet.seriesKeys}
@@ -84,6 +88,7 @@ export const VerticalGroupedBarChartExample: FC = () => {
               categoryDescription={(category) => `This is the description for ${getCategoryLabel(category)}`}
               datumAriaRoleDescription={(d, series) => `${getSeriesLabel(series)} data point`}
               datumAriaLabel={(d, series) => `${d.values[series]}`}
+              compact={isCompact(width)}
             />
           )
         }
