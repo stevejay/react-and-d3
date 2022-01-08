@@ -32,6 +32,19 @@ function getSeriesLabel(series: string) {
   return `Product ${series.toUpperCase()}`;
 }
 
+function getSeriesColor(series: string) {
+  switch (series) {
+    case 'one':
+      return schemeSet3[0];
+    case 'two':
+      return schemeSet3[1];
+    case 'three':
+      return schemeSet3[2];
+    default:
+      return 'transparent';
+  }
+}
+
 function renderTooltipContent(d: CategoryValueListDatum<string, number>) {
   return (
     <>
@@ -53,7 +66,7 @@ export const StackedBarChartWithTooltipExample: FC = () => (
         <StackedBarChartWithTooltip
           data={data}
           seriesKeys={seriesKeys}
-          colorRange={schemeSet3}
+          seriesColor={getSeriesColor}
           width={width}
           height={height}
           margins={isCompact(width) ? compactMargins : margins}

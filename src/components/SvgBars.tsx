@@ -25,17 +25,14 @@ export function SvgBars<CategoryT extends DomainValue, ValueT extends DomainValu
   categoryScale,
   valueScale,
   orientation,
-  offset: offsetProp,
+  offset,
   className = '',
   datumAriaRoleDescription,
   datumAriaLabel,
   datumDescription
 }: SvgBarsProps<CategoryT, ValueT>): ReactElement | null {
-  // Used to ensure crisp edges on low-resolution devices.
-  const offset = offsetProp ?? getDefaultRenderingOffset();
-
-  const barGenerator = createBarGenerator(categoryScale, valueScale, chartArea, orientation, offset);
-
+  const renderingOffset = offset ?? getDefaultRenderingOffset();
+  const barGenerator = createBarGenerator(categoryScale, valueScale, chartArea, orientation, renderingOffset);
   return (
     <g className={className} fill="currentColor" stroke="none">
       <AnimatePresence custom={barGenerator} initial={false}>

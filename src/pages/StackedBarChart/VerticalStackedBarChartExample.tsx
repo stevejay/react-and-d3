@@ -40,6 +40,19 @@ function getSeriesLabel(series: string) {
   return capitalize(series);
 }
 
+function getSeriesColor(series: string) {
+  switch (series) {
+    case 'one':
+      return schemeSet3[0];
+    case 'two':
+      return schemeSet3[1];
+    case 'three':
+      return schemeSet3[2];
+    default:
+      return 'transparent';
+  }
+}
+
 const seriesKeys = ['one', 'two', 'three'];
 
 export const VerticalStackedBarChartExample: FC = () => {
@@ -53,7 +66,7 @@ export const VerticalStackedBarChartExample: FC = () => {
               ariaLabelledby={ariaLabelledby}
               data={data}
               seriesKeys={seriesKeys}
-              colorRange={schemeSet3}
+              seriesColor={getSeriesColor}
               width={width}
               height={height}
               margins={margins}

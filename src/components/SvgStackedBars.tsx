@@ -1,18 +1,16 @@
 import { ReactElement } from 'react';
-import type { ScaleOrdinal } from 'd3-scale';
 import { stack } from 'd3-shape';
 import { AnimatePresence, m as motion } from 'framer-motion';
 
 import { createStackedBarGenerator } from '@/generators/stackedBarGenerator';
-import type { AxisScale, CategoryValueListDatum, ChartArea, ChartOrientation, DomainValue } from '@/types';
+import type { AxisScale, CategoryValueListDatum, ChartOrientation, DomainValue } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 import { getDefaultRenderingOffset, toAnimatableRect } from '@/utils/renderUtils';
 
 export type SvgStackedBarsProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
-  colorScale: ScaleOrdinal<string, string, never>;
-  chartArea: ChartArea;
+  seriesColor: (series: string, index: number) => string;
   orientation: ChartOrientation;
   categoryScale: AxisScale<CategoryT>;
   valueScale: AxisScale<number>;
@@ -29,11 +27,10 @@ export type SvgStackedBarsProps<CategoryT extends DomainValue> = {
 export function SvgStackedBars<CategoryT extends DomainValue>({
   data,
   seriesKeys,
+  seriesColor,
   categoryScale,
   valueScale,
-  colorScale,
   orientation,
-  chartArea,
   offset: offsetProp,
   className = '',
   seriesAriaRoleDescription,
@@ -54,12 +51,12 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
 
   return (
     <g className={className} fill="currentColor" stroke="none">
-      {stackSeries(data).map((series) => {
+      {stackSeries(data).map((series, index) => {
         const seriesKey = series.key;
         return (
           <g
             key={seriesKey}
-            fill={colorScale(seriesKey)}
+            fill={seriesColor(seriesKey, index)}
             role="graphics-object"
             aria-roledescription={seriesAriaRoleDescription?.(seriesKey)}
             aria-label={seriesAriaLabel?.(seriesKey)}

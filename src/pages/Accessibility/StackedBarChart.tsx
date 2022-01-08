@@ -10,14 +10,13 @@ import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomainForSeriesData } from '@/hooks/useContinuousDomainForSeriesData';
 import { useLinearScale } from '@/hooks/useLinearScale';
 import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
-import { useOrdinalScale } from '@/hooks/useOrdinalScale';
 import type { CategoryValueListDatum, DomainValue, Margins, Rect } from '@/types';
 import { getValueListDatumSum } from '@/utils/dataUtils';
 
 export type StackedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
-  colorRange: readonly string[];
+  seriesColor: (series: string, index: number) => string;
   width: number;
   height: number;
   margins: Margins;
@@ -46,7 +45,7 @@ export type StackedBarChartProps<CategoryT extends DomainValue> = {
 function StackedBarChartCore<CategoryT extends DomainValue>({
   data,
   seriesKeys,
-  colorRange,
+  seriesColor,
   width,
   height,
   margins,
@@ -93,9 +92,6 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
     rangeRound: true
   });
 
-  const seriesDomain = useOrdinalDomain<string, string>(seriesKeys);
-  const seriesScale = useOrdinalScale(seriesDomain, colorRange);
-
   return (
     <SvgChartRoot
       ref={svgRef}
@@ -129,10 +125,9 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
         <SvgStackedBars
           data={data}
           seriesKeys={seriesKeys}
-          categoryScale={categoryScale}
+          seriesColor={seriesColor}
           valueScale={valueScale}
-          colorScale={seriesScale}
-          chartArea={chartArea}
+          categoryScale={categoryScale}
           orientation="vertical"
           seriesAriaRoleDescription={seriesAriaRoleDescription}
           seriesAriaLabel={seriesAriaLabel}

@@ -55,6 +55,19 @@ function getSeriesLabel(series: string) {
   return capitalize(series);
 }
 
+function getSeriesColor(series: string) {
+  switch (series) {
+    case 'one':
+      return schemeSet3[0];
+    case 'two':
+      return schemeSet3[1];
+    case 'three':
+      return schemeSet3[2];
+    default:
+      return 'transparent';
+  }
+}
+
 export const HorizontalStackedBarChartExample: FC = () => {
   const [dataIndex, setDataIndex] = useState(0);
   const cycleDataIndex = () => setDataIndex((i) => (i === dataSets.length - 1 ? 0 : i + 1));
@@ -69,7 +82,7 @@ export const HorizontalStackedBarChartExample: FC = () => {
               ariaLabelledby={ariaLabelledby}
               data={dataSet.data}
               seriesKeys={dataSet.seriesKeys}
-              colorRange={schemeSet3} // TODO should this be a function?
+              seriesColor={getSeriesColor}
               width={width}
               height={height}
               margins={margins}

@@ -52,7 +52,7 @@ function getSeriesLabel(series: string) {
   return `Series ${capitalize(series)}`;
 }
 
-function getSeriesColor(series: string, index: number) {
+function getSeriesColor(series: string) {
   switch (series) {
     case 'one':
       return schemeSet3[0];
