@@ -14,6 +14,8 @@ const popperOptions = {
   modifiers: [{ name: 'flip', enabled: true }]
 };
 
+type TooltipOptions = { hideTooltipOnScroll?: boolean; xOffset?: number; yOffset?: number };
+
 type TooltipState<DatumT> = { visible: boolean; rect: Rect | null; datum: DatumT | null };
 
 type ReturnValue<DatumT> = [
@@ -32,8 +34,9 @@ type ReturnValue<DatumT> = [
  */
 export function useFollowOnHoverTooltip<DatumT>(
   renderContent: (datum: DatumT) => ReactElement | null,
-  hideOnScroll: boolean
+  options?: TooltipOptions
 ): ReturnValue<DatumT> {
+  const { hideTooltipOnScroll = true, xOffset = 0, yOffset = 18 } = options ?? {};
   const svgRef = useRef<SVGSVGElement>(null);
   const opacity = useMotionValue(0);
 
@@ -56,14 +59,14 @@ export function useFollowOnHoverTooltip<DatumT>(
 
   // Hide tooltip on scroll
   useEffect(() => {
-    if (tooltipState.visible && hideOnScroll) {
+    if (tooltipState.visible && hideTooltipOnScroll) {
       const callback = () => {
         setTooltipStateAfter((prev) => ({ ...prev, visible: false }), 0);
       };
       window.document.addEventListener('scroll', callback);
       return () => window.document.removeEventListener('scroll', callback);
     }
-  }, [tooltipState.visible, setTooltipStateAfter, hideOnScroll]);
+  }, [tooltipState.visible, setTooltipStateAfter, hideTooltipOnScroll]);
 
   const eventHandlers = useMemo(
     () => ({
@@ -83,12 +86,6 @@ export function useFollowOnHoverTooltip<DatumT>(
             ? prev
             : { visible: true, datum, rect };
         });
-
-        // setTooltipStateAfter((prev) => {
-        //   return prev.visible && prev.datum === datum && rectsAreEqual(prev.rect, rect)
-        //     ? prev
-        //     : { visible: true, datum, rect };
-        // }, 0);
       }
     }),
     [setTooltipStateAfter, setTooltipStateImmediately]
@@ -100,7 +97,7 @@ export function useFollowOnHoverTooltip<DatumT>(
         reference: svgRef.current,
         appendTo: 'parent',
         placement: 'top',
-        offset: [0, 18],
+        offset: [xOffset, yOffset],
         animation: true,
         onShow: () => {
           animate(opacity, 1, { type: 'tween', duration: 0.15 });
@@ -117,7 +114,7 @@ export function useFollowOnHoverTooltip<DatumT>(
           </Tooltip>
         )
       } as TippyProps),
-    [tooltipState, renderContent, opacity]
+    [tooltipState, renderContent, opacity, xOffset, yOffset]
   );
 
   return [svgRef, eventHandlers, Tippy, tippyProps];

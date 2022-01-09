@@ -79,7 +79,7 @@ export const StackedBarChartWithTooltipExample: FC = () => {
               height={height}
               margins={margins}
               renderTooltipContent={renderTooltipContent}
-              hideOnScroll
+              hideTooltipOnScroll
               compact={isCompact(width)}
             />
           )

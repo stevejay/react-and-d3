@@ -10,19 +10,19 @@ export type RadarChartWithTooltipProps<CategoryT extends DomainValue> = Omit<
   'svgRef' | 'onMouseEnter' | 'onMouseLeave' | 'onClick'
 > & {
   renderTooltipContent: (datum: CategoryValueDatum<CategoryT, number>) => ReactElement | null;
-  hideOnScroll: boolean;
+  hideTooltipOnScroll: boolean;
 };
 
 // For rendering performance, the tooltip has to be rendered separately from the
 // chart.
 export function RadarChartWithTooltip<CategoryT extends DomainValue>({
   renderTooltipContent,
-  hideOnScroll,
+  hideTooltipOnScroll,
   ...rest
 }: RadarChartWithTooltipProps<CategoryT>): ReactElement | null {
   const [svgRef, interactionProps, TooltipComponent, tooltipProps] = useFollowOnHoverTooltip(
     renderTooltipContent,
-    hideOnScroll
+    { hideTooltipOnScroll }
   );
   return (
     <>

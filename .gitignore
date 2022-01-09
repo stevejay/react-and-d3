@@ -31,6 +31,9 @@
 # coverage
 /coverage
 
+# lighthouse reports
+*.report.html
+
 # yarn (without PnP) - exceptions
 !.yarn/patches
 !.yarn/plugins

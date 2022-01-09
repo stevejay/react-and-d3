@@ -15,10 +15,10 @@ const TooltipPage = () => (
     </Paragraph>
     <SectionHeading>The &lsquo;Follow On Hover&rsquo; Tooltip</SectionHeading>
     <Paragraph>
-      The tooltip shows when the user hovers their mouse over the chart and when they click on it. The click
-      behaviour is so the tooltip also shows if the user has a hybrid or touch device and they tap on the
-      screen. The tooltip is placed just above where the user has hovered or tapped. Accessibility is not a
-      requirement. The chart can be made accessible through alternate means (as shown in the{' '}
+      The tooltip shows when the user hovers their mouse over the chart. It also shows if the user has a
+      hybrid or touch device and they tap on the screen. The tooltip is placed just above where the user has
+      hovered or tapped. Accessibility is not a requirement. The chart can be made accessible through
+      alternate means (as shown in the{' '}
       <ProseInternalLink to="/accessibility">Accessibility section</ProseInternalLink>) and so the tooltip is
       hidden from screenreaders.
     </Paragraph>
@@ -32,6 +32,10 @@ const TooltipPage = () => (
       <li>A short opacity fade animation on show and hide.</li>
       <li>Hide on scroll.</li>
       <li>Hide on a click or tap outside of the chart area.</li>
+      <li>
+        On a tap, the tooltip is centred horizontally on the tapped bar. This makes it more obvious to the
+        touch interface user which bar the tooltip is showing for.
+      </li>
     </ul>
     <BarChartWithTooltipExample />
     <Paragraph>

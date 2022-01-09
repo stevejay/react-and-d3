@@ -10,19 +10,19 @@ export type StackedBarChartWithTooltipProps<CategoryT extends DomainValue> = Omi
   'svgRef' | 'onMouseEnter' | 'onMouseLeave' | 'onClick'
 > & {
   renderTooltipContent: (datum: CategoryValueListDatum<CategoryT, number>) => ReactElement | null;
-  hideOnScroll: boolean;
+  hideTooltipOnScroll: boolean;
 };
 
 // For rendering performance, the tooltip has to be rendered separately from the
 // chart.
 export function StackedBarChartWithTooltip<CategoryT extends DomainValue>({
   renderTooltipContent,
-  hideOnScroll,
+  hideTooltipOnScroll,
   ...rest
 }: StackedBarChartWithTooltipProps<CategoryT>): ReactElement | null {
   const [svgRef, interactionProps, TooltipComponent, tooltipProps] = useFollowOnHoverTooltip(
     renderTooltipContent,
-    hideOnScroll
+    { hideTooltipOnScroll, yOffset: 14 }
   );
   return (
     <>

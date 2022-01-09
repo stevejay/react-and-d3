@@ -81,7 +81,7 @@ export const StackedBarChartWithTooltipExample: FC = () => (
           datumAriaRoleDescription={(_d, series) => getSeriesLabel(series)}
           datumAriaLabel={(d, series) => `${round(d.values[series])} units sold`}
           renderTooltipContent={renderTooltipContent}
-          hideOnScroll
+          hideTooltipOnScroll
           compact={isCompact(width)}
         />
       )

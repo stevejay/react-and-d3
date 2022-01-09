@@ -74,7 +74,7 @@ export const RadarChartWithTooltipExample: FC = () => {
         datumAriaRoleDescription={getCategoryLabel}
         datumAriaLabel={(d) => `${d.value}`}
         datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
-        hideOnScroll
+        hideTooltipOnScroll
         renderTooltipContent={renderTooltipContent}
       />
       <ExampleUpdateButton onClick={nextDataSet}>Update radar chart data</ExampleUpdateButton>

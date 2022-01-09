@@ -48,6 +48,9 @@ export const SvgChartRoot = forwardRef<SVGSVGElement, SvgChartRootProps>(
           aria-describedby={ariaDescribedby}
           aria-roledescription={ariaRoleDescription}
           role="graphics-document"
+          // Needed to stop touches at the borders of any interaction areas in the chart
+          // triggering mouseover events in them.
+          onTouchEnd={(event) => event.preventDefault()}
         >
           {description && <desc>{description}</desc>}
           {children}

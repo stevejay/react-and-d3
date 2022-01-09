@@ -60,7 +60,7 @@ export const BarChartWithTooltipExample: FC = () => {
               height={height}
               margins={margins}
               renderTooltipContent={renderTooltipContent}
-              hideOnScroll={true}
+              hideTooltipOnScroll={true}
             />
           )
         }
