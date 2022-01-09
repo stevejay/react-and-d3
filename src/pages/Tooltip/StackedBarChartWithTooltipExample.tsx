@@ -33,6 +33,10 @@ const dataSets: readonly CategoryValueListDatum<string, number>[][] = [
 const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
 const seriesKeys = ['one', 'two', 'three'];
 
+function isCompact(width: number) {
+  return Boolean(width) && width < 500;
+}
+
 function getSeriesColor(series: string) {
   switch (series) {
     case 'one':
@@ -76,6 +80,7 @@ export const StackedBarChartWithTooltipExample: FC = () => {
               margins={margins}
               renderTooltipContent={renderTooltipContent}
               hideOnScroll
+              compact={isCompact(width)}
             />
           )
         }

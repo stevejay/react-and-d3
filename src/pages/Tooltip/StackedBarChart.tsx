@@ -33,6 +33,7 @@ export type StackedBarChartProps<CategoryT extends DomainValue> = {
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   transitionSeconds?: number;
   svgRef: RefObject<SVGSVGElement>;
+  compact: boolean;
   onMouseEnter: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
   onMouseLeave: () => void;
   onClick: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
@@ -58,6 +59,7 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
   datumDescription,
   transitionSeconds = 0.5,
   svgRef,
+  compact,
   onMouseEnter,
   onMouseLeave,
   onClick
@@ -72,13 +74,13 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
     { includeZeroInDomain: true }
   );
 
-  const valueScale = useLinearScale(valueDomain, chartArea.rangeHeight, {
+  const valueScale = useLinearScale(valueDomain, chartArea.rangeWidth, {
     nice: true,
     rangeRound: true
   });
 
   const categoryDomain = useOrdinalDomain(data, (d) => d.category);
-  const categoryScale = useBandScale(categoryDomain, chartArea.rangeWidth, {
+  const categoryScale = useBandScale(categoryDomain, chartArea.rangeHeightReversed, {
     paddingInner: 0.3,
     paddingOuter: 0.2,
     rangeRound: true
@@ -100,10 +102,11 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
       <SvgAxis
         scale={valueScale}
         chartArea={chartArea}
-        orientation="left"
+        orientation="bottom"
         tickSizeOuter={0}
-        tickSizeInner={-chartArea.width}
+        tickSizeInner={-chartArea.height}
         tickPadding={10}
+        tickArguments={[compact ? 5 : 10]}
         className="text-xs"
         hideDomainPath
         tickLineClassName="text-slate-600"
@@ -111,7 +114,7 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
         axisLabel="Y Axis Label"
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
-        axisLabelSpacing={53}
+        axisLabelSpacing={34}
       />
       <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
         <SvgStackedBars
@@ -120,7 +123,7 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
           seriesColor={seriesColor}
           categoryScale={categoryScale}
           valueScale={valueScale}
-          orientation="vertical"
+          orientation="horizontal"
           categoryAriaRoleDescription={categoryAriaRoleDescription}
           categoryAriaLabel={categoryAriaLabel}
           categoryDescription={categoryDescription}
@@ -133,7 +136,7 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
       <SvgAxis
         scale={categoryScale}
         chartArea={chartArea}
-        orientation="bottom"
+        orientation="left"
         tickSizeInner={0}
         tickSizeOuter={0}
         tickPadding={10}
@@ -142,14 +145,14 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
         axisLabel="X Axis Label"
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
-        axisLabelSpacing={34}
+        axisLabelSpacing={44}
       />
       <SvgCategoryInteraction
         svgRef={svgRef}
         data={data}
         categoryScale={categoryScale}
         chartArea={chartArea}
-        orientation="vertical"
+        orientation="horizontal"
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onClick={onClick}
