@@ -17,8 +17,8 @@ const Home = () => (
   <div>
     <h1 className="sr-only">Home Page</h1>
     <div className="bg-center" style={{ backgroundImage: `url("${circuitBoardSvgUrl}")` }}>
-      <div className="flex flex-col-reverse items-center justify-between px-4 py-8 overflow-hidden border-b lg:px-16 lg:flex-row border-slate-600 bg-gradient-to-t lg:bg-gradient-to-r from-slate-800 lg:via-slate-800 to-transparent">
-        <p className="max-w-screen-sm text-2xl font-semibold text-center md:leading-relaxed lg:text-left md:text-3xl text-slate-300">
+      <div className="flex flex-col-reverse items-center justify-between px-4 py-8 overflow-hidden border-b lg:py-16 lg:px-16 lg:flex-row border-slate-600 bg-gradient-to-t lg:bg-gradient-to-r from-slate-800 lg:via-slate-800 to-transparent">
+        <p className="max-w-screen-sm text-2xl font-semibold text-center lg:text-left md:text-3xl text-slate-300">
           Combining React and D3 to create <span className="text-teal-400">declarative</span> and{' '}
           <span className="text-cyan-400">maintainable</span> custom data visualisations
         </p>
