@@ -29,24 +29,17 @@ const AccessibilityPage = () => (
       </ProseExternalLink>{' '}
       describes how a data visualisation can be made accessible to screen reader users. The stacked bar chart
       below follows these recommendations. Use a screen reader with its preferred browser to hear the result.
-      On macOS you can use VoiceOver with the Safari Web browser.
+      On macOS you can use VoiceOver with the Safari Web browser. On Windows you can use NVDA with Firefox.
     </Paragraph>
     <StackedBarChartWithTooltipExample />
     <Paragraph>
-      Using that particular combination, I hear the following when I navigate to the chart:
+      Using either of those combinations, I hear the following when I navigate to the chart:
     </Paragraph>
     <VoiceOverText>Comparing sales strategies, Stacked bar chart</VoiceOverText>
-    <Paragraph>After a short pause I hear the chart description:</Paragraph>
-    <VoiceOverText>
-      Analysing how different sales strategies affect the sales figures of our three most popular products,
-      You are currently on a Stacked bar chart.
-    </VoiceOverText>
     <Paragraph>
       If I then navigate into the chart, the first category is selected and announced by the screen reader:
     </Paragraph>
     <VoiceOverText>Strategy 1, Sales strategy</VoiceOverText>
-    <Paragraph>After a short pause I hear the category description:</Paragraph>
-    <VoiceOverText>Sales results for Strategy 1, You are currently in a Sales strategy</VoiceOverText>
     <Paragraph>If I now navigate to the second category, I hear the following:</Paragraph>
     <VoiceOverText>Strategy 2, Sales strategy</VoiceOverText>
     <Paragraph>
@@ -62,6 +55,12 @@ const AccessibilityPage = () => (
     <Paragraph>
       Note that you cannot navigate to the axis labels, the axis tick labels or the tooltip, and they are not
       announced. I have deliberately hidden them from the screen reader as they do not aid comprehension.
+    </Paragraph>
+    <Paragraph>
+      As described in the WAI-ARIA Graphics Module, it is also possible to add descriptions to the parts of
+      the chart. Originally I included a description for the chart and each category. These worked well with
+      VoiceOver but in NVDA the description text is spoken immediately after the label text, which I found
+      confusing.
     </Paragraph>
   </div>
 );

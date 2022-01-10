@@ -65,15 +65,15 @@ export const Header: FC<HeaderProps> = ({ navigationData }) => {
                 exit="exit"
                 aria-label="Navigation menu"
               >
-                <button
-                  type="button"
-                  aria-label="Close navigation menu"
-                  onClick={close}
-                  className="fixed p-2 text-4xl transition-transform outline-none top-4 right-4 hover:scale-110 focus-visible:ring-2"
-                >
-                  <FiX />
-                </button>
                 <div className="flex flex-col gap-6 mx-auto max-w-screen-2xl md:flex-row md:gap-12">
+                  <button
+                    type="button"
+                    aria-label="Close navigation menu"
+                    onClick={close}
+                    className="fixed p-2 text-4xl transition-transform outline-none top-4 right-4 hover:scale-110 focus-visible:ring-2"
+                  >
+                    <FiX />
+                  </button>
                   {navigationData.map((section) => (
                     <div key={section.title} className="space-y-2">
                       <h2 className="font-semibold text-blue-500 uppercase text-md">{section.title}</h2>
