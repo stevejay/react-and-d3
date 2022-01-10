@@ -1,6 +1,7 @@
 import { FC, Fragment } from 'react';
+import { format } from 'd3-format';
 import { schemeSet3 } from 'd3-scale-chromatic';
-import { capitalize, round } from 'lodash-es';
+import { capitalize } from 'lodash-es';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
@@ -55,7 +56,8 @@ function renderTooltipContent(d: CategoryValueListDatum<string, number>) {
     <>
       {seriesKeys.map((series, index) => (
         <Fragment key={series}>
-          <span style={{ color: schemeSet3[index] }}>{capitalize(series)}:</span> {round(d.values[series], 2)}
+          <span style={{ color: schemeSet3[index] }}>{capitalize(series)}:</span>{' '}
+          {format('.2f')(d.values[series])}
           <br />
         </Fragment>
       ))}

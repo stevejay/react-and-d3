@@ -3,7 +3,7 @@ import { scaleOrdinal } from 'd3-scale';
 
 import type { DomainValue } from '@/types';
 
-// The domain and range need to be stable.
+// The domain and range need to be referentially stable.
 export function useOrdinalScale<CategoryT extends { toString(): string }, ValueT extends DomainValue>(
   domain: readonly CategoryT[],
   range: readonly ValueT[]

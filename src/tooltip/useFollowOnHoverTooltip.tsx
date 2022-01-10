@@ -30,7 +30,7 @@ type ReturnValue<DatumT> = [
 ];
 
 /**
- * @param renderContent Needs to be a stable function.
+ * @param renderContent Needs to be a referentially stable function.
  */
 export function useFollowOnHoverTooltip<DatumT>(
   renderContent: (datum: DatumT) => ReactElement | null,

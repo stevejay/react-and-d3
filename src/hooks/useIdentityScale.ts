@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { scaleIdentity } from 'd3-scale';
 
-// The domain and range need to be stable. The options object does not need to be stable.
+// The domain and range need to be referentially stable. The options object does
+// not need to be referentially stable.
 export function useIdentityScale(
   domain: readonly number[],
   range: readonly number[],

@@ -29,5 +29,5 @@
   "eslint.validate": ["html", "javascript", "typescript", "javascriptreact", "typescriptreact"],
   "eslint.packageManager": "yarn",
   // Added for https://github.com/microsoft/vscode/issues/139818
-  "editor.hover.sticky": false
+  "editor.hover.sticky": true
 }

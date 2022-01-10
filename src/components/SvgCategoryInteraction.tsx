@@ -1,6 +1,5 @@
 import { ReactElement, RefObject, TouchEvent, useRef } from 'react';
 import type { ScaleBand } from 'd3-scale';
-import { round } from 'lodash-es';
 
 import { SvgGroup } from '@/components/SvgGroup';
 import type { ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
@@ -11,8 +10,8 @@ function createVirtualElementRectFromMouseEvent(
   svgRect?: DOMRect
 ) {
   return {
-    x: round(event.clientX) - (svgRect?.x ?? 0),
-    y: round(event.clientY) - (svgRect?.y ?? 0),
+    x: Math.round(event.clientX) - (svgRect?.x ?? 0),
+    y: Math.round(event.clientY) - (svgRect?.y ?? 0),
     width: 0,
     height: 0
   };
@@ -20,8 +19,8 @@ function createVirtualElementRectFromMouseEvent(
 
 function createVirtualElementRectFromTouchEvent(event: TouchEvent, svgRect?: DOMRect) {
   return {
-    x: round(event.changedTouches[0].clientX) - (svgRect?.x ?? 0),
-    y: round(event.changedTouches[0].clientY) - (svgRect?.y ?? 0),
+    x: Math.round(event.changedTouches[0].clientX) - (svgRect?.x ?? 0),
+    y: Math.round(event.changedTouches[0].clientY) - (svgRect?.y ?? 0),
     width: 0,
     height: 0
   };
@@ -39,9 +38,9 @@ function snapVirtualElementRectToCategory<
 ) {
   const delta = (categoryScale(datum.category) ?? NaN) + categoryScale.bandwidth() * 0.5;
   if (orientation === 'vertical') {
-    return { ...rect, x: round(chartArea.translateLeft + delta) };
+    return { ...rect, x: Math.round(chartArea.translateLeft + delta) };
   } else {
-    return { ...rect, y: round(chartArea.translateTop + delta) + 10 }; // 10 is offset for tooltip arrow
+    return { ...rect, y: Math.round(chartArea.translateTop + delta) + 10 }; // 10 is offset for tooltip arrow
   }
 }
 

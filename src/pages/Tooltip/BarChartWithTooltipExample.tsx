@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { round } from 'lodash-es';
+import { format } from 'd3-format';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
@@ -38,7 +38,7 @@ function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
 function renderTooltipContent(d: CategoryValueDatum<string, number>) {
   return (
     <>
-      {getCategoryLabel(d)}: {round(d.value, 2)}
+      {getCategoryLabel(d)}: {format('.2f')(d.value)}
     </>
   );
 }

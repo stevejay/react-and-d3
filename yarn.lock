@@ -3898,6 +3898,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/d3-format@npm:^3":
+  version: 3.0.1
+  resolution: "@types/d3-format@npm:3.0.1"
+  checksum: 6819fae7e7c3fce1e44cd56e9b6d8ea5508f708cb7a42793edf82ff914b120bf6cddc35208b1b33ec82615ab82b843c284709f9cea5c3fe1ea5f012106b3d32c
+  languageName: node
+  linkType: hard
+
 "@types/d3-interpolate@npm:^3":
   version: 3.0.1
   resolution: "@types/d3-interpolate@npm:3.0.1"
@@ -7267,7 +7274,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"d3-format@npm:1 - 3":
+"d3-format@npm:1 - 3, d3-format@npm:^3.1.0":
   version: 3.1.0
   resolution: "d3-format@npm:3.1.0"
   checksum: f345ec3b8ad3cab19bff5dead395bd9f5590628eb97a389b1dd89f0b204c7c4fc1d9520f13231c2c7cf14b7c9a8cf10f8ef15bde2befbab41454a569bd706ca2
@@ -15286,6 +15293,7 @@ __metadata:
     "@types/d3-array": ^3
     "@types/d3-axis": ^3
     "@types/d3-ease": ^3
+    "@types/d3-format": ^3
     "@types/d3-interpolate": ^3
     "@types/d3-scale": ^4
     "@types/d3-scale-chromatic": ^3
@@ -15314,6 +15322,7 @@ __metadata:
     d3-array: ^3.1.1
     d3-axis: ^3.0.0
     d3-ease: ^3.0.1
+    d3-format: ^3.1.0
     d3-interpolate: ^3.0.1
     d3-scale: ^4.0.2
     d3-scale-chromatic: ^3.0.0

@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import { interpolate, interpolateRound } from 'd3-interpolate';
 import { scaleLinear } from 'd3-scale';
 
-// The domain and range need to be stable. The options object does not need to be stable.
+// The domain and range need to be referentially stable. The options object does
+// not need to be referentially stable.
 export function useLinearScale(
   domain: readonly number[],
   range: readonly number[],

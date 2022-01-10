@@ -3,10 +3,11 @@ import { scalePoint } from 'd3-scale';
 
 import type { DomainValue } from '@/types';
 
-// The domain and range need to be stable. The options object does not need to be stable.
-// padding: specifies the amount of blank space, in terms of multiples of the step,
-// to reserve before the first point and after the last point.
-// rangeRound: If true, the start and stop of each band will be integers.
+// The domain and range need to be referentially stable. The options object does
+// not need to be referentially stable.
+// padding: specifies the amount of blank space, in terms of multiples of the
+// step, to reserve before the first point and after the last point. rangeRound:
+// If true, the start and stop of each band will be integers.
 export function usePointScale<CategoryT extends DomainValue>(
   domain: readonly CategoryT[],
   range: readonly number[],

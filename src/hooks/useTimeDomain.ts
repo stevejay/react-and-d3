@@ -3,7 +3,7 @@ import { max, min } from 'd3-array';
 import { identity, isNil } from 'lodash-es';
 
 // The domain will not be recalculated if you only change the accessor.
-// This means the accessor function does not need to be stable.
+// This means the accessor function does not need to be referentially stable.
 export function useTimeDomain<Datum>(
   data: Datum[],
   accessor: (d: Datum) => Date = identity

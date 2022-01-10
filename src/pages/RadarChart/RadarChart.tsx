@@ -374,10 +374,13 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
                   cx={cx}
                   cy={cy}
                   r={tooltipPointRadiusPx}
-                  onMouseEnter={() => onMouseEnter(d, rect)}
+                  onMouseMove={() => onMouseEnter(d, rect)}
                   onMouseLeave={onMouseLeave}
                   onClick={(event) => {
                     onClick(d, rect);
+                    // Prevent clicks from being picked up by the document.window
+                    // onclick event listener, which closes the tooltip on a click
+                    // outside of the chart area.
                     event.stopPropagation();
                   }}
                 />

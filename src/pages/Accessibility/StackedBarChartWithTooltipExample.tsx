@@ -1,6 +1,5 @@
 import { FC, Fragment } from 'react';
 import { schemeSet3 } from 'd3-scale-chromatic';
-import { round } from 'lodash-es';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import type { CategoryValueListDatum } from '@/types';
@@ -50,8 +49,7 @@ function renderTooltipContent(d: CategoryValueListDatum<string, number>) {
     <>
       {seriesKeys.map((series, index) => (
         <Fragment key={series}>
-          <span style={{ color: schemeSet3[index] }}>{getSeriesLabel(series)}:</span>{' '}
-          {round(d.values[series], 2)}
+          <span style={{ color: schemeSet3[index] }}>{getSeriesLabel(series)}:</span> {d.values[series]}
           <br />
         </Fragment>
       ))}
@@ -79,7 +77,7 @@ export const StackedBarChartWithTooltipExample: FC = () => (
           categoryAriaLabel={getCategoryLabel}
           categoryDescription={(category) => `Sales results for ${getCategoryLabel(category)}`}
           datumAriaRoleDescription={(_d, series) => getSeriesLabel(series)}
-          datumAriaLabel={(d, series) => `${round(d.values[series])} units sold`}
+          datumAriaLabel={(d, series) => `${d.values[series]} units sold`}
           renderTooltipContent={renderTooltipContent}
           hideTooltipOnScroll
           compact={isCompact(width)}

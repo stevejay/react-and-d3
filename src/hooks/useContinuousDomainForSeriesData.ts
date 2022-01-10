@@ -4,7 +4,7 @@ import { isNil } from 'lodash-es';
 
 import type { CategoryValueListDatum, DomainValue, GetValueListDatumSummaryValue } from '@/types';
 
-// The two accessor functions need to be stable, or only change when `data` or
+// The two accessor functions need to be referentially stable, or only change when `data` or
 // `seriesKeys` change.
 export function useContinuousDomainForSeriesData<CategoryT extends DomainValue, ValueT extends DomainValue>(
   data: readonly CategoryValueListDatum<CategoryT, ValueT>[],

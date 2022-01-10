@@ -3,12 +3,13 @@ import { scaleBand } from 'd3-scale';
 
 import type { DomainValue } from '@/types';
 
-// The domain and range need to be stable. The options object does not need to be stable.
-// paddingInner: the proportion of the range that is reserved for blank space between bands.
-// 0 means no blank space between bands; 1 means a bandwidth of zero.
-// paddingOuter: the amount of blank space, in terms of multiples of the step,
-// to reserve before the first band and after the last band.
-// rangeRound: If true, the start and stop of each band will be integers.
+// The domain and range need to be referentially stable. The options object does
+// not need to be referentially stable. paddingInner: the proportion of the
+// range that is reserved for blank space between bands. 0 means no blank space
+// between bands; 1 means a bandwidth of zero. paddingOuter: the amount of blank
+// space, in terms of multiples of the step, to reserve before the first band
+// and after the last band. rangeRound: If true, the start and stop of each band
+// will be integers.
 export function useBandScale<CategoryT extends DomainValue>(
   domain: readonly CategoryT[],
   range: readonly number[],

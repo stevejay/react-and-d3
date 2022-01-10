@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import { format } from 'd3-format';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
@@ -48,10 +49,10 @@ function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
   }
 }
 
-function renderTooltipContent(d: CategoryValueDatum<string, number>) {
+function renderTooltipContent(datum: CategoryValueDatum<string, number>) {
   return (
     <>
-      <span className="text-slate-400">{getCategoryLabel(d)}:</span> {d.value}
+      <span className="text-slate-400">{getCategoryLabel(datum)}:</span> {format('.2f')(datum.value)}
     </>
   );
 }
@@ -60,7 +61,7 @@ export const RadarChartWithTooltipExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   const [selectedCategory, setSelectedCategory] = useState(data[0].category);
   const { breakpoint } = useBreakpoint();
-  const isMobile = breakpoint === 'mobile';
+  const compact = breakpoint === 'mobile';
   return (
     <div className="flex flex-col items-center w-full py-8 space-y-8 bg-slate-900">
       <RadarChartWithTooltip
@@ -68,8 +69,8 @@ export const RadarChartWithTooltipExample: FC = () => {
         title="This is the radar chart label"
         categoryLabel={getCategoryLabel}
         selectedCategory={selectedCategory}
-        compact={isMobile}
-        diameter={isMobile ? 340 : 420}
+        compact={compact}
+        diameter={compact ? 340 : 420}
         onSelect={(d) => setSelectedCategory(d.category)}
         datumAriaRoleDescription={getCategoryLabel}
         datumAriaLabel={(d) => `${d.value}`}
