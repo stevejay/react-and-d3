@@ -69,7 +69,7 @@ export const Header: FC<HeaderProps> = ({ navigationData }) => {
                   type="button"
                   aria-label="Close navigation menu"
                   onClick={close}
-                  className="fixed p-2 text-4xl transition-transform outline-none top-4 right-4 hover:scale-110 focus-visible:bg-pink-600"
+                  className="fixed p-2 text-4xl transition-transform outline-none top-4 right-4 hover:scale-110 focus-visible:ring-2"
                 >
                   <FiX />
                 </button>
