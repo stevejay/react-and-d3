@@ -2,25 +2,38 @@ import { FC, lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { Header, NavigationSection } from './components/Header';
+import { Header } from './components/Header';
 import { LoadingPlaceholder } from './components/LoadingPlaceholder';
 import { ScrollToTopOnNavigation } from './components/ScrollToTopOnNavigation';
 
-const navigationData: NavigationSection[] = [
+const HomePage = lazy(() => import('@/pages/Home'));
+const AxisPage = lazy(() => import('@/pages/Axis'));
+const TooltipPage = lazy(() => import('@/pages/Tooltip'));
+const AccessibilityPage = lazy(() => import('@/pages/Accessibility'));
+const BarChartPage = lazy(() => import('@/pages/BarChart'));
+const StackedBarChartPage = lazy(() => import('@/pages/StackedBarChart'));
+const GroupedBarChartPage = lazy(() => import('@/pages/GroupedBarChart'));
+const RadarChartPage = lazy(() => import('@/pages/RadarChart'));
+const SparklinePage = lazy(() => import('@/pages/Sparkline'));
+const ThreePage = lazy(() => import('@/pages/Three'));
+
+const pageLinks = [
+  { href: '/', title: 'Home', pageComponent: HomePage },
+  { href: '/axis', title: 'Axis', pageComponent: AxisPage },
+  { href: '/tooltip', title: 'Tooltip', pageComponent: TooltipPage },
+  { href: '/accessibility', title: 'Accessibility', pageComponent: AccessibilityPage },
+  { href: '/bar-chart', title: 'Bar Chart', pageComponent: BarChartPage },
+  { href: '/stacked-bar-chart', title: 'Stacked Bar Chart', pageComponent: StackedBarChartPage },
+  { href: '/grouped-bar-chart', title: 'Grouped Bar Chart', pageComponent: GroupedBarChartPage },
+  { href: '/radar-chart', title: 'Radar Chart', pageComponent: RadarChartPage },
+  { href: '/sparkline', title: 'Sparkline', pageComponent: SparklinePage },
+  { href: '/three', title: 'Three.js Rendering', pageComponent: ThreePage }
+];
+
+const navigationData = [
   {
     title: 'Pages',
-    links: [
-      { href: '/', title: 'Home' },
-      { href: '/axis', title: 'Axis' },
-      { href: '/tooltip', title: 'Tooltip' },
-      { href: '/accessibility', title: 'Accessibility' },
-      { href: '/bar-chart', title: 'Bar Chart' },
-      { href: '/stacked-bar-chart', title: 'Stacked Bar Chart' },
-      { href: '/grouped-bar-chart', title: 'Grouped Bar Chart' },
-      //   { href: '/histogram', title: 'Histogram' },
-      { href: '/radar-chart', title: 'Radar Chart' },
-      { href: '/sparkline', title: 'Sparkline' }
-    ]
+    links: pageLinks
   },
   {
     title: 'Links',
@@ -31,17 +44,6 @@ const navigationData: NavigationSection[] = [
   }
 ];
 
-const HomePage = lazy(() => import('@/pages/Home'));
-const AxisPage = lazy(() => import('@/pages/Axis'));
-const TooltipPage = lazy(() => import('@/pages/Tooltip'));
-const AccessibilityPage = lazy(() => import('@/pages/Accessibility'));
-const BarChartPage = lazy(() => import('@/pages/BarChart'));
-const StackedBarChartPage = lazy(() => import('@/pages/StackedBarChart'));
-const GroupedBarChartPage = lazy(() => import('@/pages/GroupedBarChart'));
-const HistogramPage = lazy(() => import('@/pages/Histogram'));
-const RadarChartPage = lazy(() => import('@/pages/RadarChart'));
-const SparklinePage = lazy(() => import('@/pages/Sparkline'));
-
 export const App: FC = () => (
   <>
     <ScrollToTopOnNavigation />
@@ -50,16 +52,19 @@ export const App: FC = () => (
       <ErrorBoundary>
         <Suspense fallback={<LoadingPlaceholder />}>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            {pageLinks.map(({ href, pageComponent: PageComponent }) => (
+              <Route key={href} path={href} element={<PageComponent />} />
+            ))}
+            {/* <Route path="/" element={<HomePage />} />
             <Route path="/axis" element={<AxisPage />} />
             <Route path="/tooltip" element={<TooltipPage />} />
             <Route path="/accessibility" element={<AccessibilityPage />} />
             <Route path="/bar-chart" element={<BarChartPage />} />
             <Route path="/stacked-bar-chart" element={<StackedBarChartPage />} />
             <Route path="/grouped-bar-chart" element={<GroupedBarChartPage />} />
-            <Route path="/histogram" element={<HistogramPage />} />
             <Route path="/radar-chart" element={<RadarChartPage />} />
             <Route path="/sparkline" element={<SparklinePage />} />
+            <Route path="/sparkline" element={<SparklinePage />} /> */}
           </Routes>
         </Suspense>
       </ErrorBoundary>

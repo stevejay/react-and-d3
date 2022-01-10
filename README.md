@@ -2,6 +2,12 @@
 
 This project demonstrates how D3 and React can be used together to render SVG data visualisations. D3 is used to calculate the element position data and React is used to actually render them. Animations are implemented using [Framer Motion](https://www.framer.com/motion/).[Tailwind CSS](https://tailwindcss.com/) is used for styling.
 
+## Problems
+
+I'm having major TypeScript typings issues with @react-three/fibre and framer-motion/three.
+
+I've had to install version 0.132.0 of @types/three.
+
 ## Deployment
 
 ### Building the Web site Docker image
