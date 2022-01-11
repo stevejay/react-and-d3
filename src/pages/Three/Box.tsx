@@ -1,11 +1,10 @@
 import { FC, useState } from 'react';
 import { MeshProps } from '@react-three/fiber';
-// @ts-ignore
 // eslint-disable-next-line import/no-unresolved
-import { motion } from 'framer-motion/three'; // WTF
+import { motion } from 'framer-motion/three';
 // import * as THREE from 'three';
 
-export const Box: FC<MeshProps> = (props) => {
+export const Box: FC<Omit<MeshProps, 'onUpdate' | 'ref'>> = (props) => {
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
   //   return (
