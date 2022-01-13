@@ -1,12 +1,12 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { MeshProps } from '@react-three/fiber';
 // eslint-disable-next-line import/no-unresolved
-import { motion } from 'framer-motion/three';
+// import { motion } from 'framer-motion/three';
 // import * as THREE from 'three';
 
 export const Box: FC<Omit<MeshProps, 'onUpdate' | 'ref'>> = (props) => {
-  const [hovered, setHover] = useState(false);
-  const [active, setActive] = useState(false);
+  //   const [hovered, setHover] = useState(false);
+  //   const [active, setActive] = useState(false);
   //   return (
   //     <mesh
   //       {...props}
@@ -22,18 +22,20 @@ export const Box: FC<Omit<MeshProps, 'onUpdate' | 'ref'>> = (props) => {
   //       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
   //     </mesh>
   //   );
-  return (
-    <motion.mesh
-      {...props}
-      scale={active ? 1.5 : 1}
-      transition={{ duration: 3, ease: 'linear', repeat: Infinity }}
-      animate={{ rotateX: 2 * Math.PI }}
-      onClick={() => setActive(!active)}
-      onPointerOver={() => setHover(true)}
-      onPointerOut={() => setHover(false)}
-    >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-    </motion.mesh>
-  );
+
+  return null;
+  //   return (
+  //     <motion.mesh
+  //       {...props}
+  //       scale={active ? 1.5 : 1}
+  //       transition={{ duration: 3, ease: 'linear', repeat: Infinity }}
+  //       animate={{ rotateX: 2 * Math.PI }}
+  //       onClick={() => setActive(!active)}
+  //       onPointerOver={() => setHover(true)}
+  //       onPointerOut={() => setHover(false)}
+  //     >
+  //       <boxGeometry args={[1, 1, 1]} />
+  //       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+  //     </motion.mesh>
+  //   );
 };

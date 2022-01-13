@@ -36,6 +36,11 @@ export type GetValueListDatumSummaryValue<CategoryT extends DomainValue, ValueT 
   seriesKeys: readonly string[]
 ) => number | null | undefined;
 
+export type PointDatum = {
+  x: number;
+  y: number;
+};
+
 /**
  * Defines a chart area within a chart. This is an area that is used to actually
  * display data, e.g., the central area in a bar chart where the bars are rendered.

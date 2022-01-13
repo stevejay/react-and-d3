@@ -90,59 +90,56 @@ export function SvgCategoryInteraction<
       fill="transparent"
       stroke="none"
     >
-      {/* original try */}
-      {true && (
-        <rect
-          data-test-id="interaction-area"
-          role="presentation"
-          className="touch-manipulation"
-          x={0}
-          y={0}
-          width={chartArea.width}
-          height={chartArea.height}
-          onMouseMove={(event) => {
-            const svgRect = svgRef.current?.getBoundingClientRect();
-            const rect = createVirtualElementRectFromMouseEvent(event, svgRect);
-            const category = categoryInverter(
-              orientation === 'vertical' ? rect.x - chartArea.translateLeft : rect.y - chartArea.translateTop
-            );
-            const datum = datumLookup.get(category);
-            datum && onMouseEnter(datum, rect);
-          }}
-          onMouseLeave={onMouseLeave}
-          onClick={(event) => {
-            // Prevent clicks from being picked up by the document.window
-            // onclick event listener, which closes the tooltip on a click
-            // outside of the chart area.
-            event.stopPropagation();
-          }}
-          onTouchStart={(e) => {
-            isSwiping.current = false;
-          }}
-          onTouchMove={() => (isSwiping.current = true)}
-          onTouchEnd={(event) => {
-            // Prevent the emulated mouse events from being fired after this event.
-            event.preventDefault();
+      <rect
+        data-test-id="interaction-area"
+        role="presentation"
+        className="touch-manipulation"
+        x={0}
+        y={0}
+        width={chartArea.width}
+        height={chartArea.height}
+        onMouseMove={(event) => {
+          const svgRect = svgRef.current?.getBoundingClientRect();
+          const rect = createVirtualElementRectFromMouseEvent(event, svgRect);
+          const category = categoryInverter(
+            orientation === 'vertical' ? rect.x - chartArea.translateLeft : rect.y - chartArea.translateTop
+          );
+          const datum = datumLookup.get(category);
+          datum && onMouseEnter(datum, rect);
+        }}
+        onMouseLeave={onMouseLeave}
+        onClick={(event) => {
+          // Prevent clicks from being picked up by the document.window
+          // onclick event listener, which closes the tooltip on a click
+          // outside of the chart area.
+          event.stopPropagation();
+        }}
+        onTouchStart={(e) => {
+          isSwiping.current = false;
+        }}
+        onTouchMove={() => (isSwiping.current = true)}
+        onTouchEnd={(event) => {
+          // Prevent the emulated mouse events from being fired after this event.
+          event.preventDefault();
 
-            // Bail out early if the touch was a swipe.
-            if (isSwiping.current) {
-              return;
-            }
+          // Bail out early if the touch was a swipe.
+          if (isSwiping.current) {
+            return;
+          }
 
-            const svgRect = svgRef.current?.getBoundingClientRect();
-            const rect = createVirtualElementRectFromTouchEvent(event, svgRect);
-            const category = categoryInverter(
-              orientation === 'vertical' ? rect.x - chartArea.translateLeft : rect.y - chartArea.translateTop
+          const svgRect = svgRef.current?.getBoundingClientRect();
+          const rect = createVirtualElementRectFromTouchEvent(event, svgRect);
+          const category = categoryInverter(
+            orientation === 'vertical' ? rect.x - chartArea.translateLeft : rect.y - chartArea.translateTop
+          );
+          const datum = datumLookup.get(category);
+          datum &&
+            onClick(
+              datum,
+              snapVirtualElementRectToCategory(rect, chartArea, orientation, categoryScale, datum)
             );
-            const datum = datumLookup.get(category);
-            datum &&
-              onClick(
-                datum,
-                snapVirtualElementRectToCategory(rect, chartArea, orientation, categoryScale, datum)
-              );
-          }}
-        />
-      )}
+        }}
+      />
     </SvgGroup>
   );
 }

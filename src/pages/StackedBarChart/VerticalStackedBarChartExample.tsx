@@ -1,7 +1,8 @@
 import { FC } from 'react';
 import { schemeSet3 } from 'd3-scale-chromatic';
 
-import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
+import { ChartSizerUsingClone } from '@/components/ChartSizerUsingClone';
+import { ChartTitle } from '@/components/ChartTitle';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 import type { CategoryValueListDatum, Margins } from '@/types';
@@ -29,6 +30,8 @@ const dataSets: readonly CategoryValueListDatum<string, number>[][] = [
   ]
 ];
 
+const seriesKeys = ['one', 'two', 'three'];
+
 const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
 
 function getSeriesColor(series: string) {
@@ -44,27 +47,20 @@ function getSeriesColor(series: string) {
   }
 }
 
-const seriesKeys = ['one', 'two', 'three'];
-
 export const VerticalStackedBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
-      <ExampleChartWrapper title="Example 1: Vertical Stacked Bar Chart" sizerClassName="h-[384px]">
-        {({ inView, width, height, ariaLabelledby }) =>
-          inView && (
-            <VerticalStackedBarChart
-              ariaLabelledby={ariaLabelledby}
-              data={data}
-              seriesKeys={seriesKeys}
-              seriesColor={getSeriesColor}
-              width={width}
-              height={height}
-              margins={margins}
-            />
-          )
-        }
-      </ExampleChartWrapper>
+      <ChartTitle id="example-1">Example 1: Vertical Stacked Bar Chart</ChartTitle>
+      <ChartSizerUsingClone className="h-[384px] my-8">
+        <VerticalStackedBarChart
+          ariaLabelledby="example-1"
+          data={data}
+          seriesKeys={seriesKeys}
+          seriesColor={getSeriesColor}
+          margins={margins}
+        />
+      </ChartSizerUsingClone>
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>
   );

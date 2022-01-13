@@ -5,35 +5,17 @@ import { PageHeading } from '@/components/PageHeading';
 import { Paragraph } from '@/components/Paragraph';
 import { SectionHeading } from '@/components/SectionHeading';
 
-// import { Box } from './Box';
-
 const PlaneObject = () => {
   const mesh = useRef();
 
   const { size } = useThree();
 
-  // 5 ??? -900           renderOrder
   return (
     <>
-      {/* <mesh position={[0, 0, -900]} ref={mesh}>
-        <planeBufferGeometry args={[size.width - 2, size.height - 2]} />
-        <meshStandardMaterial color="white" polygonOffset polygonOffsetUnits={1} />
-      </mesh>
-
-      <mesh position={[0, 0, -900]} ref={mesh}>
-        <planeBufferGeometry args={[size.width - 2, size.height - 2]} />
-        <meshStandardMaterial color="green" polygonOffset polygonOffsetUnits={2} />
-      </mesh> */}
-
       <mesh position={[0, 0, -0.1]} ref={mesh}>
         <planeBufferGeometry args={[size.width - 2, size.height - 2]} />
         <meshStandardMaterial color="white" />
       </mesh>
-
-      {/* <mesh position={[0, 0, -100]} ref={mesh}>
-        <planeBufferGeometry args={[size.width - 2, size.height - 2]} />
-        <meshStandardMaterial color="green" />
-      </mesh> */}
     </>
   );
 };
@@ -51,10 +33,7 @@ const ThreePage = () => (
         camera={{ zoom: 1, position: [0, 0, 0] }}
       >
         <ambientLight />
-        {/* <pointLight position={[10, 10, 10]} /> */}
         <PlaneObject />
-        {/* <Box position={[-1.2, 0, 0]} />
-        <Box position={[1.2, 0, 0]} /> */}
       </Canvas>
     </div>
   </div>

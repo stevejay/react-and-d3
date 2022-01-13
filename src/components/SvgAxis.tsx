@@ -121,6 +121,8 @@ function getTickLabelOrientationProps(
   }
 }
 
+const noAnimations = { duration: 0, type: 'tween' };
+
 export type SvgAxisProps<DomainT extends DomainValue> = BaseAxisProps<DomainT> & {
   className?: string;
   domainClassName?: string;
@@ -155,6 +157,7 @@ export type SvgAxisProps<DomainT extends DomainValue> = BaseAxisProps<DomainT> &
   axisLabelAlignment?: AxisLabelAlign;
   axisLabelSpacing?: number;
   axisLabelClassName?: string;
+  animate?: boolean;
 };
 
 export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT>): ReactElement | null {
@@ -176,7 +179,8 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
     axisLabel,
     axisLabelAlignment = 'center',
     axisLabelSpacing = 30,
-    axisLabelClassName = ''
+    axisLabelClassName = '',
+    animate = true
   } = props;
 
   const scale = props.scale as ExpandedAxisScale<DomainT>;
@@ -220,10 +224,10 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
   const range = scale.range();
 
   // The pixel position to start drawing the axis domain line at.
-  const range0 = +range[0] + renderingOffset;
+  let range0 = +range[0] + renderingOffset;
 
   // The pixel position to finish drawing the axis domain line at.
-  const range1 = +range[range.length - 1] + renderingOffset;
+  let range1 = +range[range.length - 1] + renderingOffset;
 
   // Get a function that can be used to calculate the pixel position for a tick
   // value. This has special handling if the scale is a band scale, in which case
@@ -271,6 +275,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
           fill="none"
           stroke="currentColor"
           role="presentation"
+          transition={animate ? undefined : noAnimations}
           animate={{
             d: createAxisDomainPathData(orientation, tickSizeOuter, renderingOffset, range0, range1, k)
           }}
@@ -285,6 +290,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
             key={getAxisDomainAsReactKey(tickValue)}
             data-test-id="tick-group"
             custom={position}
+            transition={animate ? undefined : noAnimations}
             initial="initial"
             animate="animate"
             exit="exit"
@@ -333,6 +339,44 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
           </motion.g>
         ))}
       </AnimatePresence>
+
+      {/* {tickValues.map((tickValue, index) => (
+        <g
+          key={getAxisDomainAsReactKey(tickValue)}
+          data-test-id="tick-group"
+          transform={
+            translate === 'translateX'
+              ? `translate(${position(tickValue) + renderingOffset} 0)`
+              : `translate(0 ${position(tickValue) + renderingOffset})`
+          }
+          className={tickGroupClassName}
+          {...tickGroupProps}
+        >
+          <line
+            data-test-id="tick"
+            {...{ [x + '2']: k * tickSizeInner }}
+            stroke="currentColor"
+            role="presentation"
+            className={tickLineClassName}
+            {...tickLineProps}
+          />
+          <g data-test-id="tick-label-group" style={{ transform: labelGroupTransform }}>
+            <text
+              data-test-id="tick-label"
+              stroke="none"
+              fill="currentColor"
+              role="presentation"
+              aria-hidden
+              className={tickTextClassName}
+              {...tickLabelOrientationProps}
+              {...tickTextProps}
+            >
+              {tickFormat(tickValue, index)}
+            </text>
+          </g>
+        </g>
+      ))} */}
+
       {axisLabel && (
         <g data-test-id="axis-label-group" transform={axisLabelOrientationProps.transform}>
           <text

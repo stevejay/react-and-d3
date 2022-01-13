@@ -7,10 +7,10 @@ import circuitBoardSvgUrl from './illustrations/circuitBoard.svg';
 import { GroupedBarChartSvg } from './illustrations/GroupedBarChartSvg';
 import { RadarChartSvg } from './illustrations/RadarChartSvg';
 import { ReactAndD3Svg } from './illustrations/ReactAndD3Svg';
+import { ScatterplotSvg } from './illustrations/ScatterplotSvg';
 import { SparklineSvg } from './illustrations/SparklineSvg';
 import { StackedBarChartSvg } from './illustrations/StackedBarChartSvg';
 import { TooltipSvg } from './illustrations/TooltipSvg';
-// import { HistogramChartSvg } from './illustrations/HistogramChartSvg';
 import { PageCard } from './PageCard';
 
 const Home = () => (
@@ -48,7 +48,7 @@ const Home = () => (
       <PageCard href="/bar-chart" title="Bar Chart" illustration={BarChartSvg} />
       <PageCard href="/stacked-bar-chart" title="Stacked Bar Chart" illustration={StackedBarChartSvg} />
       <PageCard href="/grouped-bar-chart" title="Grouped Bar Chart" illustration={GroupedBarChartSvg} />
-      {/* <PageCard href="/histogram" title="Histogram" illustration={HistogramChartSvg} /> */}
+      <PageCard href="/scatterplot" title="Scatterplot" illustration={ScatterplotSvg} />
       <PageCard href="/radar-chart" title="Radar Chart" illustration={RadarChartSvg} />
       <PageCard href="/sparkline" title="Sparkline" illustration={SparklineSvg} />
     </div>

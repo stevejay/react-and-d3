@@ -14,6 +14,7 @@ const BarChartPage = lazy(() => import('@/pages/BarChart'));
 const StackedBarChartPage = lazy(() => import('@/pages/StackedBarChart'));
 const GroupedBarChartPage = lazy(() => import('@/pages/GroupedBarChart'));
 const RadarChartPage = lazy(() => import('@/pages/RadarChart'));
+const ScatterplotPage = lazy(() => import('@/pages/Scatterplot'));
 const SparklinePage = lazy(() => import('@/pages/Sparkline'));
 const ThreePage = lazy(() => import('@/pages/Three'));
 
@@ -26,6 +27,7 @@ const pageLinks = [
   { href: '/stacked-bar-chart', title: 'Stacked Bar Chart', pageComponent: StackedBarChartPage },
   { href: '/grouped-bar-chart', title: 'Grouped Bar Chart', pageComponent: GroupedBarChartPage },
   { href: '/radar-chart', title: 'Radar Chart', pageComponent: RadarChartPage },
+  { href: '/scatterplot', title: 'Scatterplot', pageComponent: ScatterplotPage },
   { href: '/sparkline', title: 'Sparkline', pageComponent: SparklinePage },
   { href: '/three', title: 'Three.js Rendering', pageComponent: ThreePage }
 ];
@@ -55,16 +57,6 @@ export const App: FC = () => (
             {pageLinks.map(({ href, pageComponent: PageComponent }) => (
               <Route key={href} path={href} element={<PageComponent />} />
             ))}
-            {/* <Route path="/" element={<HomePage />} />
-            <Route path="/axis" element={<AxisPage />} />
-            <Route path="/tooltip" element={<TooltipPage />} />
-            <Route path="/accessibility" element={<AccessibilityPage />} />
-            <Route path="/bar-chart" element={<BarChartPage />} />
-            <Route path="/stacked-bar-chart" element={<StackedBarChartPage />} />
-            <Route path="/grouped-bar-chart" element={<GroupedBarChartPage />} />
-            <Route path="/radar-chart" element={<RadarChartPage />} />
-            <Route path="/sparkline" element={<SparklinePage />} />
-            <Route path="/sparkline" element={<SparklinePage />} /> */}
           </Routes>
         </Suspense>
       </ErrorBoundary>

@@ -32,10 +32,7 @@ export const AxisExampleChartWrapper: FC<AxisExampleChartWrapperProps> = ({
   return (
     <div>
       <AxisChartTitle title={title} id={id} />
-      <ChartSizer
-        className={sizerClassName}
-        intersectOptions={{ triggerOnce: true, rootMargin: '200px 0px' }}
-      >
+      <ChartSizer className={sizerClassName}>
         {({ inView, width, height }) => <>{children({ inView, width, height, ariaLabelledby: id })}</>}
       </ChartSizer>
     </div>

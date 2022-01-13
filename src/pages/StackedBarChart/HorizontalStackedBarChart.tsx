@@ -16,8 +16,8 @@ export type HorizontalStackedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
   seriesColor: (series: string, index: number) => string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   margins: Margins;
   ariaLabel?: string;
   ariaLabelledby?: string;
@@ -32,15 +32,15 @@ export type HorizontalStackedBarChartProps<CategoryT extends DomainValue> = {
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   svgRef?: Ref<SVGSVGElement>;
   transitionSeconds?: number;
-  compact: boolean;
+  isCompact: (width: number) => boolean;
 };
 
 function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
   data,
   seriesKeys,
   seriesColor,
-  width,
-  height,
+  width = 0,
+  height = 0,
   margins,
   ariaLabel,
   ariaLabelledby,
@@ -55,8 +55,9 @@ function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
   datumDescription,
   svgRef,
   transitionSeconds = 0.5,
-  compact
+  isCompact
 }: HorizontalStackedBarChartProps<CategoryT>): ReactElement | null {
+  const compact = isCompact(width);
   const chartArea = useChartArea(width, height, margins);
 
   const valueDomain = useContinuousDomainForSeriesData(

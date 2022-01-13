@@ -28,10 +28,7 @@ export const ExampleChartWrapper: FC<ExampleChartWrapperProps> = ({ title, sizer
   return (
     <>
       <ChartTitle id={id}>{title}</ChartTitle>
-      <ChartSizer
-        className={`${sizerClassName} my-8`}
-        intersectOptions={{ triggerOnce: true, rootMargin: '200px 0px' }}
-      >
+      <ChartSizer className={`${sizerClassName} my-8`}>
         {({ inView, width, height }) => <>{children({ inView, width, height, ariaLabelledby: id })}</>}
       </ChartSizer>
     </>

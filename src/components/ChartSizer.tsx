@@ -1,7 +1,8 @@
 import { FC, ReactNode } from 'react';
 import { IntersectionOptions, useInView } from 'react-intersection-observer';
+import useMeasure from 'react-use-measure';
 
-import { useDebouncedMeasure } from '@/hooks/useDebouncedMeasure';
+const defaultIntersectOptions = { triggerOnce: true, rootMargin: '200px 0px' };
 
 export type ChartSizerProps = {
   /**
@@ -33,14 +34,14 @@ export type ChartSizerProps = {
  */
 export const ChartSizer: FC<ChartSizerProps> = ({
   className,
-  intersectOptions,
+  intersectOptions = defaultIntersectOptions,
   debouncedMeasureWaitMs = 300,
   children
 }) => {
   const [inViewRef, inView] = useInView(intersectOptions);
-  const { ref: sizerRef, width, height } = useDebouncedMeasure(debouncedMeasureWaitMs);
+  const [sizerRef, { width, height }] = useMeasure({ debounce: debouncedMeasureWaitMs });
   return (
-    <div ref={sizerRef} className={`w-full ${className}`}>
+    <div ref={sizerRef} className={`relative overflow-hidden w-full ${className}`}>
       <div ref={inViewRef}>{children({ inView, width: width ?? 0, height: height ?? 0 })}</div>
     </div>
   );

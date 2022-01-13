@@ -16,8 +16,8 @@ export type VerticalStackedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
   seriesColor: (series: string, index: number) => string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   margins: Margins;
   ariaLabel?: string;
   ariaLabelledby?: string;
@@ -38,8 +38,8 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
   data,
   seriesKeys,
   seriesColor,
-  width,
-  height,
+  width = 0,
+  height = 0,
   margins,
   ariaLabel,
   ariaLabelledby,

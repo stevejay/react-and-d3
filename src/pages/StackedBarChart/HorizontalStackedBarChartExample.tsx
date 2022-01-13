@@ -1,7 +1,8 @@
 import { FC } from 'react';
 import { schemeSet3 } from 'd3-scale-chromatic';
 
-import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
+import { ChartSizerUsingClone } from '@/components/ChartSizerUsingClone';
+import { ChartTitle } from '@/components/ChartTitle';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 import type { Margins } from '@/types';
@@ -54,22 +55,17 @@ export const HorizontalStackedBarChartExample: FC = () => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
-      <ExampleChartWrapper title="Example 2: Horizontal Stacked Bar Chart" sizerClassName="h-[384px]">
-        {({ inView, width, height, ariaLabelledby }) =>
-          inView && (
-            <HorizontalStackedBarChart
-              ariaLabelledby={ariaLabelledby}
-              data={data}
-              seriesKeys={seriesKeys}
-              seriesColor={getSeriesColor}
-              width={width}
-              height={height}
-              margins={margins}
-              compact={isCompact(width)}
-            />
-          )
-        }
-      </ExampleChartWrapper>
+      <ChartTitle id="example-2">Example 2: Horizontal Stacked Bar Chart</ChartTitle>
+      <ChartSizerUsingClone className="h-[384px] my-8">
+        <HorizontalStackedBarChart
+          ariaLabelledby="example-2"
+          data={data}
+          seriesKeys={seriesKeys}
+          seriesColor={getSeriesColor}
+          margins={margins}
+          isCompact={isCompact}
+        />
+      </ChartSizerUsingClone>
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>
   );

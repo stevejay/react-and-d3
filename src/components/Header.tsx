@@ -23,7 +23,7 @@ export const Header: FC<HeaderProps> = ({ navigationData }) => {
   const [isOpen, setIsOpen] = useState(false);
   const close = () => setIsOpen(false);
   return (
-    <header className="sticky top-0 border-b bg-slate-900 border-slate-600">
+    <header className="sticky top-0 z-10 border-b bg-slate-900 border-slate-600">
       <div className="flex items-center justify-between px-4 py-1 mx-auto md:px-6 md:py-2 max-w-screen-2xl">
         <h2 className="text-2xl font-thin text-transparent uppercase bg-clip-text bg-gradient-to-r from-blue-500 to-green-500">
           <Link to="/" className="outline-none focus-visible:ring-2">
