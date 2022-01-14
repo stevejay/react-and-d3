@@ -41,6 +41,8 @@ export type PointDatum = {
   y: number;
 };
 
+export type Point = [number, number];
+
 /**
  * Defines a chart area within a chart. This is an area that is used to actually
  * display data, e.g., the central area in a bar chart where the bars are rendered.
@@ -59,14 +61,14 @@ export type ChartArea = {
   /** The y offset from the top left corner of the entire chart to the bottom edge of the chart area. */
   translateBottom: number;
   /** A range array for the width of the chart area that can be used with a scale. */
-  rangeWidth: readonly [number, number];
+  rangeWidth: Point;
   /** A range array for the height of the chart area that can be used with a scale. */
-  rangeHeight: readonly [number, number];
+  rangeHeight: Point;
   /**
    * A reversed range array for the height of the chart area that can be used with a scale.
    * This is useful if you need to render a band scale with the categories in reverse order.
    */
-  rangeHeightReversed: readonly [number, number];
+  rangeHeightReversed: Point;
 };
 
 export type Rect = {

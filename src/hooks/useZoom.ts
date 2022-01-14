@@ -1,6 +1,8 @@
-import { MutableRefObject, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { RefObject, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createUseGesture, dragAction, pinchAction, wheelAction } from '@use-gesture/react';
 import { zoomIdentity, ZoomTransform } from 'd3-zoom';
+
+import { Point } from '@/types';
 
 const useGesture = createUseGesture([dragAction, pinchAction, wheelAction]);
 
@@ -11,18 +13,18 @@ const useGesture = createUseGesture([dragAction, pinchAction, wheelAction]);
  */
 function updateTranslate(
   transform: ZoomTransform,
-  p0: [number, number], // starting coordinate
-  p1: [number, number] // inverted starting coordinate
+  p0: Point, // starting coordinate
+  p1: Point // inverted starting coordinate
 ): ZoomTransform {
   const x = p0[0] - p1[0] * transform.k;
   const y = p0[1] - p1[1] * transform.k;
   return x === transform.x && y === transform.y ? transform : new ZoomTransform(transform.k, x, y);
 }
 
-export type ReturnType = [MutableRefObject<SVGElement>, ZoomTransform];
+export type ReturnType<ElementT extends SVGElement> = [RefObject<ElementT>, ZoomTransform];
 
-export function useZoom(): ReturnType {
-  const ref = useRef<SVGElement>(null!);
+export function useZoom<ElementT extends SVGElement>(): ReturnType<ElementT> {
+  const ref = useRef<ElementT>(null!);
 
   // The underlying state.
   const [transform, setTransform] = useState(zoomIdentity);
@@ -81,7 +83,7 @@ export function useZoom(): ReturnType {
         if (first) {
           const { top, left } = ref.current.getBoundingClientRect();
           // Get pinch starting coord relative to the top left corner of the rect element.
-          const relativePoint = [originX - left, originY - top] as [number, number];
+          const relativePoint = [originX - left, originY - top] as Point;
           // Also store the inverted version of the starting coord.
           currentMemo = [relativePoint, transformRef.current.invert(relativePoint)];
         }

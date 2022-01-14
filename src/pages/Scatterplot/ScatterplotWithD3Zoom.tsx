@@ -7,11 +7,11 @@ import { SvgChartRoot } from '@/components/SvgChartRoot';
 import { SvgPoints } from '@/components/SvgPoints';
 import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
+import { useD3Zoom } from '@/hooks/useD3Zoom';
 import { useLinearScaleWithZoom } from '@/hooks/useLinearScaleWithZoom';
-import { useZoom } from '@/hooks/useZoom';
 import type { Margins, PointDatum } from '@/types';
 
-export type ScatterplotProps = {
+export type ScatterplotWithD3ZoomProps = {
   data: PointDatum[];
   width: number;
   height: number;
@@ -29,7 +29,7 @@ export type ScatterplotProps = {
   compact: boolean;
 };
 
-function ScatterplotCore({
+function ScatterplotWithD3ZoomCore({
   data,
   width,
   height,
@@ -45,9 +45,15 @@ function ScatterplotCore({
   svgRef,
   transitionSeconds = 0.5,
   compact
-}: ScatterplotProps): ReactElement | null {
-  const [interactiveRef, transform] = useZoom<SVGRectElement>();
+}: ScatterplotWithD3ZoomProps): ReactElement | null {
   const chartArea = useChartArea(width, height, margins, 0);
+  const [interactiveRef, transform] = useD3Zoom<SVGRectElement>(
+    [
+      [0, 0],
+      [chartArea.width, chartArea.height]
+    ],
+    { scaleExtent: [0.5, 5] }
+  );
   const xDomain = useContinuousDomain(data, (d) => d.x);
   const xScale = useLinearScaleWithZoom(xDomain, chartArea.rangeWidth, 'x', transform);
   const yDomain = useContinuousDomain(data, (d) => d.y);
@@ -111,11 +117,11 @@ function ScatterplotCore({
   );
 }
 
-export const Scatterplot = memo(
-  ScatterplotCore,
+export const ScatterplotWithD3Zoom = memo(
+  ScatterplotWithD3ZoomCore,
   (prevProps, nextProps) =>
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
     prevProps.margins === nextProps.margins
-) as typeof ScatterplotCore;
+) as typeof ScatterplotWithD3ZoomCore;

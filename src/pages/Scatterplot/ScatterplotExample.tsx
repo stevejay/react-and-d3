@@ -4,7 +4,8 @@ import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import type { Margins } from '@/types';
 
 import irisData from './iris.json';
-import { Scatterplot } from './Scatterplot';
+import { ScatterplotWithD3Zoom } from './ScatterplotWithD3Zoom';
+// import { Scatterplot } from './Scatterplot';
 
 const margins: Margins = { left: 56, right: 40, top: 40, bottom: 48 };
 
@@ -18,7 +19,7 @@ export const ScatterplotExample: FC = () => {
     <ExampleChartWrapper title="Example 1: React zoomable scatterplot" sizerClassName="h-[384px]">
       {({ inView, width, height, ariaLabelledby }) =>
         inView && (
-          <Scatterplot
+          <ScatterplotWithD3Zoom
             ariaLabelledby={ariaLabelledby}
             data={data}
             width={width}

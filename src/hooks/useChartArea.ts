@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import type { ChartArea, Margins } from '@/types';
+import type { ChartArea, Margins, Point } from '@/types';
 
 export function useChartArea(
   svgWidth: number,
@@ -15,9 +15,9 @@ export function useChartArea(
     const translateTop = margins.top;
     const translateRight = translateLeft + width;
     const translateBottom = translateTop + height;
-    const rangeWidth = [padding, width - padding] as const;
-    const rangeHeight = [height - padding, padding] as const;
-    const rangeHeightReversed = [padding, height - padding] as const;
+    const rangeWidth = [padding, width - padding] as Point;
+    const rangeHeight = [height - padding, padding] as Point;
+    const rangeHeightReversed = [padding, height - padding] as Point;
     return {
       width,
       height,
