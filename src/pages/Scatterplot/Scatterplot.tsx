@@ -1,11 +1,11 @@
-import { memo, ReactElement, Ref, useCallback, useEffect, useState } from 'react';
+import { memo, ReactElement, Ref, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { zoomIdentity, ZoomTransform } from 'd3-zoom';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
 import { SvgChartRoot } from '@/components/SvgChartRoot';
-import { SvgGestureInteraction } from '@/components/SvgGestureInteraction';
 import { SvgPoints } from '@/components/SvgPoints';
+import { SvgZoomInteraction } from '@/components/SvgZoomInteraction';
 import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
 import { useLinearScaleWithZoom } from '@/hooks/useLinearScaleWithZoom';
@@ -48,18 +48,32 @@ function ScatterplotCore({
 }: ScatterplotProps): ReactElement | null {
   const [transform, setTransform] = useState(zoomIdentity);
 
+  const transformRef = useRef(transform);
+  useLayoutEffect(() => {
+    transformRef.current = transform;
+  });
+
+  const getCurrentTransform = useCallback(() => transformRef.current, []);
+
   const chartArea = useChartArea(width, height, margins, 0);
   const xDomain = useContinuousDomain(data, (d) => d.x);
   const xScale = useLinearScaleWithZoom(xDomain, chartArea.rangeWidth, 'x', transform);
   const yDomain = useContinuousDomain(data, (d) => d.y);
   const yScale = useLinearScaleWithZoom(yDomain, chartArea.rangeHeight, 'y', transform);
 
-  const onChange = useCallback((transform: ZoomTransform) => {
+  const onDrag = useCallback((x: number, y: number) => {
+    setTransform((prev) => new ZoomTransform(prev.k, x, y));
+  }, []);
+
+  const onPinch = useCallback((transform: ZoomTransform) => {
     setTransform(transform);
   }, []);
 
+  // Reset the zoom transform on new data.
   useEffect(() => {
-    setTransform(new ZoomTransform(1, 0, 0));
+    const transform = new ZoomTransform(1, 0, 0);
+    setTransform(transform);
+    transformRef.current = transform;
   }, [data]);
 
   return (
@@ -73,7 +87,7 @@ function ScatterplotCore({
       ariaRoleDescription={ariaRoleDescription}
       description={description}
       ariaDescribedby={ariaDescribedby}
-      className="font-sans select-none bg-slate-800"
+      className="font-sans select-none bg-slate-800 touch-none"
     >
       <SvgAxis
         scale={xScale}
@@ -96,7 +110,7 @@ function ScatterplotCore({
         tickSizeOuter={0}
         tickSizeInner={10}
         tickPadding={10}
-        tickArguments={[5]}
+        tickArguments={[compact ? 5 : 10]}
         className="text-xs"
         domainClassName="text-slate-400"
         tickLineClassName="text-slate-400"
@@ -108,14 +122,19 @@ function ScatterplotCore({
           data={data}
           xScale={xScale}
           yScale={yScale}
-          className="opacity-75 text-sky-500"
+          className="text-sky-500"
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumDescription={datumDescription}
           animate={false}
         />
       </SvgChartAreaGroup>
-      <SvgGestureInteraction chartArea={chartArea} transform={transform} onChange={onChange} />
+      <SvgZoomInteraction
+        chartArea={chartArea}
+        getCurrentTransform={getCurrentTransform}
+        onDrag={onDrag}
+        onPinch={onPinch}
+      />
     </SvgChartRoot>
   );
 }

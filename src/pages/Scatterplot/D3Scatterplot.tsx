@@ -3,7 +3,7 @@ import { max, min } from 'd3-array';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
-import { zoom } from 'd3-zoom';
+import { zoom, zoomIdentity } from 'd3-zoom';
 import { uniqueId } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';
@@ -15,9 +15,9 @@ class D3ScatterplotRenderer {
   margins: Margins = { left: 0, right: 0, top: 0, bottom: 0 };
   data: PointDatum[] = [];
   svgElement: SVGSVGElement | null = null;
+  compact = false;
 
   private chartId: string = uniqueId('scatterplot');
-  private zoom = zoom().scaleExtent([0.5, 20]);
 
   render() {
     if (!this.svgElement) {
@@ -59,7 +59,7 @@ class D3ScatterplotRenderer {
     const xScale = scaleLinear()
       .domain([min(this.data, (d) => d.x) ?? NaN, max(this.data, (d) => d.x) ?? NaN])
       .range([0, chartWidth]);
-    //   .nice();
+    xScale.ticks(this.compact ? 5 : 10);
 
     let xAxisGroup = svg.selectAll<SVGGElement, null>('.x-axis').data([null]);
     xAxisGroup = xAxisGroup
@@ -75,7 +75,7 @@ class D3ScatterplotRenderer {
     const yScale = scaleLinear()
       .domain([min(this.data, (d) => d.y) ?? NaN, max(this.data, (d) => d.y) ?? NaN])
       .range([chartHeight, 0]);
-    //   .nice();
+    yScale.ticks(this.compact ? 5 : 10);
 
     let yAxisGroup = svg.selectAll<SVGGElement, null>('.y-axis').data([null]);
     yAxisGroup = yAxisGroup
@@ -109,24 +109,22 @@ class D3ScatterplotRenderer {
       .merge(circle)
       .attr('cx', (d) => xScale(d.x))
       .attr('cy', (d) => yScale(d.y))
-      .attr('r', 20)
+      .attr('r', 8)
       .style('opacity', 0.5);
 
     // Zoom
 
-    this.zoom
+    const zoomInstance = zoom<SVGRectElement, null>().scaleExtent([0.5, 5]);
+
+    zoomInstance
       .extent([
         [0, 0],
         [chartWidth, chartHeight]
       ])
       .on('zoom', (event) => {
-        console.log('heelo', event.transform, event);
+        const newXScale = event.transform.rescaleX(xScale);
+        const newYScale = event.transform.rescaleY(yScale);
 
-        // recover the new scale
-        var newXScale = event.transform.rescaleX(xScale);
-        var newYScale = event.transform.rescaleY(yScale);
-
-        // update axes with these new boundaries
         xAxisGroup.call(axisBottom(newXScale));
         yAxisGroup.call(axisLeft(newYScale));
 
@@ -151,7 +149,11 @@ class D3ScatterplotRenderer {
       .attr('width', chartWidth)
       .attr('height', chartHeight)
       .attr('transform', `translate(${this.margins.left}, ${this.margins.top})`)
-      .call(this.zoom as any);
+      .call(zoomInstance);
+
+    // Reset the zoom transform in the case that the chart has been updated.
+    // https://stackoverflow.com/a/67976133/604006
+    zoomRect.call(zoomInstance.transform, zoomIdentity);
   }
 }
 
@@ -161,6 +163,7 @@ export type D3ScatterplotProps = {
   height: number;
   margins: Margins;
   ariaLabelledby: string;
+  compact?: boolean;
 };
 
 export const D3Scatterplot: FC<D3ScatterplotProps> = ({
@@ -168,7 +171,8 @@ export const D3Scatterplot: FC<D3ScatterplotProps> = ({
   margins,
   ariaLabelledby,
   width = 0,
-  height = 0
+  height = 0,
+  compact = false
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [renderer] = useState<D3ScatterplotRenderer>(() => new D3ScatterplotRenderer());
@@ -179,8 +183,9 @@ export const D3Scatterplot: FC<D3ScatterplotProps> = ({
     renderer.margins = margins;
     renderer.data = data;
     renderer.svgElement = svgRef.current;
+    renderer.compact = compact;
     renderer.render();
-  }, [data, margins, width, height, renderer]);
+  }, [data, margins, width, height, compact, renderer]);
 
   return (
     <Svg

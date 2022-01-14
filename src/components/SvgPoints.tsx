@@ -61,7 +61,7 @@ export function SvgPoints({
         {data.map((d) => (
           <motion.circle
             key={`${d.x}_${d.y}`}
-            r={20}
+            r={8}
             data-test-id="point"
             className={className}
             custom={circleGenerator}

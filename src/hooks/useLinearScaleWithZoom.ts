@@ -41,7 +41,6 @@ export function useLinearScaleWithZoom(
 ) {
   const linearScale = useLinearScale(domain, range, options);
   return useMemo(() => {
-    // console.log('linearScale', linearScale.domain(), linearScale.range());
     return (axis === 'x' ? rescaleX : rescaleY)(linearScale, transform);
   }, [linearScale, transform, axis]);
 }
