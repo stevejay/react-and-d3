@@ -1,20 +1,11 @@
 import { FC, memo, useCallback, useEffect, useRef } from 'react';
-import { createUseGesture, dragAction, pinchAction } from '@use-gesture/react';
+import { createUseGesture, dragAction, pinchAction, wheelAction } from '@use-gesture/react';
 import { ZoomTransform } from 'd3-zoom';
 
 import { SvgGroup } from '@/components/SvgGroup';
 import type { ChartArea } from '@/types';
 
-const useGesture = createUseGesture([dragAction, pinchAction]);
-
-/**
- * Updates the scale value of the zoom transform that is passed in. Returns a
- * new zoom transform object except when the passed zoom transform already has
- * the required scale value.
- */
-// function updateScale(transform: ZoomTransform, k: number): ZoomTransform {
-//   return k === transform.k ? transform : new ZoomTransform(k, transform.x, transform.y);
-// }
+const useGesture = createUseGesture([dragAction, pinchAction, wheelAction]);
 
 /**
  * Updates the x and y values of the zoom transform that is passed in. Returns a
@@ -92,6 +83,7 @@ export const SvgZoomInteraction: FC<SvgZoomInteractionProps> = memo(
       },
       {
         target: ref,
+        eventOptions: { passive: false },
         //   drag: { from: () => [transform.x, transform.y], delay: false },
         drag: { from: dragFrom, delay: false },
         pinch: { from: pinchFrom, scaleBounds: { min: 0.5, max: 5 }, rubberband: true }
@@ -111,6 +103,7 @@ export const SvgZoomInteraction: FC<SvgZoomInteractionProps> = memo(
           ref={ref}
           data-test-id="interaction-area"
           role="presentation"
+          className="touch-none"
           x={0}
           y={0}
           width={chartArea.width}

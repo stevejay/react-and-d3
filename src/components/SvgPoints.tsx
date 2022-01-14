@@ -58,9 +58,9 @@ export function SvgPoints({
   return (
     <g data-test-id="points-group" className={className} fill="currentColor" stroke="none">
       <AnimatePresence custom={circleGenerator} initial={false}>
-        {data.map((d) => (
+        {data.map((d, index) => (
           <motion.circle
-            key={`${d.x}_${d.y}`}
+            key={index} // TODO better approach here
             r={8}
             data-test-id="point"
             className={className}
