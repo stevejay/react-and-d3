@@ -11,8 +11,8 @@ import { useLinearScaleWithZoom } from '@/hooks/useLinearScaleWithZoom';
 import { useZoom } from '@/hooks/useZoom';
 import type { Margins, PointDatum } from '@/types';
 
-export type ScatterplotProps = {
-  data: PointDatum[];
+export type ScatterplotProps<DatumT> = {
+  data: PointDatum<DatumT>[];
   width: number;
   height: number;
   margins: Margins;
@@ -21,15 +21,17 @@ export type ScatterplotProps = {
   ariaRoleDescription?: string;
   description?: string;
   ariaDescribedby?: string;
-  datumAriaRoleDescription?: (datum: PointDatum) => string;
-  datumAriaLabel?: (datum: PointDatum) => string;
-  datumDescription?: (datum: PointDatum) => string;
+  datumAriaRoleDescription?: (datum: PointDatum<DatumT>) => string;
+  datumAriaLabel?: (datum: PointDatum<DatumT>) => string;
+  datumDescription?: (datum: PointDatum<DatumT>) => string;
+  pointRadius: ((datum: PointDatum<DatumT>) => number) | number;
+  pointClassName: ((datum: PointDatum<DatumT>) => string) | string;
   svgRef?: Ref<SVGSVGElement>;
   transitionSeconds?: number;
   compact: boolean;
 };
 
-function ScatterplotCore({
+function ScatterplotCore<DatumT>({
   data,
   width,
   height,
@@ -42,12 +44,17 @@ function ScatterplotCore({
   datumAriaRoleDescription,
   datumAriaLabel,
   datumDescription,
+  pointRadius,
+  pointClassName,
   svgRef,
-  transitionSeconds = 0.5,
-  compact
-}: ScatterplotProps): ReactElement | null {
-  const [interactiveRef, transform] = useZoom<SVGRectElement>();
+  transitionSeconds = 0.5
+}: ScatterplotProps<DatumT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins, 0);
+  //   const initialTransform = zoomIdentity
+  //     .translate(chartArea.width * -0.05, chartArea.height * -0.05)
+  //     .scale(0.9);
+  //   console.log('initialTransform', initialTransform);
+  const [interactiveRef, transform] = useZoom<SVGRectElement>();
   const xDomain = useContinuousDomain(data, (d) => d.x);
   const xScale = useLinearScaleWithZoom(xDomain, chartArea.rangeWidth, 'x', transform);
   const yDomain = useContinuousDomain(data, (d) => d.y);
@@ -73,7 +80,7 @@ function ScatterplotCore({
         tickSizeOuter={0}
         tickSizeInner={10}
         tickPadding={10}
-        tickArguments={[compact ? 5 : 10]}
+        tickArguments={[5]}
         className="text-xs"
         domainClassName="text-slate-400"
         tickLineClassName="text-slate-400"
@@ -87,7 +94,7 @@ function ScatterplotCore({
         tickSizeOuter={0}
         tickSizeInner={10}
         tickPadding={10}
-        tickArguments={[compact ? 5 : 10]}
+        tickArguments={[5]}
         className="text-xs"
         domainClassName="text-slate-400"
         tickLineClassName="text-slate-400"
@@ -99,10 +106,11 @@ function ScatterplotCore({
           data={data}
           xScale={xScale}
           yScale={yScale}
-          className="text-sky-500"
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumDescription={datumDescription}
+          pointRadius={pointRadius}
+          pointClassName={pointClassName}
           animate={false}
         />
       </SvgChartAreaGroup>

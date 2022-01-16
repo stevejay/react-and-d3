@@ -1,7 +1,5 @@
 import { FC, memo, useMemo } from 'react';
 import { max, min } from 'd3-array';
-import { easeCubicInOut } from 'd3-ease';
-import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '@/components/Svg';
 import { SvgCustomTimeAxis } from '@/components/SvgCustomTimeAxis';
@@ -37,16 +35,14 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
     }
 
     return (
-      <MotionConfig transition={{ duration: transitionSeconds, ease: easeCubicInOut }}>
-        <Svg
-          width={width}
-          height={height}
-          className="font-sans select-none bg-slate-800"
-          aria-labelledby={ariaLabelledby}
-        >
-          <SvgCustomTimeAxis scale={scale} chartArea={chartArea} />
-        </Svg>
-      </MotionConfig>
+      <Svg
+        width={width}
+        height={height}
+        className="font-sans select-none bg-slate-800"
+        aria-labelledby={ariaLabelledby}
+      >
+        <SvgCustomTimeAxis scale={scale} chartArea={chartArea} transitionSeconds={transitionSeconds} />
+      </Svg>
     );
   },
   (prevProps, nextProps) =>

@@ -1,0 +1,22 @@
+
+
+<D3SvgRoot width={width} height={height} className="">
+  <dataSource name="iris" data={data}>
+    <dimension name="x" accessor={d => d.bar} />
+    <dimension name="y" accessor={d => d.bat} />
+  </dataSource>
+  <area name="main" clip margins={margins} />
+  <scaleLinear dataName="iris" dimensionName="x" areaName="main"
+     orientation="bottom" invert
+     ticks={compact ? 5 : 10} />
+  <scaleLinear ... />
+  <visRect areaName="main" clip>
+    <circles name="irisCircles" dataName="iris" className r={8} style
+        cxDimension="x" cyDimension="y" />
+  </visRect>
+  <zoom name="zoom" areaName="main" scaleExtent translateExtent extent
+    onZoom={????????}
+   />
+  <interactionRect zoomName="zoom" areaName="main" />
+</D3SvgRoot>
+

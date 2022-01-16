@@ -4,7 +4,8 @@
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
@@ -22,5 +23,5 @@
     }
   },
   "include": ["./src", "./e2e-tests"],
-  "exclude": ["./types-temp"]
+  "exclude": ["./types-temp", "**/node_modules", "**/.*/"]
 }

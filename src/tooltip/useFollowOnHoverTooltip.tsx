@@ -95,7 +95,7 @@ export function useFollowOnHoverTooltip<DatumT>(
     () =>
       ({
         reference: svgRef.current,
-        appendTo: 'parent',
+        // appendTo: 'parent', // Can't be parent as there is overflow clipping on the chart sizer
         placement: 'top',
         offset: [xOffset, yOffset],
         animation: true,

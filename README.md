@@ -65,3 +65,7 @@ PageSpeed Insights:
 ```bash
 https://pagespeed.web.dev/report?url=https%3A%2F%2Fdataviz.middle-engine.com%2F&hl=en
 ```
+
+## Info
+
+- [TypeScript performance info](https://github.com/microsoft/TypeScript/wiki/Performance#writing-easy-to-compile-code)

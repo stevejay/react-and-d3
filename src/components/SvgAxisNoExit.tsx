@@ -171,7 +171,7 @@ export function SvgAxisNoExit<DomainT extends DomainValue>(
               role="presentation"
               aria-hidden
             >
-              {tickFormat(tickValue, index)}
+              {tickFormat(tickValue)}
             </motion.text>
           </motion.g>
         ))}

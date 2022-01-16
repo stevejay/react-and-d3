@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { max, min } from 'd3-array';
 import { axisBottom } from 'd3-axis';
-import { scaleTime } from 'd3-scale';
+import { scaleUtc } from 'd3-scale';
 import { select } from 'd3-selection';
 import { transition } from 'd3-transition';
 
@@ -15,7 +15,7 @@ class D3TimeAxisChartRenderer {
   transitionSeconds = 0.25;
   tickLabelOrientation: TickLabelOrientation = 'horizontal';
 
-  private scale = scaleTime();
+  private scale = scaleUtc();
   private axis = axisBottom<Date>(this.scale);
   private margins = { top: 20, bottom: 48, left: 32, right: 24 };
 

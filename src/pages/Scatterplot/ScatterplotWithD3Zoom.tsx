@@ -11,8 +11,8 @@ import { useD3Zoom } from '@/hooks/useD3Zoom';
 import { useLinearScaleWithZoom } from '@/hooks/useLinearScaleWithZoom';
 import type { Margins, PointDatum } from '@/types';
 
-export type ScatterplotWithD3ZoomProps = {
-  data: PointDatum[];
+export type ScatterplotWithD3ZoomProps<DatumT> = {
+  data: PointDatum<DatumT>[];
   width: number;
   height: number;
   margins: Margins;
@@ -21,15 +21,18 @@ export type ScatterplotWithD3ZoomProps = {
   ariaRoleDescription?: string;
   description?: string;
   ariaDescribedby?: string;
-  datumAriaRoleDescription?: (datum: PointDatum) => string;
-  datumAriaLabel?: (datum: PointDatum) => string;
-  datumDescription?: (datum: PointDatum) => string;
+  datumAriaRoleDescription?: (datum: PointDatum<DatumT>) => string;
+  datumAriaLabel?: (datum: PointDatum<DatumT>) => string;
+  datumDescription?: (datum: PointDatum<DatumT>) => string;
+  pointsGroupClassName?: string;
+  pointRadius: ((datum: PointDatum<DatumT>) => number) | number;
+  pointClassName: ((datum: PointDatum<DatumT>) => string) | string;
   svgRef?: Ref<SVGSVGElement>;
   transitionSeconds?: number;
   compact: boolean;
 };
 
-function ScatterplotWithD3ZoomCore({
+function ScatterplotWithD3ZoomCore<DatumT>({
   data,
   width,
   height,
@@ -42,17 +45,26 @@ function ScatterplotWithD3ZoomCore({
   datumAriaRoleDescription,
   datumAriaLabel,
   datumDescription,
+  pointsGroupClassName = '',
+  pointRadius,
+  pointClassName,
   svgRef,
   transitionSeconds = 0.5,
   compact
-}: ScatterplotWithD3ZoomProps): ReactElement | null {
+}: ScatterplotWithD3ZoomProps<DatumT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins, 0);
   const [interactiveRef, transform] = useD3Zoom<SVGRectElement>(
     [
       [0, 0],
       [chartArea.width, chartArea.height]
     ],
-    { scaleExtent: [0.5, 5] }
+    {
+      scaleExtent: [0.5, 5],
+      translateExtent: [
+        [chartArea.width * -0.5, chartArea.height * -0.5],
+        [chartArea.width * 1.5, chartArea.height * 1.5]
+      ]
+    }
   );
   const xDomain = useContinuousDomain(data, (d) => d.x);
   const xScale = useLinearScaleWithZoom(xDomain, chartArea.rangeWidth, 'x', transform);
@@ -105,10 +117,12 @@ function ScatterplotWithD3ZoomCore({
           data={data}
           xScale={xScale}
           yScale={yScale}
-          className="text-sky-500"
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumDescription={datumDescription}
+          pointsGroupClassName={pointsGroupClassName}
+          pointRadius={pointRadius}
+          pointClassName={pointClassName}
           animate={false}
         />
       </SvgChartAreaGroup>

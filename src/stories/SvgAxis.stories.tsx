@@ -1,8 +1,6 @@
 import { ComponentMeta, Story } from '@storybook/react';
-import { easeCubicInOut } from 'd3-ease';
 import { scaleBand, scaleLinear, scalePoint, scaleTime } from 'd3-scale';
 import { timeMonth } from 'd3-time';
-import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
@@ -69,22 +67,20 @@ const LinearScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, tick
     .nice() as AxisScale<number>;
 
   return (
-    <MotionConfig transition={{ duration: 0.25, ease: easeCubicInOut }}>
-      <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
-        <SvgAxis
-          scale={scale}
-          chartArea={chartArea}
-          orientation={orientation}
-          tickArguments={[5, 'X']}
-          tickSizeInner={null}
-          tickSizeOuter={
-            orientation === 'top' || orientation === 'bottom' ? -chartArea.height : -chartArea.width
-          }
-          tickLabelOrientation={tickLabelOrientation}
-          className="text-[10px]"
-        />
-      </Svg>
-    </MotionConfig>
+    <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
+      <SvgAxis
+        scale={scale}
+        chartArea={chartArea}
+        orientation={orientation}
+        tickArguments={[5, 'X']}
+        tickSizeInner={null}
+        tickSizeOuter={
+          orientation === 'top' || orientation === 'bottom' ? -chartArea.height : -chartArea.width
+        }
+        tickLabelOrientation={tickLabelOrientation}
+        className="text-[10px]"
+      />
+    </Svg>
   );
 };
 
@@ -203,21 +199,19 @@ const BandScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, tickLa
     .paddingOuter(0.5) as AxisScale<string>;
 
   return (
-    <MotionConfig transition={{ duration: 0.25, ease: easeCubicInOut }}>
-      <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
-        <SvgAxis
-          scale={scale}
-          chartArea={chartArea}
-          orientation={orientation}
-          tickSizeInner={null}
-          tickSizeOuter={
-            orientation === 'top' || orientation === 'bottom' ? -chartArea.height : -chartArea.width
-          }
-          tickLabelOrientation={tickLabelOrientation}
-          className="text-[10px]"
-        />
-      </Svg>
-    </MotionConfig>
+    <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
+      <SvgAxis
+        scale={scale}
+        chartArea={chartArea}
+        orientation={orientation}
+        tickSizeInner={null}
+        tickSizeOuter={
+          orientation === 'top' || orientation === 'bottom' ? -chartArea.height : -chartArea.width
+        }
+        tickLabelOrientation={tickLabelOrientation}
+        className="text-[10px]"
+      />
+    </Svg>
   );
 };
 
@@ -336,22 +330,20 @@ const TimeScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, tickLa
     .nice() as AxisScale<Date>;
 
   return (
-    <MotionConfig transition={{ duration: 0.25, ease: easeCubicInOut }}>
-      <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
-        <SvgAxis
-          scale={scale}
-          chartArea={chartArea}
-          orientation={orientation}
-          tickArguments={[timeMonth.every(3)]}
-          tickSizeInner={null}
-          tickSizeOuter={
-            orientation === 'top' || orientation === 'bottom' ? -chartArea.height : -chartArea.width
-          }
-          tickLabelOrientation={tickLabelOrientation}
-          className="text-[10px]"
-        />
-      </Svg>
-    </MotionConfig>
+    <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
+      <SvgAxis
+        scale={scale}
+        chartArea={chartArea}
+        orientation={orientation}
+        tickArguments={[timeMonth.every(3)]}
+        tickSizeInner={null}
+        tickSizeOuter={
+          orientation === 'top' || orientation === 'bottom' ? -chartArea.height : -chartArea.width
+        }
+        tickLabelOrientation={tickLabelOrientation}
+        className="text-[10px]"
+      />
+    </Svg>
   );
 };
 
@@ -470,21 +462,19 @@ const PointScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, tickL
     .padding(0.5) as AxisScale<string>;
 
   return (
-    <MotionConfig transition={{ duration: 0.25, ease: easeCubicInOut }}>
-      <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
-        <SvgAxis
-          scale={scale}
-          chartArea={chartArea}
-          orientation={orientation}
-          tickSizeInner={null}
-          tickSizeOuter={
-            orientation === 'top' || orientation === 'bottom' ? -chartArea.height : -chartArea.width
-          }
-          tickLabelOrientation={tickLabelOrientation}
-          className="text-[10px]"
-        />
-      </Svg>
-    </MotionConfig>
+    <Svg width={width} height={height} className="font-sans text-base font-normal select-none bg-slate-200">
+      <SvgAxis
+        scale={scale}
+        chartArea={chartArea}
+        orientation={orientation}
+        tickSizeInner={null}
+        tickSizeOuter={
+          orientation === 'top' || orientation === 'bottom' ? -chartArea.height : -chartArea.width
+        }
+        tickLabelOrientation={tickLabelOrientation}
+        className="text-[10px]"
+      />
+    </Svg>
   );
 };
 

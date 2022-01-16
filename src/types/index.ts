@@ -36,9 +36,10 @@ export type GetValueListDatumSummaryValue<CategoryT extends DomainValue, ValueT 
   seriesKeys: readonly string[]
 ) => number | null | undefined;
 
-export type PointDatum = {
+export type PointDatum<DatumT> = {
   x: number;
   y: number;
+  datum: DatumT;
 };
 
 export type Point = [number, number];
@@ -129,7 +130,7 @@ export type BaseAxisProps<DomainT extends DomainValue> = {
    * Sets the formatter function. Pass `null` to explicitly use the scale's
    * default formatter. Defaults to the scale's default formatter.
    */
-  tickFormat?: (domainValue: DomainT, index: number) => string | null;
+  tickFormat?: (domainValue: DomainT) => string | null;
   /**
    * The ticks values to use for ticks instead of those returned by the scale’s
    * automatic tick generator

@@ -1,6 +1,4 @@
 import { FC, memo } from 'react';
-import { easeCubicInOut } from 'd3-ease';
-import { MotionConfig } from 'framer-motion';
 
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
@@ -37,24 +35,23 @@ export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
     }
 
     return (
-      <MotionConfig transition={{ duration: transitionSeconds, ease: easeCubicInOut }}>
-        <Svg
-          width={width}
-          height={height}
-          aria-labelledby={ariaLabelledby}
-          className="font-sans select-none bg-slate-800"
-        >
-          <SvgAxis
-            scale={scale}
-            chartArea={chartArea}
-            orientation="bottom"
-            tickSizeOuter={-chartArea.height}
-            tickLabelOrientation={tickLabelOrientation}
-            tickFormat={yearMonthMultiFormat}
-            className="text-[10px]"
-          />
-        </Svg>
-      </MotionConfig>
+      <Svg
+        width={width}
+        height={height}
+        aria-labelledby={ariaLabelledby}
+        className="font-sans select-none bg-slate-800"
+      >
+        <SvgAxis
+          scale={scale}
+          chartArea={chartArea}
+          orientation="bottom"
+          tickSizeOuter={-chartArea.height}
+          tickLabelOrientation={tickLabelOrientation}
+          tickFormat={yearMonthMultiFormat}
+          className="text-[10px]"
+          transitionSeconds={transitionSeconds}
+        />
+      </Svg>
     );
   },
   (prevProps, nextProps) =>

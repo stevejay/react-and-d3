@@ -1,5 +1,6 @@
-import { ReactElement, SVGAttributes, SVGProps, useEffect, useRef } from 'react';
-import { AnimatePresence, m as motion } from 'framer-motion';
+import { ReactElement, SVGAttributes, SVGProps, useEffect, useMemo, useRef } from 'react';
+import { animated, useTransition } from '@react-spring/web';
+import { easeCubicInOut } from 'd3-ease';
 import { identity, isNil } from 'lodash-es';
 
 import type {
@@ -11,9 +12,10 @@ import type {
   ExpandedAxisScale,
   TickLabelOrientation
 } from '@/types';
-import { center, createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
+import { center, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
 import { getDefaultRenderingOffset } from '@/utils/renderUtils';
 
+import { SvgAxisDomainPath } from './SvgAxisDomainPath';
 import { SvgGroup } from './SvgGroup';
 
 function getAxisLabelOrientationProps(
@@ -121,30 +123,16 @@ function getTickLabelOrientationProps(
   }
 }
 
-const noAnimations = { duration: 0, type: 'tween' };
-
 export type SvgAxisProps<DomainT extends DomainValue> = BaseAxisProps<DomainT> & {
   className?: string;
   domainClassName?: string;
-  domainProps?: Omit<
-    SVGProps<SVGPathElement>,
-    'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag' | 'ref'
-  >;
+  domainProps?: Omit<SVGProps<SVGPathElement>, 'ref'>;
   tickGroupClassName?: string;
-  tickGroupProps?: Omit<
-    SVGProps<SVGGElement>,
-    'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag' | 'ref'
-  >;
+  tickGroupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
   tickLineClassName?: string;
-  tickLineProps?: Omit<
-    SVGProps<SVGLineElement>,
-    'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag' | 'ref'
-  >;
+  tickLineProps?: Omit<SVGProps<SVGLineElement>, 'ref'>;
   tickTextClassName?: string;
-  tickTextProps?: Omit<
-    SVGProps<SVGTextElement>,
-    'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag' | 'ref'
-  >;
+  tickTextProps?: Omit<SVGProps<SVGTextElement>, 'ref'>;
   tickLabelOrientation?: TickLabelOrientation;
   /**
    * Pass `true` to entirely remove the axis domain line. This line includes
@@ -158,6 +146,7 @@ export type SvgAxisProps<DomainT extends DomainValue> = BaseAxisProps<DomainT> &
   axisLabelSpacing?: number;
   axisLabelClassName?: string;
   animate?: boolean;
+  transitionSeconds?: number;
 };
 
 export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT>): ReactElement | null {
@@ -180,6 +169,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
     axisLabelAlignment = 'center',
     axisLabelSpacing = 30,
     axisLabelClassName = '',
+    transitionSeconds = 0.25,
     animate = true
   } = props;
 
@@ -223,12 +213,6 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
   // The scale's range.
   const range = scale.range();
 
-  // The pixel position to start drawing the axis domain line at.
-  let range0 = +range[0] + renderingOffset;
-
-  // The pixel position to finish drawing the axis domain line at.
-  let range1 = +range[range.length - 1] + renderingOffset;
-
   // Get a function that can be used to calculate the pixel position for a tick
   // value. This has special handling if the scale is a band scale, in which case
   // the position is in the center of each band. The scale needs to be copied
@@ -259,6 +243,34 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
     renderingOffset
   );
 
+  const reactSpringConfig = useMemo(
+    () => ({ duration: transitionSeconds * 1000, easing: easeCubicInOut }),
+    [transitionSeconds]
+  );
+
+  const tickTransitions = useTransition(tickValues, {
+    initial: (tickValue) => {
+      return { opacity: 1, [translate]: position(tickValue) + renderingOffset };
+    },
+    from: (tickValue) => {
+      const initialPosition = previousPositionRef.current ? previousPositionRef.current(tickValue) : null;
+      return !isNil(initialPosition) && isFinite(initialPosition)
+        ? { opacity: 0, [translate]: initialPosition + renderingOffset }
+        : { opacity: 0, [translate]: position(tickValue) + renderingOffset };
+    },
+    enter: (tickValue) => ({ opacity: 1, [translate]: position(tickValue) + renderingOffset }),
+    update: (tickValue) => ({ opacity: 1, [translate]: position(tickValue) + renderingOffset }),
+    leave: (tickValue) => {
+      const exitPosition = position(tickValue);
+      return isFinite(exitPosition)
+        ? { opacity: 0, [translate]: exitPosition + renderingOffset }
+        : { opacity: 0 };
+    },
+    config: reactSpringConfig,
+    keys: getAxisDomainAsReactKey,
+    immediate: !animate
+  });
+
   return (
     <SvgGroup
       data-test-id={`axis-${orientation}`}
@@ -270,85 +282,22 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
       className={className}
     >
       {!hideDomainPath && (
-        <motion.path
-          data-test-id="domain-path"
-          fill="none"
-          stroke="currentColor"
-          role="presentation"
-          transition={animate ? undefined : noAnimations}
-          animate={{
-            d: createAxisDomainPathData(orientation, tickSizeOuter, renderingOffset, range0, range1, k)
-          }}
+        <SvgAxisDomainPath
+          orientation={orientation}
+          tickSize={tickSizeOuter}
+          renderingOffset={renderingOffset}
+          range={range}
+          k={k}
           className={domainClassName}
-          {...domainProps}
+          domainProps={domainProps}
+          reactSpringConfig={reactSpringConfig}
+          animate={animate}
         />
       )}
-      {/* Send the current position to the tick exit animation variant. */}
-      <AnimatePresence custom={position} initial={false}>
-        {tickValues.map((tickValue, index) => (
-          <motion.g
-            key={getAxisDomainAsReactKey(tickValue)}
-            data-test-id="tick-group"
-            custom={position}
-            transition={animate ? undefined : noAnimations}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            variants={{
-              initial: () => {
-                const initialPosition = previousPositionRef.current
-                  ? previousPositionRef.current(tickValue)
-                  : null;
-                return !isNil(initialPosition) && isFinite(initialPosition)
-                  ? { opacity: 0, [translate]: initialPosition + renderingOffset }
-                  : { opacity: 0, [translate]: position(tickValue) + renderingOffset };
-              },
-              animate: () => ({ opacity: 1, [translate]: position(tickValue) + renderingOffset }),
-              exit: (custom: (d: DomainT) => number) => {
-                const exitPosition = custom(tickValue);
-                return isFinite(exitPosition)
-                  ? { opacity: 0, [translate]: exitPosition + renderingOffset }
-                  : { opacity: 0 };
-              }
-            }}
-            className={tickGroupClassName}
-            {...tickGroupProps}
-          >
-            <line
-              data-test-id="tick"
-              {...{ [x + '2']: k * tickSizeInner }}
-              stroke="currentColor"
-              role="presentation"
-              className={tickLineClassName}
-              {...tickLineProps}
-            />
-            <g data-test-id="tick-label-group" style={{ transform: labelGroupTransform }}>
-              <text
-                data-test-id="tick-label"
-                stroke="none"
-                fill="currentColor"
-                role="presentation"
-                aria-hidden
-                className={tickTextClassName}
-                {...tickLabelOrientationProps}
-                {...tickTextProps}
-              >
-                {tickFormat(tickValue, index)}
-              </text>
-            </g>
-          </motion.g>
-        ))}
-      </AnimatePresence>
-
-      {/* {tickValues.map((tickValue, index) => (
-        <g
-          key={getAxisDomainAsReactKey(tickValue)}
+      {tickTransitions((styles, tickValue) => (
+        <animated.g
           data-test-id="tick-group"
-          transform={
-            translate === 'translateX'
-              ? `translate(${position(tickValue) + renderingOffset} 0)`
-              : `translate(0 ${position(tickValue) + renderingOffset})`
-          }
+          style={styles}
           className={tickGroupClassName}
           {...tickGroupProps}
         >
@@ -371,12 +320,11 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
               {...tickLabelOrientationProps}
               {...tickTextProps}
             >
-              {tickFormat(tickValue, index)}
+              {tickFormat(tickValue)}
             </text>
           </g>
-        </g>
-      ))} */}
-
+        </animated.g>
+      ))}
       {axisLabel && (
         <g data-test-id="axis-label-group" transform={axisLabelOrientationProps.transform}>
           <text

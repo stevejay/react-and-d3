@@ -1,12 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import { animated, useTransition } from '@react-spring/web';
+import { easeCubicInOut } from 'd3-ease';
 import { utcMonth } from 'd3-time';
-import { AnimatePresence, m as motion } from 'framer-motion';
 import { identity, isNil, uniq } from 'lodash-es';
 
 import type { AxisScale, ChartArea, ExpandedAxisScale } from '@/types';
-import { createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
+import { getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
 import { getDefaultRenderingOffset } from '@/utils/renderUtils';
 
+import { SvgAxisDomainPath } from './SvgAxisDomainPath';
 import { SvgGroup } from './SvgGroup';
 
 function conditionalClamp(coord: number, shouldClamp: boolean): number {
@@ -16,10 +18,12 @@ function conditionalClamp(coord: number, shouldClamp: boolean): number {
 export type SvgCustomTimeAxisProps = {
   scale: AxisScale<Date>;
   chartArea: ChartArea;
+  transitionSeconds: number;
+  animate?: boolean;
 };
 
 export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
-  const { chartArea } = props;
+  const { chartArea, transitionSeconds, animate = true } = props;
   const scale = props.scale as ExpandedAxisScale<Date>;
 
   // The length of the inner ticks (which are the ticks with labels).
@@ -32,15 +36,10 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
   // Used to ensure crisp edges on low-resolution devices.
   const renderingOffset = getDefaultRenderingOffset();
 
-  // Three constants to allow the axis function to support all of the four orientations.
-  const k = 1;
-  const x = 'y';
-  const translate = 'translateX';
-
   // Determine the exact tick values to use.
   const tickValues = scale.ticks ? scale.ticks(utcMonth.every(1)) : scale.domain();
 
-  const years = uniq(tickValues.map((x) => x.getUTCFullYear()));
+  const years = uniq(tickValues.map((value) => value.getUTCFullYear()));
   years.sort();
   const yearTickValues = years.map((year) => new Date(Date.UTC(year, 0)));
 
@@ -71,6 +70,80 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
     previousPositionRef.current = position;
   });
 
+  const reactSpringConfig = useMemo(
+    () => ({ duration: transitionSeconds * 1000, easing: easeCubicInOut }),
+    [transitionSeconds]
+  );
+
+  const monthTickTransitions = useTransition<
+    Date,
+    { opacity: number; monthWidth: number; translateX: number }
+  >(tickValues, {
+    initial: (tickValue) => {
+      return { opacity: 1, translateX: position(tickValue) + renderingOffset, monthWidth };
+    },
+    from: (tickValue) => {
+      const initialPosition = previousPositionRef.current ? previousPositionRef.current(tickValue) : null;
+      return !isNil(initialPosition) && isFinite(initialPosition)
+        ? { opacity: 0, translateX: initialPosition + renderingOffset, monthWidth }
+        : { opacity: 0, translateX: position(tickValue) + renderingOffset, monthWidth };
+    },
+    enter: (tickValue) => ({
+      opacity: 1,
+      translateX: position(tickValue) + renderingOffset,
+      monthWidth
+    }),
+    update: (tickValue) => ({
+      opacity: 1,
+      translateX: position(tickValue) + renderingOffset,
+      monthWidth
+    }),
+    leave: (tickValue) => {
+      const exitPosition = position(tickValue);
+      return isFinite(exitPosition)
+        ? { opacity: 0, translateX: exitPosition + renderingOffset, monthWidth }
+        : { opacity: 0, monthWidth };
+    },
+    config: reactSpringConfig,
+    keys: getAxisDomainAsReactKey,
+    immediate: !animate
+  });
+
+  const yearTickTransitions = useTransition<Date, { opacity: number; translateX: number }>(yearTickValues, {
+    initial: (tickValue, index) => {
+      return { opacity: 1, translateX: conditionalClamp(position(tickValue), index === 0) + renderingOffset };
+    },
+    from: (tickValue, index) => {
+      const initialPosition = previousPositionRef.current ? previousPositionRef.current(tickValue) : null;
+      return !isNil(initialPosition) && isFinite(initialPosition)
+        ? {
+            opacity: 0,
+            translateX: conditionalClamp(initialPosition, index === 0) + renderingOffset
+          }
+        : {
+            opacity: 0,
+            translateX: conditionalClamp(position(tickValue), index === 0) + renderingOffset
+          };
+    },
+    enter: (tickValue, index) => ({
+      opacity: 1,
+      translateX: conditionalClamp(position(tickValue), index === 0) + renderingOffset
+    }),
+    update: (tickValue, index) => ({
+      opacity: 1,
+      translateX: conditionalClamp(position(tickValue), index === 0) + renderingOffset
+    }),
+    leave: (tickValue) => {
+      const exitPosition = position(tickValue);
+      return isFinite(exitPosition)
+        ? { opacity: 0, translateX: exitPosition + renderingOffset }
+        : { opacity: 0 };
+    },
+    config: reactSpringConfig,
+    keys: getAxisDomainAsReactKey,
+    immediate: !animate
+  });
+
   return (
     <SvgGroup
       translateX={chartArea.translateLeft}
@@ -81,126 +154,61 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
       stroke="currentColor"
     >
       <g>
-        <AnimatePresence custom={position} initial={false}>
-          {tickValues.map((tickValue, index) => (
-            <motion.g
-              key={getAxisDomainAsReactKey(tickValue)}
-              custom={position}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              variants={{
-                initial: () => {
-                  const initialPosition = previousPositionRef.current
-                    ? previousPositionRef.current(tickValue)
-                    : null;
-                  return !isNil(initialPosition) && isFinite(initialPosition)
-                    ? { opacity: 0, [translate]: initialPosition + renderingOffset }
-                    : { opacity: 0, [translate]: position(tickValue) + renderingOffset };
-                },
-                animate: () => ({ opacity: 1, [translate]: position(tickValue) + renderingOffset }),
-                exit: (custom: (d: Date) => number) => {
-                  const exitPosition = custom(tickValue);
-                  return isFinite(exitPosition)
-                    ? { opacity: 0, [translate]: exitPosition + renderingOffset }
-                    : { opacity: 0 };
-                }
-              }}
-            >
-              <line
-                stroke="currentColor"
-                className={index === 0 || tickValue.getUTCMonth() === 0 ? '' : 'text-slate-500'}
-                strokeDasharray={index === 0 || tickValue.getUTCMonth() === 0 ? 'none' : '5 4'}
-                {...{ [x + '2']: k * tickSize }}
-                shapeRendering="crispEdges"
+        {monthTickTransitions(({ monthWidth, ...rest }, tickValue, _, index) => (
+          <animated.g key={getAxisDomainAsReactKey(tickValue)} data-test-id="month-tick-group" style={rest}>
+            <line
+              stroke="currentColor"
+              className={index === 0 || tickValue.getUTCMonth() === 0 ? '' : 'text-slate-500'}
+              strokeDasharray={index === 0 || tickValue.getUTCMonth() === 0 ? 'none' : '5 4'}
+              y2={tickSize}
+              //   shapeRendering="crispEdges"
+              role="presentation"
+            />
+            <animated.g style={{ transform: monthWidth.to((value) => `translateX(${value * 0.5}px)`) }}>
+              <text
+                stroke="none"
+                dy="0.71em"
+                y={tickSize - 26}
+                textAnchor="middle"
+                className="text-xs"
                 role="presentation"
-              />
-              <motion.g
-                initial={false}
-                animate="animate"
-                variants={{
-                  animate: { x: monthWidth * 0.5 }
-                }}
+                aria-hidden
               >
-                <text
-                  stroke="none"
-                  dy="0.71em"
-                  y={tickSize - 26}
-                  textAnchor="middle"
-                  className="text-xs"
-                  role="presentation"
-                  aria-hidden
-                >
-                  {tickFormat(tickValue)}
-                </text>
-              </motion.g>
-            </motion.g>
-          ))}
-        </AnimatePresence>
+                {tickFormat(tickValue)}
+              </text>
+            </animated.g>
+          </animated.g>
+        ))}
       </g>
       <g>
-        <AnimatePresence custom={position} initial={false}>
-          {yearTickValues.map((tickValue, index) => {
-            const tickYear = tickValue.getUTCFullYear();
-            const isFirstTick = index === 0;
-            return (
-              <motion.g
-                key={tickYear}
-                custom={position}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                variants={{
-                  initial: () => {
-                    const initialPosition = previousPositionRef.current
-                      ? previousPositionRef.current(tickValue)
-                      : null;
-                    return !isNil(initialPosition) && isFinite(initialPosition)
-                      ? {
-                          opacity: 0,
-                          [translate]: conditionalClamp(initialPosition, isFirstTick) + renderingOffset
-                        }
-                      : {
-                          opacity: 0,
-                          [translate]: conditionalClamp(position(tickValue), isFirstTick) + renderingOffset
-                        };
-                  },
-                  animate: () => ({
-                    opacity: 1,
-                    [translate]: conditionalClamp(position(tickValue), isFirstTick) + renderingOffset
-                  }),
-                  exit: (custom: (d: Date) => number) => {
-                    const exitPosition = custom(tickValue);
-                    return isFinite(exitPosition)
-                      ? { opacity: 0, [translate]: exitPosition + renderingOffset }
-                      : { opacity: 0 };
-                  }
-                }}
+        {yearTickTransitions((styles, tickValue, _, index) => {
+          const tickYear = tickValue.getUTCFullYear();
+          return (
+            <animated.g key={tickYear} data-test-id="year-tick-group" style={styles}>
+              <text
+                fill="currentColor"
+                stroke="none"
+                y={yearTickSize - 1}
+                x={3}
+                textAnchor="start"
+                className="text-[10px]"
+                role="presentation"
+                aria-hidden
               >
-                <text
-                  fill="currentColor"
-                  stroke="none"
-                  y={yearTickSize - 1}
-                  x={3}
-                  textAnchor="start"
-                  className="text-[10px]"
-                  role="presentation"
-                  aria-hidden
-                >
-                  {tickYear}
-                </text>
-              </motion.g>
-            );
-          })}
-        </AnimatePresence>
+                {tickYear}
+              </text>
+            </animated.g>
+          );
+        })}
       </g>
-      <motion.path
-        fill="none"
-        animate={{
-          d: createAxisDomainPathData('bottom', tickSizeOuter, renderingOffset, range0, range1, k)
-        }}
-        shapeRendering="crispEdges"
-        role="presentation"
+      <SvgAxisDomainPath
+        orientation="bottom"
+        tickSize={tickSizeOuter}
+        renderingOffset={renderingOffset}
+        range={range}
+        k={1}
+        reactSpringConfig={reactSpringConfig}
+        animate
       />
     </SvgGroup>
   );
