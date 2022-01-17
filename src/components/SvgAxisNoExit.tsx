@@ -1,11 +1,10 @@
 import { ReactElement, useEffect, useRef } from 'react';
 import { useForceUpdate } from '@uifabric/react-hooks';
-import { AnimatePresence, m as motion } from 'framer-motion';
 import { differenceBy, identity, isNil, sortBy, unionBy } from 'lodash-es';
 import useDebouncedEffect from 'use-debounced-effect';
 
 import type { BaseAxisProps, DomainValue, ExpandedAxisScale, TickLabelOrientation } from '@/types';
-import { center, createAxisDomainPathData, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
+import { center, getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
 import { getDefaultRenderingOffset } from '@/utils/renderUtils';
 
 import { SvgGroup } from './SvgGroup';
@@ -33,21 +32,21 @@ export function SvgAxisNoExit<DomainT extends DomainValue>(
   const forceUpdate = useForceUpdate();
 
   // The length of the inner ticks (which are the ticks with labels).
-  const tickSizeInner = props.tickSize ?? props.tickSizeInner ?? 6;
+  //   const tickSizeInner = props.tickSize ?? props.tickSizeInner ?? 6;
 
   // The length of the outer ticks.
-  const tickSizeOuter = props.tickSize ?? props.tickSizeOuter ?? 6;
+  //   const tickSizeOuter = props.tickSize ?? props.tickSizeOuter ?? 6;
 
   // The distance in pixels between the end of the tick's line and the tick's label.
-  const tickPadding = props.tickPadding ?? 3;
+  //   const tickPadding = props.tickPadding ?? 3;
 
   // Used to ensure crisp edges on low-resolution devices.
   const renderingOffset = props.offset ?? getDefaultRenderingOffset();
 
   // Three constants to allow the axis function to support all of the four orientations.
-  const k = orientation === 'top' || orientation === 'left' ? -1 : 1;
-  const x = orientation === 'left' || orientation === 'right' ? 'x' : 'y';
-  const translate = orientation === 'top' || orientation === 'bottom' ? 'translateX' : 'translateY';
+  //   const k = orientation === 'top' || orientation === 'left' ? -1 : 1;
+  //   const x = orientation === 'left' || orientation === 'right' ? 'x' : 'y';
+  //   const translate = orientation === 'top' || orientation === 'bottom' ? 'translateX' : 'translateY';
 
   // Determine the exact tick values to use.
   const tickValues = isNil(props.tickValues)
@@ -65,16 +64,16 @@ export function SvgAxisNoExit<DomainT extends DomainValue>(
       : props.tickFormat;
 
   // The distance between the axis domain line and the tick labels.
-  const spacing = Math.max(tickSizeInner, 0) + tickPadding;
+  //   const spacing = Math.max(tickSizeInner, 0) + tickPadding;
 
   // The scale's range.
-  const range = scale.range();
+  //   const range = scale.range();
 
   // The pixel position to start drawing the axis domain line at.
-  const range0 = +range[0] + renderingOffset;
+  //   const range0 = +range[0] + renderingOffset;
 
   // The pixel position to finish drawing the axis domain line at.
-  const range1 = +range[range.length - 1] + renderingOffset;
+  //   const range1 = +range[range.length - 1] + renderingOffset;
 
   // Get a function that can be used to calculate the pixel position for a tick
   // value. This has special handling if the scale is a band scale, in which case
@@ -131,51 +130,53 @@ export function SvgAxisNoExit<DomainT extends DomainValue>(
       fill="currentColor"
       stroke="currentColor"
     >
-      <motion.path
+      <path
         fill="none"
-        animate={{
-          d: createAxisDomainPathData(orientation, tickSizeOuter, renderingOffset, range0, range1, k)
-        }}
+        // animate={{
+        //   d: createAxisDomainPathData(orientation, tickSizeOuter, renderingOffset, range0, range1, k)
+        // }}
         role="presentation"
       />
-      <AnimatePresence initial={false}>
-        {currentAndExiting.map(({ tickValue, exiting }, index) => (
-          <motion.g
-            key={getAxisDomainAsReactKey(tickValue)}
-            initial="initial"
-            animate={exiting ? 'exit' : 'animate'}
-            variants={{
-              initial: () => {
-                const initialPosition = previousPositionRef.current
-                  ? previousPositionRef.current(tickValue)
-                  : null;
-                return !isNil(initialPosition) && isFinite(initialPosition)
-                  ? { opacity: 0, [translate]: initialPosition + renderingOffset }
-                  : { opacity: 0, [translate]: position(tickValue) + renderingOffset };
-              },
-              animate: () => ({ opacity: 1, [translate]: position(tickValue) + renderingOffset }),
-              exit: () => {
-                const exitPosition = position(tickValue);
-                return isFinite(exitPosition)
-                  ? { opacity: 0, [translate]: exitPosition + renderingOffset }
-                  : { opacity: 0 };
-              }
-            }}
+      {currentAndExiting.map(({ tickValue, exiting }, index) => (
+        <g
+          key={getAxisDomainAsReactKey(tickValue)}
+          // initial="initial"
+          // animate={exiting ? 'exit' : 'animate'}
+          // variants={{
+          //   initial: () => {
+          //     const initialPosition = previousPositionRef.current
+          //       ? previousPositionRef.current(tickValue)
+          //       : null;
+          //     return !isNil(initialPosition) && isFinite(initialPosition)
+          //       ? { opacity: 0, [translate]: initialPosition + renderingOffset }
+          //       : { opacity: 0, [translate]: position(tickValue) + renderingOffset };
+          //   },
+          //   animate: () => ({ opacity: 1, [translate]: position(tickValue) + renderingOffset }),
+          //   exit: () => {
+          //     const exitPosition = position(tickValue);
+          //     return isFinite(exitPosition)
+          //       ? { opacity: 0, [translate]: exitPosition + renderingOffset }
+          //       : { opacity: 0 };
+          //   }
+          // }}
+        >
+          <line
+            // initial={false}
+            // animate={{ [x + '2']: k * tickSizeInner }}
+            role="presentation"
+          />
+          <text
+            stroke="none"
+            dy={orientation === 'top' ? '0em' : orientation === 'bottom' ? '0.71em' : '0.32em'}
+            // initial={false}
+            // animate={{ [x === 'x' ? 'attrX' : 'attrY']: k * spacing }}
+            role="presentation"
+            aria-hidden
           >
-            <motion.line initial={false} animate={{ [x + '2']: k * tickSizeInner }} role="presentation" />
-            <motion.text
-              stroke="none"
-              dy={orientation === 'top' ? '0em' : orientation === 'bottom' ? '0.71em' : '0.32em'}
-              initial={false}
-              animate={{ [x === 'x' ? 'attrX' : 'attrY']: k * spacing }}
-              role="presentation"
-              aria-hidden
-            >
-              {tickFormat(tickValue)}
-            </motion.text>
-          </motion.g>
-        ))}
-      </AnimatePresence>
+            {tickFormat(tickValue)}
+          </text>
+        </g>
+      ))}
     </SvgGroup>
   );
 }

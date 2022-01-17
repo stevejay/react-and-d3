@@ -1,10 +1,10 @@
 import { Fragment, memo, ReactElement, RefObject } from 'react';
+import { animated, useSpring, useSprings } from '@react-spring/web';
 import { useId } from '@uifabric/react-hooks';
 import { max, min } from 'd3-array';
 import { easeCubicInOut } from 'd3-ease';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import { arc, curveLinearClosed, lineRadial, pie } from 'd3-shape';
-import { m as motion, MotionConfig } from 'framer-motion';
 import { every } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';
@@ -14,6 +14,8 @@ import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 import { CategorySlice } from './CategorySlice';
 
 const margins: Margins = { left: 1, right: 1, top: 1, bottom: 1 };
+
+const springConfig = { duration: 250, easing: easeCubicInOut };
 
 export type RadarChartProps<CategoryT extends DomainValue> = {
   title: string;
@@ -149,246 +151,274 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
     .radius((d) => y(d.value))
     .curve(curveLinearClosed);
 
+  // ----- ANIMATION -----
+
+  const radialPolygonSpring = useSpring({
+    d: radialLineGenerator(data) ?? '',
+    opacity: isZeroState ? 0 : 1,
+    config: springConfig
+  });
+
+  const radialLineSprings = useSprings(
+    data.length,
+    data.map((d) => ({
+      x2: radialPointLookup.get(d.category)?.[0] ?? 0,
+      y2: radialPointLookup.get(d.category)?.[1] ?? 0,
+      opacity: isZeroState ? 0 : 1,
+      config: springConfig
+    }))
+  );
+
+  const activeDataPointSprings = useSprings(
+    data.length,
+    data.map((d) => ({
+      cx: radialPointLookup.get(d.category)?.[0] ?? 0,
+      cy: (radialPointLookup.get(d.category)?.[1] ?? 0) + 0.5,
+      opacity: isZeroState || d !== selectedDatum ? 0 : 0.75,
+      config: springConfig
+    }))
+  );
+
+  const allDataPointSprings = useSprings(
+    data.length,
+    data.map((d) => ({
+      cx: radialPointLookup.get(d.category)?.[0] ?? 0,
+      cy: (radialPointLookup.get(d.category)?.[1] ?? 0) + 0.5,
+      opacity: isZeroState ? 0 : 1,
+      config: springConfig
+    }))
+  );
+
   // ----- RENDERING -----
 
   return (
-    <MotionConfig transition={{ duration: 0.3, ease: easeCubicInOut }}>
-      <Svg
-        ref={svgRef}
-        width={diameter}
-        height={diameter}
-        role="graphics-document"
-        aria-roledescription="Radar chart"
-        viewBox={`${-diameter / 2} ${-diameter / 2} ${diameter} ${diameter}`}
-        className="text-pink-600 select-none"
-        aria-label={title}
-      >
-        {/* Definitions */}
-        <defs>
-          <radialGradient
-            id={radialGradientId}
-            gradientUnits="userSpaceOnUse"
-            r={150}
-            cx={radialPointLookup.get(selectedCategory)?.[0]}
-            cy={radialPointLookup.get(selectedCategory)?.[1]}
-          >
-            <stop offset="0%" stopColor="currentColor" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="currentColor" stopOpacity="0.1" />
-          </radialGradient>
-          <path
-            role="presentation"
-            id={upperLabelArcId}
-            d={`M-${labelArcRadiusPx},0 a${labelArcRadiusPx},${labelArcRadiusPx} 0 0,1 ${
-              labelArcRadiusPx * 2
-            },0`}
-          />
-          <path
-            role="presentation"
-            id={lowerLabelArcId}
-            d={`M${labelArcRadiusPx},0 a${labelArcRadiusPx},${labelArcRadiusPx} 0 0,0 -${
-              labelArcRadiusPx * 2
-            },0`}
-          />
-        </defs>
-
-        {/* Category slices */}
-        <g>
-          {slicePieGenerator(data.slice()).map((d) => (
-            <CategorySlice
-              key={getAxisDomainAsReactKey(d.data.category)}
-              isSelected={d.data.category === selectedCategory}
-              degree={degreesLookup.get(d.data.category) ?? 0}
-              label={categoryLabel(d.data)}
-              path={sliceArcGenerator(d as any) ?? ''}
-              sliceLabelFontSizePx={sliceLabelFontSizePx}
-              lowerLabelArcId={lowerLabelArcId}
-              upperLabelArcId={upperLabelArcId}
-              onClick={() => onSelect(d.data)}
-            />
-          ))}
-        </g>
-
-        {/* Indicator slice */}
+    <Svg
+      ref={svgRef}
+      width={diameter}
+      height={diameter}
+      role="graphics-document"
+      aria-roledescription="Radar chart"
+      viewBox={`${-diameter / 2} ${-diameter / 2} ${diameter} ${diameter}`}
+      className="text-pink-600 select-none"
+      aria-label={title}
+    >
+      {/* Definitions */}
+      <defs>
+        <radialGradient
+          id={radialGradientId}
+          gradientUnits="userSpaceOnUse"
+          r={150}
+          cx={radialPointLookup.get(selectedCategory)?.[0]}
+          cy={radialPointLookup.get(selectedCategory)?.[1]}
+        >
+          <stop offset="0%" stopColor="currentColor" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="currentColor" stopOpacity="0.1" />
+        </radialGradient>
         <path
-          className="pointer-events-none fill-current"
           role="presentation"
-          d={(indicatorSliceArc as any)()}
-          style={{ transform: `rotate(${degreesLookup.get(selectedCategory) ?? 0}deg)` }}
+          id={upperLabelArcId}
+          d={`M-${labelArcRadiusPx},0 a${labelArcRadiusPx},${labelArcRadiusPx} 0 0,1 ${
+            labelArcRadiusPx * 2
+          },0`}
         />
+        <path
+          role="presentation"
+          id={lowerLabelArcId}
+          d={`M${labelArcRadiusPx},0 a${labelArcRadiusPx},${labelArcRadiusPx} 0 0,0 -${
+            labelArcRadiusPx * 2
+          },0`}
+        />
+      </defs>
 
-        {/* Y-scale circles */}
-        <g>
-          {y.ticks(5).map((tick) => (
-            <circle
-              key={tick}
-              className="stroke-current text-slate-700 fill-transparent"
-              strokeWidth={1}
-              cx={0}
-              cy={0}
-              role="presentation"
-              r={y(tick)}
-            ></circle>
-          ))}
-        </g>
+      {/* Category slices */}
+      <g>
+        {slicePieGenerator(data.slice()).map((d) => (
+          <CategorySlice
+            key={getAxisDomainAsReactKey(d.data.category)}
+            isSelected={d.data.category === selectedCategory}
+            degree={degreesLookup.get(d.data.category) ?? 0}
+            label={categoryLabel(d.data)}
+            path={sliceArcGenerator(d as any) ?? ''}
+            sliceLabelFontSizePx={sliceLabelFontSizePx}
+            lowerLabelArcId={lowerLabelArcId}
+            upperLabelArcId={upperLabelArcId}
+            onClick={() => onSelect(d.data)}
+          />
+        ))}
+      </g>
 
-        {/* Y-scale labels */}
-        <g className="pointer-events-none">
-          {y.ticks(5).map((tick) => (
-            <g key={tick}>
-              <rect
-                className="text-slate-700 fill-slate-900"
-                rx={tickRectBorderRadiusPx}
-                ry={tickRectBorderRadiusPx}
-                stroke="none"
-                role="presentation"
-                width={tickRectWidthPx}
-                height={tickRectHeightPx}
-                x={tickRectWidthPx * -0.5}
-                y={y(tick) - tickRectHeightPx * 0.5}
-              />
-              <text
-                className="fill-current text-slate-400"
-                role="presentation"
-                aria-hidden
-                x={0}
-                y={y(tick)}
-                dy="0.35em"
-                style={{ textAnchor: 'middle', fontSize: tickFontSizePx }}
-              >
-                {tick}
-              </text>
-            </g>
-          ))}
-        </g>
+      {/* Indicator slice */}
+      <path
+        className="pointer-events-none fill-current"
+        role="presentation"
+        d={(indicatorSliceArc as any)()}
+        style={{ transform: `rotate(${degreesLookup.get(selectedCategory) ?? 0}deg)` }}
+      />
 
-        {/* Radial polygon between the data points */}
-        <g>
-          {
-            <motion.path
-              className="stroke-current text-slate-400"
-              fill={`url(#${radialGradientId})`}
-              strokeWidth={2}
-              role="presentation"
-              animate={{
-                d: radialLineGenerator(data) ?? '',
-                opacity: isZeroState ? 0 : 1
-              }}
-            />
-          }
-        </g>
-
-        {/* Radial lines out from chart center to data points */}
-        <g>
-          {data.map((d) => (
-            <motion.line
-              key={getAxisDomainAsReactKey(d.category)}
-              className="stroke-current"
-              x1={0}
-              y1={0}
-              role="presentation"
-              strokeWidth={d.category === selectedCategory ? 5 : 2}
-              animate={{
-                x2: radialPointLookup.get(d.category)?.[0] ?? 0,
-                y2: radialPointLookup.get(d.category)?.[1] ?? 0,
-                opacity: isZeroState ? 0 : 1
-              }}
-            />
-          ))}
-        </g>
-
-        {/* Centre ring with big number */}
-        <g className="pointer-events-none">
+      {/* Y-scale circles */}
+      <g>
+        {y.ticks(5).map((tick) => (
           <circle
-            className={`${
-              isZeroState ? 'stroke-slate-800' : 'stroke-current'
-            } fill-slate-900 transition-colors`}
+            key={tick}
+            className="stroke-current text-slate-700 fill-transparent"
+            strokeWidth={1}
             cx={0}
             cy={0}
             role="presentation"
-            r={centerRingRadiusPx}
-            strokeWidth={centerRingStrokeWidthPx}
-          />
-          <text
-            x={0}
-            y={0}
-            textAnchor="middle"
-            dy="0.35em"
-            className="font-semibold text-white"
-            role="presentation"
-            aria-hidden
-            fill="currentColor"
-            style={{ fontSize: centerRingFontSizePx }}
-          >
-            {Math.round(selectedDatum?.value ?? 0)}
-          </text>
-        </g>
+            r={y(tick)}
+          ></circle>
+        ))}
+      </g>
 
-        {/* Data point circles */}
-        <g className="pointer-events-none">
-          {data.map((d) => (
-            <Fragment key={getAxisDomainAsReactKey(d.category)}>
-              <motion.circle
-                fill="currentColor"
-                stroke="none"
+      {/* Y-scale labels */}
+      <g className="pointer-events-none">
+        {y.ticks(5).map((tick) => (
+          <g key={tick}>
+            <rect
+              className="text-slate-700 fill-slate-900"
+              rx={tickRectBorderRadiusPx}
+              ry={tickRectBorderRadiusPx}
+              stroke="none"
+              role="presentation"
+              width={tickRectWidthPx}
+              height={tickRectHeightPx}
+              x={tickRectWidthPx * -0.5}
+              y={y(tick) - tickRectHeightPx * 0.5}
+            />
+            <text
+              className="fill-current text-slate-400"
+              role="presentation"
+              aria-hidden
+              x={0}
+              y={y(tick)}
+              dy="0.35em"
+              style={{ textAnchor: 'middle', fontSize: tickFontSizePx }}
+            >
+              {tick}
+            </text>
+          </g>
+        ))}
+      </g>
+
+      {/* Radial polygon between the data points */}
+      <g>
+        {
+          <animated.path
+            className="stroke-current text-slate-400"
+            fill={`url(#${radialGradientId})`}
+            strokeWidth={2}
+            role="presentation"
+            style={{ opacity: radialPolygonSpring.opacity }}
+            d={radialPolygonSpring.d}
+          />
+        }
+      </g>
+
+      {/* Radial lines out from chart center to data points */}
+      <g>
+        {data.map((d, index) => (
+          <animated.line
+            key={getAxisDomainAsReactKey(d.category)}
+            className="stroke-current"
+            x1={0}
+            y1={0}
+            x2={radialLineSprings[index].x2}
+            y2={radialLineSprings[index].y2}
+            style={{ opacity: radialLineSprings[index].opacity }}
+            role="presentation"
+            strokeWidth={d.category === selectedCategory ? 5 : 2}
+          />
+        ))}
+      </g>
+
+      {/* Centre ring with big number */}
+      <g className="pointer-events-none">
+        <circle
+          className={`${
+            isZeroState ? 'stroke-slate-800' : 'stroke-current'
+          } fill-slate-900 transition-colors`}
+          cx={0}
+          cy={0}
+          role="presentation"
+          r={centerRingRadiusPx}
+          strokeWidth={centerRingStrokeWidthPx}
+        />
+        <text
+          x={0}
+          y={0}
+          textAnchor="middle"
+          dy="0.35em"
+          className="font-semibold text-white"
+          role="presentation"
+          aria-hidden
+          fill="currentColor"
+          style={{ fontSize: centerRingFontSizePx }}
+        >
+          {Math.round(selectedDatum?.value ?? 0)}
+        </text>
+      </g>
+
+      {/* Data point circles */}
+      <g className="pointer-events-none">
+        {data.map((d, index) => (
+          <Fragment key={getAxisDomainAsReactKey(d.category)}>
+            <animated.circle
+              fill="currentColor"
+              stroke="none"
+              role="presentation"
+              r={activePointRadiusPx}
+              cx={activeDataPointSprings[index].cx}
+              cy={activeDataPointSprings[index].cy}
+              style={{ opacity: activeDataPointSprings[index].opacity }}
+            />
+            <animated.circle
+              role="graphics-symbol"
+              aria-roledescription={datumAriaRoleDescription?.(d)}
+              aria-label={datumAriaLabel?.(d)}
+              className="fill-current stroke-white"
+              r={5}
+              strokeWidth={4}
+              cx={allDataPointSprings[index].cx}
+              cy={allDataPointSprings[index].cy}
+              style={{ opacity: allDataPointSprings[index].opacity }}
+            >
+              {datumDescription && <desc>{datumDescription(d)}</desc>}
+            </animated.circle>
+          </Fragment>
+        ))}
+      </g>
+
+      {/* Data point tooltip trigger circles */}
+      <g>
+        {!isZeroState &&
+          data.map((d) => {
+            const circleId = `${id}_tooltip_${d.category}`;
+            const cx = radialPointLookup.get(d.category)?.[0] ?? 0;
+            const cy = radialPointLookup.get(d.category)?.[1] ?? 0;
+            const rect: Rect = { x: diameter * 0.5 + cx, y: diameter * 0.5 + cy, width: 0, height: 0 };
+            return (
+              <circle
+                key={getAxisDomainAsReactKey(d.category)}
+                id={circleId}
+                className="fill-transparent"
                 role="presentation"
-                r={activePointRadiusPx}
-                animate={{
-                  cx: radialPointLookup.get(d.category)?.[0] ?? 0,
-                  cy: (radialPointLookup.get(d.category)?.[1] ?? 0) + 0.5,
-                  opacity: isZeroState || d !== selectedDatum ? 0 : 0.75
+                cx={cx}
+                cy={cy}
+                r={tooltipPointRadiusPx}
+                onMouseMove={() => onMouseEnter(d, rect)}
+                onMouseLeave={onMouseLeave}
+                onClick={(event) => {
+                  onClick(d, rect);
+                  // Prevent clicks from being picked up by the document.window
+                  // onclick event listener, which closes the tooltip on a click
+                  // outside of the chart area.
+                  event.stopPropagation();
                 }}
               />
-              <motion.circle
-                role="graphics-symbol"
-                aria-roledescription={datumAriaRoleDescription?.(d)}
-                aria-label={datumAriaLabel?.(d)}
-                className="fill-current stroke-white"
-                r={5}
-                strokeWidth={4}
-                animate={{
-                  cx: radialPointLookup.get(d.category)?.[0] ?? 0,
-                  cy: radialPointLookup.get(d.category)?.[1] ?? 0,
-                  opacity: isZeroState ? 0 : 1
-                }}
-              >
-                {datumDescription && <desc>{datumDescription(d)}</desc>}
-              </motion.circle>
-            </Fragment>
-          ))}
-        </g>
-
-        {/* Data point tooltip trigger circles */}
-        <g>
-          {!isZeroState &&
-            data.map((d) => {
-              const circleId = `${id}_tooltip_${d.category}`;
-              const cx = radialPointLookup.get(d.category)?.[0] ?? 0;
-              const cy = radialPointLookup.get(d.category)?.[1] ?? 0;
-              const rect: Rect = { x: diameter * 0.5 + cx, y: diameter * 0.5 + cy, width: 0, height: 0 };
-              return (
-                <circle
-                  key={getAxisDomainAsReactKey(d.category)}
-                  id={circleId}
-                  className="fill-transparent"
-                  role="presentation"
-                  cx={cx}
-                  cy={cy}
-                  r={tooltipPointRadiusPx}
-                  onMouseMove={() => onMouseEnter(d, rect)}
-                  onMouseLeave={onMouseLeave}
-                  onClick={(event) => {
-                    onClick(d, rect);
-                    // Prevent clicks from being picked up by the document.window
-                    // onclick event listener, which closes the tooltip on a click
-                    // outside of the chart area.
-                    event.stopPropagation();
-                  }}
-                />
-              );
-            })}
-        </g>
-      </Svg>
-    </MotionConfig>
+            );
+          })}
+      </g>
+    </Svg>
   );
 };
 
