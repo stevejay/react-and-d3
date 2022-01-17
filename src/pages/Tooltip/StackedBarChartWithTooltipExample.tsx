@@ -1,4 +1,5 @@
 import { FC, Fragment } from 'react';
+import { SpringConfig } from '@react-spring/web';
 import { format } from 'd3-format';
 import { schemeSet3 } from 'd3-scale-chromatic';
 import { capitalize } from 'lodash-es';
@@ -65,7 +66,13 @@ function renderTooltipContent(d: CategoryValueListDatum<string, number>) {
   );
 }
 
-export const StackedBarChartWithTooltipExample: FC = () => {
+export type StackedBarChartWithTooltipExampleProps = {
+  springConfig: SpringConfig;
+};
+
+export const StackedBarChartWithTooltipExample: FC<StackedBarChartWithTooltipExampleProps> = ({
+  springConfig
+}) => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
@@ -83,6 +90,7 @@ export const StackedBarChartWithTooltipExample: FC = () => {
               renderTooltipContent={renderTooltipContent}
               hideTooltipOnScroll
               compact={isCompact(width)}
+              springConfig={springConfig}
             />
           )
         }

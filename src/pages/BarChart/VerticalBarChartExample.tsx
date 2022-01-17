@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
@@ -42,7 +43,9 @@ const dataSets = [
 
 const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
 
-export const VerticalBarChartExample: FC = () => {
+export type VerticalBarChartExampleProps = { springConfig: SpringConfig };
+
+export const VerticalBarChartExample: FC<VerticalBarChartExampleProps> = ({ springConfig }) => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
@@ -55,6 +58,7 @@ export const VerticalBarChartExample: FC = () => {
               width={width}
               height={height}
               margins={margins}
+              springConfig={springConfig}
             />
           )
         }

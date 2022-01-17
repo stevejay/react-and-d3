@@ -1,4 +1,5 @@
 import { memo, ReactElement, Ref } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgBars } from '@/components/SvgBars';
@@ -26,7 +27,7 @@ export type VerticalBarChartProps<CategoryT extends DomainValue> = {
   datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   svgRef?: Ref<SVGSVGElement>;
-  transitionSeconds?: number;
+  springConfig: SpringConfig;
 };
 
 function VerticalBarChartCore<CategoryT extends DomainValue>({
@@ -43,7 +44,7 @@ function VerticalBarChartCore<CategoryT extends DomainValue>({
   datumAriaLabel,
   datumDescription,
   svgRef,
-  transitionSeconds = 0.5
+  springConfig
 }: VerticalBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useContinuousDomain(data, (d) => d.value, { includeZeroInDomain: true });
@@ -58,7 +59,6 @@ function VerticalBarChartCore<CategoryT extends DomainValue>({
       ref={svgRef}
       width={width}
       height={height}
-      transitionSeconds={transitionSeconds}
       ariaLabel={ariaLabel}
       ariaLabelledby={ariaLabelledby}
       ariaRoleDescription={ariaRoleDescription}
@@ -81,6 +81,7 @@ function VerticalBarChartCore<CategoryT extends DomainValue>({
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={53}
+        springConfig={springConfig}
       />
       <SvgAxis
         scale={categoryScale}
@@ -95,6 +96,7 @@ function VerticalBarChartCore<CategoryT extends DomainValue>({
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={34}
+        springConfig={springConfig}
       />
       <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
         <SvgBars
@@ -106,6 +108,7 @@ function VerticalBarChartCore<CategoryT extends DomainValue>({
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumDescription={datumDescription}
+          springConfig={springConfig}
         />
         <SvgLineAnnotation
           orientation="horizontal"
@@ -113,6 +116,7 @@ function VerticalBarChartCore<CategoryT extends DomainValue>({
           scale={valueScale}
           chartArea={chartArea}
           className="text-slate-300"
+          springConfig={springConfig}
         />
       </SvgChartAreaGroup>
     </SvgChartRoot>
@@ -125,5 +129,6 @@ export const VerticalBarChart = memo(
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
-    prevProps.margins === nextProps.margins
+    prevProps.margins === nextProps.margins &&
+    prevProps.springConfig === nextProps.springConfig
 ) as typeof VerticalBarChartCore;

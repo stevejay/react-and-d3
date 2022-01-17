@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
@@ -40,7 +41,9 @@ function isCompact(width: number) {
   return Boolean(width) && width < 500;
 }
 
-export const HorizontalBarChartExample: FC = () => {
+export type HorizontalBarChartExampleProps = { springConfig: SpringConfig };
+
+export const HorizontalBarChartExample: FC<HorizontalBarChartExampleProps> = ({ springConfig }) => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
@@ -54,6 +57,7 @@ export const HorizontalBarChartExample: FC = () => {
               height={height}
               margins={margins}
               compact={isCompact(width)}
+              springConfig={springConfig}
             />
           )
         }

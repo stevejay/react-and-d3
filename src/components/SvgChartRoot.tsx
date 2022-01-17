@@ -5,7 +5,6 @@ import { Svg } from '@/components/Svg';
 export type SvgChartRootProps = {
   width: number;
   height: number;
-  transitionSeconds?: number;
   className?: string;
   ariaLabel?: string;
   ariaLabelledby?: string;
@@ -20,7 +19,6 @@ export const SvgChartRoot = forwardRef<SVGSVGElement, SvgChartRootProps>(
     {
       width,
       height,
-      transitionSeconds = 0.25,
       className = '',
       ariaLabel,
       ariaLabelledby,

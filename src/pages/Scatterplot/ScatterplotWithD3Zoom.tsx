@@ -1,4 +1,5 @@
 import { memo, ReactElement, Ref } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
@@ -28,8 +29,8 @@ export type ScatterplotWithD3ZoomProps<DatumT> = {
   pointRadius: ((datum: PointDatum<DatumT>) => number) | number;
   pointClassName: ((datum: PointDatum<DatumT>) => string) | string;
   svgRef?: Ref<SVGSVGElement>;
-  transitionSeconds?: number;
   compact: boolean;
+  springConfig: SpringConfig;
 };
 
 function ScatterplotWithD3ZoomCore<DatumT>({
@@ -49,7 +50,7 @@ function ScatterplotWithD3ZoomCore<DatumT>({
   pointRadius,
   pointClassName,
   svgRef,
-  transitionSeconds = 0.5,
+  springConfig,
   compact
 }: ScatterplotWithD3ZoomProps<DatumT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins, 0);
@@ -76,7 +77,6 @@ function ScatterplotWithD3ZoomCore<DatumT>({
       ref={svgRef}
       width={width}
       height={height}
-      transitionSeconds={transitionSeconds}
       ariaLabel={ariaLabel}
       ariaLabelledby={ariaLabelledby}
       ariaRoleDescription={ariaRoleDescription}
@@ -97,6 +97,7 @@ function ScatterplotWithD3ZoomCore<DatumT>({
         tickLineClassName="text-slate-400"
         tickTextClassName="text-slate-200"
         animate={false}
+        springConfig={springConfig}
       />
       <SvgAxis
         scale={yScale}
@@ -111,6 +112,7 @@ function ScatterplotWithD3ZoomCore<DatumT>({
         tickLineClassName="text-slate-400"
         tickTextClassName="text-slate-200"
         animate={false}
+        springConfig={springConfig}
       />
       <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
         <SvgPoints
@@ -124,6 +126,7 @@ function ScatterplotWithD3ZoomCore<DatumT>({
           pointRadius={pointRadius}
           pointClassName={pointClassName}
           animate={false}
+          springConfig={springConfig}
         />
       </SvgChartAreaGroup>
       <SvgChartAreaInteractionRect ref={interactiveRef} chartArea={chartArea} />

@@ -10,6 +10,7 @@ export function getDefaultRenderingOffset(): number {
   return typeof window !== 'undefined' && window.devicePixelRatio > 1 ? 0 : 0.5;
 }
 
+// TODO remove
 /**
  * To animate x and y attributes on an element in an SVG using Framer Motion,
  * you need to animate attrX and attrY. Animating x and y instead targets

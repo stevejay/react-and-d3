@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { SpringConfig } from '@react-spring/web';
 import { format } from 'd3-format';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
@@ -43,7 +44,11 @@ function renderTooltipContent(d: CategoryValueDatum<string, number>) {
   );
 }
 
-export const BarChartWithTooltipExample: FC = () => {
+export type BarChartWithTooltipExampleProps = {
+  springConfig: SpringConfig;
+};
+
+export const BarChartWithTooltipExample: FC<BarChartWithTooltipExampleProps> = ({ springConfig }) => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
@@ -61,6 +66,7 @@ export const BarChartWithTooltipExample: FC = () => {
               margins={margins}
               renderTooltipContent={renderTooltipContent}
               hideTooltipOnScroll={true}
+              springConfig={springConfig}
             />
           )
         }

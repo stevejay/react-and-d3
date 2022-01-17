@@ -1,4 +1,5 @@
 import { memo, ReactElement, RefObject } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { SvgAxis, SvgAxisProps } from '@/components/SvgAxis';
 import { SvgCategoryInteraction } from '@/components/SvgCategoryInteraction';
@@ -40,6 +41,7 @@ export type StackedBarChartProps<CategoryT extends DomainValue> = {
   onMouseEnter: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
   onMouseLeave: () => void;
   onClick: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
+  springConfig: SpringConfig;
 };
 
 function StackedBarChartCore<CategoryT extends DomainValue>({
@@ -63,12 +65,12 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
   datumAriaRoleDescription,
   datumAriaLabel,
   datumDescription,
-  transitionSeconds = 0.5,
   svgRef,
   compact,
   onMouseEnter,
   onMouseLeave,
-  onClick
+  onClick,
+  springConfig
 }: StackedBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
 
@@ -97,7 +99,6 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
       ref={svgRef}
       width={width}
       height={height}
-      transitionSeconds={transitionSeconds}
       ariaLabel={ariaLabel}
       ariaLabelledby={ariaLabelledby}
       ariaRoleDescription={ariaRoleDescription}
@@ -120,6 +121,7 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={53}
+        springConfig={springConfig}
       />
       <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
         <SvgStackedBars
@@ -135,6 +137,7 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumDescription={datumDescription}
+          springConfig={springConfig}
         />
       </SvgChartAreaGroup>
       {/* X-axis is rendered after the bars so that its domain sits on top of them */}
@@ -153,6 +156,7 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={34}
         tickFormat={independentAxisTickFormat}
+        springConfig={springConfig}
       />
       <SvgCategoryInteraction
         svgRef={svgRef}

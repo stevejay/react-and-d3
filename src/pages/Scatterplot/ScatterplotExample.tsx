@@ -1,10 +1,11 @@
 import { FC, useMemo } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import type { Margins, PointDatum } from '@/types';
 
-import { irisData, IrisDatum } from './data';
 import { Scatterplot } from './Scatterplot';
+import { irisData, IrisDatum } from './scatterplotData';
 
 const margins: Margins = { left: 56, right: 40, top: 40, bottom: 48 };
 
@@ -23,7 +24,11 @@ function getPointClassName(d: PointDatum<IrisDatum>) {
   }
 }
 
-export const ScatterplotExample: FC = () => {
+export type ScatterplotExampleProps = {
+  springConfig: SpringConfig;
+};
+
+export const ScatterplotExample: FC<ScatterplotExampleProps> = ({ springConfig }) => {
   const data = useMemo(
     () => irisData.map((d) => ({ x: d.sepalLength, y: d.petalLength, datum: d as IrisDatum })),
     []
@@ -42,6 +47,7 @@ export const ScatterplotExample: FC = () => {
             // pointsGroupClassName="stroke-0"
             pointClassName={getPointClassName}
             pointRadius={8}
+            springConfig={springConfig}
           />
         )
       }

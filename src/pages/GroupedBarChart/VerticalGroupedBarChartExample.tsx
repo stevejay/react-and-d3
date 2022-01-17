@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import { SpringConfig } from '@react-spring/web';
 import { schemeSet3 } from 'd3-scale-chromatic';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
@@ -52,7 +53,11 @@ function getSeriesColor(series: string, index: number) {
   }
 }
 
-export const VerticalGroupedBarChartExample: FC = () => {
+export type VerticalGroupedBarChartExampleProps = {
+  springConfig: SpringConfig;
+};
+
+export const VerticalGroupedBarChartExample: FC<VerticalGroupedBarChartExampleProps> = ({ springConfig }) => {
   const [dataIndex, setDataIndex] = useState(0);
   const cycleDataIndex = () => setDataIndex((i) => (i === dataSets.length - 1 ? 0 : i + 1));
   const dataSet = dataSets[dataIndex];
@@ -69,6 +74,7 @@ export const VerticalGroupedBarChartExample: FC = () => {
               width={width}
               height={height}
               margins={margins}
+              springConfig={springConfig}
             />
           )
         }

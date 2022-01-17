@@ -1,4 +1,5 @@
 import { FC, memo } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
@@ -16,12 +17,12 @@ export type ReactTimeAxisChartProps = {
   width: number;
   height: number;
   ariaLabelledby: string;
-  transitionSeconds?: number;
+  springConfig: SpringConfig;
   tickLabelOrientation: TickLabelOrientation;
 };
 
 export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
-  ({ data, width, height, ariaLabelledby, tickLabelOrientation, transitionSeconds = 0.25 }) => {
+  ({ data, width, height, ariaLabelledby, tickLabelOrientation, springConfig }) => {
     const chartArea = useChartArea(width, height, margins);
     const domain = useTimeDomain(data);
     const scale = useTimeScale(domain, chartArea.rangeWidth, {
@@ -49,7 +50,7 @@ export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
           tickLabelOrientation={tickLabelOrientation}
           tickFormat={yearMonthMultiFormat}
           className="text-[10px]"
-          transitionSeconds={transitionSeconds}
+          springConfig={springConfig}
         />
       </Svg>
     );
@@ -58,6 +59,6 @@ export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
-    prevProps.transitionSeconds === nextProps.transitionSeconds &&
+    prevProps.springConfig === nextProps.springConfig &&
     prevProps.tickLabelOrientation === nextProps.tickLabelOrientation
 );

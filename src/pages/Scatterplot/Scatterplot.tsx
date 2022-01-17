@@ -1,4 +1,5 @@
 import { memo, ReactElement, Ref } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
@@ -27,8 +28,8 @@ export type ScatterplotProps<DatumT> = {
   pointRadius: ((datum: PointDatum<DatumT>) => number) | number;
   pointClassName: ((datum: PointDatum<DatumT>) => string) | string;
   svgRef?: Ref<SVGSVGElement>;
-  transitionSeconds?: number;
   compact: boolean;
+  springConfig: SpringConfig;
 };
 
 function ScatterplotCore<DatumT>({
@@ -47,25 +48,19 @@ function ScatterplotCore<DatumT>({
   pointRadius,
   pointClassName,
   svgRef,
-  transitionSeconds = 0.5
+  springConfig
 }: ScatterplotProps<DatumT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins, 0);
-  //   const initialTransform = zoomIdentity
-  //     .translate(chartArea.width * -0.05, chartArea.height * -0.05)
-  //     .scale(0.9);
-  //   console.log('initialTransform', initialTransform);
   const [interactiveRef, transform] = useZoom<SVGRectElement>();
   const xDomain = useContinuousDomain(data, (d) => d.x);
   const xScale = useLinearScaleWithZoom(xDomain, chartArea.rangeWidth, 'x', transform);
   const yDomain = useContinuousDomain(data, (d) => d.y);
   const yScale = useLinearScaleWithZoom(yDomain, chartArea.rangeHeight, 'y', transform);
-
   return (
     <SvgChartRoot
       ref={svgRef}
       width={width}
       height={height}
-      transitionSeconds={transitionSeconds}
       ariaLabel={ariaLabel}
       ariaLabelledby={ariaLabelledby}
       ariaRoleDescription={ariaRoleDescription}
@@ -86,6 +81,7 @@ function ScatterplotCore<DatumT>({
         tickLineClassName="text-slate-400"
         tickTextClassName="text-slate-200"
         animate={false}
+        springConfig={springConfig}
       />
       <SvgAxis
         scale={yScale}
@@ -100,6 +96,7 @@ function ScatterplotCore<DatumT>({
         tickLineClassName="text-slate-400"
         tickTextClassName="text-slate-200"
         animate={false}
+        springConfig={springConfig}
       />
       <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
         <SvgPoints
@@ -112,6 +109,7 @@ function ScatterplotCore<DatumT>({
           pointRadius={pointRadius}
           pointClassName={pointClassName}
           animate={false}
+          springConfig={springConfig}
         />
       </SvgChartAreaGroup>
       <SvgChartAreaInteractionRect ref={interactiveRef} chartArea={chartArea} />
@@ -125,5 +123,6 @@ export const Scatterplot = memo(
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
-    prevProps.margins === nextProps.margins
+    prevProps.margins === nextProps.margins &&
+    prevProps.springConfig === nextProps.springConfig
 ) as typeof ScatterplotCore;

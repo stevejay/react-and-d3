@@ -1,4 +1,5 @@
 import { memo, ReactElement, Ref } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
@@ -31,7 +32,7 @@ export type HorizontalStackedBarChartProps<CategoryT extends DomainValue> = {
   datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   svgRef?: Ref<SVGSVGElement>;
-  transitionSeconds?: number;
+  springConfig: SpringConfig;
   isCompact: (width: number) => boolean;
 };
 
@@ -54,7 +55,7 @@ function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
   datumAriaLabel,
   datumDescription,
   svgRef,
-  transitionSeconds = 0.5,
+  springConfig,
   isCompact
 }: HorizontalStackedBarChartProps<CategoryT>): ReactElement | null {
   const compact = isCompact(width);
@@ -85,7 +86,6 @@ function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
       ref={svgRef}
       width={width}
       height={height}
-      transitionSeconds={transitionSeconds}
       ariaLabel={ariaLabel}
       ariaLabelledby={ariaLabelledby}
       ariaRoleDescription={ariaRoleDescription}
@@ -109,6 +109,7 @@ function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
         axisLabelClassName="text-sm text-slate-300"
         axisLabelAlignment="center"
         axisLabelSpacing={34}
+        springConfig={springConfig}
       />
       <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
         <SvgStackedBars
@@ -124,6 +125,7 @@ function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumDescription={datumDescription}
+          springConfig={springConfig}
         />
       </SvgChartAreaGroup>
       {/* This axis is rendered after the bars so that its domain sits on top of them */}
@@ -140,6 +142,7 @@ function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
         axisLabelClassName="text-sm text-slate-300"
         axisLabelAlignment="center"
         axisLabelSpacing={44}
+        springConfig={springConfig}
       />
     </SvgChartRoot>
   );

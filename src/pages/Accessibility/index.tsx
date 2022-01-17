@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { easeCubicInOut } from 'd3-ease';
 
 import { PageHeading } from '@/components/PageHeading';
 import { Paragraph } from '@/components/Paragraph';
@@ -18,6 +19,8 @@ const VoiceOverText: FC = ({ children }) => (
   </figure>
 );
 
+const springConfig = { duration: 500, easing: easeCubicInOut };
+
 const AccessibilityPage = () => (
   <div className="w-full max-w-3xl p-4 mx-auto md:p-8">
     <PageHeading>Accessibility</PageHeading>
@@ -31,7 +34,7 @@ const AccessibilityPage = () => (
       below follows these recommendations. Use a screen reader with its preferred browser to hear the result.
       On macOS you can use VoiceOver with the Safari Web browser. On Windows you can use NVDA with Firefox.
     </Paragraph>
-    <StackedBarChartWithTooltipExample />
+    <StackedBarChartWithTooltipExample springConfig={springConfig} />
     <Paragraph>
       Using either of those combinations, I hear the following when I navigate to the chart:
     </Paragraph>

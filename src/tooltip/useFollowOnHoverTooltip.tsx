@@ -1,7 +1,8 @@
 import { ReactElement, RefObject, useEffect, useMemo, useRef } from 'react';
+import { useSpring } from '@react-spring/web';
 import type { TippyProps } from '@tippyjs/react/headless';
 import Tippy from '@tippyjs/react/headless';
-import { animate, useMotionValue } from 'framer-motion';
+import { easeCubicInOut } from 'd3-ease';
 
 import type { Rect } from '@/types';
 import { rectsAreEqual } from '@/utils/renderUtils';
@@ -13,6 +14,8 @@ import { useDelayedOnInactivityState } from './useDelayedOnInactivityState';
 const popperOptions = {
   modifiers: [{ name: 'flip', enabled: true }]
 };
+
+const springConfig = { duration: 150, easing: easeCubicInOut };
 
 type TooltipOptions = { hideTooltipOnScroll?: boolean; xOffset?: number; yOffset?: number };
 
@@ -38,7 +41,7 @@ export function useFollowOnHoverTooltip<DatumT>(
 ): ReturnValue<DatumT> {
   const { hideTooltipOnScroll = true, xOffset = 0, yOffset = 18 } = options ?? {};
   const svgRef = useRef<SVGSVGElement>(null);
-  const opacity = useMotionValue(0);
+  const [styles, api] = useSpring(() => ({ opacity: 0 }));
 
   const [tooltipState, setTooltipStateAfter, setTooltipStateImmediately] = useDelayedOnInactivityState<
     TooltipState<DatumT>
@@ -91,30 +94,30 @@ export function useFollowOnHoverTooltip<DatumT>(
     [setTooltipStateAfter, setTooltipStateImmediately]
   );
 
+  // Note: appendTo cannot be set to 'parent' as there is overflow clipping on the chart sizer.
   const tippyProps = useMemo(
     () =>
       ({
         reference: svgRef.current,
-        // appendTo: 'parent', // Can't be parent as there is overflow clipping on the chart sizer
         placement: 'top',
         offset: [xOffset, yOffset],
         animation: true,
         onShow: () => {
-          animate(opacity, 1, { type: 'tween', duration: 0.15 });
+          api.start({ opacity: 1, config: springConfig });
         },
         onHide: ({ unmount }) => {
-          animate(opacity, 0, { type: 'tween', duration: 0.15, onComplete: unmount });
+          api.start({ opacity: 0, config: springConfig, onRest: unmount });
         },
         visible: tooltipState.visible,
         getReferenceClientRect: () => createVirtualReferenceElement(svgRef, tooltipState.rect!),
         popperOptions,
         render: (attrs) => (
-          <Tooltip {...attrs} style={{ opacity }} ariaHidden>
+          <Tooltip {...attrs} styles={styles as any} ariaHidden>
             {tooltipState.datum && renderContent(tooltipState.datum)}
           </Tooltip>
         )
       } as TippyProps),
-    [tooltipState, renderContent, opacity, xOffset, yOffset]
+    [tooltipState, renderContent, api, styles, xOffset, yOffset]
   );
 
   return [svgRef, eventHandlers, Tippy, tippyProps];

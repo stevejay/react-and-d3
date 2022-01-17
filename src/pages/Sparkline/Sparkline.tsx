@@ -3,7 +3,6 @@ import { useId } from '@uifabric/react-hooks';
 import { max, min } from 'd3-array';
 import { scaleLinear, scaleTime } from 'd3-scale';
 import { area, line } from 'd3-shape';
-import { m as motion } from 'framer-motion';
 
 import type { Margins } from '@/types';
 
@@ -73,15 +72,7 @@ export const Sparkline: FC<SparklineProps> = memo(
     const lastPointCy = lastDatum ? y(lastDatum.value) ?? 0 : 0;
 
     return (
-      <motion.svg
-        role="presentation"
-        className="text-pink-600 pointer-events-none"
-        width={width}
-        height={height}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
+      <svg role="presentation" className="text-pink-600 pointer-events-none" width={width} height={height}>
         <defs>
           <linearGradient id={gradientDefId} x1={0} y2="100%" x2={0} y1={0}>
             <stop offset="0%" stopColor="currentColor" stopOpacity={0.4}></stop>
@@ -124,7 +115,7 @@ export const Sparkline: FC<SparklineProps> = memo(
         <g transform={`translate(${margins.left},${margins.top})`}>
           <circle className="fill-current" cx={lastPointCx} cy={lastPointCy} r={LAST_POINT_RADIUS_PX} />
         </g>
-      </motion.svg>
+      </svg>
     );
   },
   (prevProps, nextProps) =>

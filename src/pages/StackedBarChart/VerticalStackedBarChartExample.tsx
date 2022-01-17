@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { SpringConfig } from '@react-spring/web';
 import { schemeSet3 } from 'd3-scale-chromatic';
 
 import { ChartSizerUsingClone } from '@/components/ChartSizerUsingClone';
@@ -47,7 +48,11 @@ function getSeriesColor(series: string) {
   }
 }
 
-export const VerticalStackedBarChartExample: FC = () => {
+export type VerticalStackedBarChartExampleProps = {
+  springConfig: SpringConfig;
+};
+
+export const VerticalStackedBarChartExample: FC<VerticalStackedBarChartExampleProps> = ({ springConfig }) => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
@@ -59,6 +64,7 @@ export const VerticalStackedBarChartExample: FC = () => {
           seriesKeys={seriesKeys}
           seriesColor={getSeriesColor}
           margins={margins}
+          springConfig={springConfig}
         />
       </ChartSizerUsingClone>
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>

@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
@@ -14,10 +15,10 @@ const dataSets = [
 ];
 
 export type CustomTimeAxisExamplesProps = {
-  transitionSeconds?: number;
+  springConfig: SpringConfig;
 };
 
-export const CustomTimeAxisExamples: FC<CustomTimeAxisExamplesProps> = ({ transitionSeconds = 0.25 }) => {
+export const CustomTimeAxisExamples: FC<CustomTimeAxisExamplesProps> = ({ springConfig }) => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <AxisExamplesWrapper>
@@ -29,7 +30,7 @@ export const CustomTimeAxisExamples: FC<CustomTimeAxisExamplesProps> = ({ transi
               data={data}
               width={width ?? 0}
               height={height ?? 0}
-              transitionSeconds={transitionSeconds}
+              springConfig={springConfig}
             />
           )
         }

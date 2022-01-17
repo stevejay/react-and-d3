@@ -1,4 +1,5 @@
 import { ReactElement } from 'react';
+import { animated, SpringConfig, useTransition } from '@react-spring/web';
 
 import { createCircleGenerator } from '@/generators/circleGenerator';
 import type { AxisScale, PointDatum } from '@/types';
@@ -16,6 +17,7 @@ export type SvgPointsProps<DatumT> = {
   pointRadius: ((datum: PointDatum<DatumT>) => number) | number;
   pointClassName: ((datum: PointDatum<DatumT>) => string) | string;
   animate?: boolean;
+  springConfig: SpringConfig;
 };
 
 export function SvgPoints<DatumT>({
@@ -29,66 +31,38 @@ export function SvgPoints<DatumT>({
   datumDescription,
   pointRadius,
   pointClassName,
-  animate = true
+  animate = true,
+  springConfig
 }: SvgPointsProps<DatumT>): ReactElement | null {
   const renderingOffset = offset ?? getDefaultRenderingOffset();
   const circleGenerator = createCircleGenerator(xScale, yScale, renderingOffset);
 
+  // TODO I'm not sure what keys should be for this.
+  const transitions = useTransition(data, {
+    initial: (d) => ({ opacity: 1, ...circleGenerator(d) }),
+    from: (d) => ({ opacity: 0, ...circleGenerator(d) }),
+    enter: (d) => ({ opacity: 1, ...circleGenerator(d) }),
+    update: (d) => ({ opacity: 1, ...circleGenerator(d) }),
+    leave: { opacity: 0 },
+    config: springConfig,
+    immediate: !animate
+  });
+
   return (
     <g data-test-id="points-group" className={pointsGroupClassName} fill="currentColor" stroke="none">
-      {data.map((d, index) => (
-        <circle
-          key={index}
+      {transitions((styles, d) => (
+        <animated.circle
           data-test-id="point"
           r={typeof pointRadius === 'number' ? pointRadius : pointRadius(d)}
           className={typeof pointClassName === 'string' ? pointClassName : pointClassName(d)}
-          {...circleGenerator(d)}
           role="graphics-symbol"
           aria-roledescription={datumAriaRoleDescription?.(d)}
           aria-label={datumAriaLabel?.(d)}
+          style={styles}
         >
           {datumDescription && <desc>{datumDescription(d)}</desc>}
-        </circle>
+        </animated.circle>
       ))}
     </g>
   );
-
-  //   return (
-  //     <g data-test-id="points-group" className={pointsGroupClassName}>
-  //       <AnimatePresence custom={circleGenerator} initial={false}>
-  //         {data.map((d, index) => (
-  //           <motion.circle
-  //             key={index}
-  //             data-test-id="point"
-  //             r={typeof pointRadius === 'number' ? pointRadius : pointRadius(d)}
-  //             className={typeof pointClassName === 'string' ? pointClassName : pointClassName(d)}
-  //             custom={circleGenerator}
-  //             transition={animate ? undefined : noAnimations}
-  //             initial="initial"
-  //             animate="animate"
-  //             exit="exit"
-  //             variants={{
-  //               initial: () => ({
-  //                 opacity: 0,
-  //                 ...circleGenerator(d)
-  //               }),
-  //               animate: () => ({
-  //                 opacity: 1,
-  //                 ...circleGenerator(d)
-  //               }),
-  //               exit: (nextCircleGenerator: typeof circleGenerator) => ({
-  //                 opacity: 0,
-  //                 ...nextCircleGenerator(d)
-  //               })
-  //             }}
-  //             role="graphics-symbol"
-  //             aria-roledescription={datumAriaRoleDescription?.(d)}
-  //             aria-label={datumAriaLabel?.(d)}
-  //           >
-  //             {datumDescription && <desc>{datumDescription(d)}</desc>}
-  //           </motion.circle>
-  //         ))}
-  //       </AnimatePresence>
-  //     </g>
-  //   );
 }

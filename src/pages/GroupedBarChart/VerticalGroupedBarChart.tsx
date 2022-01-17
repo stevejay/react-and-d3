@@ -1,4 +1,5 @@
 import { memo, ReactElement, Ref } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
@@ -31,7 +32,7 @@ export type VerticalGroupedBarChartProps<CategoryT extends DomainValue> = {
   datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   svgRef?: Ref<SVGSVGElement>;
-  transitionSeconds?: number;
+  springConfig: SpringConfig;
 };
 
 function VerticalGroupedBarChartCore<CategoryT extends DomainValue>({
@@ -53,7 +54,7 @@ function VerticalGroupedBarChartCore<CategoryT extends DomainValue>({
   datumAriaLabel,
   datumDescription,
   svgRef,
-  transitionSeconds = 0.5
+  springConfig
 }: VerticalGroupedBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
 
@@ -88,7 +89,6 @@ function VerticalGroupedBarChartCore<CategoryT extends DomainValue>({
       ref={svgRef}
       width={width}
       height={height}
-      transitionSeconds={transitionSeconds}
       ariaLabel={ariaLabel}
       ariaLabelledby={ariaLabelledby}
       ariaRoleDescription={ariaRoleDescription}
@@ -111,6 +111,7 @@ function VerticalGroupedBarChartCore<CategoryT extends DomainValue>({
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={53}
+        springConfig={springConfig}
       />
       <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
         <SvgGroupedBars
@@ -128,6 +129,7 @@ function VerticalGroupedBarChartCore<CategoryT extends DomainValue>({
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumDescription={datumDescription}
+          springConfig={springConfig}
         />
       </SvgChartAreaGroup>
       {/* X-axis is rendered after the bars so that its domain sits on top of them */}
@@ -144,6 +146,7 @@ function VerticalGroupedBarChartCore<CategoryT extends DomainValue>({
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={34}
+        springConfig={springConfig}
       />
     </SvgChartRoot>
   );

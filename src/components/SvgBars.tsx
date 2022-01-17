@@ -1,10 +1,10 @@
 import { ReactElement } from 'react';
-import { AnimatePresence, m as motion } from 'framer-motion';
+import { animated, SpringConfig, useTransition } from '@react-spring/web';
 
 import { createBarGenerator } from '@/generators/barGenerator';
 import type { AxisScale, CategoryValueDatum, ChartOrientation, DomainValue } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
-import { getDefaultRenderingOffset, toAnimatableRect } from '@/utils/renderUtils';
+import { getDefaultRenderingOffset } from '@/utils/renderUtils';
 
 export type SvgBarsProps<CategoryT extends DomainValue> = {
   data: CategoryValueDatum<CategoryT, number>[];
@@ -16,6 +16,8 @@ export type SvgBarsProps<CategoryT extends DomainValue> = {
   datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
+  animate?: boolean;
+  springConfig: SpringConfig;
 };
 
 export function SvgBars<CategoryT extends DomainValue>({
@@ -27,44 +29,38 @@ export function SvgBars<CategoryT extends DomainValue>({
   className = '',
   datumAriaRoleDescription,
   datumAriaLabel,
-  datumDescription
+  datumDescription,
+  animate = true,
+  springConfig
 }: SvgBarsProps<CategoryT>): ReactElement | null {
   const renderingOffset = offset ?? getDefaultRenderingOffset();
   const barGenerator = createBarGenerator(categoryScale, valueScale, orientation, renderingOffset);
+
+  const transitions = useTransition(data, {
+    initial: (datum) => ({ opacity: 0, ...barGenerator(datum) }),
+    from: (datum) => ({ opacity: 0, ...barGenerator(datum) }),
+    enter: (datum) => ({ opacity: 1, ...barGenerator(datum) }),
+    update: (datum) => ({ opacity: 1, ...barGenerator(datum) }),
+    leave: (datum) => ({ opacity: 0, ...barGenerator(datum) }),
+    keys: (d) => getAxisDomainAsReactKey(d.category),
+    config: springConfig,
+    immediate: !animate
+  });
+
   return (
     <g data-test-id="bars-group" className={className} fill="currentColor" stroke="none">
-      <AnimatePresence custom={barGenerator} initial={false}>
-        {data.map((d) => (
-          <motion.rect
-            key={getAxisDomainAsReactKey(d.category)}
-            data-test-id="bar"
-            className={className}
-            custom={barGenerator}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            variants={{
-              initial: () => ({
-                opacity: 0,
-                ...toAnimatableRect(barGenerator(d))
-              }),
-              animate: () => ({
-                opacity: 1,
-                ...toAnimatableRect(barGenerator(d))
-              }),
-              exit: (nextBarGenerator: typeof barGenerator) => ({
-                opacity: 0,
-                ...toAnimatableRect(nextBarGenerator(d))
-              })
-            }}
-            role="graphics-symbol"
-            aria-roledescription={datumAriaRoleDescription?.(d)}
-            aria-label={datumAriaLabel?.(d)}
-          >
-            {datumDescription && <desc>{datumDescription(d)}</desc>}
-          </motion.rect>
-        ))}
-      </AnimatePresence>
+      {transitions((styles, d) => (
+        <animated.rect
+          data-test-id="bar"
+          className={className}
+          style={styles}
+          role="graphics-symbol"
+          aria-roledescription={datumAriaRoleDescription?.(d)}
+          aria-label={datumAriaLabel?.(d)}
+        >
+          {datumDescription && <desc>{datumDescription(d)}</desc>}
+        </animated.rect>
+      ))}
     </g>
   );
 }

@@ -1,10 +1,70 @@
 import { ReactElement } from 'react';
-import { AnimatePresence, m as motion } from 'framer-motion';
+import { animated, SpringConfig, useTransition } from '@react-spring/web';
 
 import { createGroupedBarGenerator } from '@/generators/groupedBarGenerator';
-import type { AxisScale, CategoryValueListDatum, ChartArea, ChartOrientation, DomainValue } from '@/types';
-import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
-import { getDefaultRenderingOffset, toAnimatableRect } from '@/utils/renderUtils';
+import type {
+  AxisScale,
+  CategoryValueListDatum,
+  ChartArea,
+  ChartOrientation,
+  DomainValue,
+  Rect
+} from '@/types';
+import { getDefaultRenderingOffset } from '@/utils/renderUtils';
+
+type SeriesBarsProps<CategoryT extends DomainValue> = {
+  datum: CategoryValueListDatum<CategoryT, number>;
+  seriesKeys: readonly string[];
+  generator: (seriesKey: string, value: number) => Rect | null;
+  seriesColor: (series: string, index: number) => string;
+  datumAriaRoleDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
+  datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
+  datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
+  springConfig: SpringConfig;
+  className?: string;
+};
+
+function SeriesBars<CategoryT extends DomainValue>({
+  datum,
+  seriesKeys,
+  generator,
+  seriesColor,
+  datumAriaRoleDescription,
+  datumAriaLabel,
+  datumDescription,
+  springConfig,
+  className = ''
+}: SeriesBarsProps<CategoryT>) {
+  const transitions = useTransition<
+    string,
+    { opacity: number; x: number; y: number; width: number; height: number }
+  >(seriesKeys, {
+    initial: (seriesKey) => ({ opacity: 1, ...generator(seriesKey, datum.values[seriesKey]) }),
+    from: (seriesKey) => ({ opacity: 0, ...generator(seriesKey, datum.values[seriesKey]) }),
+    enter: (seriesKey) => ({ opacity: 1, ...generator(seriesKey, datum.values[seriesKey]) }),
+    update: (seriesKey) => ({ opacity: 1, ...generator(seriesKey, datum.values[seriesKey]) }),
+    leave: { opacity: 0 },
+    config: springConfig
+  });
+
+  return transitions(({ x, y, width, height, ...rest }, seriesKey, _, index) => (
+    <animated.rect
+      data-test-id="bar"
+      className={className}
+      fill={seriesColor(seriesKey, index)}
+      role="graphics-symbol"
+      aria-roledescription={datumAriaRoleDescription?.(datum, seriesKey)}
+      aria-label={datumAriaLabel?.(datum, seriesKey)}
+      style={rest}
+      x={x}
+      y={y}
+      width={width}
+      height={height}
+    >
+      {datumDescription && <desc>{datumDescription(datum, seriesKey)}</desc>}
+    </animated.rect>
+  ));
+}
 
 export type SvgGroupedBarsProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
@@ -23,6 +83,7 @@ export type SvgGroupedBarsProps<CategoryT extends DomainValue> = {
   datumAriaRoleDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
+  springConfig: SpringConfig;
 };
 
 export function SvgGroupedBars<CategoryT extends DomainValue>({
@@ -41,7 +102,8 @@ export function SvgGroupedBars<CategoryT extends DomainValue>({
   categoryDescription,
   datumAriaRoleDescription,
   datumAriaLabel,
-  datumDescription
+  datumDescription,
+  springConfig
 }: SvgGroupedBarsProps<CategoryT>): ReactElement | null {
   const renderingOffset = offset ?? getDefaultRenderingOffset();
   const generator = createGroupedBarGenerator(
@@ -51,69 +113,40 @@ export function SvgGroupedBars<CategoryT extends DomainValue>({
     orientation,
     renderingOffset
   );
-  const translateAxis = orientation === 'vertical' ? 'x' : 'y';
+  const translateAxis = orientation === 'vertical' ? 'translateX' : 'translateY';
+  const transitions = useTransition<CategoryValueListDatum<CategoryT, number>, {}>(data, {
+    initial: (d) => ({ opacity: 1, [translateAxis]: categoryScale(d.category) }),
+    from: (d) => ({ opacity: 0, [translateAxis]: categoryScale(d.category) }),
+    enter: (d) => ({ opacity: 1, [translateAxis]: categoryScale(d.category) }),
+    update: (d) => ({ opacity: 1, [translateAxis]: categoryScale(d.category) }),
+    leave: { opacity: 0 },
+    keys: (d) => d.category,
+    config: springConfig
+  });
   return (
     <g data-test-id="grouped-bars-group" className={className} fill="currentColor" stroke="none">
-      <AnimatePresence initial={false}>
-        {data.map((d) => (
-          <motion.g
-            key={getAxisDomainAsReactKey(d.category)}
-            data-test-id="category-group"
-            role="graphics-object"
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            variants={{
-              initial: () => ({
-                opacity: 0,
-                [translateAxis]: categoryScale(d.category)
-              }),
-              animate: () => ({
-                opacity: 1,
-                [translateAxis]: categoryScale(d.category)
-              }),
-              exit: () => ({
-                opacity: 0
-              })
-            }}
-            aria-roledescription={categoryAriaRoleDescription?.(d.category)}
-            aria-label={categoryAriaLabel?.(d.category)}
-          >
-            {categoryDescription && <desc>{categoryDescription(d.category)}</desc>}
-            <AnimatePresence initial={false}>
-              {seriesKeys.map((seriesKey, index) => (
-                <motion.rect
-                  key={seriesKey}
-                  data-test-id="bar"
-                  className={className}
-                  fill={seriesColor(seriesKey, index)}
-                  role="graphics-symbol"
-                  aria-roledescription={datumAriaRoleDescription?.(d, seriesKey)}
-                  aria-label={datumAriaLabel?.(d, seriesKey)}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  variants={{
-                    initial: () => ({
-                      opacity: 0,
-                      ...toAnimatableRect(generator(seriesKey, d.values[seriesKey]))
-                    }),
-                    animate: () => ({
-                      opacity: 1,
-                      ...toAnimatableRect(generator(seriesKey, d.values[seriesKey]))
-                    }),
-                    exit: () => ({
-                      opacity: 0
-                    })
-                  }}
-                >
-                  {datumDescription && <desc>{datumDescription(d, seriesKey)}</desc>}
-                </motion.rect>
-              ))}
-            </AnimatePresence>
-          </motion.g>
-        ))}
-      </AnimatePresence>
+      {transitions((styles, d) => (
+        <animated.g
+          data-test-id="category-group"
+          role="graphics-object"
+          style={styles}
+          aria-roledescription={categoryAriaRoleDescription?.(d.category)}
+          aria-label={categoryAriaLabel?.(d.category)}
+        >
+          {categoryDescription && <desc>{categoryDescription(d.category)}</desc>}
+          <SeriesBars
+            datum={d}
+            seriesKeys={seriesKeys}
+            generator={generator}
+            seriesColor={seriesColor}
+            datumAriaRoleDescription={datumAriaRoleDescription}
+            datumAriaLabel={datumAriaLabel}
+            datumDescription={datumDescription}
+            className={className}
+            springConfig={springConfig}
+          />
+        </animated.g>
+      ))}
     </g>
   );
 }

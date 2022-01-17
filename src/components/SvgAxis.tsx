@@ -1,6 +1,5 @@
-import { ReactElement, SVGAttributes, SVGProps, useEffect, useMemo, useRef } from 'react';
-import { animated, useTransition } from '@react-spring/web';
-import { easeCubicInOut } from 'd3-ease';
+import { ReactElement, SVGAttributes, SVGProps, useEffect, useRef } from 'react';
+import { animated, SpringConfig, useTransition } from '@react-spring/web';
 import { identity, isNil } from 'lodash-es';
 
 import type {
@@ -146,7 +145,7 @@ export type SvgAxisProps<DomainT extends DomainValue> = BaseAxisProps<DomainT> &
   axisLabelSpacing?: number;
   axisLabelClassName?: string;
   animate?: boolean;
-  transitionSeconds?: number;
+  springConfig: SpringConfig;
 };
 
 export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT>): ReactElement | null {
@@ -169,7 +168,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
     axisLabelAlignment = 'center',
     axisLabelSpacing = 30,
     axisLabelClassName = '',
-    transitionSeconds = 0.25,
+    springConfig,
     animate = true
   } = props;
 
@@ -243,11 +242,6 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
     renderingOffset
   );
 
-  const reactSpringConfig = useMemo(
-    () => ({ duration: transitionSeconds * 1000, easing: easeCubicInOut }),
-    [transitionSeconds]
-  );
-
   const tickTransitions = useTransition(tickValues, {
     initial: (tickValue) => {
       return { opacity: 1, [translate]: position(tickValue) + renderingOffset };
@@ -266,7 +260,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
         ? { opacity: 0, [translate]: exitPosition + renderingOffset }
         : { opacity: 0 };
     },
-    config: reactSpringConfig,
+    config: springConfig,
     keys: getAxisDomainAsReactKey,
     immediate: !animate
   });
@@ -290,7 +284,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
           k={k}
           className={domainClassName}
           domainProps={domainProps}
-          reactSpringConfig={reactSpringConfig}
+          springConfig={springConfig}
           animate={animate}
         />
       )}

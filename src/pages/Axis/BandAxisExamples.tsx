@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
@@ -15,10 +16,11 @@ const dataSets = [
 ];
 
 export type BandAxisExamplesProps = {
-  transitionSeconds?: number;
+  transitionSeconds: number;
+  springConfig: SpringConfig;
 };
 
-export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ transitionSeconds = 0.25 }) => {
+export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ transitionSeconds, springConfig }) => {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <AxisExamplesWrapper>
@@ -30,7 +32,7 @@ export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ transitionSeconds 
               data={data}
               width={width}
               height={height}
-              transitionSeconds={transitionSeconds}
+              springConfig={springConfig}
               tickLabelOrientation="horizontal"
             />
           )

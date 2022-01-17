@@ -1,4 +1,5 @@
 import { FC, memo, useMemo } from 'react';
+import { SpringConfig } from '@react-spring/web';
 import { max, min } from 'd3-array';
 
 import { Svg } from '@/components/Svg';
@@ -14,11 +15,11 @@ export type ReactCustomTimeAxisChartProps = {
   width: number;
   height: number;
   ariaLabelledby: string;
-  transitionSeconds?: number;
+  springConfig: SpringConfig;
 };
 
 export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
-  ({ data, width, height, ariaLabelledby, transitionSeconds = 0.25 }) => {
+  ({ data, width, height, ariaLabelledby, springConfig }) => {
     const chartArea = useChartArea(width, height, margins);
 
     const domain = useMemo(() => {
@@ -41,7 +42,7 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
         className="font-sans select-none bg-slate-800"
         aria-labelledby={ariaLabelledby}
       >
-        <SvgCustomTimeAxis scale={scale} chartArea={chartArea} transitionSeconds={transitionSeconds} />
+        <SvgCustomTimeAxis scale={scale} chartArea={chartArea} springConfig={springConfig} />
       </Svg>
     );
   },
@@ -49,5 +50,5 @@ export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
-    prevProps.transitionSeconds === nextProps.transitionSeconds
+    prevProps.springConfig === nextProps.springConfig
 );

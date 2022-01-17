@@ -1,4 +1,5 @@
 import { memo, ReactElement, Ref } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
@@ -31,7 +32,7 @@ export type VerticalStackedBarChartProps<CategoryT extends DomainValue> = {
   datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   svgRef?: Ref<SVGSVGElement>;
-  transitionSeconds?: number;
+  springConfig: SpringConfig;
 };
 
 function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
@@ -53,7 +54,7 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
   datumAriaLabel,
   datumDescription,
   svgRef,
-  transitionSeconds = 0.5
+  springConfig
 }: VerticalStackedBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
 
@@ -82,7 +83,6 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
       ref={svgRef}
       width={width}
       height={height}
-      transitionSeconds={transitionSeconds}
       ariaLabel={ariaLabel}
       ariaLabelledby={ariaLabelledby}
       ariaRoleDescription={ariaRoleDescription}
@@ -105,6 +105,7 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={53}
+        springConfig={springConfig}
       />
       <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
         <SvgStackedBars
@@ -120,6 +121,7 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumDescription={datumDescription}
+          springConfig={springConfig}
         />
       </SvgChartAreaGroup>
       {/* X-axis is rendered after the bars so that its domain sits on top of them */}
@@ -136,6 +138,7 @@ function VerticalStackedBarChartCore<CategoryT extends DomainValue>({
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={34}
+        springConfig={springConfig}
       />
     </SvgChartRoot>
   );

@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useRef } from 'react';
-import { animated, useTransition } from '@react-spring/web';
-import { easeCubicInOut } from 'd3-ease';
+import { useEffect, useRef } from 'react';
+import { animated, SpringConfig, useTransition } from '@react-spring/web';
 import { utcMonth } from 'd3-time';
 import { identity, isNil, uniq } from 'lodash-es';
 
@@ -18,12 +17,12 @@ function conditionalClamp(coord: number, shouldClamp: boolean): number {
 export type SvgCustomTimeAxisProps = {
   scale: AxisScale<Date>;
   chartArea: ChartArea;
-  transitionSeconds: number;
+  springConfig: SpringConfig;
   animate?: boolean;
 };
 
 export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
-  const { chartArea, transitionSeconds, animate = true } = props;
+  const { chartArea, springConfig, animate = true } = props;
   const scale = props.scale as ExpandedAxisScale<Date>;
 
   // The length of the inner ticks (which are the ticks with labels).
@@ -70,11 +69,6 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
     previousPositionRef.current = position;
   });
 
-  const reactSpringConfig = useMemo(
-    () => ({ duration: transitionSeconds * 1000, easing: easeCubicInOut }),
-    [transitionSeconds]
-  );
-
   const monthTickTransitions = useTransition<
     Date,
     { opacity: number; monthWidth: number; translateX: number }
@@ -104,7 +98,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
         ? { opacity: 0, translateX: exitPosition + renderingOffset, monthWidth }
         : { opacity: 0, monthWidth };
     },
-    config: reactSpringConfig,
+    config: springConfig,
     keys: getAxisDomainAsReactKey,
     immediate: !animate
   });
@@ -139,7 +133,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
         ? { opacity: 0, translateX: exitPosition + renderingOffset }
         : { opacity: 0 };
     },
-    config: reactSpringConfig,
+    config: springConfig,
     keys: getAxisDomainAsReactKey,
     immediate: !animate
   });
@@ -207,7 +201,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
         renderingOffset={renderingOffset}
         range={range}
         k={1}
-        reactSpringConfig={reactSpringConfig}
+        springConfig={springConfig}
         animate
       />
     </SvgGroup>

@@ -6,6 +6,7 @@ import { throttle } from 'lodash-es';
 import { Point } from '@/types';
 
 const useGesture = createUseGesture([dragAction, pinchAction, wheelAction]);
+const scaleThrottleMs = 100;
 
 /**
  * Updates the x and y values of the zoom transform that is passed in. Returns a
@@ -29,7 +30,7 @@ export function useZoom<ElementT extends SVGElement>(): ReturnType<ElementT> {
 
   // The underlying state.
   const [transform, setTransform] = useState(zoomIdentity);
-  const setTransformThrottled = useMemo(() => throttle(setTransform, 100), []);
+  const setTransformThrottled = useMemo(() => throttle(setTransform, scaleThrottleMs), []);
 
   // The transform via a ref so that the gesture callbacks can remain stable.
   const transformRef = useRef(transform);
@@ -57,7 +58,6 @@ export function useZoom<ElementT extends SVGElement>(): ReturnType<ElementT> {
           return cancel();
         }
         setTransform((prev) => new ZoomTransform(prev.k, x, y));
-        // onDrag(x, y);
       },
       onPinch: ({ first, origin: [originX, originY], memo, offset: [k] }) => {
         let currentMemo = memo;
@@ -70,7 +70,6 @@ export function useZoom<ElementT extends SVGElement>(): ReturnType<ElementT> {
         }
         let newTransform = new ZoomTransform(k, 0, 0);
         newTransform = updateTranslate(newTransform, currentMemo[0], currentMemo[1]);
-        // onPinch(newTransform);
         setTransformThrottled(newTransform);
         return currentMemo;
       }
@@ -89,34 +88,7 @@ export function useZoom<ElementT extends SVGElement>(): ReturnType<ElementT> {
     []
   );
 
-  useGesture(
-    handlers,
-    // {
-    //   onDrag: ({ pinching, cancel, offset: [x, y] }) => {
-    //     if (pinching) {
-    //       return cancel();
-    //     }
-    //     setTransform((prev) => new ZoomTransform(prev.k, x, y));
-    //     // onDrag(x, y);
-    //   },
-    //   onPinch: ({ first, last, origin: [originX, originY], memo, offset: [k] }) => {
-    //     let currentMemo = memo;
-    //     if (first) {
-    //       const { top, left } = ref.current.getBoundingClientRect();
-    //       // Get pinch starting coord relative to the top left corner of the rect element.
-    //       const relativePoint = [originX - left, originY - top] as Point;
-    //       // Also store the inverted version of the starting coord.
-    //       currentMemo = [relativePoint, transformRef.current.invert(relativePoint)];
-    //     }
-    //     let newTransform = new ZoomTransform(k, 0, 0);
-    //     newTransform = updateTranslate(newTransform, currentMemo[0], currentMemo[1]);
-    //     // onPinch(newTransform);
-    //     setTransform(transform);
-    //     return currentMemo;
-    //   }
-    // },
-    config
-  );
+  useGesture(handlers, config);
 
   return [ref, transform];
 }

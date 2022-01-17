@@ -1,3 +1,5 @@
+import { easeCubicInOut } from 'd3-ease';
+
 import { PageHeading } from '@/components/PageHeading';
 import { Paragraph } from '@/components/Paragraph';
 import { ProseInternalLink } from '@/components/ProseInternalLink';
@@ -5,6 +7,8 @@ import { SectionHeading } from '@/components/SectionHeading';
 
 import { BarChartWithTooltipExample } from './BarChartWithTooltipExample';
 import { StackedBarChartWithTooltipExample } from './StackedBarChartWithTooltipExample';
+
+const springConfig = { duration: 500, easing: easeCubicInOut };
 
 const TooltipPage = () => (
   <div className="w-full max-w-3xl p-4 mx-auto md:p-8">
@@ -37,12 +41,12 @@ const TooltipPage = () => (
         touch interface user which bar the tooltip is showing for.
       </li>
     </ul>
-    <BarChartWithTooltipExample />
+    <BarChartWithTooltipExample springConfig={springConfig} />
     <Paragraph>
       The following is an example of a stacked bar chart with a tooltip. The values for multiple series are
       shown in a single tooltip.
     </Paragraph>
-    <StackedBarChartWithTooltipExample />
+    <StackedBarChartWithTooltipExample springConfig={springConfig} />
     <Paragraph>
       Be aware of a potential performance issue with this type of tooltip. It has to re-render on every
       movement of the mouse when the user is hovering over the chart. Ensure that only the tooltip gets

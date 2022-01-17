@@ -1,4 +1,5 @@
 import { FC, Fragment } from 'react';
+import { SpringConfig } from '@react-spring/web';
 import { schemeSet3 } from 'd3-scale-chromatic';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
@@ -57,7 +58,13 @@ function renderTooltipContent(d: CategoryValueListDatum<string, number>) {
   );
 }
 
-export const StackedBarChartWithTooltipExample: FC = () => (
+export type StackedBarChartWithTooltipExampleProps = {
+  springConfig: SpringConfig;
+};
+
+export const StackedBarChartWithTooltipExample: FC<StackedBarChartWithTooltipExampleProps> = ({
+  springConfig
+}) => (
   <ExampleChartWrapper title="Comparing sales strategies" sizerClassName="h-[384px]">
     {({ inView, width, height, ariaLabelledby }) =>
       inView && (
@@ -79,6 +86,7 @@ export const StackedBarChartWithTooltipExample: FC = () => (
           renderTooltipContent={renderTooltipContent}
           hideTooltipOnScroll
           compact={isCompact(width)}
+          springConfig={springConfig}
         />
       )
     }

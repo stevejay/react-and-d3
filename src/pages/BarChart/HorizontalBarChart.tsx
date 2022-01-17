@@ -1,4 +1,5 @@
 import { memo, ReactElement, Ref } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgBars } from '@/components/SvgBars';
@@ -26,7 +27,7 @@ export type HorizontalBarChartProps<CategoryT extends DomainValue> = {
   datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   svgRef?: Ref<SVGSVGElement>;
-  transitionSeconds?: number;
+  springConfig: SpringConfig;
   compact: boolean;
 };
 
@@ -44,7 +45,7 @@ function HorizontalBarChartCore<CategoryT extends DomainValue>({
   datumAriaLabel,
   datumDescription,
   svgRef,
-  transitionSeconds = 0.5,
+  springConfig,
   compact
 }: HorizontalBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
@@ -60,7 +61,6 @@ function HorizontalBarChartCore<CategoryT extends DomainValue>({
       ref={svgRef}
       width={width}
       height={height}
-      transitionSeconds={transitionSeconds}
       ariaLabel={ariaLabel}
       ariaLabelledby={ariaLabelledby}
       ariaRoleDescription={ariaRoleDescription}
@@ -84,6 +84,7 @@ function HorizontalBarChartCore<CategoryT extends DomainValue>({
         axisLabelClassName="text-sm text-slate-300"
         axisLabelAlignment="center"
         axisLabelSpacing={34}
+        springConfig={springConfig}
       />
       <SvgAxis
         scale={categoryScale}
@@ -98,6 +99,7 @@ function HorizontalBarChartCore<CategoryT extends DomainValue>({
         axisLabelClassName="text-sm text-slate-300"
         axisLabelAlignment="center"
         axisLabelSpacing={44}
+        springConfig={springConfig}
       />
       <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
         <SvgBars
@@ -109,6 +111,7 @@ function HorizontalBarChartCore<CategoryT extends DomainValue>({
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumDescription={datumDescription}
+          springConfig={springConfig}
         />
         <SvgLineAnnotation
           orientation="vertical"
@@ -116,6 +119,7 @@ function HorizontalBarChartCore<CategoryT extends DomainValue>({
           scale={valueScale}
           chartArea={chartArea}
           className="text-slate-300"
+          springConfig={springConfig}
         />
       </SvgChartAreaGroup>
     </SvgChartRoot>
@@ -128,5 +132,6 @@ export const HorizontalBarChart = memo(
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
-    prevProps.margins === nextProps.margins
+    prevProps.margins === nextProps.margins &&
+    prevProps.springConfig === nextProps.springConfig
 ) as typeof HorizontalBarChartCore;

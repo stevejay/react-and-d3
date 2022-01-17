@@ -12,7 +12,7 @@ export type SvgAxisDomainPathProps = {
   k: number;
   className?: string;
   domainProps?: Omit<SVGProps<SVGPathElement>, 'ref'>;
-  reactSpringConfig: SpringConfig;
+  springConfig: SpringConfig;
   animate: boolean;
 };
 
@@ -23,7 +23,7 @@ export const SvgAxisDomainPath: FC<SvgAxisDomainPathProps> = ({
   range,
   k,
   domainProps,
-  reactSpringConfig,
+  springConfig,
   className = '',
   animate
 }) => {
@@ -37,7 +37,7 @@ export const SvgAxisDomainPath: FC<SvgAxisDomainPathProps> = ({
     to: {
       d: createAxisDomainPathData(orientation, tickSize, renderingOffset, range0, range1, k)
     },
-    config: reactSpringConfig,
+    config: springConfig,
     immediate: !animate
   });
 

@@ -1,4 +1,5 @@
 import { memo, ReactElement, Ref } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
@@ -31,7 +32,7 @@ export type HorizontalGroupedBarChartProps<CategoryT extends DomainValue> = {
   datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   svgRef?: Ref<SVGSVGElement>;
-  transitionSeconds?: number;
+  springConfig: SpringConfig;
   compact: boolean;
 };
 
@@ -54,7 +55,7 @@ function HorizontalGroupedBarChartCore<CategoryT extends DomainValue>({
   datumAriaLabel,
   datumDescription,
   svgRef,
-  transitionSeconds = 0.5,
+  springConfig,
   compact
 }: HorizontalGroupedBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
@@ -90,7 +91,6 @@ function HorizontalGroupedBarChartCore<CategoryT extends DomainValue>({
       ref={svgRef}
       width={width}
       height={height}
-      transitionSeconds={transitionSeconds}
       ariaLabel={ariaLabel}
       ariaLabelledby={ariaLabelledby}
       ariaRoleDescription={ariaRoleDescription}
@@ -114,6 +114,7 @@ function HorizontalGroupedBarChartCore<CategoryT extends DomainValue>({
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={34}
+        springConfig={springConfig}
       />
       <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
         <SvgGroupedBars
@@ -131,6 +132,7 @@ function HorizontalGroupedBarChartCore<CategoryT extends DomainValue>({
           datumAriaRoleDescription={datumAriaRoleDescription}
           datumAriaLabel={datumAriaLabel}
           datumDescription={datumDescription}
+          springConfig={springConfig}
         />
       </SvgChartAreaGroup>
       {/* X-axis is rendered after the bars so that its domain sits on top of them */}
@@ -147,6 +149,7 @@ function HorizontalGroupedBarChartCore<CategoryT extends DomainValue>({
         axisLabelAlignment="center"
         axisLabelClassName="text-sm text-slate-300"
         axisLabelSpacing={44}
+        springConfig={springConfig}
       />
     </SvgChartRoot>
   );

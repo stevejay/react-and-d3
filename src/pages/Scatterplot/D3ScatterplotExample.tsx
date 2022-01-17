@@ -4,7 +4,7 @@ import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import type { Margins, PointDatum } from '@/types';
 
 import { D3Scatterplot } from './D3Scatterplot';
-import { irisData, IrisDatum } from './data';
+import { irisData, IrisDatum } from './scatterplotData';
 
 const margins: Margins = { left: 56, right: 40, top: 40, bottom: 48 };
 

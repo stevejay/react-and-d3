@@ -2,15 +2,9 @@ import { FC, useState } from 'react';
 import { FiGithub, FiMenu, FiX } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { Dialog } from '@headlessui/react';
-import { AnimatePresence, m as motion, MotionConfig } from 'framer-motion';
+import { animated, useTransition } from '@react-spring/web';
 
 import { NavigationMenuLink } from './NavigationMenuLink';
-
-const variants = {
-  enter: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: 20 }
-};
 
 export type NavigationLink = { href: string; title: string };
 export type NavigationSection = { title: string; links: NavigationLink[] };
@@ -22,6 +16,12 @@ export type HeaderProps = {
 export const Header: FC<HeaderProps> = ({ navigationData }) => {
   const [isOpen, setIsOpen] = useState(false);
   const close = () => setIsOpen(false);
+  const transitions = useTransition(isOpen, {
+    from: { opacity: 0, y: 20 },
+    enter: { opacity: 1, y: 0 },
+    leave: { opacity: 0, y: 20 },
+    reverse: isOpen
+  });
   return (
     <header className="sticky top-0 z-10 border-b bg-slate-900 border-slate-600">
       <div className="flex items-center justify-between px-4 py-1 mx-auto md:px-6 md:py-2 max-w-screen-2xl">
@@ -49,20 +49,21 @@ export const Header: FC<HeaderProps> = ({ navigationData }) => {
             <FiMenu />
           </button>
         </div>
-        <MotionConfig transition={{ duration: 0.25, ease: 'easeInOut' }}>
-          <AnimatePresence>
-            {isOpen && (
+        {transitions(
+          (styles, item) =>
+            item && (
               <Dialog
                 key="dialog"
-                as={motion.div}
+                as={animated.div}
+                style={styles}
                 static
                 open={isOpen}
                 onClose={close}
                 className="fixed z-[10000] inset-0 p-8 overflow-y-auto md:p-12 bg-gradient-to-br from-slate-800 via-slate-800 to-slate-600"
-                variants={variants}
-                initial="enter"
-                animate="animate"
-                exit="exit"
+                // variants={variants}
+                // initial="enter"
+                // animate="animate"
+                // exit="exit"
                 aria-label="Navigation menu"
               >
                 <div className="flex flex-col gap-6 mx-auto max-w-screen-2xl md:flex-row md:gap-12">
@@ -88,9 +89,8 @@ export const Header: FC<HeaderProps> = ({ navigationData }) => {
                   ))}
                 </div>
               </Dialog>
-            )}
-          </AnimatePresence>
-        </MotionConfig>
+            )
+        )}
       </div>
     </header>
   );

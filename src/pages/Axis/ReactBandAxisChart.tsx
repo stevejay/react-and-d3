@@ -1,4 +1,5 @@
 import { FC, memo } from 'react';
+import { SpringConfig } from '@react-spring/web';
 
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
@@ -13,12 +14,12 @@ export type ReactBandAxisChartProps = {
   width: number;
   height: number;
   ariaLabelledby: string;
-  transitionSeconds?: number;
+  springConfig: SpringConfig;
   tickLabelOrientation: TickLabelOrientation;
 };
 
 export const ReactBandAxisChart: FC<ReactBandAxisChartProps> = memo(
-  ({ data, width, height, ariaLabelledby, tickLabelOrientation, transitionSeconds = 0.25 }) => {
+  ({ data, width, height, ariaLabelledby, tickLabelOrientation, springConfig }) => {
     const chartArea = useChartArea(width, height, margins);
     const scale = useBandScale(data, chartArea.rangeWidth, { rangeRound: true });
 
@@ -40,7 +41,7 @@ export const ReactBandAxisChart: FC<ReactBandAxisChartProps> = memo(
           tickSizeOuter={-chartArea.height}
           tickLabelOrientation={tickLabelOrientation}
           className="text-[10px]"
-          transitionSeconds={transitionSeconds}
+          springConfig={springConfig}
         />
       </Svg>
     );
@@ -49,6 +50,6 @@ export const ReactBandAxisChart: FC<ReactBandAxisChartProps> = memo(
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
-    prevProps.transitionSeconds === nextProps.transitionSeconds &&
+    prevProps.springConfig === nextProps.springConfig &&
     prevProps.tickLabelOrientation === nextProps.tickLabelOrientation
 );

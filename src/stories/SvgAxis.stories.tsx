@@ -1,4 +1,5 @@
 import { ComponentMeta, Story } from '@storybook/react';
+import { easeCubicInOut } from 'd3-ease';
 import { scaleBand, scaleLinear, scalePoint, scaleTime } from 'd3-scale';
 import { timeMonth } from 'd3-time';
 
@@ -6,6 +7,8 @@ import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
 import { useChartArea } from '@/hooks/useChartArea';
 import type { AxisScale, TickLabelOrientation } from '@/types';
+
+const springConfig = { duration: 500, easing: easeCubicInOut };
 
 export default {
   title: 'Chart/SvgAxis',
@@ -79,6 +82,7 @@ const LinearScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, tick
         }
         tickLabelOrientation={tickLabelOrientation}
         className="text-[10px]"
+        springConfig={springConfig}
       />
     </Svg>
   );
@@ -210,6 +214,7 @@ const BandScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, tickLa
         }
         tickLabelOrientation={tickLabelOrientation}
         className="text-[10px]"
+        springConfig={springConfig}
       />
     </Svg>
   );
@@ -342,6 +347,7 @@ const TimeScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, tickLa
         }
         tickLabelOrientation={tickLabelOrientation}
         className="text-[10px]"
+        springConfig={springConfig}
       />
     </Svg>
   );
@@ -473,6 +479,7 @@ const PointScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, tickL
         }
         tickLabelOrientation={tickLabelOrientation}
         className="text-[10px]"
+        springConfig={springConfig}
       />
     </Svg>
   );

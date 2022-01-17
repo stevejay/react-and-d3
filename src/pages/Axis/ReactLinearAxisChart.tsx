@@ -1,4 +1,5 @@
 import { FC, memo } from 'react';
+import { SpringConfig } from '@react-spring/web';
 import { identity } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';
@@ -15,12 +16,12 @@ export type ReactLinearAxisChartProps = {
   width: number;
   height: number;
   ariaLabelledby: string;
-  transitionSeconds?: number;
+  springConfig: SpringConfig;
   tickLabelOrientation: TickLabelOrientation;
 };
 
 export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
-  ({ data, width, height, ariaLabelledby, tickLabelOrientation, transitionSeconds = 0.25 }) => {
+  ({ data, width, height, ariaLabelledby, tickLabelOrientation, springConfig }) => {
     const chartArea = useChartArea(width, height, margins);
     const domain = useContinuousDomain(data, identity);
     const scale = useLinearScale(domain, chartArea.rangeWidth, {
@@ -46,7 +47,7 @@ export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
           tickSizeOuter={-chartArea.height}
           tickLabelOrientation={tickLabelOrientation}
           className="text-[10px]"
-          transitionSeconds={transitionSeconds}
+          springConfig={springConfig}
         />
       </Svg>
     );
@@ -55,6 +56,6 @@ export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
     prevProps.data === nextProps.data &&
     prevProps.width === nextProps.width &&
     prevProps.height === nextProps.height &&
-    prevProps.transitionSeconds === nextProps.transitionSeconds &&
+    prevProps.springConfig === nextProps.springConfig &&
     prevProps.tickLabelOrientation === nextProps.tickLabelOrientation
 );
