@@ -16,7 +16,7 @@ import { getValueListDatumMaxValue, getValueListDatumMinValue } from '@/utils/da
 export type HorizontalGroupedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
-  seriesColor: (series: string, index: number) => string;
+  seriesColor: (series: string) => string;
   width: number;
   height: number;
   margins: Margins;

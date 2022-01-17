@@ -18,7 +18,7 @@ type MappedDatum<CategoryT extends DomainValue> = {
 type SeriesBarsProps<CategoryT extends DomainValue> = {
   datum: MappedDatum<CategoryT>;
   generator: (seriesPoint: SeriesPoint<CategoryValueListDatum<CategoryT, number>>) => Rect | null;
-  seriesColor: (series: string, index: number) => string;
+  seriesColor: (series: string) => string;
   datumAriaRoleDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
@@ -49,11 +49,11 @@ function SeriesBars<CategoryT extends DomainValue>({
     config: springConfig
   });
 
-  return transitions(({ x, y, width, height, ...rest }, d, _, index) => (
+  return transitions(({ x, y, width, height, ...rest }, d) => (
     <animated.rect
       data-test-id="bar"
       className={className}
-      fill={seriesColor(d.seriesKey, index)}
+      fill={seriesColor(d.seriesKey)}
       role="graphics-symbol"
       aria-roledescription={datumAriaRoleDescription?.(datum.datum, d.seriesKey)}
       aria-label={datumAriaLabel?.(datum.datum, d.seriesKey)}
@@ -71,7 +71,7 @@ function SeriesBars<CategoryT extends DomainValue>({
 export type SvgStackedBarsProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
-  seriesColor: (series: string, index: number) => string;
+  seriesColor: (series: string) => string;
   orientation: ChartOrientation;
   categoryScale: AxisScale<CategoryT>;
   valueScale: AxisScale<number>;

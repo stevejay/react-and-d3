@@ -49,16 +49,16 @@ export function SvgBars<CategoryT extends DomainValue>({
 
   return (
     <g data-test-id="bars-group" className={className} fill="currentColor" stroke="none">
-      {transitions((styles, d) => (
+      {transitions((styles, datum) => (
         <animated.rect
           data-test-id="bar"
           className={className}
           style={styles}
           role="graphics-symbol"
-          aria-roledescription={datumAriaRoleDescription?.(d)}
-          aria-label={datumAriaLabel?.(d)}
+          aria-roledescription={datumAriaRoleDescription?.(datum)}
+          aria-label={datumAriaLabel?.(datum)}
         >
-          {datumDescription && <desc>{datumDescription(d)}</desc>}
+          {datumDescription && <desc>{datumDescription(datum)}</desc>}
         </animated.rect>
       ))}
     </g>

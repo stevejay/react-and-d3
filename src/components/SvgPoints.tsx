@@ -38,6 +38,7 @@ export function SvgPoints<DatumT>({
   const circleGenerator = createCircleGenerator(xScale, yScale, renderingOffset);
 
   // TODO I'm not sure what keys should be for this.
+  // At the moment it is the object itself.
   const transitions = useTransition(data, {
     initial: (d) => ({ opacity: 1, ...circleGenerator(d) }),
     from: (d) => ({ opacity: 0, ...circleGenerator(d) }),

@@ -40,7 +40,7 @@ const dataSets = [
 
 const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
 
-function getSeriesColor(series: string, index: number) {
+function getSeriesColor(series: string) {
   switch (series) {
     case 'one':
       return schemeSet3[0];

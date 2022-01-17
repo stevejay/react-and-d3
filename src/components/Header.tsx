@@ -60,10 +60,6 @@ export const Header: FC<HeaderProps> = ({ navigationData }) => {
                 open={isOpen}
                 onClose={close}
                 className="fixed z-[10000] inset-0 p-8 overflow-y-auto md:p-12 bg-gradient-to-br from-slate-800 via-slate-800 to-slate-600"
-                // variants={variants}
-                // initial="enter"
-                // animate="animate"
-                // exit="exit"
                 aria-label="Navigation menu"
               >
                 <div className="flex flex-col gap-6 mx-auto max-w-screen-2xl md:flex-row md:gap-12">

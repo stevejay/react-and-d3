@@ -148,34 +148,37 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
       stroke="currentColor"
     >
       <g>
-        {monthTickTransitions(({ monthWidth, ...rest }, tickValue, _, index) => (
-          <animated.g key={getAxisDomainAsReactKey(tickValue)} data-test-id="month-tick-group" style={rest}>
-            <line
-              stroke="currentColor"
-              className={index === 0 || tickValue.getUTCMonth() === 0 ? '' : 'text-slate-500'}
-              strokeDasharray={index === 0 || tickValue.getUTCMonth() === 0 ? 'none' : '5 4'}
-              y2={tickSize}
-              //   shapeRendering="crispEdges"
-              role="presentation"
-            />
-            <animated.g style={{ transform: monthWidth.to((value) => `translateX(${value * 0.5}px)`) }}>
-              <text
-                stroke="none"
-                dy="0.71em"
-                y={tickSize - 26}
-                textAnchor="middle"
-                className="text-xs"
+        {monthTickTransitions(({ monthWidth, ...rest }, tickValue) => {
+          const isFirstTick = tickValues.length && tickValues[0] === tickValue;
+          return (
+            <animated.g key={getAxisDomainAsReactKey(tickValue)} data-test-id="month-tick-group" style={rest}>
+              <line
+                stroke="currentColor"
+                className={isFirstTick || tickValue.getUTCMonth() === 0 ? '' : 'text-slate-500'}
+                strokeDasharray={isFirstTick || tickValue.getUTCMonth() === 0 ? 'none' : '5 4'}
+                y2={tickSize}
+                //   shapeRendering="crispEdges"
                 role="presentation"
-                aria-hidden
-              >
-                {tickFormat(tickValue)}
-              </text>
+              />
+              <animated.g style={{ transform: monthWidth.to((value) => `translateX(${value * 0.5}px)`) }}>
+                <text
+                  stroke="none"
+                  dy="0.71em"
+                  y={tickSize - 26}
+                  textAnchor="middle"
+                  className="text-xs"
+                  role="presentation"
+                  aria-hidden
+                >
+                  {tickFormat(tickValue)}
+                </text>
+              </animated.g>
             </animated.g>
-          </animated.g>
-        ))}
+          );
+        })}
       </g>
       <g>
-        {yearTickTransitions((styles, tickValue, _, index) => {
+        {yearTickTransitions((styles, tickValue) => {
           const tickYear = tickValue.getUTCFullYear();
           return (
             <animated.g key={tickYear} data-test-id="year-tick-group" style={styles}>

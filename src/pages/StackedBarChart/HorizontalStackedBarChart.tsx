@@ -16,9 +16,9 @@ import { getValueListDatumSum } from '@/utils/dataUtils';
 export type HorizontalStackedBarChartProps<CategoryT extends DomainValue> = {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
-  seriesColor: (series: string, index: number) => string;
-  width?: number;
-  height?: number;
+  seriesColor: (series: string) => string;
+  width: number;
+  height: number;
   margins: Margins;
   ariaLabel?: string;
   ariaLabelledby?: string;

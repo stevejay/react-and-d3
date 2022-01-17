@@ -1,8 +1,9 @@
 import { FC } from 'react';
 import { SpringConfig } from '@react-spring/web';
+import { useId } from '@uifabric/react-hooks';
 import { schemeSet3 } from 'd3-scale-chromatic';
 
-import { ChartSizerUsingClone } from '@/components/ChartSizerUsingClone';
+import { ChartSizer } from '@/components/ChartSizer';
 import { ChartTitle } from '@/components/ChartTitle';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
@@ -59,21 +60,26 @@ export type HorizontalStackedBarChartExampleProps = {
 export const HorizontalStackedBarChartExample: FC<HorizontalStackedBarChartExampleProps> = ({
   springConfig
 }) => {
+  const id = useId();
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
-      <ChartTitle id="example-2">Example 2: Horizontal Stacked Bar Chart</ChartTitle>
-      <ChartSizerUsingClone className="h-[384px] my-8">
-        <HorizontalStackedBarChart
-          ariaLabelledby="example-2"
-          data={data}
-          seriesKeys={seriesKeys}
-          seriesColor={getSeriesColor}
-          margins={margins}
-          isCompact={isCompact}
-          springConfig={springConfig}
-        />
-      </ChartSizerUsingClone>
+      <ChartTitle id={id}>Example 2: Horizontal Stacked Bar Chart</ChartTitle>
+      <ChartSizer className="h-[384px] my-8">
+        {({ width, height }) => (
+          <HorizontalStackedBarChart
+            ariaLabelledby={id}
+            data={data}
+            seriesKeys={seriesKeys}
+            seriesColor={getSeriesColor}
+            margins={margins}
+            isCompact={isCompact}
+            springConfig={springConfig}
+            width={width}
+            height={height}
+          />
+        )}
+      </ChartSizer>
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>
   );
