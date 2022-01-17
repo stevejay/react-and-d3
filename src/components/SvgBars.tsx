@@ -42,7 +42,7 @@ export function SvgBars<CategoryT extends DomainValue>({
     enter: (datum) => ({ opacity: 1, ...barGenerator(datum) }),
     update: (datum) => ({ opacity: 1, ...barGenerator(datum) }),
     leave: (datum) => ({ opacity: 0, ...barGenerator(datum) }),
-    keys: (d) => getAxisDomainAsReactKey(d.category),
+    keys: (datum) => getAxisDomainAsReactKey(datum.category),
     config: springConfig,
     immediate: !animate
   });

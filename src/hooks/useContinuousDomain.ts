@@ -6,7 +6,7 @@ import { identity, isNil } from 'lodash-es';
 // This means the accessor function does not need to be referentially stable.
 export function useContinuousDomain<Datum>(
   data: readonly Datum[],
-  accessor: (d: Datum) => number = identity,
+  accessor: (datum: Datum) => number = identity,
   options?: { includeZeroInDomain?: boolean }
 ): readonly number[] {
   const { includeZeroInDomain } = options ?? {};

@@ -73,7 +73,7 @@ function HorizontalGroupedBarChartCore<CategoryT extends DomainValue>({
     rangeRound: true
   });
 
-  const categoryDomain = useOrdinalDomain(data, (d) => d.category);
+  const categoryDomain = useOrdinalDomain(data, (datum) => datum.category);
   const y0Scale = useBandScale(categoryDomain, chartArea.rangeHeightReversed, {
     paddingInner: 0.1,
     rangeRound: true

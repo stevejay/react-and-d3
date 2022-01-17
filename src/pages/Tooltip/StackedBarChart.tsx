@@ -80,7 +80,7 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
     rangeRound: true
   });
 
-  const categoryDomain = useOrdinalDomain(data, (d) => d.category);
+  const categoryDomain = useOrdinalDomain(data, (datum) => datum.category);
   const categoryScale = useBandScale(categoryDomain, chartArea.rangeHeightReversed, {
     paddingInner: 0.3,
     paddingOuter: 0.2,

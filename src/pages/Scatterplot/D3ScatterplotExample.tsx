@@ -12,18 +12,21 @@ function isCompact(width: number) {
   return Boolean(width) && width < 500;
 }
 
-function renderTooltipContent(d: PointDatum<IrisDatum>) {
+function renderTooltipContent(datum: PointDatum<IrisDatum>) {
   return (
     <>
-      Sepal Length: {d.datum.sepalLength}
+      Sepal Length: {datum.datum.sepalLength}
       <br />
-      Petal Length: {d.datum.petalLength}
+      Petal Length: {datum.datum.petalLength}
     </>
   );
 }
 
 export const D3ScatterplotExample: FC = () => {
-  const data = useMemo(() => irisData.map((d) => ({ x: d.sepalLength, y: d.petalLength, datum: d })), []);
+  const data = useMemo(
+    () => irisData.map((datum) => ({ x: datum.sepalLength, y: datum.petalLength, datum })),
+    []
+  );
   return (
     <ExampleChartWrapper title="Example 2: D3 zoomable scatterplot" sizerClassName="h-[384px]">
       {({ inView, width, height, ariaLabelledby }) =>

@@ -71,10 +71,10 @@ export const RadarChartWithTooltipExample: FC = () => {
         selectedCategory={selectedCategory}
         compact={compact}
         diameter={compact ? 340 : 420}
-        onSelect={(d) => setSelectedCategory(d.category)}
+        onSelect={(datum) => setSelectedCategory(datum.category)}
         datumAriaRoleDescription={getCategoryLabel}
-        datumAriaLabel={(d) => `${d.value}`}
-        datumDescription={(d) => `This is the description for ${getCategoryLabel(d)}`}
+        datumAriaLabel={(datum) => `${datum.value}`}
+        datumDescription={(datum) => `This is the description for ${getCategoryLabel(datum)}`}
         hideTooltipOnScroll
         renderTooltipContent={renderTooltipContent}
       />

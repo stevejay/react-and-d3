@@ -62,7 +62,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
 
   // Store the position function so it can be used to animate the entering ticks
   // from the position they would have been in if they were already in the DOM.
-  const previousPositionRef = useRef<((d: Date) => number) | null>(null);
+  const previousPositionRef = useRef<((datum: Date) => number) | null>(null);
 
   // Always run.
   useEffect(() => {

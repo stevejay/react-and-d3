@@ -40,10 +40,10 @@ export function SvgPoints<DatumT>({
   // TODO I'm not sure what keys should be for this.
   // At the moment it is the object itself.
   const transitions = useTransition(data, {
-    initial: (d) => ({ opacity: 1, ...circleGenerator(d) }),
-    from: (d) => ({ opacity: 0, ...circleGenerator(d) }),
-    enter: (d) => ({ opacity: 1, ...circleGenerator(d) }),
-    update: (d) => ({ opacity: 1, ...circleGenerator(d) }),
+    initial: (datum) => ({ opacity: 1, ...circleGenerator(datum) }),
+    from: (datum) => ({ opacity: 0, ...circleGenerator(datum) }),
+    enter: (datum) => ({ opacity: 1, ...circleGenerator(datum) }),
+    update: (datum) => ({ opacity: 1, ...circleGenerator(datum) }),
     leave: { opacity: 0 },
     config: springConfig,
     immediate: !animate
@@ -51,17 +51,17 @@ export function SvgPoints<DatumT>({
 
   return (
     <g data-test-id="points-group" className={pointsGroupClassName} fill="currentColor" stroke="none">
-      {transitions((styles, d) => (
+      {transitions((styles, datum) => (
         <animated.circle
           data-test-id="point"
-          r={typeof pointRadius === 'number' ? pointRadius : pointRadius(d)}
-          className={typeof pointClassName === 'string' ? pointClassName : pointClassName(d)}
+          r={typeof pointRadius === 'number' ? pointRadius : pointRadius(datum)}
+          className={typeof pointClassName === 'string' ? pointClassName : pointClassName(datum)}
           role="graphics-symbol"
-          aria-roledescription={datumAriaRoleDescription?.(d)}
-          aria-label={datumAriaLabel?.(d)}
+          aria-roledescription={datumAriaRoleDescription?.(datum)}
+          aria-label={datumAriaLabel?.(datum)}
           style={styles}
         >
-          {datumDescription && <desc>{datumDescription(d)}</desc>}
+          {datumDescription && <desc>{datumDescription(datum)}</desc>}
         </animated.circle>
       ))}
     </g>

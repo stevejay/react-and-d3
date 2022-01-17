@@ -47,23 +47,25 @@ export const Sparkline: FC<SparklineProps> = memo(
 
     const x = scaleTime()
       .domain(
-        hasData ? [min(data, (d) => d.date) ?? 0, max(data, (d) => d.date) ?? 0] : [new Date(), new Date()]
+        hasData
+          ? [min(data, (datum) => datum.date) ?? 0, max(data, (datum) => datum.date) ?? 0]
+          : [new Date(), new Date()]
       )
       .range([0, chartWidth]);
 
     const y = scaleLinear()
-      .domain([min(data, (d) => d.value) ?? 0, max(data, (d) => d.value) ?? 0])
+      .domain([min(data, (datum) => datum.value) ?? 0, max(data, (datum) => datum.value) ?? 0])
       .range([chartHeight, 0])
       .nice();
 
     const gradientAreaGenerator = area<Datum>()
-      .x((d) => x(d.date) ?? 0)
+      .x((datum) => x(datum.date) ?? 0)
       .y0(chartHeight)
-      .y1((d) => y(d.value));
+      .y1((datum) => y(datum.value));
 
     const lineGenerator = line<Datum>()
-      .x((d) => x(d.date) ?? 0)
-      .y((d) => y(d.value));
+      .x((datum) => x(datum.date) ?? 0)
+      .y((datum) => y(datum.value));
 
     const lastDatum = hasData ? data[data.length - 1] : null;
     const lastPointCx = lastDatum

@@ -7,7 +7,7 @@ import type { DomainValue } from '@/types';
 // This means the accessor function does not need to be referentially stable.
 export function useOrdinalDomain<DatumT, CategoryT extends DomainValue>(
   data: readonly DatumT[],
-  accessor: (d: DatumT) => CategoryT = identity
+  accessor: (datum: DatumT) => CategoryT = identity
 ): readonly CategoryT[] {
   // Deliberately ignore accessor in useMemo deps.
   // eslint-disable-next-line react-hooks/exhaustive-deps

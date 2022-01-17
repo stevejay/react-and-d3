@@ -13,8 +13,8 @@ function isCompact(width: number) {
   return Boolean(width) && width < 500;
 }
 
-function getPointClassName(d: PointDatum<IrisDatum>) {
-  switch (d.datum.species) {
+function getPointClassName(datum: PointDatum<IrisDatum>) {
+  switch (datum.datum.species) {
     case 'setosa':
       return 'fill-sky-500/50';
     case 'versicolor':
@@ -30,7 +30,8 @@ export type ScatterplotExampleProps = {
 
 export const ScatterplotExample: FC<ScatterplotExampleProps> = ({ springConfig }) => {
   const data = useMemo(
-    () => irisData.map((d) => ({ x: d.sepalLength, y: d.petalLength, datum: d as IrisDatum })),
+    () =>
+      irisData.map((datum) => ({ x: datum.sepalLength, y: datum.petalLength, datum: datum as IrisDatum })),
     []
   );
   return (

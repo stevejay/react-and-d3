@@ -40,30 +40,30 @@ function SeriesBars<CategoryT extends DomainValue>({
     { seriesKey: string; seriesPoint: SeriesPoint<CategoryValueListDatum<CategoryT, number>> },
     { opacity: number; x: number; y: number; width: number; height: number }
   >(datum.stack, {
-    initial: (d) => ({ opacity: 1, ...generator(d.seriesPoint) }),
-    from: (d) => ({ opacity: 0, ...generator(d.seriesPoint) }),
-    enter: (d) => ({ opacity: 1, ...generator(d.seriesPoint) }),
-    update: (d) => ({ opacity: 1, ...generator(d.seriesPoint) }),
+    initial: (datum) => ({ opacity: 1, ...generator(datum.seriesPoint) }),
+    from: (datum) => ({ opacity: 0, ...generator(datum.seriesPoint) }),
+    enter: (datum) => ({ opacity: 1, ...generator(datum.seriesPoint) }),
+    update: (datum) => ({ opacity: 1, ...generator(datum.seriesPoint) }),
     leave: { opacity: 0 },
-    keys: (d) => d.seriesKey,
+    keys: (datum) => datum.seriesKey,
     config: springConfig
   });
 
-  return transitions(({ x, y, width, height, ...rest }, d) => (
+  return transitions(({ x, y, width, height, ...rest }, { seriesKey }) => (
     <animated.rect
       data-test-id="bar"
       className={className}
-      fill={seriesColor(d.seriesKey)}
+      fill={seriesColor(seriesKey)}
       role="graphics-symbol"
-      aria-roledescription={datumAriaRoleDescription?.(datum.datum, d.seriesKey)}
-      aria-label={datumAriaLabel?.(datum.datum, d.seriesKey)}
+      aria-roledescription={datumAriaRoleDescription?.(datum.datum, seriesKey)}
+      aria-label={datumAriaLabel?.(datum.datum, seriesKey)}
       style={rest}
       x={x}
       y={y}
       width={width}
       height={height}
     >
-      {datumDescription && <desc>{datumDescription(datum.datum, d.seriesKey)}</desc>}
+      {datumDescription && <desc>{datumDescription(datum.datum, seriesKey)}</desc>}
     </animated.rect>
   ));
 }
@@ -106,17 +106,17 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
   const renderingOffset = offset ?? getDefaultRenderingOffset();
   const stackSeries = stack<CategoryValueListDatum<CategoryT, number>, string>()
     .keys(seriesKeys)
-    .value((d, key) => d.values[key]);
+    .value((datum, key) => datum.values[key]);
   const stackSeriesData = stackSeries(data);
   const generator = createStackedBarGenerator(categoryScale, valueScale, orientation, renderingOffset);
   const translateAxis = orientation === 'vertical' ? 'x' : 'y';
 
   // TODO tidy this up
   const mappedData = data.map(
-    (d, categoryIndex) =>
+    (datum, categoryIndex) =>
       ({
-        category: d.category,
-        datum: d,
+        category: datum.category,
+        datum: datum,
         stack: seriesKeys.map((seriesKey, seriesIndex) => ({
           seriesKey,
           seriesPoint: stackSeriesData[seriesIndex][categoryIndex]
@@ -125,12 +125,12 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
   );
 
   const transitions = useTransition<MappedDatum<CategoryT>, {}>(mappedData, {
-    initial: (d) => ({ opacity: 1, [translateAxis]: categoryScale(d.category) }),
-    from: (d) => ({ opacity: 0, [translateAxis]: categoryScale(d.category) }),
-    enter: (d) => ({ opacity: 1, [translateAxis]: categoryScale(d.category) }),
-    update: (d) => ({ opacity: 1, [translateAxis]: categoryScale(d.category) }),
+    initial: (datum) => ({ opacity: 1, [translateAxis]: categoryScale(datum.category) }),
+    from: (datum) => ({ opacity: 0, [translateAxis]: categoryScale(datum.category) }),
+    enter: (datum) => ({ opacity: 1, [translateAxis]: categoryScale(datum.category) }),
+    update: (datum) => ({ opacity: 1, [translateAxis]: categoryScale(datum.category) }),
     leave: { opacity: 0 },
-    keys: (d) => d.category,
+    keys: (datum) => datum.category,
     config: springConfig
   });
 
@@ -142,17 +142,17 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
       fill="currentColor"
       stroke="none"
     >
-      {transitions((styles, d) => (
+      {transitions((styles, datum) => (
         <animated.g
           data-test-id="category-group"
           role="graphics-object"
           style={styles}
-          aria-roledescription={categoryAriaRoleDescription?.(d.category)}
-          aria-label={categoryAriaLabel?.(d.category)}
+          aria-roledescription={categoryAriaRoleDescription?.(datum.category)}
+          aria-label={categoryAriaLabel?.(datum.category)}
         >
-          {categoryDescription && <desc>{categoryDescription(d.category)}</desc>}
+          {categoryDescription && <desc>{categoryDescription(datum.category)}</desc>}
           <SeriesBars
-            datum={d}
+            datum={datum}
             generator={generator}
             seriesColor={seriesColor}
             datumAriaRoleDescription={datumAriaRoleDescription}

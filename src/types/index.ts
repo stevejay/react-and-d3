@@ -81,7 +81,7 @@ export type Rect = {
 
 export type ExpandedAxisScale<DomainT extends DomainValue> = AxisScale<DomainT> & {
   ticks?(...args: any[]): DomainT[];
-  tickFormat?(...args: any[]): (d: DomainT) => string;
+  tickFormat?(...args: any[]): (datum: DomainT) => string;
 };
 
 export type BaseAxisProps<DomainT extends DomainValue> = {

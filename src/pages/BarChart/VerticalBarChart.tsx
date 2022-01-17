@@ -47,9 +47,9 @@ function VerticalBarChartCore<CategoryT extends DomainValue>({
   springConfig
 }: VerticalBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
-  const valueDomain = useContinuousDomain(data, (d) => d.value, { includeZeroInDomain: true });
+  const valueDomain = useContinuousDomain(data, (datum) => datum.value, { includeZeroInDomain: true });
   const valueScale = useLinearScale(valueDomain, chartArea.rangeHeight, { nice: true, clamp: true });
-  const categoryDomain = useOrdinalDomain(data, (d) => d.category);
+  const categoryDomain = useOrdinalDomain(data, (datum) => datum.category);
   const categoryScale = useBandScale(categoryDomain, chartArea.rangeWidth, {
     paddingInner: 0.3,
     paddingOuter: 0.2

@@ -54,9 +54,9 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
 
   // ----- DATA PREPARATION -----
 
-  const isZeroState = every(data, (d) => d.value === 0);
-  const selectedDatum = data.find((d) => d.category === selectedCategory);
-  const degreesLookup = new Map(data.map((d, index) => [d.category, (360 / data.length) * index]));
+  const isZeroState = every(data, (datum) => datum.value === 0);
+  const selectedDatum = data.find((datum) => datum.category === selectedCategory);
+  const degreesLookup = new Map(data.map((datum, index) => [datum.category, (360 / data.length) * index]));
 
   // ----- CHART SIZING -----
 
@@ -83,7 +83,11 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
   // The range is [innerRadius, outerRadius].
 
   const y = scaleLinear()
-    .domain(isZeroState ? [0, 150] : [min(data, (d) => d.value) ?? 0, max(data, (d) => d.value) ?? 0])
+    .domain(
+      isZeroState
+        ? [0, 150]
+        : [min(data, (datum) => datum.value) ?? 0, max(data, (datum) => datum.value) ?? 0]
+    )
     .range([centerRingRadiusPx + yAxisMarginBottomPx, chartAreaRadius])
     .nice();
 
@@ -91,16 +95,16 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
 
   const x = scaleBand<DomainValue>()
     .range([0, 2 * Math.PI]) // a.k.a. [0 degrees, 360 degrees]
-    .domain(data.map((d) => d.category));
+    .domain(data.map((datum) => datum.category));
 
   // ----- RADIAL POINTS -----
 
   const radialPointLookup = new Map(
-    data.map((d) => [
-      d.category,
+    data.map((datum) => [
+      datum.category,
       [
-        y(d.value) * Math.cos((x(d.category) ?? 0) - Math.PI / 2),
-        y(d.value) * Math.sin((x(d.category) ?? 0) - Math.PI / 2)
+        y(datum.value) * Math.cos((x(datum.category) ?? 0) - Math.PI / 2),
+        y(datum.value) * Math.sin((x(datum.category) ?? 0) - Math.PI / 2)
       ]
     ])
   );
@@ -147,8 +151,8 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
   // ----- RADIAL POLYGON -----
 
   const radialLineGenerator = lineRadial<CategoryValueDatum<CategoryT, number>>()
-    .angle((d) => x(d.category) ?? 0)
-    .radius((d) => y(d.value))
+    .angle((datum) => x(datum.category) ?? 0)
+    .radius((datum) => y(datum.value))
     .curve(curveLinearClosed);
 
   // ----- ANIMATION -----
@@ -161,9 +165,9 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
 
   const radialLineSprings = useSprings(
     data.length,
-    data.map((d) => ({
-      x2: radialPointLookup.get(d.category)?.[0] ?? 0,
-      y2: radialPointLookup.get(d.category)?.[1] ?? 0,
+    data.map((datum) => ({
+      x2: radialPointLookup.get(datum.category)?.[0] ?? 0,
+      y2: radialPointLookup.get(datum.category)?.[1] ?? 0,
       opacity: isZeroState ? 0 : 1,
       config: springConfig
     }))
@@ -171,19 +175,19 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
 
   const activeDataPointSprings = useSprings(
     data.length,
-    data.map((d) => ({
-      cx: radialPointLookup.get(d.category)?.[0] ?? 0,
-      cy: (radialPointLookup.get(d.category)?.[1] ?? 0) + 0.5,
-      opacity: isZeroState || d !== selectedDatum ? 0 : 0.75,
+    data.map((datum) => ({
+      cx: radialPointLookup.get(datum.category)?.[0] ?? 0,
+      cy: (radialPointLookup.get(datum.category)?.[1] ?? 0) + 0.5,
+      opacity: isZeroState || datum !== selectedDatum ? 0 : 0.75,
       config: springConfig
     }))
   );
 
   const allDataPointSprings = useSprings(
     data.length,
-    data.map((d) => ({
-      cx: radialPointLookup.get(d.category)?.[0] ?? 0,
-      cy: (radialPointLookup.get(d.category)?.[1] ?? 0) + 0.5,
+    data.map((datum) => ({
+      cx: radialPointLookup.get(datum.category)?.[0] ?? 0,
+      cy: (radialPointLookup.get(datum.category)?.[1] ?? 0) + 0.5,
       opacity: isZeroState ? 0 : 1,
       config: springConfig
     }))
@@ -232,17 +236,17 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
 
       {/* Category slices */}
       <g>
-        {slicePieGenerator(data.slice()).map((d) => (
+        {slicePieGenerator(data.slice()).map((datum) => (
           <CategorySlice
-            key={getAxisDomainAsReactKey(d.data.category)}
-            isSelected={d.data.category === selectedCategory}
-            degree={degreesLookup.get(d.data.category) ?? 0}
-            label={categoryLabel(d.data)}
-            path={sliceArcGenerator(d as any) ?? ''}
+            key={getAxisDomainAsReactKey(datum.data.category)}
+            isSelected={datum.data.category === selectedCategory}
+            degree={degreesLookup.get(datum.data.category) ?? 0}
+            label={categoryLabel(datum.data)}
+            path={sliceArcGenerator(datum as any) ?? ''}
             sliceLabelFontSizePx={sliceLabelFontSizePx}
             lowerLabelArcId={lowerLabelArcId}
             upperLabelArcId={upperLabelArcId}
-            onClick={() => onSelect(d.data)}
+            onClick={() => onSelect(datum.data)}
           />
         ))}
       </g>
@@ -316,9 +320,9 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
 
       {/* Radial lines out from chart center to data points */}
       <g>
-        {data.map((d, index) => (
+        {data.map((datum, index) => (
           <animated.line
-            key={getAxisDomainAsReactKey(d.category)}
+            key={getAxisDomainAsReactKey(datum.category)}
             className="stroke-current"
             x1={0}
             y1={0}
@@ -326,7 +330,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
             y2={radialLineSprings[index].y2}
             style={{ opacity: radialLineSprings[index].opacity }}
             role="presentation"
-            strokeWidth={d.category === selectedCategory ? 5 : 2}
+            strokeWidth={datum.category === selectedCategory ? 5 : 2}
           />
         ))}
       </g>
@@ -360,8 +364,8 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
 
       {/* Data point circles */}
       <g className="pointer-events-none">
-        {data.map((d, index) => (
-          <Fragment key={getAxisDomainAsReactKey(d.category)}>
+        {data.map((datum, index) => (
+          <Fragment key={getAxisDomainAsReactKey(datum.category)}>
             <animated.circle
               fill="currentColor"
               stroke="none"
@@ -373,8 +377,8 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
             />
             <animated.circle
               role="graphics-symbol"
-              aria-roledescription={datumAriaRoleDescription?.(d)}
-              aria-label={datumAriaLabel?.(d)}
+              aria-roledescription={datumAriaRoleDescription?.(datum)}
+              aria-label={datumAriaLabel?.(datum)}
               className="fill-current stroke-white"
               r={5}
               strokeWidth={4}
@@ -382,7 +386,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
               cy={allDataPointSprings[index].cy}
               style={{ opacity: allDataPointSprings[index].opacity }}
             >
-              {datumDescription && <desc>{datumDescription(d)}</desc>}
+              {datumDescription && <desc>{datumDescription(datum)}</desc>}
             </animated.circle>
           </Fragment>
         ))}
@@ -391,24 +395,24 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
       {/* Data point tooltip trigger circles */}
       <g>
         {!isZeroState &&
-          data.map((d) => {
-            const circleId = `${id}_tooltip_${d.category}`;
-            const cx = radialPointLookup.get(d.category)?.[0] ?? 0;
-            const cy = radialPointLookup.get(d.category)?.[1] ?? 0;
+          data.map((datum) => {
+            const circleId = `${id}_tooltip_${datum.category}`;
+            const cx = radialPointLookup.get(datum.category)?.[0] ?? 0;
+            const cy = radialPointLookup.get(datum.category)?.[1] ?? 0;
             const rect: Rect = { x: diameter * 0.5 + cx, y: diameter * 0.5 + cy, width: 0, height: 0 };
             return (
               <circle
-                key={getAxisDomainAsReactKey(d.category)}
+                key={getAxisDomainAsReactKey(datum.category)}
                 id={circleId}
                 className="fill-transparent"
                 role="presentation"
                 cx={cx}
                 cy={cy}
                 r={tooltipPointRadiusPx}
-                onMouseMove={() => onMouseEnter(d, rect)}
+                onMouseMove={() => onMouseEnter(datum, rect)}
                 onMouseLeave={onMouseLeave}
                 onClick={(event) => {
-                  onClick(d, rect);
+                  onClick(datum, rect);
                   // Prevent clicks from being picked up by the document.window
                   // onclick event listener, which closes the tooltip on a click
                   // outside of the chart area.

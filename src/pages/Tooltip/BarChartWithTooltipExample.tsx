@@ -36,10 +36,10 @@ function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
   return datum.category;
 }
 
-function renderTooltipContent(d: CategoryValueDatum<string, number>) {
+function renderTooltipContent(datum: CategoryValueDatum<string, number>) {
   return (
     <>
-      {getCategoryLabel(d)}: {format('.2f')(d.value)}
+      {getCategoryLabel(datum)}: {format('.2f')(datum.value)}
     </>
   );
 }

@@ -15,8 +15,8 @@ export function useContinuousDomainForSeriesData<CategoryT extends DomainValue, 
 ): readonly number[] {
   const { includeZeroInDomain } = options ?? {};
   return useMemo(() => {
-    let minValue = min(data, (d) => minAccessor(d, seriesKeys)) ?? 0;
-    let maxValue = max(data, (d) => maxAccessor(d, seriesKeys)) ?? 0;
+    let minValue = min(data, (datum) => minAccessor(datum, seriesKeys)) ?? 0;
+    let maxValue = max(data, (datum) => maxAccessor(datum, seriesKeys)) ?? 0;
     if (isNil(minValue) || isNil(maxValue)) {
       return [];
     }

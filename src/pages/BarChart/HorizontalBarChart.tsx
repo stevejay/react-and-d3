@@ -49,9 +49,9 @@ function HorizontalBarChartCore<CategoryT extends DomainValue>({
   compact
 }: HorizontalBarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
-  const valueDomain = useContinuousDomain(data, (d) => d.value, { includeZeroInDomain: true });
+  const valueDomain = useContinuousDomain(data, (datum) => datum.value, { includeZeroInDomain: true });
   const valueScale = useLinearScale(valueDomain, chartArea.rangeWidth, { nice: true, clamp: true });
-  const categoryDomain = useOrdinalDomain(data, (d) => d.category);
+  const categoryDomain = useOrdinalDomain(data, (datum) => datum.category);
   const categoryScale = useBandScale(categoryDomain, chartArea.rangeHeightReversed, {
     paddingInner: 0.3,
     paddingOuter: 0.2

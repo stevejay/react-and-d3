@@ -115,27 +115,27 @@ export function SvgGroupedBars<CategoryT extends DomainValue>({
   );
   const translateAxis = orientation === 'vertical' ? 'translateX' : 'translateY';
   const transitions = useTransition<CategoryValueListDatum<CategoryT, number>, {}>(data, {
-    initial: (d) => ({ opacity: 1, [translateAxis]: categoryScale(d.category) }),
-    from: (d) => ({ opacity: 0, [translateAxis]: categoryScale(d.category) }),
-    enter: (d) => ({ opacity: 1, [translateAxis]: categoryScale(d.category) }),
-    update: (d) => ({ opacity: 1, [translateAxis]: categoryScale(d.category) }),
+    initial: (datum) => ({ opacity: 1, [translateAxis]: categoryScale(datum.category) }),
+    from: (datum) => ({ opacity: 0, [translateAxis]: categoryScale(datum.category) }),
+    enter: (datum) => ({ opacity: 1, [translateAxis]: categoryScale(datum.category) }),
+    update: (datum) => ({ opacity: 1, [translateAxis]: categoryScale(datum.category) }),
     leave: { opacity: 0 },
-    keys: (d) => d.category,
+    keys: (datum) => datum.category,
     config: springConfig
   });
   return (
     <g data-test-id="grouped-bars-group" className={className} fill="currentColor" stroke="none">
-      {transitions((styles, d) => (
+      {transitions((styles, datum) => (
         <animated.g
           data-test-id="category-group"
           role="graphics-object"
           style={styles}
-          aria-roledescription={categoryAriaRoleDescription?.(d.category)}
-          aria-label={categoryAriaLabel?.(d.category)}
+          aria-roledescription={categoryAriaRoleDescription?.(datum.category)}
+          aria-label={categoryAriaLabel?.(datum.category)}
         >
-          {categoryDescription && <desc>{categoryDescription(d.category)}</desc>}
+          {categoryDescription && <desc>{categoryDescription(datum.category)}</desc>}
           <SeriesBars
-            datum={d}
+            datum={datum}
             seriesKeys={seriesKeys}
             generator={generator}
             seriesColor={seriesColor}

@@ -45,12 +45,12 @@ function getSeriesColor(series: string) {
   }
 }
 
-function renderTooltipContent(d: CategoryValueListDatum<string, number>) {
+function renderTooltipContent(datum: CategoryValueListDatum<string, number>) {
   return (
     <>
       {seriesKeys.map((series, index) => (
         <Fragment key={series}>
-          <span style={{ color: schemeSet3[index] }}>{getSeriesLabel(series)}:</span> {d.values[series]}
+          <span style={{ color: schemeSet3[index] }}>{getSeriesLabel(series)}:</span> {datum.values[series]}
           <br />
         </Fragment>
       ))}
@@ -75,14 +75,14 @@ export const StackedBarChartWithTooltipExample: FC<StackedBarChartWithTooltipExa
           width={width}
           height={height}
           margins={isCompact(width) ? compactMargins : margins}
-          independentAxisTickFormat={(d) => `Strategy ${d}`}
+          independentAxisTickFormat={(datum) => `Strategy ${datum}`}
           dependentAxisLabel="Sales (units)"
           ariaRoleDescription="Stacked bar chart"
           ariaLabelledby={ariaLabelledby}
           categoryAriaRoleDescription={() => 'Sales strategy'}
           categoryAriaLabel={getCategoryLabel}
-          datumAriaRoleDescription={(_d, series) => getSeriesLabel(series)}
-          datumAriaLabel={(d, series) => `${d.values[series]} units sold`}
+          datumAriaRoleDescription={(_, series) => getSeriesLabel(series)}
+          datumAriaLabel={(datum, series) => `${datum.values[series]} units sold`}
           renderTooltipContent={renderTooltipContent}
           hideTooltipOnScroll
           compact={isCompact(width)}

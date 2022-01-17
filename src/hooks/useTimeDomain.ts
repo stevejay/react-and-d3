@@ -6,7 +6,7 @@ import { identity, isNil } from 'lodash-es';
 // This means the accessor function does not need to be referentially stable.
 export function useTimeDomain<Datum>(
   data: Datum[],
-  accessor: (d: Datum) => Date = identity
+  accessor: (datum: Datum) => Date = identity
 ): readonly Date[] {
   return useMemo(() => {
     let minValue = min(data, accessor);

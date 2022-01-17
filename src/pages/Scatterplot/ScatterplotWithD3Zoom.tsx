@@ -67,9 +67,9 @@ function ScatterplotWithD3ZoomCore<DatumT>({
       ]
     }
   );
-  const xDomain = useContinuousDomain(data, (d) => d.x);
+  const xDomain = useContinuousDomain(data, (datum) => datum.x);
   const xScale = useLinearScaleWithZoom(xDomain, chartArea.rangeWidth, 'x', transform);
-  const yDomain = useContinuousDomain(data, (d) => d.y);
+  const yDomain = useContinuousDomain(data, (datum) => datum.y);
   const yScale = useLinearScaleWithZoom(yDomain, chartArea.rangeHeight, 'y', transform);
 
   return (

@@ -6,7 +6,7 @@ import type { AxisOrientation, AxisScale, DomainValue } from '@/types';
  * scale is not a band scale.
  */
 export function number<DomainT extends DomainValue>(scale: AxisScale<DomainT>) {
-  return (d: DomainT) => +(scale(d) ?? NaN);
+  return (datum: DomainT) => +(scale(datum) ?? NaN);
 }
 
 /**
@@ -22,7 +22,7 @@ export function center<DomainT extends DomainValue>(
   if (scale.round?.()) {
     renderingOffset = Math.round(renderingOffset);
   }
-  return (d: DomainT) => +(scale(d) ?? NaN) + renderingOffset;
+  return (datum: DomainT) => +(scale(datum) ?? NaN) + renderingOffset;
 }
 
 /**

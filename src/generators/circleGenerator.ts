@@ -10,9 +10,9 @@ export function createCircleGenerator<DatumT>(
   const clonedXScale = xScale.copy();
   const clonedYScale = yScale.copy();
 
-  return (d: PointDatum<DatumT>): { cx: number; cy: number } | null => {
-    const xValue = clonedXScale(d.x);
-    const yValue = clonedYScale(d.y);
+  return (datum: PointDatum<DatumT>): { cx: number; cy: number } | null => {
+    const xValue = clonedXScale(datum.x);
+    const yValue = clonedYScale(datum.y);
 
     if (isNil(xValue) || isNil(yValue) || !isFinite(xValue) || !isFinite(yValue)) {
       return null;

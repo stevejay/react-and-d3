@@ -71,7 +71,7 @@ function VerticalGroupedBarChartCore<CategoryT extends DomainValue>({
     rangeRound: true
   });
 
-  const categoryDomain = useOrdinalDomain(data, (d) => d.category);
+  const categoryDomain = useOrdinalDomain(data, (datum) => datum.category);
   const x0Scale = useBandScale(categoryDomain, chartArea.rangeWidth, {
     paddingInner: 0.1,
     rangeRound: true

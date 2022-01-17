@@ -2,8 +2,8 @@
  * Clones the input date.
  * @returns A new Date object
  */
-export function cloneDate(d: Date): Date {
-  return new Date(d.getTime());
+export function cloneDate(value: Date): Date {
+  return new Date(value.getTime());
 }
 
 /**
@@ -11,8 +11,8 @@ export function cloneDate(d: Date): Date {
  * month of the input date.
  * @returns A new Date object
  */
-export function startOfThisMonth(d: Date): Date {
-  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth()));
+export function startOfThisMonth(value: Date): Date {
+  return new Date(Date.UTC(value.getUTCFullYear(), value.getUTCMonth()));
 }
 
 /**
@@ -20,6 +20,6 @@ export function startOfThisMonth(d: Date): Date {
  * the input date.
  * @returns A new Date object
  */
-export function lastMomentOfThisMonth(d: Date): Date {
-  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0, 0, 0, 0, -1));
+export function lastMomentOfThisMonth(value: Date): Date {
+  return new Date(Date.UTC(value.getUTCFullYear(), value.getUTCMonth() + 1, 0, 0, 0, 0, -1));
 }

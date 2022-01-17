@@ -94,7 +94,7 @@ class D3ScatterplotRenderer<DatumT> {
     // X Scale
 
     const baseXScale = scaleLinear()
-      .domain([min(this.data, (d) => d.x) ?? NaN, max(this.data, (d) => d.x) ?? NaN])
+      .domain([min(this.data, (datum) => datum.x) ?? NaN, max(this.data, (datum) => datum.x) ?? NaN])
       .range([0, chartWidth]);
     baseXScale.ticks(this.compact ? 5 : 10);
 
@@ -117,7 +117,7 @@ class D3ScatterplotRenderer<DatumT> {
     // Y Scale
 
     const baseYScale = scaleLinear()
-      .domain([min(this.data, (d) => d.y) ?? NaN, max(this.data, (d) => d.y) ?? NaN])
+      .domain([min(this.data, (datum) => datum.y) ?? NaN, max(this.data, (datum) => datum.y) ?? NaN])
       .range([chartHeight, 0]);
     baseYScale.ticks(this.compact ? 5 : 10);
     let yScale = baseYScale.copy();
@@ -152,8 +152,8 @@ class D3ScatterplotRenderer<DatumT> {
       .classed('circle', true)
       .classed('fill-sky-500', true)
       .merge(circle)
-      .attr('cx', (d) => xScale(d.x))
-      .attr('cy', (d) => yScale(d.y))
+      .attr('cx', (datum) => xScale(datum.x))
+      .attr('cy', (datum) => yScale(datum.y))
       .attr('r', 8)
       .style('opacity', 0.5);
 
@@ -182,8 +182,8 @@ class D3ScatterplotRenderer<DatumT> {
       // update circle position
       chartAreaGroup
         .selectAll<SVGCircleElement, PointDatum<DatumT>>('circle')
-        .attr('cx', (d) => xScale(d.x))
-        .attr('cy', (d) => yScale(d.y));
+        .attr('cx', (datum) => xScale(datum.x))
+        .attr('cy', (datum) => yScale(datum.y));
 
       // Hide the tooltip:
       this.onMouseLeave();
@@ -292,8 +292,8 @@ export function D3Scatterplot<DatumT>({
     renderer.margins = margins;
     renderer.updateData(
       data,
-      (d) => d.x,
-      (d) => d.y
+      (datum) => datum.x,
+      (datum) => datum.y
     );
     renderer.svgElement = svgRef.current;
     renderer.compact = compact;

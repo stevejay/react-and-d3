@@ -12,9 +12,9 @@ export function createBarGenerator<CategoryT extends DomainValue>(
   const clonedCategoryScale = categoryScale.copy();
   const clonedValueScale = valueScale.copy();
 
-  return (d: CategoryValueDatum<CategoryT, number>): Rect | null => {
-    const categoryValue = clonedCategoryScale(d.category);
-    const valueValue = clonedValueScale(d.value);
+  return (datum: CategoryValueDatum<CategoryT, number>): Rect | null => {
+    const categoryValue = clonedCategoryScale(datum.category);
+    const valueValue = clonedValueScale(datum.value);
     const zeroValue = clonedValueScale(0);
     const bandwidth = clonedCategoryScale.bandwidth?.();
 
@@ -36,13 +36,13 @@ export function createBarGenerator<CategoryT extends DomainValue>(
         x: categoryValue + renderingOffset,
         width: Math.max(bandwidth, 0),
 
-        y: d.value > 0 ? valueValue + renderingOffset : zeroValue + renderingOffset,
-        height: Math.max(d.value > 0 ? zeroValue - valueValue : valueValue - zeroValue, 0)
+        y: datum.value > 0 ? valueValue + renderingOffset : zeroValue + renderingOffset,
+        height: Math.max(datum.value > 0 ? zeroValue - valueValue : valueValue - zeroValue, 0)
       };
     } else {
       return {
-        x: d.value > 0 ? zeroValue + renderingOffset : valueValue + renderingOffset,
-        width: Math.max(d.value > 0 ? valueValue - zeroValue : zeroValue - valueValue, 0),
+        x: datum.value > 0 ? zeroValue + renderingOffset : valueValue + renderingOffset,
+        width: Math.max(datum.value > 0 ? valueValue - zeroValue : zeroValue - valueValue, 0),
 
         y: categoryValue + renderingOffset,
         height: Math.max(bandwidth, 0)

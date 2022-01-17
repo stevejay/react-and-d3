@@ -52,13 +52,13 @@ function getSeriesColor(series: string) {
   }
 }
 
-function renderTooltipContent(d: CategoryValueListDatum<string, number>) {
+function renderTooltipContent(datum: CategoryValueListDatum<string, number>) {
   return (
     <>
       {seriesKeys.map((series, index) => (
         <Fragment key={series}>
           <span style={{ color: schemeSet3[index] }}>{capitalize(series)}:</span>{' '}
-          {format('.2f')(d.values[series])}
+          {format('.2f')(datum.values[series])}
           <br />
         </Fragment>
       ))}
