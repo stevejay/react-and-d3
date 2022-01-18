@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { animated, SpringConfig, useTransition } from '@react-spring/web';
+import { animated, SpringConfig, useTransition } from 'react-spring';
 import { utcMonth } from 'd3-time';
 import { identity, isNil, uniq } from 'lodash-es';
 

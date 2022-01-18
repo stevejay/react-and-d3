@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { SpringConfig } from '@react-spring/web';
+import type { SpringConfig } from 'react-spring';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';

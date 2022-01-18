@@ -1,5 +1,5 @@
 import { FC, Fragment } from 'react';
-import { SpringConfig } from '@react-spring/web';
+import type { SpringConfig } from 'react-spring';
 import { schemeSet3 } from 'd3-scale-chromatic';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';

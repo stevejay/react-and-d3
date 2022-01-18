@@ -1,8 +1,8 @@
 import { FC, useState } from 'react';
 import { FiGithub, FiMenu, FiX } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import { animated, useTransition } from 'react-spring';
 import { Dialog } from '@headlessui/react';
-import { animated, useTransition } from '@react-spring/web';
 
 import { NavigationMenuLink } from './NavigationMenuLink';
 

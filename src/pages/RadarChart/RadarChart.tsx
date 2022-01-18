@@ -1,5 +1,5 @@
 import { Fragment, memo, ReactElement, RefObject } from 'react';
-import { animated, useSpring, useSprings } from '@react-spring/web';
+import { animated, useSpring, useSprings } from 'react-spring';
 import { useId } from '@uifabric/react-hooks';
 import { max, min } from 'd3-array';
 import { easeCubicInOut } from 'd3-ease';

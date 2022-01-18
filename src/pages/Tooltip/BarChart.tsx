@@ -1,5 +1,5 @@
 import { memo, ReactElement, RefObject } from 'react';
-import { SpringConfig } from '@react-spring/web';
+import type { SpringConfig } from 'react-spring';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgBars } from '@/components/SvgBars';
@@ -55,7 +55,7 @@ function BarChartCore<CategoryT extends DomainValue>({
 }: BarChartProps<CategoryT>): ReactElement | null {
   const chartArea = useChartArea(width, height, margins);
   const valueDomain = useContinuousDomain(data, (datum) => datum.value, { includeZeroInDomain: true });
-  const valueScale = useLinearScale(valueDomain, chartArea.rangeHeight, { nice: true, clamp: true });
+  const valueScale = useLinearScale(valueDomain, chartArea.rangeHeight, { nice: true });
   const categoryDomain = useOrdinalDomain(data, (datum) => datum.category);
   const categoryScale = useBandScale(categoryDomain, chartArea.rangeWidth, {
     paddingInner: 0.3,

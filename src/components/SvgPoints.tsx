@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { animated, SpringConfig, useTransition } from '@react-spring/web';
+import { animated, SpringConfig, useTransition } from 'react-spring';
 
 import { createCircleGenerator } from '@/generators/circleGenerator';
 import type { AxisScale, PointDatum } from '@/types';

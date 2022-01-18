@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { animated, SpringValues } from '@react-spring/web';
+import { animated, SpringValues } from 'react-spring';
 import type { TippyProps } from '@tippyjs/react/headless';
 
 import './Tooltip.css';

@@ -16,6 +16,7 @@ const GroupedBarChartPage = lazy(() => import('@/pages/GroupedBarChart'));
 const RadarChartPage = lazy(() => import('@/pages/RadarChart'));
 const ScatterplotPage = lazy(() => import('@/pages/Scatterplot'));
 const SparklinePage = lazy(() => import('@/pages/Sparkline'));
+const VisxPage = lazy(() => import('@/pages/Visx'));
 
 const pageLinks = [
   { href: '/', title: 'Home', pageComponent: HomePage },
@@ -27,7 +28,8 @@ const pageLinks = [
   { href: '/grouped-bar-chart', title: 'Grouped Bar Chart', pageComponent: GroupedBarChartPage },
   { href: '/radar-chart', title: 'Radar Chart', pageComponent: RadarChartPage },
   { href: '/scatterplot', title: 'Scatterplot', pageComponent: ScatterplotPage },
-  { href: '/sparkline', title: 'Sparkline', pageComponent: SparklinePage }
+  { href: '/sparkline', title: 'Sparkline', pageComponent: SparklinePage },
+  { href: '/visx', title: 'Visx by Airbnb', pageComponent: VisxPage }
 ];
 
 const navigationData = [

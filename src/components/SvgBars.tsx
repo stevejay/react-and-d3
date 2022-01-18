@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { animated, SpringConfig, useTransition } from '@react-spring/web';
+import { animated, SpringConfig, useTransition } from 'react-spring';
 
 import { createBarGenerator } from '@/generators/barGenerator';
 import type { AxisScale, CategoryValueDatum, ChartOrientation, DomainValue } from '@/types';

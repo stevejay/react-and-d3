@@ -1,5 +1,5 @@
 import { ReactElement, SVGAttributes, SVGProps, useEffect, useRef } from 'react';
-import { animated, SpringConfig, useTransition } from '@react-spring/web';
+import { animated, SpringConfig, useTransition } from 'react-spring';
 import { identity, isNil } from 'lodash-es';
 
 import type {

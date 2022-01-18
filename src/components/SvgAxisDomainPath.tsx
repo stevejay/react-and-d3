@@ -1,5 +1,5 @@
 import { FC, SVGProps } from 'react';
-import { animated, SpringConfig, useSpring } from '@react-spring/web';
+import { animated, SpringConfig, useSpring } from 'react-spring';
 
 import type { AxisOrientation } from '@/types';
 import { createAxisDomainPathData } from '@/utils/axisUtils';

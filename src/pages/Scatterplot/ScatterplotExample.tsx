@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { SpringConfig } from '@react-spring/web';
+import type { SpringConfig } from 'react-spring';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import type { Margins, PointDatum } from '@/types';

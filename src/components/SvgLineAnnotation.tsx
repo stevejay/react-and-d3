@@ -1,5 +1,5 @@
 import type { FC, SVGProps } from 'react';
-import { animated, SpringConfig, useSpring } from '@react-spring/web';
+import { animated, SpringConfig, useSpring } from 'react-spring';
 
 import type { AxisScale, ChartArea, ChartOrientation } from '@/types';
 

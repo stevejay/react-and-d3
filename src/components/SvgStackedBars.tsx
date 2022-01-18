@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { animated, SpringConfig, useTransition } from '@react-spring/web';
+import { animated, SpringConfig, useTransition } from 'react-spring';
 import { SeriesPoint, stack } from 'd3-shape';
 
 import { createStackedBarGenerator } from '@/generators/stackedBarGenerator';

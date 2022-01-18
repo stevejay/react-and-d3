@@ -1,5 +1,5 @@
 import { ReactElement, RefObject, useEffect, useMemo, useRef } from 'react';
-import { useSpring } from '@react-spring/web';
+import { useSpring } from 'react-spring';
 import type { TippyProps } from '@tippyjs/react/headless';
 import Tippy from '@tippyjs/react/headless';
 import { easeCubicInOut } from 'd3-ease';

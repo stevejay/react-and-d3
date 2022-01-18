@@ -1,5 +1,5 @@
 import { FC, Fragment } from 'react';
-import { SpringConfig } from '@react-spring/web';
+import type { SpringConfig } from 'react-spring';
 import { format } from 'd3-format';
 import { schemeSet3 } from 'd3-scale-chromatic';
 import { capitalize } from 'lodash-es';
