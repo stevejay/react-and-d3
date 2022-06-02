@@ -1,24 +1,24 @@
-import { FC, memo } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { memo } from 'react';
+import { SpringConfig } from 'react-spring';
 
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
 import { useBandScale } from '@/hooks/useBandScale';
 import { useChartArea } from '@/hooks/useChartArea';
-import type { TickLabelOrientation } from '@/types';
+import { TickLabelOrientation } from '@/types';
 
 const margins = { top: 20, bottom: 34, left: 30, right: 30 };
 
-export type ReactBandAxisChartProps = {
+export interface ReactBandAxisChartProps {
   data: string[];
   width: number;
   height: number;
   ariaLabelledby: string;
   springConfig: SpringConfig;
   tickLabelOrientation: TickLabelOrientation;
-};
+}
 
-export const ReactBandAxisChart: FC<ReactBandAxisChartProps> = memo(
+export const ReactBandAxisChart = memo<ReactBandAxisChartProps>(
   ({ data, width, height, ariaLabelledby, tickLabelOrientation, springConfig }) => {
     const chartArea = useChartArea(width, height, margins);
     const scale = useBandScale(data, chartArea.rangeWidth, { rangeRound: true });

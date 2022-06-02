@@ -1,6 +1,6 @@
 import { isNil } from 'lodash-es';
 
-import type { AxisScale, PointDatum } from '@/types';
+import { AxisScale, PointDatum } from '@/types';
 
 export function createCircleGenerator<DatumT>(
   xScale: AxisScale<number>,

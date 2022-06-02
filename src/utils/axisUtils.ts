@@ -1,4 +1,4 @@
-import type { AxisOrientation, AxisScale, DomainValue } from '@/types';
+import { AxisOrientation, AxisScale, DomainValue } from '@/types';
 
 /**
  * Returns a function that transforms a domain value into a position in pixels

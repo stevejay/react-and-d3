@@ -1,5 +1,5 @@
 import { memo, ReactElement, Ref } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgBars } from '@/components/SvgBars';
@@ -11,13 +11,13 @@ import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
 import { useLinearScale } from '@/hooks/useLinearScale';
 import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
-import type { CategoryValueDatum, DomainValue, Margins } from '@/types';
+import { CategoryValueDatum, DomainValue, Margin } from '@/types';
 
-export type HorizontalBarChartProps<CategoryT extends DomainValue> = {
+export interface HorizontalBarChartProps<CategoryT extends DomainValue> {
   data: CategoryValueDatum<CategoryT, number>[];
   width: number;
   height: number;
-  margins: Margins;
+  margins: Margin;
   ariaLabel?: string;
   ariaLabelledby?: string;
   ariaRoleDescription?: string;
@@ -29,7 +29,7 @@ export type HorizontalBarChartProps<CategoryT extends DomainValue> = {
   svgRef?: Ref<SVGSVGElement>;
   springConfig: SpringConfig;
   compact: boolean;
-};
+}
 
 function HorizontalBarChartCore<CategoryT extends DomainValue>({
   data,

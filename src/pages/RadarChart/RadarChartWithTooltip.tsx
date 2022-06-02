@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 
 import { useFollowOnHoverTooltip } from '@/tooltip';
-import type { CategoryValueDatum, DomainValue } from '@/types';
+import { CategoryValueDatum, DomainValue } from '@/types';
 
 import { RadarChart, RadarChartProps } from './RadarChart';
 

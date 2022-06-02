@@ -1,10 +1,10 @@
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import { format } from 'd3-format';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useDataSets } from '@/hooks/useDataSets';
-import type { CategoryValueDatum } from '@/types';
+import { CategoryValueDatum } from '@/types';
 
 import { RadarChartWithTooltip } from './RadarChartWithTooltip';
 
@@ -57,7 +57,7 @@ function renderTooltipContent(datum: CategoryValueDatum<string, number>) {
   );
 }
 
-export const RadarChartWithTooltipExample: FC = () => {
+export function RadarChartWithTooltipExample() {
   const [data, nextDataSet] = useDataSets(dataSets);
   const [selectedCategory, setSelectedCategory] = useState(data[0].category);
   const { breakpoint } = useBreakpoint();
@@ -81,4 +81,4 @@ export const RadarChartWithTooltipExample: FC = () => {
       <ExampleUpdateButton onClick={nextDataSet}>Update radar chart data</ExampleUpdateButton>
     </div>
   );
-};
+}

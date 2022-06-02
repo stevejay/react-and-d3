@@ -1,5 +1,5 @@
 import { memo, ReactElement, RefObject } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 
 import { SvgAxis, SvgAxisProps } from '@/components/SvgAxis';
 import { SvgCategoryInteraction } from '@/components/SvgCategoryInteraction';
@@ -11,16 +11,16 @@ import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomainForSeriesData } from '@/hooks/useContinuousDomainForSeriesData';
 import { useLinearScale } from '@/hooks/useLinearScale';
 import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
-import type { CategoryValueListDatum, DomainValue, Margins, Rect } from '@/types';
+import { CategoryValueListDatum, DomainValue, Margin, Rect } from '@/types';
 import { getValueListDatumSum } from '@/utils/dataUtils';
 
-export type StackedBarChartProps<CategoryT extends DomainValue> = {
+export interface StackedBarChartProps<CategoryT extends DomainValue> {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
   seriesColor: (series: string) => string;
   width: number;
   height: number;
-  margins: Margins;
+  margins: Margin;
   ariaLabel?: string;
   ariaLabelledby?: string;
   ariaRoleDescription?: string;
@@ -42,7 +42,7 @@ export type StackedBarChartProps<CategoryT extends DomainValue> = {
   onMouseLeave: () => void;
   onClick: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
   springConfig: SpringConfig;
-};
+}
 
 function StackedBarChartCore<CategoryT extends DomainValue>({
   data,

@@ -1,6 +1,4 @@
-import { FC } from 'react';
-
-export type CategorySliceProps = {
+export interface CategorySliceProps {
   /** Whether this slice is the currently selected slice. */
   isSelected: boolean;
   /**
@@ -26,10 +24,10 @@ export type CategorySliceProps = {
   upperLabelArcId: string;
   /** The callback for when a slice is clicked. */
   onClick: () => void;
-};
+}
 
 /** Renders a slice of the outer ring of the radar chart. */
-export const CategorySlice: FC<CategorySliceProps> = ({
+export function CategorySlice({
   isSelected,
   degree,
   label,
@@ -38,35 +36,37 @@ export const CategorySlice: FC<CategorySliceProps> = ({
   lowerLabelArcId,
   upperLabelArcId,
   onClick
-}) => (
-  <g>
-    <path
-      className={`slice-arc transition-colors fill-current ${
-        isSelected ? 'text-slate-700' : 'text-slate-800'
-      } hover:text-slate-700`}
-      role="presentation"
-      d={path}
-      onClick={onClick}
-    />
-    <text
-      className={`slice-label pointer-events-none transition-colors uppercase ${
-        isSelected ? 'text-white' : 'text-slate-400'
-      } fill-current`}
-      role="presentation"
-      aria-hidden
-      dy={degree > 90 && degree < 270 ? '0.75em' : '0em'}
-      style={{
-        transform: `rotate(${degree}deg)`,
-        fontSize: sliceLabelFontSizePx
-      }}
-    >
-      <textPath
-        startOffset="50%"
-        href={degree > 90 && degree < 270 ? `#${lowerLabelArcId}` : `#${upperLabelArcId}`}
-        style={{ textAnchor: 'middle' }}
+}: CategorySliceProps) {
+  return (
+    <g>
+      <path
+        className={`slice-arc transition-colors fill-current ${
+          isSelected ? 'text-slate-700' : 'text-slate-800'
+        } hover:text-slate-700`}
+        role="presentation"
+        d={path}
+        onClick={onClick}
+      />
+      <text
+        className={`slice-label pointer-events-none transition-colors uppercase ${
+          isSelected ? 'text-white' : 'text-slate-400'
+        } fill-current`}
+        role="presentation"
+        aria-hidden
+        dy={degree > 90 && degree < 270 ? '0.75em' : '0em'}
+        style={{
+          transform: `rotate(${degree}deg)`,
+          fontSize: sliceLabelFontSizePx
+        }}
       >
-        {label}
-      </textPath>
-    </text>
-  </g>
-);
+        <textPath
+          startOffset="50%"
+          href={degree > 90 && degree < 270 ? `#${lowerLabelArcId}` : `#${upperLabelArcId}`}
+          style={{ textAnchor: 'middle' }}
+        >
+          {label}
+        </textPath>
+      </text>
+    </g>
+  );
+}

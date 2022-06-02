@@ -1,5 +1,5 @@
-import { FC, Fragment } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { Fragment } from 'react';
+import { SpringConfig } from 'react-spring';
 import { format } from 'd3-format';
 import { schemeSet3 } from 'd3-scale-chromatic';
 import { capitalize } from 'lodash-es';
@@ -7,7 +7,7 @@ import { capitalize } from 'lodash-es';
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
-import type { CategoryValueListDatum, Margins } from '@/types';
+import { CategoryValueListDatum, Margin } from '@/types';
 
 import { StackedBarChartWithTooltip } from './StackedBarChartWithTooltip';
 
@@ -32,7 +32,7 @@ const dataSets: readonly CategoryValueListDatum<string, number>[][] = [
   ]
 ];
 
-const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
+const margins: Margin = { left: 72, right: 40, top: 40, bottom: 64 };
 const seriesKeys = ['one', 'two', 'three'];
 
 function isCompact(width: number) {
@@ -66,13 +66,11 @@ function renderTooltipContent(datum: CategoryValueListDatum<string, number>) {
   );
 }
 
-export type StackedBarChartWithTooltipExampleProps = {
+export interface StackedBarChartWithTooltipExampleProps {
   springConfig: SpringConfig;
-};
+}
 
-export const StackedBarChartWithTooltipExample: FC<StackedBarChartWithTooltipExampleProps> = ({
-  springConfig
-}) => {
+export function StackedBarChartWithTooltipExample({ springConfig }: StackedBarChartWithTooltipExampleProps) {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
@@ -98,4 +96,4 @@ export const StackedBarChartWithTooltipExample: FC<StackedBarChartWithTooltipExa
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>
   );
-};
+}

@@ -1,29 +1,29 @@
-import { FC, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { useId } from '@uifabric/react-hooks';
 
 import { ChartTitle } from '@/components/ChartTitle';
 
 import { ChartSizer } from './ChartSizer';
 
-type RenderProps = {
+interface RenderProps {
   inView: boolean;
   width: number;
   height: number;
   ariaLabelledby: string;
-};
+}
 
-export type ExampleChartWrapperProps = {
+export interface ExampleChartWrapperProps {
   title: string;
   subtitle?: string;
   sizerClassName: string;
   children: ({ inView, width, height, ariaLabelledby }: RenderProps) => ReactNode;
-};
+}
 
 /**
  * Controls the size of the contained chart and only renders it if it
  * is in the viewport.
  */
-export const ExampleChartWrapper: FC<ExampleChartWrapperProps> = ({ title, sizerClassName, children }) => {
+export function ExampleChartWrapper({ title, sizerClassName, children }: ExampleChartWrapperProps) {
   const id = useId();
   return (
     <>
@@ -33,4 +33,4 @@ export const ExampleChartWrapper: FC<ExampleChartWrapperProps> = ({ title, sizer
       </ChartSizer>
     </>
   );
-};
+}

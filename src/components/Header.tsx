@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import { FiGithub, FiMenu, FiX } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { animated, useTransition } from 'react-spring';
@@ -6,14 +6,21 @@ import { Dialog } from '@headlessui/react';
 
 import { NavigationMenuLink } from './NavigationMenuLink';
 
-export type NavigationLink = { href: string; title: string };
-export type NavigationSection = { title: string; links: NavigationLink[] };
+export interface NavigationLink {
+  href: string;
+  title: string;
+}
 
-export type HeaderProps = {
+export interface NavigationSection {
+  title: string;
+  links: NavigationLink[];
+}
+
+export interface HeaderProps {
   navigationData: NavigationSection[];
-};
+}
 
-export const Header: FC<HeaderProps> = ({ navigationData }) => {
+export function Header({ navigationData }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const close = () => setIsOpen(false);
   const transitions = useTransition(isOpen, {
@@ -90,4 +97,4 @@ export const Header: FC<HeaderProps> = ({ navigationData }) => {
       </div>
     </header>
   );
-};
+}

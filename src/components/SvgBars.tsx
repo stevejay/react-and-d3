@@ -2,11 +2,11 @@ import { ReactElement } from 'react';
 import { animated, SpringConfig, useTransition } from 'react-spring';
 
 import { createBarGenerator } from '@/generators/barGenerator';
-import type { AxisScale, CategoryValueDatum, ChartOrientation, DomainValue } from '@/types';
+import { AxisScale, CategoryValueDatum, ChartOrientation, DomainValue } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 import { getDefaultRenderingOffset } from '@/utils/renderUtils';
 
-export type SvgBarsProps<CategoryT extends DomainValue> = {
+export interface SvgBarsProps<CategoryT extends DomainValue> {
   data: CategoryValueDatum<CategoryT, number>[];
   orientation: ChartOrientation;
   categoryScale: AxisScale<CategoryT>;
@@ -18,7 +18,7 @@ export type SvgBarsProps<CategoryT extends DomainValue> = {
   datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   animate?: boolean;
   springConfig: SpringConfig;
-};
+}
 
 export function SvgBars<CategoryT extends DomainValue>({
   data,

@@ -2,17 +2,10 @@ import { ReactElement } from 'react';
 import { animated, SpringConfig, useTransition } from 'react-spring';
 
 import { createGroupedBarGenerator } from '@/generators/groupedBarGenerator';
-import type {
-  AxisScale,
-  CategoryValueListDatum,
-  ChartArea,
-  ChartOrientation,
-  DomainValue,
-  Rect
-} from '@/types';
+import { AxisScale, CategoryValueListDatum, ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
 import { getDefaultRenderingOffset } from '@/utils/renderUtils';
 
-type SeriesBarsProps<CategoryT extends DomainValue> = {
+interface SeriesBarsProps<CategoryT extends DomainValue> {
   datum: CategoryValueListDatum<CategoryT, number>;
   seriesKeys: readonly string[];
   generator: (seriesKey: string, value: number) => Rect | null;
@@ -22,7 +15,7 @@ type SeriesBarsProps<CategoryT extends DomainValue> = {
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   springConfig: SpringConfig;
   className?: string;
-};
+}
 
 function SeriesBars<CategoryT extends DomainValue>({
   datum,
@@ -66,7 +59,7 @@ function SeriesBars<CategoryT extends DomainValue>({
   ));
 }
 
-export type SvgGroupedBarsProps<CategoryT extends DomainValue> = {
+export interface SvgGroupedBarsProps<CategoryT extends DomainValue> {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
   seriesColor: (series: string) => string;
@@ -84,7 +77,7 @@ export type SvgGroupedBarsProps<CategoryT extends DomainValue> = {
   datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   springConfig: SpringConfig;
-};
+}
 
 export function SvgGroupedBars<CategoryT extends DomainValue>({
   data,

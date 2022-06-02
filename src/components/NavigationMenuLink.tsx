@@ -1,10 +1,13 @@
-import { FC } from 'react';
 import { FiExternalLink } from 'react-icons/fi';
 import { NavLink } from 'react-router-dom';
 
-export type NavigationMenuLinkProps = { href: string; title: string; onClick: () => void };
+export interface NavigationMenuLinkProps {
+  href: string;
+  title: string;
+  onClick: () => void;
+}
 
-export const NavigationMenuLink: FC<NavigationMenuLinkProps> = ({ href, title, onClick }) => {
+export function NavigationMenuLink({ href, title, onClick }: NavigationMenuLinkProps) {
   const isInternalLink = href.startsWith('/');
   return isInternalLink ? (
     <NavLink
@@ -31,4 +34,4 @@ export const NavigationMenuLink: FC<NavigationMenuLinkProps> = ({ href, title, o
       <FiExternalLink className="inline-block text-xl align-top text-slate-400" />
     </a>
   );
-};
+}

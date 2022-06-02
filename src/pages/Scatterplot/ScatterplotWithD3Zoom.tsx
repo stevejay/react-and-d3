@@ -1,5 +1,5 @@
 import { memo, ReactElement, Ref } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
@@ -10,13 +10,13 @@ import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
 import { useD3Zoom } from '@/hooks/useD3Zoom';
 import { useLinearScaleWithZoom } from '@/hooks/useLinearScaleWithZoom';
-import type { Margins, PointDatum } from '@/types';
+import { Margin, PointDatum } from '@/types';
 
-export type ScatterplotWithD3ZoomProps<DatumT> = {
+export interface ScatterplotWithD3ZoomProps<DatumT> {
   data: PointDatum<DatumT>[];
   width: number;
   height: number;
-  margins: Margins;
+  margins: Margin;
   ariaLabel?: string;
   ariaLabelledby?: string;
   ariaRoleDescription?: string;
@@ -31,7 +31,7 @@ export type ScatterplotWithD3ZoomProps<DatumT> = {
   svgRef?: Ref<SVGSVGElement>;
   compact: boolean;
   springConfig: SpringConfig;
-};
+}
 
 function ScatterplotWithD3ZoomCore<DatumT>({
   data,

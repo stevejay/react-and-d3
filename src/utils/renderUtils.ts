@@ -1,6 +1,6 @@
-import type { ScaleBand } from 'd3-scale';
+import { ScaleBand } from 'd3-scale';
 
-import type { Rect } from '@/types';
+import { Rect } from '@/types';
 
 /**
  * Returns the default pixel offset for helping ensure crisp lines on non-retina

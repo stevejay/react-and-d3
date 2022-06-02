@@ -1,9 +1,8 @@
-import { FC } from 'react';
 import { ParentSizeModern } from '@visx/responsive';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
-import type { Margins } from '@/types';
+import { Margin } from '@/types';
 
 import { BarChart } from './BarChart';
 
@@ -28,7 +27,7 @@ const dataSets = [
   ]
 ];
 
-const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
+const margins: Margin = { left: 72, right: 40, top: 40, bottom: 64 };
 
 // function isCompact(width: number) {
 //   return Boolean(width) && width < 500;
@@ -48,7 +47,7 @@ const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
 //   );
 // }
 
-export const BarChartExample: FC = () => {
+export function BarChartExample() {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
@@ -60,4 +59,4 @@ export const BarChartExample: FC = () => {
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>
   );
-};
+}

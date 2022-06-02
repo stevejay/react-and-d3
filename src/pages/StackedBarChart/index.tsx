@@ -10,7 +10,7 @@ import { VerticalStackedBarChartExample } from './VerticalStackedBarChartExample
 const springConfig = { duration: 500, easing: easeCubicInOut };
 
 const StackedBarChartPage = () => (
-  <div className="w-full max-w-3xl p-4 mx-auto md:p-8">
+  <main className="w-full max-w-3xl p-4 mx-auto md:p-8">
     <PageHeading>Stacked Bar Chart</PageHeading>
     <SectionHeading>Vertical Stacked Bar Chart</SectionHeading>
     <Paragraph>
@@ -27,7 +27,7 @@ const StackedBarChartPage = () => (
       need to include the series with all zero values. This is so the bars for the series know where to
       animate to when they disappear and where to animate from when they appear.
     </Paragraph>
-  </div>
+  </main>
 );
 
 export default StackedBarChartPage;

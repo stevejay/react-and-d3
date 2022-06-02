@@ -1,6 +1,6 @@
 import { isNil } from 'lodash-es';
 
-import type { AxisScale, CategoryValueDatum, ChartOrientation, DomainValue, Rect } from '@/types';
+import { AxisScale, CategoryValueDatum, ChartOrientation, DomainValue, Rect } from '@/types';
 
 // Value type for the CategoryValueDatum must be number.
 export function createBarGenerator<CategoryT extends DomainValue>(

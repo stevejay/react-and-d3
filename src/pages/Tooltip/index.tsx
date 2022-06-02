@@ -11,7 +11,7 @@ import { StackedBarChartWithTooltipExample } from './StackedBarChartWithTooltipE
 const springConfig = { duration: 500, easing: easeCubicInOut };
 
 const TooltipPage = () => (
-  <div className="w-full max-w-3xl p-4 mx-auto md:p-8">
+  <main className="w-full max-w-3xl p-4 mx-auto md:p-8">
     <PageHeading>Tooltip</PageHeading>
     <Paragraph>
       There are many possible behaviours for a chart tooltip. On this page I describe what is generally the
@@ -52,7 +52,7 @@ const TooltipPage = () => (
       movement of the mouse when the user is hovering over the chart. Ensure that only the tooltip gets
       re-rendered and not the chart as well.
     </Paragraph>
-  </div>
+  </main>
 );
 
 export default TooltipPage;

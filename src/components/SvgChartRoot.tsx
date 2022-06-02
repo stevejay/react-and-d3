@@ -2,7 +2,7 @@ import { forwardRef, ReactNode } from 'react';
 
 import { Svg } from '@/components/Svg';
 
-export type SvgChartRootProps = {
+export interface SvgChartRootProps {
   width: number;
   height: number;
   className?: string;
@@ -12,7 +12,7 @@ export type SvgChartRootProps = {
   description?: string;
   ariaDescribedby?: string;
   children?: ReactNode;
-};
+}
 
 export const SvgChartRoot = forwardRef<SVGSVGElement, SvgChartRootProps>(
   (

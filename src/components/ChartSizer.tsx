@@ -1,10 +1,10 @@
-import { FC, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { IntersectionOptions, useInView } from 'react-intersection-observer';
 import useMeasure from 'react-use-measure';
 
 const defaultIntersectOptions = { triggerOnce: true, rootMargin: '200px 0px' };
 
-export type ChartSizerProps = {
+export interface ChartSizerProps {
   /**
    * Use this to apply a height class to the chart sizer, e.g., `h-96`.
    * Required.
@@ -26,18 +26,18 @@ export type ChartSizerProps = {
    * to not render the chart if it is not currently visible.
    */
   children: ({ inView, width, height }: { inView: boolean; width: number; height: number }) => ReactNode;
-};
+}
 
 /**
  * Controls the size of the contained chart and only renders it if it
  * is in the viewport.
  */
-export const ChartSizer: FC<ChartSizerProps> = ({
+export function ChartSizer({
   className,
   intersectOptions = defaultIntersectOptions,
   debouncedMeasureWaitMs = 300,
   children
-}) => {
+}: ChartSizerProps) {
   const [inViewRef, inView] = useInView(intersectOptions);
   const [sizerRef, { width, height }] = useMeasure({ debounce: debouncedMeasureWaitMs });
   return (
@@ -45,4 +45,4 @@ export const ChartSizer: FC<ChartSizerProps> = ({
       <div ref={inViewRef}>{children({ inView, width: width ?? 0, height: height ?? 0 })}</div>
     </div>
   );
-};
+}

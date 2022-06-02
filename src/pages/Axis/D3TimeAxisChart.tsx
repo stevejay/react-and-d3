@@ -1,11 +1,11 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { max, min } from 'd3-array';
 import { axisBottom } from 'd3-axis';
 import { scaleUtc } from 'd3-scale';
 import { select } from 'd3-selection';
 import { transition } from 'd3-transition';
 
-import type { TickLabelOrientation } from '@/types';
+import { TickLabelOrientation } from '@/types';
 
 import { yearMonthMultiFormat } from './format';
 
@@ -36,7 +36,7 @@ class D3TimeAxisChartRenderer {
     const chartHeight = this.height - this.margins.top - this.margins.bottom;
 
     const domain = [min(data) ?? 0, max(data) ?? 0];
-    this.scale.domain(domain).rangeRound([0, chartWidth]).nice();
+    this.scale.domain(domain).rangeRound([0, chartWidth]).clamp(true).nice();
 
     this.axis
       .tickArguments([10])
@@ -58,23 +58,23 @@ class D3TimeAxisChartRenderer {
   }
 }
 
-export type D3TimeAxisChartProps = {
+export interface D3TimeAxisChartProps {
   data: Date[];
   width: number;
   height: number;
   ariaLabelledby: string;
   transitionSeconds?: number;
   tickLabelOrientation: TickLabelOrientation;
-};
+}
 
-export const D3TimeAxisChart: FC<D3TimeAxisChartProps> = ({
+export function D3TimeAxisChart({
   data,
   width,
   height,
   ariaLabelledby,
   tickLabelOrientation,
   transitionSeconds = 0.25
-}) => {
+}: D3TimeAxisChartProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [renderer] = useState<D3TimeAxisChartRenderer>(() => new D3TimeAxisChartRenderer());
 
@@ -95,4 +95,4 @@ export const D3TimeAxisChart: FC<D3TimeAxisChartProps> = ({
       aria-labelledby={ariaLabelledby}
     />
   );
-};
+}

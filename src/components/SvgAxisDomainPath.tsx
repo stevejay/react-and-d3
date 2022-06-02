@@ -1,10 +1,10 @@
-import { FC, SVGProps } from 'react';
+import { SVGProps } from 'react';
 import { animated, SpringConfig, useSpring } from 'react-spring';
 
-import type { AxisOrientation } from '@/types';
+import { AxisOrientation } from '@/types';
 import { createAxisDomainPathData } from '@/utils/axisUtils';
 
-export type SvgAxisDomainPathProps = {
+export interface SvgAxisDomainPathProps {
   orientation: AxisOrientation;
   tickSize: number;
   renderingOffset: number;
@@ -14,9 +14,9 @@ export type SvgAxisDomainPathProps = {
   domainProps?: Omit<SVGProps<SVGPathElement>, 'ref'>;
   springConfig: SpringConfig;
   animate: boolean;
-};
+}
 
-export const SvgAxisDomainPath: FC<SvgAxisDomainPathProps> = ({
+export function SvgAxisDomainPath({
   orientation,
   tickSize,
   renderingOffset,
@@ -26,7 +26,7 @@ export const SvgAxisDomainPath: FC<SvgAxisDomainPathProps> = ({
   springConfig,
   className = '',
   animate
-}) => {
+}: SvgAxisDomainPathProps) {
   // The pixel position to start drawing the axis domain line at.
   let range0 = +range[0] + renderingOffset;
 
@@ -52,4 +52,4 @@ export const SvgAxisDomainPath: FC<SvgAxisDomainPathProps> = ({
       {...domainProps}
     />
   );
-};
+}

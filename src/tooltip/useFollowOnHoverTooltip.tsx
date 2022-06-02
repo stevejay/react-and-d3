@@ -1,10 +1,9 @@
 import { ReactElement, RefObject, useEffect, useMemo, useRef } from 'react';
 import { useSpring } from 'react-spring';
-import type { TippyProps } from '@tippyjs/react/headless';
-import Tippy from '@tippyjs/react/headless';
+import Tippy, { TippyProps } from '@tippyjs/react/headless';
 import { easeCubicInOut } from 'd3-ease';
 
-import type { Rect } from '@/types';
+import { Rect } from '@/types';
 import { rectsAreEqual } from '@/utils/renderUtils';
 
 import { createVirtualReferenceElement } from './createVirtualReferenceElement';
@@ -17,9 +16,17 @@ const popperOptions = {
 
 const springConfig = { duration: 150, easing: easeCubicInOut };
 
-type TooltipOptions = { hideTooltipOnScroll?: boolean; xOffset?: number; yOffset?: number };
+interface TooltipOptions {
+  hideTooltipOnScroll?: boolean;
+  xOffset?: number;
+  yOffset?: number;
+}
 
-type TooltipState<DatumT> = { visible: boolean; rect: Rect | null; datum: DatumT | null };
+interface TooltipState<DatumT> {
+  visible: boolean;
+  rect: Rect | null;
+  datum: DatumT | null;
+}
 
 type ReturnValue<DatumT> = [
   RefObject<SVGSVGElement>,

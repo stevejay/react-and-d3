@@ -6,7 +6,7 @@ import { timeMonth } from 'd3-time';
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
 import { useChartArea } from '@/hooks/useChartArea';
-import type { AxisScale, TickLabelOrientation } from '@/types';
+import { AxisScale, TickLabelOrientation } from '@/types';
 
 const springConfig = { duration: 500, easing: easeCubicInOut };
 
@@ -22,10 +22,10 @@ export default {
   }
 } as ComponentMeta<typeof SvgAxis>;
 
-type ChartTemplateProps = {
+interface ChartTemplateProps {
   orientation: 'top' | 'bottom' | 'left' | 'right';
   tickLabelOrientation: TickLabelOrientation;
-};
+}
 
 const LinearScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation, tickLabelOrientation }) => {
   const margin = 40;

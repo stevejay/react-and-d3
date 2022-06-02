@@ -1,11 +1,11 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { max, min } from 'd3-array';
 import { axisBottom } from 'd3-axis';
 import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { transition } from 'd3-transition';
 
-import type { TickLabelOrientation } from '@/types';
+import { TickLabelOrientation } from '@/types';
 
 class D3LinearAxisChartRenderer {
   width = 0;
@@ -49,23 +49,23 @@ class D3LinearAxisChartRenderer {
   }
 }
 
-export type D3LinearAxisChartProps = {
+export interface D3LinearAxisChartProps {
   data: number[];
   width: number;
   height: number;
   ariaLabelledby: string;
   transitionSeconds?: number;
   tickLabelOrientation: TickLabelOrientation;
-};
+}
 
-export const D3LinearAxisChart: FC<D3LinearAxisChartProps> = ({
+export function D3LinearAxisChart({
   data,
   width,
   height,
   ariaLabelledby,
   tickLabelOrientation,
   transitionSeconds = 0.25
-}) => {
+}: D3LinearAxisChartProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [renderer] = useState<D3LinearAxisChartRenderer>(() => new D3LinearAxisChartRenderer());
 
@@ -86,4 +86,4 @@ export const D3LinearAxisChart: FC<D3LinearAxisChartProps> = ({
       aria-labelledby={ariaLabelledby}
     />
   );
-};
+}

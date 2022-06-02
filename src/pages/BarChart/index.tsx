@@ -11,7 +11,7 @@ import { VerticalBarChartExample } from './VerticalBarChartExample';
 const springConfig = { duration: 500, easing: easeCubicInOut };
 
 const BarChartPage = () => (
-  <div className="w-full max-w-3xl p-4 mx-auto md:p-8">
+  <main className="w-full max-w-3xl p-4 mx-auto md:p-8">
     <PageHeading>Bar Chart</PageHeading>
     <SectionHeading>Vertical Bar Chart</SectionHeading>
     <Paragraph>
@@ -25,7 +25,7 @@ const BarChartPage = () => (
       <ProseInternalLink to="/tooltip">tooltip page</ProseInternalLink>.
     </Paragraph>
     <HorizontalBarChartExample springConfig={springConfig} />
-  </div>
+  </main>
 );
 
 export default BarChartPage;

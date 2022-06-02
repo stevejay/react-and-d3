@@ -2,10 +2,10 @@ import { ReactElement } from 'react';
 import { animated, SpringConfig, useTransition } from 'react-spring';
 
 import { createCircleGenerator } from '@/generators/circleGenerator';
-import type { AxisScale, PointDatum } from '@/types';
+import { AxisScale, PointDatum } from '@/types';
 import { getDefaultRenderingOffset } from '@/utils/renderUtils';
 
-export type SvgPointsProps<DatumT> = {
+export interface SvgPointsProps<DatumT> {
   data: PointDatum<DatumT>[];
   xScale: AxisScale<number>;
   yScale: AxisScale<number>;
@@ -18,7 +18,7 @@ export type SvgPointsProps<DatumT> = {
   pointClassName: ((datum: PointDatum<DatumT>) => string) | string;
   animate?: boolean;
   springConfig: SpringConfig;
-};
+}
 
 export function SvgPoints<DatumT>({
   data,

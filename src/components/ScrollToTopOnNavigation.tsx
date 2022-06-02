@@ -1,4 +1,4 @@
-import { FC, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
 
 /**
@@ -6,7 +6,7 @@ import { useLocation, useNavigationType } from 'react-router-dom';
  * when navigating normally (so not on a back button or forward button click).
  * An alternative is to use https://github.com/oaf-project/oaf-react-router
  */
-export const ScrollToTopOnNavigation: FC = () => {
+export function ScrollToTopOnNavigation() {
   const location = useLocation();
   const action = useNavigationType();
 
@@ -17,4 +17,4 @@ export const ScrollToTopOnNavigation: FC = () => {
   }, [location, action]);
 
   return null;
-};
+}

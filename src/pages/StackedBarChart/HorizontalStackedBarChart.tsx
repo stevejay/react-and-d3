@@ -1,5 +1,5 @@
 import { memo, ReactElement, Ref } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
@@ -10,16 +10,16 @@ import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomainForSeriesData } from '@/hooks/useContinuousDomainForSeriesData';
 import { useLinearScale } from '@/hooks/useLinearScale';
 import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
-import type { CategoryValueListDatum, DomainValue, Margins } from '@/types';
+import { CategoryValueListDatum, DomainValue, Margin } from '@/types';
 import { getValueListDatumSum } from '@/utils/dataUtils';
 
-export type HorizontalStackedBarChartProps<CategoryT extends DomainValue> = {
+export interface HorizontalStackedBarChartProps<CategoryT extends DomainValue> {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
   seriesColor: (series: string) => string;
   width: number;
   height: number;
-  margins: Margins;
+  margins: Margin;
   ariaLabel?: string;
   ariaLabelledby?: string;
   ariaRoleDescription?: string;
@@ -34,7 +34,7 @@ export type HorizontalStackedBarChartProps<CategoryT extends DomainValue> = {
   svgRef?: Ref<SVGSVGElement>;
   springConfig: SpringConfig;
   isCompact: (width: number) => boolean;
-};
+}
 
 function HorizontalStackedBarChartCore<CategoryT extends DomainValue>({
   data,

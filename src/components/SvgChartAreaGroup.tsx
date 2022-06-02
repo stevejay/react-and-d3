@@ -1,7 +1,7 @@
-import type { FC, SVGProps } from 'react';
+import { SVGProps } from 'react';
 import { useId } from '@uifabric/react-hooks';
 
-import type { ChartArea } from '@/types';
+import { ChartArea } from '@/types';
 
 type SvgChartAreaGroupProps = Omit<SVGProps<SVGGElement>, 'clipPath' | 'transform'> & {
   /**
@@ -17,12 +17,12 @@ type SvgChartAreaGroupProps = Omit<SVGProps<SVGGElement>, 'clipPath' | 'transfor
  * For wrapping a chart area in a <g> (group) element. Any extra props get added to
  * that element, excluding `clipPath` and `transform`.
  */
-export const SvgChartAreaGroup: FC<SvgChartAreaGroupProps> = ({
+export function SvgChartAreaGroup({
   chartArea,
   clipChartArea = true,
   children,
   ...rest
-}) => {
+}: SvgChartAreaGroupProps) {
   const id = useId();
   return (
     <>
@@ -43,4 +43,4 @@ export const SvgChartAreaGroup: FC<SvgChartAreaGroupProps> = ({
       </g>
     </>
   );
-};
+}

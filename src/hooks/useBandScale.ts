@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { scaleBand } from 'd3-scale';
 
-import type { DomainValue } from '@/types';
+import { DomainValue } from '@/types';
 
 // The domain and range need to be referentially stable. The options object does
 // not need to be referentially stable. paddingInner: the proportion of the

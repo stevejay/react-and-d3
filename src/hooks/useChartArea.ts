@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
-import type { ChartArea, Margins, Point } from '@/types';
+import { ChartArea, Margin, Point } from '@/types';
 
 export function useChartArea(
   svgWidth: number,
   svgHeight: number,
-  margins: Margins,
+  margins: Margin,
   padding: number = 0
 ): ChartArea {
   return useMemo(() => {

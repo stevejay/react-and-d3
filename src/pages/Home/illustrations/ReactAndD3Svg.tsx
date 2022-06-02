@@ -1,24 +1,25 @@
-import { FC, SVGProps } from 'react';
+import { SVGProps } from 'react';
 
 export type ReactAndD3SvgProps = SVGProps<SVGSVGElement>;
 
-export const ReactAndD3Svg: FC<ReactAndD3SvgProps> = (props) => (
-  <svg
-    role="presentation"
-    version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="-20 -10 116 111"
-    {...props}
-  >
-    <path
-      className="text-cyan-500"
-      fill="currentColor"
-      d="M0,0h7.75a45.5,45.5 0 1 1 0,91h-7.75v-20h7.75a25.5,25.5 0 1 0 0,-51h-7.75zm36.2510,0h32a27.75,27.75 0 0 1 21.331,45.5a27.75,27.75 0 0 1 -21.331,45.5h-32a53.6895,53.6895 0 0 0 18.7464,-20h13.2526a7.75,7.75 0 1 0 0,-15.5h-7.75a53.6895,53.6895 0 0 0 0,-20h7.75a7.75,7.75 0 1 0 0,-15.5h-13.2526a53.6895,53.6895 0 0 0 -18.7464,-20z"
-    />
-    <g transform="scale(0.1), translate(-420,155)" className="text-cyan-400">
+export function ReactAndD3Svg(props: ReactAndD3SvgProps) {
+  return (
+    <svg
+      role="presentation"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="-20 -10 116 111"
+      {...props}
+    >
       <path
+        className="text-cyan-500"
         fill="currentColor"
-        d="M666.3,296.5c0-32.5-40.7-63.3-103.1-82.4c14.4-63.6,8-114.2-20.2-130.4c-6.5-3.8-14.1-5.6-22.4-5.6v22.3
+        d="M0,0h7.75a45.5,45.5 0 1 1 0,91h-7.75v-20h7.75a25.5,25.5 0 1 0 0,-51h-7.75zm36.2510,0h32a27.75,27.75 0 0 1 21.331,45.5a27.75,27.75 0 0 1 -21.331,45.5h-32a53.6895,53.6895 0 0 0 18.7464,-20h13.2526a7.75,7.75 0 1 0 0,-15.5h-7.75a53.6895,53.6895 0 0 0 0,-20h7.75a7.75,7.75 0 1 0 0,-15.5h-13.2526a53.6895,53.6895 0 0 0 -18.7464,-20z"
+      />
+      <g transform="scale(0.1), translate(-420,155)" className="text-cyan-400">
+        <path
+          fill="currentColor"
+          d="M666.3,296.5c0-32.5-40.7-63.3-103.1-82.4c14.4-63.6,8-114.2-20.2-130.4c-6.5-3.8-14.1-5.6-22.4-5.6v22.3
         c4.6,0,8.3,0.9,11.4,2.6c13.6,7.8,19.5,37.5,14.9,75.7c-1.1,9.4-2.9,19.3-5.1,29.4c-19.6-4.8-41-8.5-63.5-10.9
         c-13.5-18.5-27.5-35.3-41.6-50c32.6-30.3,63.2-46.9,84-46.9l0-22.3c0,0,0,0,0,0c-27.5,0-63.5,19.6-99.9,53.6
         c-36.4-33.8-72.4-53.2-99.9-53.2v22.3c20.7,0,51.4,16.5,84,46.6c-14,14.7-28,31.4-41.3,49.9c-22.6,2.4-44,6.1-63.6,11
@@ -42,10 +43,11 @@ export const ReactAndD3Svg: FC<ReactAndD3SvgProps> = (props) => (
         c14-14.7,28-31.4,41.3-49.9c22.6-2.4,44-6.1,63.6-11C544.3,394.8,546.1,404.5,547.2,413.8z M585.7,347.1c-8.6,3.7-18,7-27.7,10.1
         c-5.7-19.6-13.2-40-22.5-60.9c9.2-20.8,16.6-41.1,22.2-60.6c9.9,3.1,19.3,6.5,28.1,10.2c35.4,15.1,58.3,34.9,58.3,50.6
         C644,312.2,621.1,332.1,585.7,347.1z"
-      />
-      <polygon fill="currentColor" points="320.8,78.4 320.8,78.4 320.8,78.4" />
-      <circle fill="currentColor" cx="420.9" cy="296.5" r="45.7" />
-      <polygon fill="currentColor" points="520.5,78.1 520.5,78.1 520.5,78.1" />
-    </g>
-  </svg>
-);
+        />
+        <polygon fill="currentColor" points="320.8,78.4 320.8,78.4 320.8,78.4" />
+        <circle fill="currentColor" cx="420.9" cy="296.5" r="45.7" />
+        <polygon fill="currentColor" points="520.5,78.1 520.5,78.1 520.5,78.1" />
+      </g>
+    </svg>
+  );
+}

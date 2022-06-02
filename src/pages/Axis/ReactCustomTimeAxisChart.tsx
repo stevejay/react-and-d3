@@ -1,5 +1,5 @@
-import { FC, memo, useMemo } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { memo, useMemo } from 'react';
+import { SpringConfig } from 'react-spring';
 import { max, min } from 'd3-array';
 
 import { Svg } from '@/components/Svg';
@@ -10,15 +10,15 @@ import { lastMomentOfThisMonth, startOfThisMonth } from '@/utils/dateUtils';
 
 const margins = { top: 20, bottom: 70, left: 20, right: 20 };
 
-export type ReactCustomTimeAxisChartProps = {
+export interface ReactCustomTimeAxisChartProps {
   data: Date[];
   width: number;
   height: number;
   ariaLabelledby: string;
   springConfig: SpringConfig;
-};
+}
 
-export const ReactCustomTimeAxisChart: FC<ReactCustomTimeAxisChartProps> = memo(
+export const ReactCustomTimeAxisChart = memo<ReactCustomTimeAxisChartProps>(
   ({ data, width, height, ariaLabelledby, springConfig }) => {
     const chartArea = useChartArea(width, height, margins);
 

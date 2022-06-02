@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { identity } from 'lodash-es';
 
-import type { DomainValue } from '@/types';
+import { DomainValue } from '@/types';
 
 // The domain will not be recalculated if you only change the accessor.
 // This means the accessor function does not need to be referentially stable.

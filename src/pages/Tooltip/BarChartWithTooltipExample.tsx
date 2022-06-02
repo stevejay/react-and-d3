@@ -1,11 +1,10 @@
-import { FC } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 import { format } from 'd3-format';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
-import type { CategoryValueDatum, Margins } from '@/types';
+import { CategoryValueDatum, Margin } from '@/types';
 
 import { BarChartWithTooltip } from './BarChartWithTooltip';
 
@@ -30,7 +29,7 @@ const dataSets = [
   ]
 ];
 
-const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
+const margins: Margin = { left: 72, right: 40, top: 40, bottom: 64 };
 
 function getCategoryLabel(datum: CategoryValueDatum<string, number>) {
   return datum.category;
@@ -44,11 +43,11 @@ function renderTooltipContent(datum: CategoryValueDatum<string, number>) {
   );
 }
 
-export type BarChartWithTooltipExampleProps = {
+export interface BarChartWithTooltipExampleProps {
   springConfig: SpringConfig;
-};
+}
 
-export const BarChartWithTooltipExample: FC<BarChartWithTooltipExampleProps> = ({ springConfig }) => {
+export function BarChartWithTooltipExample({ springConfig }: BarChartWithTooltipExampleProps) {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
@@ -74,4 +73,4 @@ export const BarChartWithTooltipExample: FC<BarChartWithTooltipExampleProps> = (
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>
   );
-};
+}

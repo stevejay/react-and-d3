@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { max, min } from 'd3-array';
 import { isNil } from 'lodash-es';
 
-import type { CategoryValueListDatum, DomainValue, GetValueListDatumSummaryValue } from '@/types';
+import { CategoryValueListDatum, DomainValue, GetValueListDatumSummaryValue } from '@/types';
 
 // The two accessor functions need to be referentially stable, or only change when `data` or
 // `seriesKeys` change.

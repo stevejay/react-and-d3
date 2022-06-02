@@ -1,4 +1,4 @@
-import { FC, lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -17,6 +17,7 @@ const RadarChartPage = lazy(() => import('@/pages/RadarChart'));
 const ScatterplotPage = lazy(() => import('@/pages/Scatterplot'));
 const SparklinePage = lazy(() => import('@/pages/Sparkline'));
 const VisxPage = lazy(() => import('@/pages/Visx'));
+const VisxNextPage = lazy(() => import('@/pages/VisxNext'));
 
 const pageLinks = [
   { href: '/', title: 'Home', pageComponent: HomePage },
@@ -29,7 +30,8 @@ const pageLinks = [
   { href: '/radar-chart', title: 'Radar Chart', pageComponent: RadarChartPage },
   { href: '/scatterplot', title: 'Scatterplot', pageComponent: ScatterplotPage },
   { href: '/sparkline', title: 'Sparkline', pageComponent: SparklinePage },
-  { href: '/visx', title: 'Visx by Airbnb', pageComponent: VisxPage }
+  { href: '/visx', title: 'Visx by Airbnb', pageComponent: VisxPage },
+  { href: '/visx-next', title: 'Visx Next', pageComponent: VisxNextPage }
 ];
 
 const navigationData = [
@@ -46,11 +48,11 @@ const navigationData = [
   }
 ];
 
-export const App: FC = () => (
-  <>
-    <ScrollToTopOnNavigation />
-    <Header navigationData={navigationData} />
-    <main className="mx-auto max-w-screen-2xl">
+export function App() {
+  return (
+    <>
+      <ScrollToTopOnNavigation />
+      <Header navigationData={navigationData} />
       <ErrorBoundary>
         <Suspense fallback={<LoadingPlaceholder />}>
           <Routes>
@@ -60,6 +62,6 @@ export const App: FC = () => (
           </Routes>
         </Suspense>
       </ErrorBoundary>
-    </main>
-  </>
-);
+    </>
+  );
+}

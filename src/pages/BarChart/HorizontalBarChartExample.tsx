@@ -1,10 +1,9 @@
-import { FC } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
-import type { Margins } from '@/types';
+import { Margin } from '@/types';
 
 import { HorizontalBarChart } from './HorizontalBarChart';
 
@@ -35,15 +34,17 @@ const dataSets = [
   ]
 ];
 
-const margins: Margins = { left: 64, right: 40, top: 40, bottom: 64 };
+const margins: Margin = { left: 64, right: 40, top: 40, bottom: 64 };
 
 function isCompact(width: number) {
   return Boolean(width) && width < 500;
 }
 
-export type HorizontalBarChartExampleProps = { springConfig: SpringConfig };
+export interface HorizontalBarChartExampleProps {
+  springConfig: SpringConfig;
+}
 
-export const HorizontalBarChartExample: FC<HorizontalBarChartExampleProps> = ({ springConfig }) => {
+export function HorizontalBarChartExample({ springConfig }: HorizontalBarChartExampleProps) {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
@@ -65,4 +66,4 @@ export const HorizontalBarChartExample: FC<HorizontalBarChartExampleProps> = ({ 
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>
   );
-};
+}

@@ -3,7 +3,7 @@ import { animated, SpringConfig, useTransition } from 'react-spring';
 import { utcMonth } from 'd3-time';
 import { identity, isNil, uniq } from 'lodash-es';
 
-import type { AxisScale, ChartArea, ExpandedAxisScale } from '@/types';
+import { AxisScale, ChartArea, ExpandedAxisScale } from '@/types';
 import { getAxisDomainAsReactKey, number } from '@/utils/axisUtils';
 import { getDefaultRenderingOffset } from '@/utils/renderUtils';
 
@@ -14,12 +14,12 @@ function conditionalClamp(coord: number, shouldClamp: boolean): number {
   return shouldClamp ? Math.max(coord, 0) : coord;
 }
 
-export type SvgCustomTimeAxisProps = {
+export interface SvgCustomTimeAxisProps {
   scale: AxisScale<Date>;
   chartArea: ChartArea;
   springConfig: SpringConfig;
   animate?: boolean;
-};
+}
 
 export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
   const { chartArea, springConfig, animate = true } = props;

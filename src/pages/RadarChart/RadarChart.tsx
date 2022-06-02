@@ -8,16 +8,16 @@ import { arc, curveLinearClosed, lineRadial, pie } from 'd3-shape';
 import { every } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';
-import type { CategoryValueDatum, DomainValue, Margins, Rect } from '@/types';
+import { CategoryValueDatum, DomainValue, Margin, Rect } from '@/types';
 import { getAxisDomainAsReactKey } from '@/utils/axisUtils';
 
 import { CategorySlice } from './CategorySlice';
 
-const margins: Margins = { left: 1, right: 1, top: 1, bottom: 1 };
+const margins: Margin = { left: 1, right: 1, top: 1, bottom: 1 };
 
 const springConfig = { duration: 250, easing: easeCubicInOut };
 
-export type RadarChartProps<CategoryT extends DomainValue> = {
+export interface RadarChartProps<CategoryT extends DomainValue> {
   title: string;
   categoryLabel: (datum: CategoryValueDatum<CategoryT, number>) => string;
   selectedCategory: CategoryT;
@@ -32,7 +32,7 @@ export type RadarChartProps<CategoryT extends DomainValue> = {
   onMouseEnter: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
   onMouseLeave: () => void;
   onClick: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
-};
+}
 
 const RadarChartImpl = <CategoryT extends DomainValue>({
   title,

@@ -6,7 +6,7 @@ import { SectionHeading } from '@/components/SectionHeading';
 import { BarChartExample } from './BarChartExample';
 
 const VisxPage = () => (
-  <div className="w-full max-w-3xl p-4 mx-auto md:p-8">
+  <main className="w-full max-w-3xl p-4 mx-auto md:p-8">
     <PageHeading>Visx by Airbnb</PageHeading>
     <Paragraph>
       This page is for assessing how{' '}
@@ -15,7 +15,7 @@ const VisxPage = () => (
     </Paragraph>
     <SectionHeading>Bar Chart</SectionHeading>
     <BarChartExample />
-  </div>
+  </main>
 );
 
 export default VisxPage;

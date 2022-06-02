@@ -1,5 +1,4 @@
-import { FC } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
@@ -15,12 +14,12 @@ const dataSets = [
   [-160, -13, -3, -99]
 ];
 
-export type LinearAxisExamplesProps = {
+export interface LinearAxisExamplesProps {
   transitionSeconds: number;
   springConfig: SpringConfig;
-};
+}
 
-export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({ transitionSeconds, springConfig }) => {
+export function LinearAxisExamples({ transitionSeconds, springConfig }: LinearAxisExamplesProps) {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <AxisExamplesWrapper>
@@ -57,4 +56,4 @@ export const LinearAxisExamples: FC<LinearAxisExamplesProps> = ({ transitionSeco
       </ExampleUpdateButton>
     </AxisExamplesWrapper>
   );
-};
+}

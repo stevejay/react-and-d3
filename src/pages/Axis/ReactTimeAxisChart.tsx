@@ -1,34 +1,35 @@
-import { FC, memo } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { memo } from 'react';
+import { SpringConfig } from 'react-spring';
 
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';
 import { useChartArea } from '@/hooks/useChartArea';
 import { useTimeDomain } from '@/hooks/useTimeDomain';
 import { useTimeScale } from '@/hooks/useTimeScale';
-import type { TickLabelOrientation } from '@/types';
+import { TickLabelOrientation } from '@/types';
 
 import { yearMonthMultiFormat } from './format';
 
 const margins = { top: 20, bottom: 48, left: 32, right: 24 };
 
-export type ReactTimeAxisChartProps = {
+export interface ReactTimeAxisChartProps {
   data: Date[];
   width: number;
   height: number;
   ariaLabelledby: string;
   springConfig: SpringConfig;
   tickLabelOrientation: TickLabelOrientation;
-};
+}
 
-export const ReactTimeAxisChart: FC<ReactTimeAxisChartProps> = memo(
+export const ReactTimeAxisChart = memo<ReactTimeAxisChartProps>(
   ({ data, width, height, ariaLabelledby, tickLabelOrientation, springConfig }) => {
     const chartArea = useChartArea(width, height, margins);
     const domain = useTimeDomain(data);
     const scale = useTimeScale(domain, chartArea.rangeWidth, {
       nice: true,
       rangeRound: true,
-      utc: true
+      utc: true,
+      clamp: true
     });
 
     if (!width || !height) {

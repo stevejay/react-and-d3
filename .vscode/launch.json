@@ -12,30 +12,15 @@
       "webRoot": ""
     },
     {
-      "type": "node",
+      "type": "pwa-node",
       "request": "launch",
-      "name": "Jest All",
-      "program": "/node_modules/.bin/jest",
-      "args": ["--runInBand", "--no-cache", "--config", "/jest.config.cjs"],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "disableOptimisticBPs": true,
-      "windows": {
-        "program": "/node_modules/jest/bin/jest"
-      }
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Jest Current File",
-      "program": "/node_modules/.bin/jest",
-      "args": ["", "--verbose", "--runInBand", "--no-cache", "--config", "/jest.config.cjs"],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "disableOptimisticBPs": true,
-      "windows": {
-        "program": "/node_modules/jest/bin/jest"
-      }
+      "name": "Debug Current Test File",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "${relativeFile}"],
+      "smartStep": true,
+      "console": "integratedTerminal"
     }
   ]
 }

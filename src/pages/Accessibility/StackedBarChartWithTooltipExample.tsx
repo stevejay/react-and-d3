@@ -1,9 +1,9 @@
-import { FC, Fragment } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { Fragment } from 'react';
+import { SpringConfig } from 'react-spring';
 import { schemeSet3 } from 'd3-scale-chromatic';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
-import type { CategoryValueListDatum } from '@/types';
+import { CategoryValueListDatum } from '@/types';
 
 import { StackedBarChartWithTooltip } from './StackedBarChartWithTooltip';
 
@@ -58,37 +58,37 @@ function renderTooltipContent(datum: CategoryValueListDatum<string, number>) {
   );
 }
 
-export type StackedBarChartWithTooltipExampleProps = {
+export interface StackedBarChartWithTooltipExampleProps {
   springConfig: SpringConfig;
-};
+}
 
-export const StackedBarChartWithTooltipExample: FC<StackedBarChartWithTooltipExampleProps> = ({
-  springConfig
-}) => (
-  <ExampleChartWrapper title="Comparing sales strategies" sizerClassName="h-[384px]">
-    {({ inView, width, height, ariaLabelledby }) =>
-      inView && (
-        <StackedBarChartWithTooltip
-          data={data}
-          seriesKeys={seriesKeys}
-          seriesColor={getSeriesColor}
-          width={width}
-          height={height}
-          margins={isCompact(width) ? compactMargins : margins}
-          independentAxisTickFormat={(datum) => `Strategy ${datum}`}
-          dependentAxisLabel="Sales (units)"
-          ariaRoleDescription="Stacked bar chart"
-          ariaLabelledby={ariaLabelledby}
-          categoryAriaRoleDescription={() => 'Sales strategy'}
-          categoryAriaLabel={getCategoryLabel}
-          datumAriaRoleDescription={(_, series) => getSeriesLabel(series)}
-          datumAriaLabel={(datum, series) => `${datum.values[series]} units sold`}
-          renderTooltipContent={renderTooltipContent}
-          hideTooltipOnScroll
-          compact={isCompact(width)}
-          springConfig={springConfig}
-        />
-      )
-    }
-  </ExampleChartWrapper>
-);
+export function StackedBarChartWithTooltipExample({ springConfig }: StackedBarChartWithTooltipExampleProps) {
+  return (
+    <ExampleChartWrapper title="Comparing sales strategies" sizerClassName="h-[384px]">
+      {({ inView, width, height, ariaLabelledby }) =>
+        inView && (
+          <StackedBarChartWithTooltip
+            data={data}
+            seriesKeys={seriesKeys}
+            seriesColor={getSeriesColor}
+            width={width}
+            height={height}
+            margins={isCompact(width) ? compactMargins : margins}
+            independentAxisTickFormat={(datum) => `Strategy ${datum}`}
+            dependentAxisLabel="Sales (units)"
+            ariaRoleDescription="Stacked bar chart"
+            ariaLabelledby={ariaLabelledby}
+            categoryAriaRoleDescription={() => 'Sales strategy'}
+            categoryAriaLabel={getCategoryLabel}
+            datumAriaRoleDescription={(_, series) => getSeriesLabel(series)}
+            datumAriaLabel={(datum, series) => `${datum.values[series]} units sold`}
+            renderTooltipContent={renderTooltipContent}
+            hideTooltipOnScroll
+            compact={isCompact(width)}
+            springConfig={springConfig}
+          />
+        )
+      }
+    </ExampleChartWrapper>
+  );
+}

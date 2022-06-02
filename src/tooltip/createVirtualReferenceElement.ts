@@ -1,7 +1,7 @@
-import type { RefObject } from 'react';
-import type { TippyProps } from '@tippyjs/react/headless';
+import { RefObject } from 'react';
+import { TippyProps } from '@tippyjs/react/headless';
 
-import type { Rect } from '@/types';
+import { Rect } from '@/types';
 
 /**
  * This function is used to generate a virtual reference element for use with Tippy.js

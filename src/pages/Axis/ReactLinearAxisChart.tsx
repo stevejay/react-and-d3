@@ -1,5 +1,5 @@
-import { FC, memo } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { memo } from 'react';
+import { SpringConfig } from 'react-spring';
 import { identity } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';
@@ -7,20 +7,20 @@ import { SvgAxis } from '@/components/SvgAxis';
 import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
 import { useLinearScale } from '@/hooks/useLinearScale';
-import type { TickLabelOrientation } from '@/types';
+import { TickLabelOrientation } from '@/types';
 
 const margins = { top: 20, bottom: 34, left: 24, right: 24 };
 
-export type ReactLinearAxisChartProps = {
+export interface ReactLinearAxisChartProps {
   data: number[];
   width: number;
   height: number;
   ariaLabelledby: string;
   springConfig: SpringConfig;
   tickLabelOrientation: TickLabelOrientation;
-};
+}
 
-export const ReactLinearAxisChart: FC<ReactLinearAxisChartProps> = memo(
+export const ReactLinearAxisChart = memo<ReactLinearAxisChartProps>(
   ({ data, width, height, ariaLabelledby, tickLabelOrientation, springConfig }) => {
     const chartArea = useChartArea(width, height, margins);
     const domain = useContinuousDomain(data, identity);

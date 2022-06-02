@@ -1,5 +1,4 @@
-import { FC } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
@@ -15,12 +14,12 @@ const dataSets = [
   ['B', 'C', 'E']
 ];
 
-export type BandAxisExamplesProps = {
+export interface BandAxisExamplesProps {
   transitionSeconds: number;
   springConfig: SpringConfig;
-};
+}
 
-export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ transitionSeconds, springConfig }) => {
+export function BandAxisExamples({ transitionSeconds, springConfig }: BandAxisExamplesProps) {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <AxisExamplesWrapper>
@@ -57,4 +56,4 @@ export const BandAxisExamples: FC<BandAxisExamplesProps> = ({ transitionSeconds,
       </ExampleUpdateButton>
     </AxisExamplesWrapper>
   );
-};
+}

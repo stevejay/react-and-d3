@@ -1,5 +1,5 @@
 import { memo, ReactElement, Ref } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
@@ -10,13 +10,13 @@ import { useChartArea } from '@/hooks/useChartArea';
 import { useContinuousDomain } from '@/hooks/useContinuousDomain';
 import { useLinearScaleWithZoom } from '@/hooks/useLinearScaleWithZoom';
 import { useZoom } from '@/hooks/useZoom';
-import type { Margins, PointDatum } from '@/types';
+import { Margin, PointDatum } from '@/types';
 
-export type ScatterplotProps<DatumT> = {
+export interface ScatterplotProps<DatumT> {
   data: PointDatum<DatumT>[];
   width: number;
   height: number;
-  margins: Margins;
+  margins: Margin;
   ariaLabel?: string;
   ariaLabelledby?: string;
   ariaRoleDescription?: string;
@@ -30,7 +30,7 @@ export type ScatterplotProps<DatumT> = {
   svgRef?: Ref<SVGSVGElement>;
   compact: boolean;
   springConfig: SpringConfig;
-};
+}
 
 function ScatterplotCore<DatumT>({
   data,

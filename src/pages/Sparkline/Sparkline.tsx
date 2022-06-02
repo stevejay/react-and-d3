@@ -1,36 +1,36 @@
-import { FC, memo } from 'react';
+import { memo } from 'react';
 import { useId } from '@uifabric/react-hooks';
 import { max, min } from 'd3-array';
 import { scaleLinear, scaleTime } from 'd3-scale';
 import { area, line } from 'd3-shape';
 
-import type { Margins } from '@/types';
+import { Margin } from '@/types';
 
 // TODO can I generalise this type?
-export type Datum = {
+export interface Datum {
   date: Date;
   value: number;
-};
+}
 
 const LAST_POINT_RADIUS_PX = 3;
 const LAST_POINT_MARGIN_PX = 2;
 const LINE_STROKE_WIDTH_PX = 2;
 const NO_DATA_LINE_LENGTH_PX = 8;
 
-const margins: Margins = {
+const margins: Margin = {
   top: LAST_POINT_RADIUS_PX + 1,
   left: 1,
   bottom: LAST_POINT_RADIUS_PX + 1,
   right: LAST_POINT_RADIUS_PX + 1
 };
 
-export type SparklineProps = {
+export interface SparklineProps {
   width?: number;
   height?: number;
   data?: readonly Datum[];
-};
+}
 
-export const Sparkline: FC<SparklineProps> = memo(
+export const Sparkline = memo<SparklineProps>(
   ({ width, height, data }) => {
     const id = useId();
 

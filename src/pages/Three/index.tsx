@@ -21,7 +21,7 @@ const PlaneObject = () => {
 };
 
 const ThreePage = () => (
-  <div className="w-full max-w-3xl p-4 mx-auto md:p-8">
+  <main className="w-full max-w-3xl p-4 mx-auto md:p-8">
     <PageHeading>Three.js Rendering</PageHeading>
     <SectionHeading>TODO</SectionHeading>
     <Paragraph>TODO</Paragraph>
@@ -36,7 +36,7 @@ const ThreePage = () => (
         <PlaneObject />
       </Canvas>
     </div>
-  </div>
+  </main>
 );
 
 export default ThreePage;

@@ -1,10 +1,9 @@
-import { FC } from 'react';
 import { MeshProps } from '@react-three/fiber';
 // eslint-disable-next-line import/no-unresolved
 // import { motion } from 'framer-motion/three';
 // import * as THREE from 'three';
 
-export const Box: FC<Omit<MeshProps, 'onUpdate' | 'ref'>> = (props) => {
+export function Box(props: Omit<MeshProps, 'onUpdate' | 'ref'>) {
   //   const [hovered, setHover] = useState(false);
   //   const [active, setActive] = useState(false);
   //   return (
@@ -38,4 +37,4 @@ export const Box: FC<Omit<MeshProps, 'onUpdate' | 'ref'>> = (props) => {
   //       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
   //     </motion.mesh>
   //   );
-};
+}

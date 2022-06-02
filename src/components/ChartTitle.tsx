@@ -1,7 +1,9 @@
-import type { FC, HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 
-export const ChartTitle: FC<HTMLAttributes<HTMLHeadingElement>> = ({ className, children, ...rest }) => (
-  <h3 className={`mt-8 -mb-6 text-base text-slate-300 ${className}`} {...rest}>
-    {children}
-  </h3>
-);
+export function ChartTitle({ className, children, ...rest }: HTMLAttributes<HTMLHeadingElement>) {
+  return (
+    <h3 className={`mt-8 -mb-6 text-base text-slate-300 ${className}`} {...rest}>
+      {children}
+    </h3>
+  );
+}

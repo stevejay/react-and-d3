@@ -1,13 +1,13 @@
-import { FC, useMemo } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { useMemo } from 'react';
+import { SpringConfig } from 'react-spring';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
-import type { Margins, PointDatum } from '@/types';
+import { Margin, PointDatum } from '@/types';
 
 import { Scatterplot } from './Scatterplot';
 import { irisData, IrisDatum } from './scatterplotData';
 
-const margins: Margins = { left: 56, right: 40, top: 40, bottom: 48 };
+const margins: Margin = { left: 56, right: 40, top: 40, bottom: 48 };
 
 function isCompact(width: number) {
   return Boolean(width) && width < 500;
@@ -24,11 +24,11 @@ function getPointClassName(datum: PointDatum<IrisDatum>) {
   }
 }
 
-export type ScatterplotExampleProps = {
+export interface ScatterplotExampleProps {
   springConfig: SpringConfig;
-};
+}
 
-export const ScatterplotExample: FC<ScatterplotExampleProps> = ({ springConfig }) => {
+export function ScatterplotExample({ springConfig }: ScatterplotExampleProps) {
   const data = useMemo(
     () =>
       irisData.map((datum) => ({ x: datum.sepalLength, y: datum.petalLength, datum: datum as IrisDatum })),
@@ -54,4 +54,4 @@ export const ScatterplotExample: FC<ScatterplotExampleProps> = ({ springConfig }
       }
     </ExampleChartWrapper>
   );
-};
+}

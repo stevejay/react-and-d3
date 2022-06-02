@@ -9,7 +9,7 @@ import { noop, uniqueId } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';
 import { useFollowOnHoverTooltip } from '@/tooltip';
-import { Margins, PointDatum, Rect } from '@/types';
+import { Margin, PointDatum, Rect } from '@/types';
 
 /* globals ElementTagNameMap */
 function ensureChild<K extends keyof ElementTagNameMap, ParentElementT extends SVGElement>(
@@ -29,7 +29,7 @@ function ensureChild<K extends keyof ElementTagNameMap, ParentElementT extends S
 class D3ScatterplotRenderer<DatumT> {
   width = 0;
   height = 0;
-  margins: Margins = { left: 0, right: 0, top: 0, bottom: 0 };
+  margins: Margin = { left: 0, right: 0, top: 0, bottom: 0 };
   svgElement: SVGSVGElement | null = null;
   compact = false;
   onMouseMove: (datum: PointDatum<DatumT>, rect: Rect) => void = noop;
@@ -260,15 +260,15 @@ class D3ScatterplotRenderer<DatumT> {
   }
 }
 
-export type D3ScatterplotProps<DatumT> = {
+export interface D3ScatterplotProps<DatumT> {
   data: PointDatum<DatumT>[];
   width: number;
   height: number;
-  margins: Margins;
+  margins: Margin;
   ariaLabelledby: string;
   compact?: boolean;
   renderTooltipContent: (datum: PointDatum<DatumT>) => ReactElement | null;
-};
+}
 
 export function D3Scatterplot<DatumT>({
   data,

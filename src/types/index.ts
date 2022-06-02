@@ -10,7 +10,12 @@ export interface AxisScale<DomainT> {
   bandwidth?(): number;
 }
 
-export type Margins = { top: number; bottom: number; left: number; right: number };
+export interface Margin {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+}
 
 export type AxisOrientation = 'top' | 'bottom' | 'left' | 'right';
 
@@ -20,27 +25,27 @@ export type TickLabelOrientation = 'horizontal' | 'vertical' | 'angled';
 
 export type ChartOrientation = 'horizontal' | 'vertical';
 
-export type CategoryValueDatum<CategoryT extends DomainValue, ValueT extends DomainValue> = {
+export interface CategoryValueDatum<CategoryT extends DomainValue, ValueT extends DomainValue> {
   readonly category: CategoryT;
   readonly value: ValueT;
-};
+}
 
 // Limitation here: key is always a string.
-export type CategoryValueListDatum<CategoryT extends DomainValue, ValueT extends DomainValue> = {
+export interface CategoryValueListDatum<CategoryT extends DomainValue, ValueT extends DomainValue> {
   readonly category: CategoryT;
   readonly values: { [key: string]: ValueT };
-};
+}
 
 export type GetValueListDatumSummaryValue<CategoryT extends DomainValue, ValueT extends DomainValue> = (
   datum: CategoryValueListDatum<CategoryT, ValueT>,
   seriesKeys: readonly string[]
 ) => number | null | undefined;
 
-export type PointDatum<DatumT> = {
+export interface PointDatum<DatumT> {
   x: number;
   y: number;
   datum: DatumT;
-};
+}
 
 export type Point = [number, number];
 
@@ -48,7 +53,7 @@ export type Point = [number, number];
  * Defines a chart area within a chart. This is an area that is used to actually
  * display data, e.g., the central area in a bar chart where the bars are rendered.
  */
-export type ChartArea = {
+export interface ChartArea {
   /** The width of the chart area. */
   width: number;
   /** The height of the chart area. */
@@ -70,21 +75,21 @@ export type ChartArea = {
    * This is useful if you need to render a band scale with the categories in reverse order.
    */
   rangeHeightReversed: Point;
-};
+}
 
-export type Rect = {
+export interface Rect {
   x: number;
   y: number;
   width: number;
   height: number;
-};
+}
 
 export type ExpandedAxisScale<DomainT extends DomainValue> = AxisScale<DomainT> & {
   ticks?(...args: any[]): DomainT[];
   tickFormat?(...args: any[]): (datum: DomainT) => string;
 };
 
-export type BaseAxisProps<DomainT extends DomainValue> = {
+export interface BaseAxisProps<DomainT extends DomainValue> {
   /**
    * The scale used to render the axis. Required.
    */
@@ -136,4 +141,4 @@ export type BaseAxisProps<DomainT extends DomainValue> = {
    * automatic tick generator
    */
   tickValues?: DomainT[] | null;
-};
+}

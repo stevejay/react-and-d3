@@ -1,10 +1,10 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { axisBottom } from 'd3-axis';
 import { scaleBand } from 'd3-scale';
 import { select } from 'd3-selection';
 import { transition } from 'd3-transition';
 
-import type { TickLabelOrientation } from '@/types';
+import { TickLabelOrientation } from '@/types';
 
 class D3BandAxisChartRenderer {
   width = 0;
@@ -47,23 +47,23 @@ class D3BandAxisChartRenderer {
   }
 }
 
-export type D3BandAxisChartProps = {
+export interface D3BandAxisChartProps {
   data: string[];
   width: number;
   height: number;
   ariaLabelledby: string;
   transitionSeconds?: number;
   tickLabelOrientation: TickLabelOrientation;
-};
+}
 
-export const D3BandAxisChart: FC<D3BandAxisChartProps> = ({
+export function D3BandAxisChart({
   data,
   width,
   height,
   ariaLabelledby,
   tickLabelOrientation,
   transitionSeconds = 0.25
-}) => {
+}: D3BandAxisChartProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [renderer] = useState<D3BandAxisChartRenderer>(() => new D3BandAxisChartRenderer());
 
@@ -84,4 +84,4 @@ export const D3BandAxisChart: FC<D3BandAxisChartProps> = ({
       aria-labelledby={ariaLabelledby}
     />
   );
-};
+}

@@ -3,8 +3,7 @@ module.exports = {
     browser: true,
     es6: true,
     jest: true,
-    node: true,
-    'jest/globals': true
+    node: true
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -35,6 +34,7 @@ module.exports = {
   rules: {
     'sort-imports': 'off',
     'import/order': 'off',
+    'import/namespace': 'off',
     'import/first': 'error',
     'import/newline-after-import': 'error',
     'import/no-duplicates': 'error',

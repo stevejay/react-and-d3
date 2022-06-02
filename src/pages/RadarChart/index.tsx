@@ -5,7 +5,7 @@ import { SectionHeading } from '@/components/SectionHeading';
 import { RadarChartWithTooltipExample } from './RadarChartWithTooltipExample';
 
 const RadarChart = () => (
-  <div className="w-full max-w-3xl p-4 mx-auto md:p-8">
+  <main className="w-full max-w-3xl p-4 mx-auto md:p-8">
     <PageHeading>Radar Chart</PageHeading>
     <SectionHeading>Selectable Radar Chart</SectionHeading>
     <Paragraph>
@@ -13,7 +13,7 @@ const RadarChart = () => (
       might be displayed alongside it.
     </Paragraph>
     <RadarChartWithTooltipExample />
-  </div>
+  </main>
 );
 
 export default RadarChart;

@@ -1,5 +1,12 @@
 import { RefObject, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { createUseGesture, dragAction, GestureHandlers, pinchAction, wheelAction } from '@use-gesture/react';
+import {
+  createUseGesture,
+  dragAction,
+  GestureHandlers,
+  pinchAction,
+  Vector2,
+  wheelAction
+} from '@use-gesture/react';
 import { zoomIdentity, ZoomTransform } from 'd3-zoom';
 import { throttle } from 'lodash-es';
 
@@ -82,8 +89,12 @@ export function useZoom<ElementT extends SVGElement>(): ReturnType<ElementT> {
     () => ({
       target: ref,
       eventOptions: { passive: false },
-      drag: { from: () => [transformRef.current.x, transformRef.current.y], delay: false },
-      pinch: { from: () => [transformRef.current.k], scaleBounds: { min: 0.5, max: 5 }, rubberband: true }
+      drag: { from: () => [transformRef.current.x, transformRef.current.y] as Vector2, delay: false },
+      pinch: {
+        from: () => [transformRef.current.k, 0] as Vector2,
+        scaleBounds: { min: 0.5, max: 5 },
+        rubberband: true
+      }
     }),
     []
   );

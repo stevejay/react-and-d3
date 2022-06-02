@@ -3,19 +3,19 @@ import { animated, SpringConfig, useTransition } from 'react-spring';
 import { SeriesPoint, stack } from 'd3-shape';
 
 import { createStackedBarGenerator } from '@/generators/stackedBarGenerator';
-import type { AxisScale, CategoryValueListDatum, ChartOrientation, DomainValue, Rect } from '@/types';
+import { AxisScale, CategoryValueListDatum, ChartOrientation, DomainValue, Rect } from '@/types';
 import { getDefaultRenderingOffset } from '@/utils/renderUtils';
 
-type MappedDatum<CategoryT extends DomainValue> = {
+interface MappedDatum<CategoryT extends DomainValue> {
   category: CategoryT;
   datum: CategoryValueListDatum<CategoryT, number>;
   stack: readonly {
     seriesKey: string;
     seriesPoint: SeriesPoint<CategoryValueListDatum<CategoryT, number>>;
   }[];
-};
+}
 
-type SeriesBarsProps<CategoryT extends DomainValue> = {
+interface SeriesBarsProps<CategoryT extends DomainValue> {
   datum: MappedDatum<CategoryT>;
   generator: (seriesPoint: SeriesPoint<CategoryValueListDatum<CategoryT, number>>) => Rect | null;
   seriesColor: (series: string) => string;
@@ -24,7 +24,7 @@ type SeriesBarsProps<CategoryT extends DomainValue> = {
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   springConfig: SpringConfig;
   className?: string;
-};
+}
 
 function SeriesBars<CategoryT extends DomainValue>({
   datum,
@@ -68,7 +68,7 @@ function SeriesBars<CategoryT extends DomainValue>({
   ));
 }
 
-export type SvgStackedBarsProps<CategoryT extends DomainValue> = {
+export interface SvgStackedBarsProps<CategoryT extends DomainValue> {
   data: readonly CategoryValueListDatum<CategoryT, number>[];
   seriesKeys: readonly string[];
   seriesColor: (series: string) => string;
@@ -84,7 +84,7 @@ export type SvgStackedBarsProps<CategoryT extends DomainValue> = {
   datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   springConfig: SpringConfig;
-};
+}
 
 export function SvgStackedBars<CategoryT extends DomainValue>({
   data,

@@ -1,19 +1,18 @@
-import { FC } from 'react';
 import { GridRows } from '@visx/grid';
 import { Group } from '@visx/group';
 import { AnimatedAxis } from '@visx/react-spring';
 import { scaleBand, scaleLinear } from '@visx/scale';
 
-import { CategoryValueDatum, Margins } from '@/types';
+import { CategoryValueDatum, Margin } from '@/types';
 
-export type BarChartProps = {
+export interface BarChartProps {
   data: CategoryValueDatum<string, number>[];
-  margins: Margins;
+  margins: Margin;
   width: number;
   height: number;
-};
+}
 
-export const BarChart: FC<BarChartProps> = ({ data, margins, width, height }) => {
+export function BarChart({ data, margins, width, height }: BarChartProps) {
   const categoryScale = scaleBand<string>({
     domain: data.map((datum) => datum.category),
     paddingInner: 0.3,
@@ -78,4 +77,4 @@ export const BarChart: FC<BarChartProps> = ({ data, margins, width, height }) =>
       />
     </svg>
   );
-};
+}

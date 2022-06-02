@@ -1,5 +1,4 @@
-import { FC } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 import { useId } from '@uifabric/react-hooks';
 import { schemeSet3 } from 'd3-scale-chromatic';
 
@@ -7,7 +6,7 @@ import { ChartSizer } from '@/components/ChartSizer';
 import { ChartTitle } from '@/components/ChartTitle';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
-import type { Margins } from '@/types';
+import { Margin } from '@/types';
 
 import { HorizontalStackedBarChart } from './HorizontalStackedBarChart';
 
@@ -32,7 +31,7 @@ const dataSets = [
   ]
 ];
 
-const margins: Margins = { left: 64, right: 40, top: 40, bottom: 64 };
+const margins: Margin = { left: 64, right: 40, top: 40, bottom: 64 };
 
 function isCompact(width: number) {
   return Boolean(width) && width < 500;
@@ -53,13 +52,11 @@ function getSeriesColor(series: string) {
 
 const seriesKeys = ['one', 'two', 'three'];
 
-export type HorizontalStackedBarChartExampleProps = {
+export interface HorizontalStackedBarChartExampleProps {
   springConfig: SpringConfig;
-};
+}
 
-export const HorizontalStackedBarChartExample: FC<HorizontalStackedBarChartExampleProps> = ({
-  springConfig
-}) => {
+export function HorizontalStackedBarChartExample({ springConfig }: HorizontalStackedBarChartExampleProps) {
   const id = useId();
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
@@ -83,4 +80,4 @@ export const HorizontalStackedBarChartExample: FC<HorizontalStackedBarChartExamp
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>
   );
-};
+}

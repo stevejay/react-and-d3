@@ -1,7 +1,7 @@
-import type { SeriesPoint } from 'd3-shape';
+import { SeriesPoint } from 'd3-shape';
 import { isNil } from 'lodash-es';
 
-import type { AxisScale, CategoryValueListDatum, ChartOrientation, DomainValue, Rect } from '@/types';
+import { AxisScale, CategoryValueListDatum, ChartOrientation, DomainValue, Rect } from '@/types';
 
 export function createStackedBarGenerator<CategoryT extends DomainValue>(
   categoryScale: AxisScale<CategoryT>,

@@ -4,14 +4,14 @@ const config: PlaywrightTestConfig = {
   testDir: 'e2e-tests',
   outputDir: './e2e-tests-results',
   forbidOnly: !!process.env.CI,
-  // Having to run Playwright in single-threaded mode locally
-  // as some tests will time out without this:
-  retries: process.env.CI ? 2 : 1,
+  workers: 2,
+  retries: 1,
   use: {
     baseURL: 'http://localhost:6006',
-    trace: 'on-first-retry',
+    trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
     video: 'on-first-retry',
-    screenshot: 'only-on-failure'
+    screenshot: 'only-on-failure',
+    locale: 'en-US'
   },
   projects: [
     {

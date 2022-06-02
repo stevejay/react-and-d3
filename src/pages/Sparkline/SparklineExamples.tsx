@@ -1,5 +1,3 @@
-import { FC } from 'react';
-
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 
@@ -23,7 +21,7 @@ const dataSets = [
   []
 ];
 
-export const SparklineExamples: FC = () => {
+export function SparklineExamples() {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <>
@@ -33,4 +31,4 @@ export const SparklineExamples: FC = () => {
       </div>
     </>
   );
-};
+}

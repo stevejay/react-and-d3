@@ -1,6 +1,6 @@
 import { max, min, sum } from 'd3-array';
 
-import type { CategoryValueDatum, CategoryValueListDatum, DomainValue } from '@/types';
+import { CategoryValueDatum, CategoryValueListDatum, DomainValue } from '@/types';
 
 export function flattenValueListDatum<CategoryT extends DomainValue>(
   datum: CategoryValueListDatum<CategoryT, number>,

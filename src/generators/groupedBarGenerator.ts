@@ -1,6 +1,6 @@
 import { isNil } from 'lodash-es';
 
-import type { AxisScale, ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
+import { AxisScale, ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
 
 export function createGroupedBarGenerator<CategoryT extends DomainValue>(
   seriesScale: AxisScale<string>,

@@ -1,8 +1,8 @@
 import { ReactElement, RefObject, TouchEvent, useRef } from 'react';
-import type { ScaleBand } from 'd3-scale';
+import { ScaleBand } from 'd3-scale';
 
 import { SvgGroup } from '@/components/SvgGroup';
-import type { ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
+import { ChartArea, ChartOrientation, DomainValue, Rect } from '@/types';
 import { createScaleBandInverter } from '@/utils/renderUtils';
 
 function createVirtualElementRectFromMouseEvent(
@@ -44,10 +44,10 @@ function snapVirtualElementRectToCategory<
   }
 }
 
-export type SvgCategoryInteractionProps<
+export interface SvgCategoryInteractionProps<
   CategoryT extends DomainValue,
   DatumT extends { category: CategoryT }
-> = {
+> {
   data: readonly DatumT[];
   chartArea: ChartArea;
   orientation: ChartOrientation;
@@ -57,7 +57,7 @@ export type SvgCategoryInteractionProps<
   onMouseLeave: () => void;
   onClick: (datum: DatumT, rect: Rect) => void;
   svgRef: RefObject<SVGSVGElement>;
-};
+}
 
 // This works for both CategoryValueDatum and CategoryValueListDatum.
 export function SvgCategoryInteraction<

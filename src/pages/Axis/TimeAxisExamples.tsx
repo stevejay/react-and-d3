@@ -1,5 +1,4 @@
-import { FC } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
@@ -15,12 +14,12 @@ const dataSets = [
   [new Date(Date.UTC(1999, 10, 1)), new Date(Date.UTC(2001, 1, 1))]
 ];
 
-export type TimeAxisExamplesProps = {
+export interface TimeAxisExamplesProps {
   transitionSeconds: number;
   springConfig: SpringConfig;
-};
+}
 
-export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ transitionSeconds, springConfig }) => {
+export function TimeAxisExamples({ transitionSeconds, springConfig }: TimeAxisExamplesProps) {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <AxisExamplesWrapper>
@@ -57,4 +56,4 @@ export const TimeAxisExamples: FC<TimeAxisExamplesProps> = ({ transitionSeconds,
       </ExampleUpdateButton>
     </AxisExamplesWrapper>
   );
-};
+}

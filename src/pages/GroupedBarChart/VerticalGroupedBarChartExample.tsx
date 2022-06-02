@@ -1,10 +1,10 @@
-import { FC, useState } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { useState } from 'react';
+import { SpringConfig } from 'react-spring';
 import { schemeSet3 } from 'd3-scale-chromatic';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
-import type { Margins } from '@/types';
+import { Margin } from '@/types';
 
 import { VerticalGroupedBarChart } from './VerticalGroupedBarChart';
 
@@ -38,7 +38,7 @@ const dataSets = [
   }
 ];
 
-const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
+const margins: Margin = { left: 72, right: 40, top: 40, bottom: 64 };
 
 function getSeriesColor(series: string) {
   switch (series) {
@@ -53,11 +53,11 @@ function getSeriesColor(series: string) {
   }
 }
 
-export type VerticalGroupedBarChartExampleProps = {
+export interface VerticalGroupedBarChartExampleProps {
   springConfig: SpringConfig;
-};
+}
 
-export const VerticalGroupedBarChartExample: FC<VerticalGroupedBarChartExampleProps> = ({ springConfig }) => {
+export function VerticalGroupedBarChartExample({ springConfig }: VerticalGroupedBarChartExampleProps) {
   const [dataIndex, setDataIndex] = useState(0);
   const cycleDataIndex = () => setDataIndex((i) => (i === dataSets.length - 1 ? 0 : i + 1));
   const dataSet = dataSets[dataIndex];
@@ -82,4 +82,4 @@ export const VerticalGroupedBarChartExample: FC<VerticalGroupedBarChartExamplePr
       <ExampleUpdateButton onClick={cycleDataIndex}>Update bar chart data</ExampleUpdateButton>
     </div>
   );
-};
+}

@@ -10,7 +10,7 @@ import { ScatterplotExample } from './ScatterplotExample';
 const springConfig = { duration: 500, easing: easeCubicInOut };
 
 const Scatterplot = () => (
-  <div className="w-full max-w-3xl p-4 mx-auto md:p-8">
+  <main className="w-full max-w-3xl p-4 mx-auto md:p-8">
     <PageHeading>Scatterplot</PageHeading>
     <SectionHeading>Zoomable Scatterplot</SectionHeading>
     <Paragraph>
@@ -27,7 +27,7 @@ const Scatterplot = () => (
       result is much more performant, even on mobile.
     </Paragraph>
     <D3ScatterplotExample />
-  </div>
+  </main>
 );
 
 export default Scatterplot;

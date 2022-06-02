@@ -1,5 +1,4 @@
-import { FC } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 import { useId } from '@uifabric/react-hooks';
 import { schemeSet3 } from 'd3-scale-chromatic';
 
@@ -7,7 +6,7 @@ import { ChartSizer } from '@/components/ChartSizer';
 import { ChartTitle } from '@/components/ChartTitle';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
-import type { CategoryValueListDatum, Margins } from '@/types';
+import { CategoryValueListDatum, Margin } from '@/types';
 
 import { VerticalStackedBarChart } from './VerticalStackedBarChart';
 
@@ -34,7 +33,7 @@ const dataSets: readonly CategoryValueListDatum<string, number>[][] = [
 
 const seriesKeys = ['one', 'two', 'three'];
 
-const margins: Margins = { left: 72, right: 40, top: 40, bottom: 64 };
+const margins: Margin = { left: 72, right: 40, top: 40, bottom: 64 };
 
 function getSeriesColor(series: string) {
   switch (series) {
@@ -49,11 +48,11 @@ function getSeriesColor(series: string) {
   }
 }
 
-export type VerticalStackedBarChartExampleProps = {
+export interface VerticalStackedBarChartExampleProps {
   springConfig: SpringConfig;
-};
+}
 
-export const VerticalStackedBarChartExample: FC<VerticalStackedBarChartExampleProps> = ({ springConfig }) => {
+export function VerticalStackedBarChartExample({ springConfig }: VerticalStackedBarChartExampleProps) {
   const id = useId();
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
@@ -76,4 +75,4 @@ export const VerticalStackedBarChartExample: FC<VerticalStackedBarChartExamplePr
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>
   );
-};
+}

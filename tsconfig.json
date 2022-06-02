@@ -20,7 +20,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "types": ["@honkhonk/vite-plugin-svgr/client", "vitest/globals"]
   },
   "include": ["./src", "./e2e-tests"],
   "exclude": ["./types-temp", "**/node_modules", "**/.*/"]

@@ -1,7 +1,7 @@
-import type { FC, SVGProps } from 'react';
+import { SVGProps } from 'react';
 import { animated, SpringConfig, useSpring } from 'react-spring';
 
-import type { AxisScale, ChartArea, ChartOrientation } from '@/types';
+import { AxisScale, ChartArea, ChartOrientation } from '@/types';
 
 export type SvgLineAnnotationProps = Omit<SVGProps<SVGLineElement>, 'ref' | 'scale'> & {
   value: number;
@@ -11,7 +11,7 @@ export type SvgLineAnnotationProps = Omit<SVGProps<SVGLineElement>, 'ref' | 'sca
   springConfig: SpringConfig;
 };
 
-export const SvgLineAnnotation: FC<SvgLineAnnotationProps> = ({
+export function SvgLineAnnotation({
   value,
   chartArea,
   orientation,
@@ -19,7 +19,7 @@ export const SvgLineAnnotation: FC<SvgLineAnnotationProps> = ({
   className = '',
   springConfig,
   ...rest
-}) => {
+}: SvgLineAnnotationProps) {
   const annotateValue = scale(value);
   const horizontal = orientation === 'horizontal';
 
@@ -42,4 +42,4 @@ export const SvgLineAnnotation: FC<SvgLineAnnotationProps> = ({
       {...rest}
     />
   );
-};
+}

@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 
 import { useFollowOnHoverTooltip } from '@/tooltip';
-import type { CategoryValueListDatum, DomainValue } from '@/types';
+import { CategoryValueListDatum, DomainValue } from '@/types';
 
 import { StackedBarChart, StackedBarChartProps } from './StackedBarChart';
 

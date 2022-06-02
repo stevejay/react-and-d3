@@ -1,12 +1,12 @@
 import { forwardRef, memo } from 'react';
 
 import { SvgGroup } from '@/components/SvgGroup';
-import type { ChartArea } from '@/types';
+import { ChartArea } from '@/types';
 
-export type SvgChartAreaInteractionRectProps = {
+export interface SvgChartAreaInteractionRectProps {
   chartArea: ChartArea;
   className?: string;
-};
+}
 
 export const SvgChartAreaInteractionRect = memo(
   forwardRef<SVGRectElement, SvgChartAreaInteractionRectProps>(({ chartArea, className = '' }, ref) => (

@@ -11,10 +11,10 @@ const defaultTranslateExtent = [
 
 const defaultScaleExtent = [0, Number.POSITIVE_INFINITY];
 
-export type OptionsType = {
+export interface OptionsType {
   translateExtent?: [Point, Point];
   scaleExtent?: Point;
-};
+}
 
 export type ReturnType<ElementT extends SVGElement> = [RefObject<ElementT>, ZoomTransform, () => void];
 
