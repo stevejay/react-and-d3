@@ -11,9 +11,6 @@ export default defineConfig({
     react({
       exclude: [/\.(stories|spec|test)\.(t|j)sx?$/, /__tests__/]
     }),
-    // Note: these plugins below are also used in the .storybook/main.js file
-    // and are referenced by index. If you change these or their order then
-    // you also need to fix them up in that file.
     svgr(), // Also added to storybook
     packageConfigPlugin(), // Also added to storybook
     optimisePersistPlugin() // Also added to storybook

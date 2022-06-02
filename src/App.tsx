@@ -1,10 +1,16 @@
 import { lazy, Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import { ErrorBoundary } from './components/ErrorBoundary';
-import { Header } from './components/Header';
-import { LoadingPlaceholder } from './components/LoadingPlaceholder';
-import { ScrollToTopOnNavigation } from './components/ScrollToTopOnNavigation';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { Header } from '@/components/Header';
+import { LoadingPlaceholder } from '@/components/LoadingPlaceholder';
+import { ScrollToTopOnNavigation } from '@/components/ScrollToTopOnNavigation';
+
+// This is the :focus-visible polyfill
+import 'focus-visible';
+
+import './index.css';
 
 const HomePage = lazy(() => import('@/pages/Home'));
 const AxisPage = lazy(() => import('@/pages/Axis'));
@@ -50,18 +56,22 @@ const navigationData = [
 
 export function App() {
   return (
-    <>
-      <ScrollToTopOnNavigation />
-      <Header navigationData={navigationData} />
+    <BrowserRouter>
       <ErrorBoundary>
-        <Suspense fallback={<LoadingPlaceholder />}>
-          <Routes>
-            {pageLinks.map(({ href, pageComponent: PageComponent }) => (
-              <Route key={href} path={href} element={<PageComponent />} />
-            ))}
-          </Routes>
-        </Suspense>
+        <HelmetProvider>
+          <ScrollToTopOnNavigation />
+          <Header navigationData={navigationData} />
+          <ErrorBoundary>
+            <Suspense fallback={<LoadingPlaceholder />}>
+              <Routes>
+                {pageLinks.map(({ href, pageComponent: PageComponent }) => (
+                  <Route key={href} path={href} element={<PageComponent />} />
+                ))}
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
+        </HelmetProvider>
       </ErrorBoundary>
-    </>
+    </BrowserRouter>
   );
 }
