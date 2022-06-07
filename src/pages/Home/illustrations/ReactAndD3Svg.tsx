@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-export type ReactAndD3SvgProps = SVGProps<SVGSVGElement>;
-
-export function ReactAndD3Svg(props: ReactAndD3SvgProps) {
+export function ReactAndD3Svg(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       role="presentation"

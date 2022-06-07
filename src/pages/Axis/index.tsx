@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import { easeCubicInOut } from 'd3-ease';
 
 import { ChartTitle } from '@/components/ChartTitle';
@@ -16,13 +17,17 @@ const slowSpringConfig = { duration: 1500, easing: easeCubicInOut };
 const Axis = () => (
   <main className="w-full max-w-3xl p-4 mx-auto md:p-8">
     <PageHeading>Axis</PageHeading>
+    <Helmet>
+      <title>Axis - React and D3</title>
+    </Helmet>
     <SectionHeading>The D3 Axis in React</SectionHeading>
     <Paragraph>
       The D3 axis component is a stalwart of D3 data visualisations. If you want to use React instead of D3 to
       render your charts then you are going to need a suitable replacement. This page demonstrates my port of
       the D3 axis component. As with that component, ticks that are entering start in the position they would
-      have been in according to the previous scale. Ticks that are exiting move to the position they would be
-      in according to the new scale. You can see some examples below of D3 axes alongside my React equivalent.
+      have been in according to the previous scale. And ticks that are exiting move to the position they would
+      be in according to the new scale. You can see some examples below of D3 axes alongside their React
+      equivalents.
     </Paragraph>
     <ChartTitle>Example 1: Linear axis</ChartTitle>
     <LinearAxisExamples transitionSeconds={0.5} springConfig={fastSpringConfig} />

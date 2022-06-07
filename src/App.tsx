@@ -6,9 +6,10 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Header } from '@/components/Header';
 import { LoadingPlaceholder } from '@/components/LoadingPlaceholder';
 import { ScrollToTopOnNavigation } from '@/components/ScrollToTopOnNavigation';
+import { TitleAnnouncer } from '@/components/TitleAnnouncer';
+import { AnnouncerProvider } from '@/contexts/Announcer';
 
-// This is the :focus-visible polyfill
-import 'focus-visible';
+import 'focus-visible'; // A :focus-visible polyfill, for Safari.
 
 import './index.css';
 
@@ -58,19 +59,22 @@ export function App() {
   return (
     <BrowserRouter>
       <ErrorBoundary>
-        <HelmetProvider>
-          <ScrollToTopOnNavigation />
-          <Header navigationData={navigationData} />
-          <ErrorBoundary>
-            <Suspense fallback={<LoadingPlaceholder />}>
-              <Routes>
-                {pageLinks.map(({ href, pageComponent: PageComponent }) => (
-                  <Route key={href} path={href} element={<PageComponent />} />
-                ))}
-              </Routes>
-            </Suspense>
-          </ErrorBoundary>
-        </HelmetProvider>
+        <AnnouncerProvider>
+          <HelmetProvider>
+            <TitleAnnouncer />
+            <ScrollToTopOnNavigation />
+            <Header navigationData={navigationData} />
+            <ErrorBoundary>
+              <Suspense fallback={<LoadingPlaceholder />}>
+                <Routes>
+                  {pageLinks.map(({ href, pageComponent: PageComponent }) => (
+                    <Route key={href} path={href} element={<PageComponent />} />
+                  ))}
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
+          </HelmetProvider>
+        </AnnouncerProvider>
       </ErrorBoundary>
     </BrowserRouter>
   );
