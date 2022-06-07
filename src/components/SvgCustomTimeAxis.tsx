@@ -105,7 +105,10 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
 
   const yearTickTransitions = useTransition<Date, { opacity: number; translateX: number }>(yearTickValues, {
     initial: (tickValue, index) => {
-      return { opacity: 1, translateX: conditionalClamp(position(tickValue), index === 0) + renderingOffset };
+      return {
+        opacity: 1,
+        translateX: conditionalClamp(position(tickValue), index === 0) + renderingOffset
+      };
     },
     from: (tickValue, index) => {
       const initialPosition = previousPositionRef.current ? previousPositionRef.current(tickValue) : null;
@@ -127,12 +130,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
       opacity: 1,
       translateX: conditionalClamp(position(tickValue), index === 0) + renderingOffset
     }),
-    leave: (tickValue) => {
-      const exitPosition = position(tickValue);
-      return isFinite(exitPosition)
-        ? { opacity: 0, translateX: exitPosition + renderingOffset }
-        : { opacity: 0 };
-    },
+    leave: (_tickValue) => ({ opacity: 0 }),
     config: springConfig,
     keys: getAxisDomainAsReactKey,
     immediate: !animate
@@ -149,15 +147,13 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
     >
       <g>
         {monthTickTransitions(({ monthWidth, ...rest }, tickValue) => {
-          const isFirstTick = tickValues.length && tickValues[0] === tickValue;
           return (
             <animated.g key={getAxisDomainAsReactKey(tickValue)} data-test-id="month-tick-group" style={rest}>
               <line
                 stroke="currentColor"
-                className={isFirstTick || tickValue.getUTCMonth() === 0 ? '' : 'text-slate-500'}
-                strokeDasharray={isFirstTick || tickValue.getUTCMonth() === 0 ? 'none' : '5 4'}
+                className="text-slate-500"
+                strokeDasharray="5 4"
                 y2={tickSize}
-                //   shapeRendering="crispEdges"
                 role="presentation"
               />
               <animated.g style={{ transform: monthWidth.to((value) => `translateX(${value * 0.5}px)`) }}>
@@ -182,6 +178,7 @@ export function SvgCustomTimeAxis(props: SvgCustomTimeAxisProps) {
           const tickYear = tickValue.getUTCFullYear();
           return (
             <animated.g key={tickYear} data-test-id="year-tick-group" style={styles}>
+              <line stroke="currentColor" strokeDasharray="none" y2={tickSize} role="presentation" />
               <text
                 fill="currentColor"
                 stroke="none"

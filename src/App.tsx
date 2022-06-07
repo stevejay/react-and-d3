@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Header } from '@/components/Header';
 import { LoadingPlaceholder } from '@/components/LoadingPlaceholder';
-import { ScrollToTopOnNavigation } from '@/components/ScrollToTopOnNavigation';
+// import { ScrollToTopOnNavigation } from '@/components/ScrollToTopOnNavigation';
 import { TitleAnnouncer } from '@/components/TitleAnnouncer';
 import { AnnouncerProvider } from '@/contexts/Announcer';
 
@@ -62,7 +62,7 @@ export function App() {
         <AnnouncerProvider>
           <HelmetProvider>
             <TitleAnnouncer />
-            <ScrollToTopOnNavigation />
+            {/* <ScrollToTopOnNavigation /> */}
             <Header navigationData={navigationData} />
             <ErrorBoundary>
               <Suspense fallback={<LoadingPlaceholder />}>

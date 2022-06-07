@@ -9,14 +9,11 @@ export const AnnouncerContext = createContext<AnnouncerContextType>({ announce: 
 
 export function AnnouncerProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<{ text: string } | null>(null);
-  const announce = useCallback(
-    (text: string) => {
-      if (!isNil(text)) {
-        setState({ text });
-      }
-    },
-    [setState]
-  );
+  const announce = useCallback((text: string) => {
+    if (!isNil(text)) {
+      setState({ text });
+    }
+  }, []);
   return (
     <AnnouncerContext.Provider value={useMemo(() => ({ announce }), [announce])}>
       <div role="alert" aria-atomic aria-live="assertive" className="sr-only">

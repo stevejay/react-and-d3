@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { easeCubicInOut } from 'd3-ease';
 
 import { PageHeading } from '@/components/PageHeading';
@@ -27,6 +28,9 @@ function AccessibilityPage() {
   return (
     <main className="w-full max-w-3xl p-4 mx-auto md:p-8">
       <PageHeading>Accessibility</PageHeading>
+      <Helmet>
+        <title>Accessibility - React and D3</title>
+      </Helmet>
       <SectionHeading>An Accessible Stacked Bar Chart</SectionHeading>
       <Paragraph>
         The{' '}

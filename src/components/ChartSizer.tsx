@@ -6,16 +6,17 @@ const defaultIntersectOptions = { triggerOnce: true, rootMargin: '200px 0px' };
 
 export interface ChartSizerProps {
   /**
-   * Use this to apply a height class to the chart sizer, e.g., `h-96`.
+   * Use this to apply a height to the chart sizer, e.g., `h-96`.
    * Required.
    */
   className: string;
   /**
    * The debounce time to observe when the chart is changing size.
+   * Defaults to 300 ms.
    */
   debouncedMeasureWaitMs?: number;
   /**
-   * Options for the underlying `react-intersection-observer` hook.
+   * Options for the underlying `react-intersection-observer` hook. Optional.
    */
   intersectOptions?: IntersectionOptions;
   /**
@@ -29,8 +30,8 @@ export interface ChartSizerProps {
 }
 
 /**
- * Controls the size of the contained chart and only renders it if it
- * is in the viewport.
+ * Controls the size of the contained chart and allows you to only render it
+ * if it is currently within the viewport.
  */
 export function ChartSizer({
   className,
