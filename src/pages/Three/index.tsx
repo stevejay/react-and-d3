@@ -7,7 +7,7 @@ import { Paragraph } from '@/components/Paragraph';
 import { SectionHeading } from '@/components/SectionHeading';
 
 function PlaneObject() {
-  const mesh = useRef();
+  const mesh = useRef<any>(); // TODO fix any
   const { size } = useThree();
   return (
     <>

@@ -1,35 +1,40 @@
-import { Key } from 'react';
 // import { GridRows } from '@visx/grid';
 // import { Group } from '@visx/group';
 import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
+import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { CategoryValueDatum, Margin } from '@/types';
-import BarSeries from '@/visx-next/BarSeries';
-import { Grid } from '@/visx-next/Grid';
-import { GridColumns } from '@/visx-next/GridColumns';
-import { GridRows } from '@/visx-next/GridRows';
-import { XyChart } from '@/visx-next/XyChart';
+import { SvgXYChartAxis } from '@/visx-next/Axis';
+import { XYChartBarSeries } from '@/visx-next/BarSeries';
+import { XYChartRowGrid } from '@/visx-next/RowGrid';
+import { SvgXYChart } from '@/visx-next/SvgXYChart';
 
 export interface BarChartProps {
   data: CategoryValueDatum<string, number>[];
   margin: Margin;
-  // width: number;
-  // height: number;
 }
 
 const xScale: BandScaleConfig<string> = {
   type: 'band',
-  paddingInner: 0.3,
+  paddingInner: 0.9,
   paddingOuter: 0.2,
   round: true
 } as const;
 
+// You can control the behavior more precisely by turning off crispEdges and instead positioning the ticks exactly on half-pixel boundaries, say by using scale.rangeRound and then offsetting the tick position by a half-pixel. However, note that in Firefox the SVG element itself can be positioned on a sub-pixel boundary, which then requires further offsetting to get the tick back on a whole-pixel. :\
+
 const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
 
-const xAccessor = (d: CategoryValueDatum<string, number>) => d.category;
-const yAccessor = (d: CategoryValueDatum<string, number>) => d.value;
-const zAccessor = (d: CategoryValueDatum<string, number>) => {
+function xAccessor(d: CategoryValueDatum<string, number>) {
+  return d.category;
+}
+
+function yAccessor(d: CategoryValueDatum<string, number>) {
+  return d.value;
+}
+
+function colorAccessor(d: CategoryValueDatum<string, number>) {
   switch (d.category) {
     case 'A':
       return schemeCategory10[0];
@@ -42,9 +47,11 @@ const zAccessor = (d: CategoryValueDatum<string, number>) => {
     case 'E':
       return schemeCategory10[4];
     default:
-      return '#000';
+      return 'black';
   }
-};
+}
+
+const springConfig = { duration: 350, easing: easeCubicInOut };
 
 export function BarChart({ data, margin }: BarChartProps) {
   // const categoryScale = scaleBand<string>({
@@ -65,20 +72,113 @@ export function BarChart({ data, margin }: BarChartProps) {
   // categoryScale.rangeRound([0, xMax]);
   // valueScale.range([yMax, 0]);
 
+  // TODO I really think the scales and accessors should be labelled
+  // independent and dependent.
+
   return (
-    <XyChart margin={margin} xScale={xScale} yScale={yScale}>
-      <Grid rows columns GridRowsComponent={GridRows} GridColumnsComponent={GridColumns} numTicks={5} />
+    <SvgXYChart
+      margin={margin}
+      xScale={xScale}
+      yScale={yScale}
+      springConfig={springConfig}
+      role="graphics-document"
+      aria-label="Some title"
+    >
+      {/* <Grid rows columns tickCount={2} className="text-slate-600" /> */}
+      {/* <XYChartColumnGrid className="text-slate-600" /> */}
+      <XYChartRowGrid className="text-red-600" tickCount={5} shapeRendering="crispEdges" />
       {/* TODO Use refs within barSeries for the accessors? */}
-      <BarSeries
+      <XYChartBarSeries
         dataKey="data-a"
         data={data}
-        keyAccessor={xAccessor as (d: object) => Key}
         xAccessor={xAccessor}
         yAccessor={yAccessor}
-        // getBarProps={(d) => ({ fill: zAccessor(d) })}
-        colorAccessor={zAccessor as (d: object) => string}
+        colorAccessor={colorAccessor as (d: object) => string}
+        barProps={{ shapeRendering: 'crispEdges' }}
       />
-    </XyChart>
+      <SvgXYChartAxis
+        orientation="top"
+        label="Foobar Top"
+        hideTicks
+        tickLabelPadding={6}
+        tickLabelProps={{
+          className: 'fill-slate-400 font-sans',
+          fontSize: 12,
+          textAnchor: 'middle',
+          verticalAnchor: 'end',
+          angle: 0
+        }}
+        labelProps={{
+          className: 'fill-slate-400 font-sans',
+          textAnchor: 'middle',
+          fontSize: 14
+        }}
+        labelOffset={10}
+      />
+      <SvgXYChartAxis
+        orientation="bottom"
+        label="Foobar Bottom"
+        hideTicks
+        tickLabelPadding={6}
+        tickLabelProps={{
+          className: 'fill-slate-400 font-sans',
+          fontSize: 12,
+          textAnchor: 'middle',
+          verticalAnchor: 'start',
+          angle: 0
+        }}
+        labelProps={{
+          className: 'fill-slate-400 font-sans',
+          textAnchor: 'middle',
+          fontSize: 14
+        }}
+        labelOffset={10}
+      />
+      <SvgXYChartAxis
+        orientation="left"
+        label="Foobar Left"
+        tickCount={5}
+        hideZero
+        tickLabelPadding={6}
+        tickLabelProps={{
+          className: 'fill-slate-400 font-sans',
+          fontSize: 12,
+          textAnchor: 'end',
+          verticalAnchor: 'middle',
+          angle: -45
+        }}
+        labelProps={{
+          className: 'fill-slate-400 font-sans',
+          textAnchor: 'middle',
+          // verticalAnchor: 'end',
+          fontSize: 14
+        }}
+        labelOffset={36} // Does not take tick labels into account.
+      />
+      <SvgXYChartAxis
+        orientation="right"
+        label="Foobar Right"
+        tickCount={5}
+        hideZero
+        tickLabelPadding={6}
+        tickLabelProps={{
+          className: 'fill-slate-400 font-sans',
+          fontSize: 12,
+          textAnchor: 'start',
+          verticalAnchor: 'middle',
+          angle: -45
+        }}
+        labelProps={{
+          className: 'fill-slate-400 font-sans',
+          textAnchor: 'middle',
+          // verticalAnchor: 'end',
+          fontSize: 14
+        }}
+        labelOffset={36} // Does not take tick labels into account.
+        // hideTicks
+        // tickLength={0}
+      />
+    </SvgXYChart>
   );
 
   // return (

@@ -7,7 +7,7 @@ import { RadarChart, RadarChartProps } from './RadarChart';
 
 export type RadarChartWithTooltipProps<CategoryT extends DomainValue> = Omit<
   RadarChartProps<CategoryT>,
-  'svgRef' | 'onMouseEnter' | 'onMouseLeave' | 'onClick'
+  'svgRef' | 'onMouseMove' | 'onMouseLeave' | 'onClick'
 > & {
   renderTooltipContent: (datum: CategoryValueDatum<CategoryT, number>) => ReactElement | null;
   hideTooltipOnScroll: boolean;

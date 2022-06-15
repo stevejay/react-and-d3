@@ -1,4 +1,5 @@
-import { AxisScale } from '../axis';
+import { AxisScale } from '@visx/axis';
+
 import { createScaledValueAccessor, getScaleBandwidth, getScaleBaseline, ScaleInput } from '../scale';
 import { isValidNumber } from '../types/typeguards/isValidNumber';
 
@@ -9,7 +10,7 @@ export function createBarGenerator<XScale extends AxisScale, YScale extends Axis
   yAccessor: (datum: Datum) => ScaleInput<YScale>,
   horizontal: boolean,
   fallbackBandwidth: number,
-  offset?: number // TODO how does this relate??
+  offset: number = 0
 ) {
   const xScaleCopy = xScale.copy();
   const yScaleCopy = yScale.copy();
@@ -43,8 +44,8 @@ export function createBarGenerator<XScale extends AxisScale, YScale extends Axis
     }
 
     return {
-      x: horizontal ? xZeroPosition + Math.min(0, barLength) : x,
-      y: horizontal ? y : yZeroPosition + Math.min(0, barLength),
+      x: horizontal ? xZeroPosition + Math.min(0, barLength) : x + offset,
+      y: horizontal ? y + offset : yZeroPosition + Math.min(0, barLength),
       width: horizontal ? Math.abs(barLength) : barThickness,
       height: horizontal ? barThickness : Math.abs(barLength)
     };

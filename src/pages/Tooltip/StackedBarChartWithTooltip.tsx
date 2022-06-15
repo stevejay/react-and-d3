@@ -7,7 +7,7 @@ import { StackedBarChart, StackedBarChartProps } from './StackedBarChart';
 
 export type StackedBarChartWithTooltipProps<CategoryT extends DomainValue> = Omit<
   StackedBarChartProps<CategoryT>,
-  'svgRef' | 'onMouseEnter' | 'onMouseLeave' | 'onClick'
+  'svgRef' | 'onMouseMove' | 'onMouseLeave' | 'onClick'
 > & {
   renderTooltipContent: (datum: CategoryValueListDatum<CategoryT, number>) => ReactElement | null;
   hideTooltipOnScroll: boolean;

@@ -215,8 +215,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
   // Get a function that can be used to calculate the pixel position for a tick
   // value. This has special handling if the scale is a band scale, in which case
   // the position is in the center of each band. The scale needs to be copied
-  // (`scale.copy()`)because it will later be stored in the DOM to be used for
-  // enter animations the next time that this axis component is rendered.
+  // because it will be stored until the next render.
   const position = (scale.bandwidth ? center : number)(scale.copy(), renderingOffset);
 
   // Store the position function so it can be used to animate the entering ticks

@@ -1,2 +1,2 @@
+export { useAxisTransitions } from './useAxisTransitions';
 export { useBarTransitions } from './useBarTransitions';
-export { useGridTransitions } from './useGridTransitions';

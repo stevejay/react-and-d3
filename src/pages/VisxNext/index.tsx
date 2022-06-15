@@ -18,8 +18,29 @@ function VisxNextPage() {
       </Paragraph>
       <SectionHeading>Bar Chart</SectionHeading>
       <BarChartExample />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={8}
+        height={4}
+        viewBox="0 0 8 4"
+        style={{ backgroundColor: 'white' }}
+      >
+        <line x1={2} y1={2} x2={6} y2={2} strokeWidth={1} stroke="red" />
+      </svg>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={4}
+        height={8}
+        viewBox="0 0 4 8"
+        style={{ backgroundColor: 'white' }}
+      >
+        <line x1={2} y1={2} x2={2} y2={6} strokeWidth={1} stroke="red" />
+      </svg>
     </main>
   );
 }
+
+// horizontal line needs y + offset.
+// vertical line needs x + offset.
 
 export default VisxNextPage;

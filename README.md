@@ -32,14 +32,6 @@ docker-compose up --force-recreate --build --detach
 
 You should now be able to access the Web site at `http://localhost:6008/`.
 
-## Storybook
-
-To build and run the Storybook Docker image locally, run the following command from the project root:
-
-```bash
-docker-compose --file docker-compose.storybook.yml up --force-recreate --build --detach
-```
-
 ## Analysis
 
 Memory leak detection:

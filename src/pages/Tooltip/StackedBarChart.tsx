@@ -34,7 +34,7 @@ export interface StackedBarChartProps<CategoryT extends DomainValue> {
   datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
   svgRef: RefObject<SVGSVGElement>;
   compact: boolean;
-  onMouseEnter: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
+  onMouseMove: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
   onMouseLeave: () => void;
   onClick: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
   springConfig: SpringConfig;
@@ -60,7 +60,7 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
   datumDescription,
   svgRef,
   compact,
-  onMouseEnter,
+  onMouseMove,
   onMouseLeave,
   onClick,
   springConfig
@@ -156,7 +156,7 @@ function StackedBarChartCore<CategoryT extends DomainValue>({
         categoryScale={categoryScale}
         chartArea={chartArea}
         orientation="horizontal"
-        onMouseEnter={onMouseEnter}
+        onMouseMove={onMouseMove}
         onMouseLeave={onMouseLeave}
         onClick={onClick}
       />

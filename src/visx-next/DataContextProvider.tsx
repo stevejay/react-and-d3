@@ -1,8 +1,10 @@
 import { ReactNode, useMemo } from 'react';
+import { SpringConfig } from 'react-spring';
 // import createOrdinalScale from '@visx/scale/lib/scales/ordinal';
 import { AxisScaleOutput } from '@visx/axis';
 import { ScaleConfig, ScaleConfigToD3Scale } from '@visx/scale';
 
+import { defaultSpringConfig } from './constants';
 import { DataContext } from './DataContext';
 import { useDataRegistry } from './useDataRegistry';
 import { Dimensions, useDimensions } from './useDimensions';
@@ -21,6 +23,10 @@ export interface DataContextProviderProps<
   yScale: YScaleConfig;
   /* Determines whether Series will be plotted horizontally (e.g., horizontal bars). */
   horizontal?: boolean;
+  /* 
+  A react-spring configuration object
+  */
+  springConfig?: SpringConfig;
   /* Any React children. */
   children: ReactNode;
 }
@@ -34,7 +40,8 @@ export function DataContextProvider<
   xScale: xScaleConfig,
   yScale: yScaleConfig,
   children,
-  horizontal
+  horizontal,
+  springConfig = defaultSpringConfig
 }: DataContextProviderProps<XScaleConfig, YScaleConfig>) {
   const [{ width, height, margin }, setDimensions] = useDimensions(initialDimensions);
   const innerWidth = Math.max(0, width - margin.left - margin.right);
@@ -79,9 +86,22 @@ export function DataContextProvider<
       innerWidth,
       innerHeight,
       setDimensions,
-      horizontal
+      horizontal,
+      springConfig
     }),
-    [dataRegistry, xScale, yScale, width, height, margin, innerWidth, innerHeight, setDimensions, horizontal]
+    [
+      dataRegistry,
+      xScale,
+      yScale,
+      width,
+      height,
+      margin,
+      innerWidth,
+      innerHeight,
+      setDimensions,
+      horizontal,
+      springConfig
+    ]
   );
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

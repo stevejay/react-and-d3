@@ -1,47 +1,71 @@
 import { ReactNode, SVGProps, useContext, useEffect } from 'react';
+import { SpringConfig } from 'react-spring';
 import { AxisScaleOutput } from '@visx/axis';
-import { ParentSizeModern } from '@visx/responsive';
+import { isNil } from 'lodash-es';
 
 import { DataContext } from './DataContext';
 import { DataContextProvider, DataContextProviderProps } from './DataContextProvider';
+import { ParentSize } from './ParentSize';
 import { ScaleConfig } from './scale';
 import { Margin } from './types';
 
 // TODO what about predetermined domain ranges?
 
-export interface XyChartProps<
+const defaultMargin = { top: 50, right: 50, bottom: 50, left: 50 };
+
+export type SvgXYChartProps<
   XScaleConfig extends ScaleConfig<AxisScaleOutput, any, any>,
   YScaleConfig extends ScaleConfig<AxisScaleOutput, any, any>,
   Datum extends object
-> {
-  svgProps?: Omit<SVGProps<SVGSVGElement>, 'width' | 'height'>;
-  /** Total width of the desired chart svg, including margin. */
+> = {
+  /**
+   * Total width of the desired chart svg, including margin.
+   * If `width`` is nil then XYChart will wrap itself in a ParentSizeModern and use it
+   * to set the chart width.
+   */
   width?: number;
-  /** Total height of the desired chart svg, including margin. */
+  /**
+   * Total height of the desired chart svg, including margin.
+   * If `height`` is nil then XYChart will wrap itself in a ParentSizeModern and use it
+   * to set the chart height.
+   */
   height?: number;
-  /** Margin to apply around the outside. */
+  /** Margin to apply around the chart. */
   margin?: Margin;
   /** If DataContext is not available, XYChart will wrap itself in a DataContextProvider and set this as the xScale config. */
   xScale?: DataContextProviderProps<XScaleConfig, YScaleConfig>['xScale'];
   /** If DataContext is not available, XYChart will wrap itself in a DataContextProvider and set this as the yScale config. */
   yScale?: DataContextProviderProps<XScaleConfig, YScaleConfig>['yScale'];
-  /* If DataContext is not available, XYChart will wrap itself in a DataContextProvider and set this as horizontal. */
+  /** If DataContext is not available, XYChart will wrap itself in a DataContextProvider and set this as horizontal. */
   horizontal?: boolean;
+  /**
+   * A react-spring configuration object.
+   * If DataContext is not available, XYChart will wrap itself in a DataContextProvider and set this as springConfig.
+   * If provided, must be a stable object.
+   */
+  springConfig?: SpringConfig;
   /** XYChart children. */
   children: ReactNode;
-}
+} & Omit<SVGProps<SVGSVGElement>, 'width' | 'height'>;
 
-const DEFAULT_MARGIN = { top: 50, right: 50, bottom: 50, left: 50 };
-
-export function XyChart<
+export function SvgXYChart<
   XScaleConfig extends ScaleConfig<AxisScaleOutput, any, any>,
   YScaleConfig extends ScaleConfig<AxisScaleOutput, any, any>,
   Datum extends object
->(props: XyChartProps<XScaleConfig, YScaleConfig, Datum>) {
-  //   return <ParentSize>{children}</ParentSize>;
-  const { width, height, margin = DEFAULT_MARGIN, svgProps, xScale, yScale, horizontal, children } = props;
+>(props: SvgXYChartProps<XScaleConfig, YScaleConfig, Datum>) {
+  const {
+    width,
+    height,
+    margin = defaultMargin,
+    xScale,
+    yScale,
+    horizontal,
+    springConfig,
+    children,
+    ...svgProps
+  } = props;
 
-  const { setDimensions } = useContext(DataContext); // TODO
+  const { setDimensions } = useContext(DataContext);
 
   useEffect(() => {
     if (setDimensions && width && width > 0 && height && height > 0) {
@@ -63,28 +87,25 @@ export function XyChart<
         yScale={yScale}
         initialDimensions={{ width, height, margin }}
         horizontal={horizontal}
+        springConfig={springConfig}
       >
-        <XyChart {...props} />
+        <SvgXYChart {...props} />
       </DataContextProvider>
     );
   }
 
-  if (width == null || height == null) {
+  if (isNil(width) || isNil(height)) {
     return (
-      <ParentSizeModern>
-        {(dims) => (
-          <XyChart
-            {...props}
-            width={props.width == null ? dims.width : props.width}
-            height={props.height == null ? dims.height : props.height}
-          />
+      <ParentSize>
+        {(dimensions) => (
+          <SvgXYChart {...props} width={width ?? dimensions.width} height={height ?? dimensions.height} />
         )}
-      </ParentSizeModern>
+      </ParentSize>
     );
   }
 
   return width && width > 0 && height && height > 0 ? (
-    <svg width={width} height={height} {...svgProps}>
+    <svg xmlns="http://www.w3.org/2000/svg" {...svgProps} width={width} height={height}>
       {children}
       {/* <rect
         x={margin.left}

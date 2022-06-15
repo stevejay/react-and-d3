@@ -7,7 +7,7 @@ import { BarChart, BarChartProps } from './BarChart';
 
 export type BarChartWithTooltipProps<CategoryT extends DomainValue> = Omit<
   BarChartProps<CategoryT>,
-  'svgRef' | 'onMouseEnter' | 'onMouseLeave' | 'onClick'
+  'svgRef' | 'onMouseMove' | 'onMouseLeave' | 'onClick'
 > & {
   renderTooltipContent: (datum: CategoryValueDatum<CategoryT, number>) => ReactElement | null;
   hideTooltipOnScroll: boolean;

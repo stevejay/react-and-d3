@@ -31,7 +31,7 @@ interface TooltipState<DatumT> {
 type ReturnValue<DatumT> = [
   RefObject<SVGSVGElement>,
   {
-    onMouseEnter: (datum: DatumT, rect: Rect) => void;
+    onMouseMove: (datum: DatumT, rect: Rect) => void;
     onMouseLeave: () => void;
     onClick: (datum: DatumT, rect: Rect) => void;
   },
@@ -80,7 +80,7 @@ export function useFollowOnHoverTooltip<DatumT>(
 
   const eventHandlers = useMemo(
     () => ({
-      onMouseEnter: (datum: DatumT, rect: Rect) => {
+      onMouseMove: (datum: DatumT, rect: Rect) => {
         setTooltipStateAfter((prev) => {
           return prev.visible && prev.datum === datum && rectsAreEqual(prev.rect, rect)
             ? prev

@@ -1,0 +1,52 @@
+import { animated } from 'react-spring';
+import { Group } from '@visx/group';
+import { getTicks } from '@visx/scale';
+
+import { useAxisTransitions } from './animation';
+import { GridComponentProps, GridScale } from './types';
+
+export type AllGridRowsProps<Scale extends GridScale> = GridComponentProps<Scale>;
+//&
+//Omit<LineProps & Omit<SVGProps<SVGLineElement>, keyof LineProps>, keyof GridRowsProps<Scale>>;
+
+// function getAxisDomainAsReactKey<Scale extends GridScale>(value: ScaleInput<Scale>): Key {
+//   return value.toString();
+// }
+
+export function GridRows<Scale extends GridScale>({
+  top = 0,
+  left = 0,
+  scale,
+  dimension,
+  stroke = 'currentColor',
+  strokeWidth = 1,
+  strokeDasharray,
+  className,
+  tickCount = 10,
+  // lineStyle,
+  offset,
+  tickValues,
+  animate = true,
+  springConfig
+}: // ...restProps
+AllGridRowsProps<Scale>) {
+  const ticks = tickValues ?? getTicks(scale, tickCount);
+  const transitions = useAxisTransitions(scale, 'rows', ticks, springConfig, animate, offset);
+  return (
+    <Group className={`visx-grid-rows ${className ?? ''}`} top={top} left={left}>
+      {transitions(({ opacity, y }) => (
+        <animated.line
+          x1={0}
+          y1={y}
+          x2={dimension}
+          y2={y}
+          style={{ opacity }}
+          stroke={stroke}
+          strokeWidth={strokeWidth}
+          strokeDasharray={strokeDasharray}
+          role="presentation"
+        />
+      ))}
+    </Group>
+  );
+}

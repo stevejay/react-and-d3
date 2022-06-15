@@ -35,15 +35,15 @@ export function withRegisteredData<
       >
   ) {
     const { dataKey, data, xAccessor, yAccessor } = props;
-    const { xScale, yScale, dataRegistry } = useContext(DataContext) as unknown as DataContextType<
-      XScale,
-      YScale,
-      Datum
-    >;
+    const { xScale, yScale, dataRegistry, springConfig } = useContext(
+      DataContext
+    ) as unknown as DataContextType<XScale, YScale, Datum>;
 
     useEffect(() => {
-      if (dataRegistry) dataRegistry.registerData({ key: dataKey, data, xAccessor, yAccessor });
-      return () => dataRegistry?.unregisterData(dataKey);
+      if (dataRegistry) {
+        dataRegistry.registerData({ key: dataKey, data, xAccessor, yAccessor });
+        return () => dataRegistry.unregisterData(dataKey);
+      }
     }, [dataRegistry, dataKey, data, xAccessor, yAccessor]);
 
     const registryEntry = dataRegistry?.get(dataKey);
@@ -67,6 +67,7 @@ export function withRegisteredData<
         data={registryEntry.data}
         xAccessor={registryEntry.xAccessor}
         yAccessor={registryEntry.yAccessor}
+        springConfig={springConfig}
       />
     );
   }

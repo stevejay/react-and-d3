@@ -6,7 +6,7 @@ import { useAnnouncer } from '@/contexts/Announcer';
 export function TitleAnnouncer() {
   const announcer = useAnnouncer();
   const handleChangeClientState = useCallback(
-    (newState) => {
+    (newState: any) => {
       announcer(newState?.title);
     },
     [announcer]

@@ -1,3 +1,5 @@
+import { Key } from 'react';
+
 import { AxisOrientation, AxisScale, DomainValue } from '@/types';
 
 /**
@@ -28,7 +30,7 @@ export function center<DomainT extends DomainValue>(
 /**
  * Get the key value for an AxisDomain object, for use as the key prop on a React element.
  */
-export function getAxisDomainAsReactKey(value: DomainValue): string {
+export function getAxisDomainAsReactKey(value: DomainValue): Key {
   return value.toString();
 }
 

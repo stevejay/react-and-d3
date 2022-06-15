@@ -28,7 +28,7 @@ export interface BarChartProps<CategoryT extends DomainValue> {
   datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   transitionSeconds?: number;
   svgRef: RefObject<SVGSVGElement>;
-  onMouseEnter: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
+  onMouseMove: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
   onMouseLeave: () => void;
   onClick: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
   springConfig: SpringConfig;
@@ -48,7 +48,7 @@ function BarChartCore<CategoryT extends DomainValue>({
   datumAriaLabel,
   datumDescription,
   svgRef,
-  onMouseEnter,
+  onMouseMove,
   onMouseLeave,
   onClick,
   springConfig
@@ -126,7 +126,7 @@ function BarChartCore<CategoryT extends DomainValue>({
           categoryScale={categoryScale}
           chartArea={chartArea}
           orientation="vertical"
-          onMouseEnter={onMouseEnter}
+          onMouseMove={onMouseMove}
           onMouseLeave={onMouseLeave}
           onClick={onClick}
         />

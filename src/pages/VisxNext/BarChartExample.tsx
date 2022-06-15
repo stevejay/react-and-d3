@@ -1,6 +1,7 @@
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 import { Margin } from '@/types';
+import { InView } from '@/visx-next/InView';
 
 import { BarChart } from './BarChart';
 
@@ -25,7 +26,7 @@ const dataSets = [
   ]
 ];
 
-const margin: Margin = { left: 72, right: 40, top: 40, bottom: 64 };
+const margin: Margin = { left: 72, right: 72, top: 64, bottom: 64 };
 
 // function isCompact(width: number) {
 //   return Boolean(width) && width < 500;
@@ -49,8 +50,10 @@ export function BarChartExample() {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
-      <div className="relative overflow-hidden w-full h-[384px]">
-        <BarChart data={data} margin={margin} />
+      <div className="relative w-full h-[384px] bg-slate-700">
+        <InView>
+          <BarChart data={data} margin={margin} />
+        </InView>
       </div>
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>

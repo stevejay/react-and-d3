@@ -66,7 +66,7 @@ module.exports = {
           pascalCase: true
         },
         // ignore ambient module declaration file names
-        ignore: ['\\.d\\.ts$']
+        ignore: ['\\.d\\.ts$', 'XYChart\\.tsx$']
       }
     ],
     'testing-library/no-node-access': 0,

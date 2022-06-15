@@ -1,25 +1,32 @@
 import { ReactElement, useContext } from 'react';
+import { SpringConfig } from 'react-spring';
 import type { AxisScale } from '@visx/axis';
 
+import { defaultSpringConfig } from './constants';
 import { DataContext } from './DataContext';
+import { GridColumns } from './GridColumns';
+import { GridRows } from './GridRows';
 import { CommonGridProps, GridComponentProps } from './types';
 
 export type GridProps = {
-  /** Whether to render GridRows. */
+  /** Whether to render grid row lines. */
   rows?: boolean;
-  /** Whether to render GridColumns. */
+  /** Whether to render grid column lines. */
   columns?: boolean;
   /** Rendered GridRows component which is passed GridRowProps by BaseGrid. */
-  GridRowsComponent: (props: GridComponentProps<AxisScale>) => ReactElement;
+  GridRowsComponent?: (props: GridComponentProps<AxisScale>) => ReactElement;
   /** Rendered GridColumns component which is passed GridColumnsProps by BaseGrid. */
-  GridColumnsComponent: (props: GridComponentProps<AxisScale>) => ReactElement;
+  GridColumnsComponent?: (props: GridComponentProps<AxisScale>) => ReactElement;
+  /* A react-spring configuration object */
+  springConfig?: SpringConfig;
 } & CommonGridProps;
 
 export function Grid({
   rows = true,
   columns = true,
-  GridRowsComponent,
-  GridColumnsComponent,
+  GridRowsComponent = GridRows,
+  GridColumnsComponent = GridColumns,
+  springConfig = defaultSpringConfig,
   ...props
 }: GridProps) {
   const {
@@ -30,29 +37,23 @@ export function Grid({
     innerHeight
   } = useContext(DataContext);
 
-  // TODO make configurable
-  const gridLineStyles = {
-    stroke: 'red',
-    strokeWidth: 1
-  };
-
   return (
     <>
       {rows && rowsScale && innerWidth != null && (
         <GridRowsComponent
           left={margin?.left}
-          lineStyle={gridLineStyles}
           dimension={innerWidth}
           scale={rowsScale}
+          springConfig={springConfig}
           {...props}
         />
       )}
       {columns && columnsScale && innerHeight != null && (
         <GridColumnsComponent
           top={margin?.top}
-          lineStyle={gridLineStyles}
           dimension={innerHeight}
           scale={columnsScale}
+          springConfig={springConfig}
           {...props}
         />
       )}

@@ -53,7 +53,7 @@ export interface SvgCategoryInteractionProps<
   orientation: ChartOrientation;
   categoryScale: ScaleBand<CategoryT>;
   className?: string;
-  onMouseEnter: (datum: DatumT, rect: Rect) => void;
+  onMouseMove: (datum: DatumT, rect: Rect) => void;
   onMouseLeave: () => void;
   onClick: (datum: DatumT, rect: Rect) => void;
   svgRef: RefObject<SVGSVGElement>;
@@ -70,7 +70,7 @@ export function SvgCategoryInteraction<
   orientation,
   className = '',
   svgRef,
-  onMouseEnter,
+  onMouseMove,
   onMouseLeave,
   onClick
 }: SvgCategoryInteractionProps<CategoryT, DatumT>): ReactElement | null {
@@ -105,7 +105,7 @@ export function SvgCategoryInteraction<
             orientation === 'vertical' ? rect.x - chartArea.translateLeft : rect.y - chartArea.translateTop
           );
           const datum = datumLookup.get(category);
-          datum && onMouseEnter(datum, rect);
+          datum && onMouseMove(datum, rect);
         }}
         onMouseLeave={onMouseLeave}
         onClick={(event) => {

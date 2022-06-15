@@ -34,7 +34,7 @@ function TooltipPage() {
       <Paragraph>
         The chart below demonstrates the tooltip. It has the following notable behaviours:
       </Paragraph>
-      <ul className="px-8 my-4 font-light leading-relaxed list-disc max-w-prose text-slate-400">
+      <ul className="px-8 my-4 font-light leading-relaxed list-disc max-w-prose text-slate-200">
         <li>
           Delayed show on hover to prevent the tooltip popping up if the user is just moving their mouse
           across the screen.

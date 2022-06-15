@@ -297,7 +297,7 @@ export function D3Scatterplot<DatumT>({
     );
     renderer.svgElement = svgRef.current;
     renderer.compact = compact;
-    renderer.onMouseMove = interactionProps.onMouseEnter;
+    renderer.onMouseMove = interactionProps.onMouseMove;
     renderer.onMouseLeave = interactionProps.onMouseLeave;
     renderer.onClick = interactionProps.onClick;
     renderer.render();

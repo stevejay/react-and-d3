@@ -29,7 +29,7 @@ export interface RadarChartProps<CategoryT extends DomainValue> {
   datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
   svgRef: RefObject<SVGSVGElement>;
-  onMouseEnter: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
+  onMouseMove: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
   onMouseLeave: () => void;
   onClick: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
 }
@@ -46,7 +46,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
   datumAriaLabel,
   datumDescription,
   svgRef,
-  onMouseEnter,
+  onMouseMove,
   onMouseLeave,
   onClick
 }: RadarChartProps<CategoryT>): ReactElement | null => {
@@ -409,7 +409,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
                 cx={cx}
                 cy={cy}
                 r={tooltipPointRadiusPx}
-                onMouseMove={() => onMouseEnter(datum, rect)}
+                onMouseMove={() => onMouseMove(datum, rect)}
                 onMouseLeave={onMouseLeave}
                 onClick={(event) => {
                   onClick(datum, rect);
