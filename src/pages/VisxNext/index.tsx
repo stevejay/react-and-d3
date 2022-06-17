@@ -5,6 +5,8 @@ import { Paragraph } from '@/components/Paragraph';
 import { SectionHeading } from '@/components/SectionHeading';
 
 import { BarChartExample } from './BarChartExample';
+import { GroupedBarChartExample } from './GroupedBarChartExample';
+import { StackedBarChartExample } from './StackedBarChartExample';
 
 function VisxNextPage() {
   return (
@@ -18,7 +20,9 @@ function VisxNextPage() {
       </Paragraph>
       <SectionHeading>Bar Chart</SectionHeading>
       <BarChartExample />
-      <svg
+      <StackedBarChartExample />
+      <GroupedBarChartExample />
+      {/* <svg
         xmlns="http://www.w3.org/2000/svg"
         width={8}
         height={4}
@@ -35,7 +39,7 @@ function VisxNextPage() {
         style={{ backgroundColor: 'white' }}
       >
         <line x1={2} y1={2} x2={2} y2={6} strokeWidth={1} stroke="red" />
-      </svg>
+      </svg> */}
     </main>
   );
 }

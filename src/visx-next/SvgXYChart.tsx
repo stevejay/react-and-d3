@@ -44,6 +44,9 @@ export type SvgXYChartProps<
    * If provided, must be a stable object.
    */
   springConfig?: SpringConfig;
+  xRangePadding?: number;
+  yRangePadding?: number;
+  seriesColors?: string[];
   /** XYChart children. */
   children: ReactNode;
 } & Omit<SVGProps<SVGSVGElement>, 'width' | 'height'>;
@@ -61,6 +64,9 @@ export function SvgXYChart<
     yScale,
     horizontal,
     springConfig,
+    xRangePadding,
+    yRangePadding,
+    seriesColors,
     children,
     ...svgProps
   } = props;
@@ -88,6 +94,9 @@ export function SvgXYChart<
         initialDimensions={{ width, height, margin }}
         horizontal={horizontal}
         springConfig={springConfig}
+        xRangePadding={xRangePadding}
+        yRangePadding={yRangePadding}
+        seriesColors={seriesColors}
       >
         <SvgXYChart {...props} />
       </DataContextProvider>

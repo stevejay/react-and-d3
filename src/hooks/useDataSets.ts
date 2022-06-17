@@ -7,3 +7,12 @@ export function useDataSets<Datum>(dataSets: readonly Datum[][]): readonly [Datu
   const data = dataSets[dataIndex];
   return [data, cycleDataIndex];
 }
+
+export function useSeriesDataSets<Datum>(
+  dataSets: readonly { seriesKeys: readonly string[]; data: readonly Datum[] }[]
+): readonly [{ seriesKeys: readonly string[]; data: readonly Datum[] }, () => void] {
+  const [dataIndex, setDataIndex] = useState(0);
+  const cycleDataIndex = () => setDataIndex((i) => (i === dataSets.length - 1 ? 0 : i + 1));
+  const data = dataSets[dataIndex];
+  return [data, cycleDataIndex];
+}

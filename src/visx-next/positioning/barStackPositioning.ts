@@ -1,0 +1,76 @@
+import { SeriesPoint } from 'd3-shape';
+
+import { getStackValue } from '../combineBarStackData';
+import { getFirstItem, getSecondItem } from '../getItem';
+import { getScaleBandwidth } from '../scale';
+import { CombinedStackData, PositionScale } from '../types';
+import { isValidNumber } from '../types/typeguards/isValidNumber';
+
+export function createBarStackPositioning<
+  XScale extends PositionScale,
+  YScale extends PositionScale
+  // Datum extends object
+>(xScale: XScale, yScale: YScale, horizontal: boolean, renderingOffset: number = 0) {
+  type StackBar = SeriesPoint<CombinedStackData<XScale, YScale>>;
+
+  const xScaleCopy = xScale.copy();
+  const yScaleCopy = yScale.copy();
+
+  const barThickness = getScaleBandwidth(horizontal ? yScaleCopy : xScaleCopy);
+  const halfBarThickness = barThickness * 0.5;
+
+  let getWidth: (bar: StackBar) => number | undefined;
+  let getHeight: (bar: StackBar) => number | undefined;
+  let getX: (bar: StackBar) => number | undefined;
+  let getY: (bar: StackBar) => number | undefined;
+
+  if (horizontal) {
+    getWidth = (bar) => (xScaleCopy(getSecondItem(bar)) ?? NaN) - (xScaleCopy(getFirstItem(bar)) ?? NaN);
+    getHeight = () => barThickness;
+    getX = (bar) => xScaleCopy(getFirstItem(bar));
+    getY = (bar) =>
+      'bandwidth' in yScaleCopy
+        ? yScaleCopy(getStackValue(bar.data)) /* + renderingOffset */
+        : Math.max((yScaleCopy(getStackValue(bar.data)) ?? NaN) - halfBarThickness) /* + renderingOffset */;
+  } else {
+    getWidth = () => barThickness;
+    getHeight = (bar) => (yScaleCopy(getFirstItem(bar)) ?? NaN) - (yScaleCopy(getSecondItem(bar)) ?? NaN);
+    getX = (bar) =>
+      'bandwidth' in xScaleCopy
+        ? xScaleCopy(getStackValue(bar.data)) /* + renderingOffset */
+        : Math.max((xScaleCopy(getStackValue(bar.data)) ?? NaN) - halfBarThickness) /* + renderingOffset */;
+    getY = (bar) => yScaleCopy(getSecondItem(bar));
+  }
+
+  return (value: SeriesPoint<CombinedStackData<XScale, YScale>>, dataKey: string) => {
+    const barX = getX(value);
+    if (!isValidNumber(barX)) {
+      return null;
+    }
+
+    const barY = getY(value);
+    if (!isValidNumber(barY)) {
+      return null;
+    }
+
+    const barWidth = getWidth(value);
+    if (!isValidNumber(barWidth)) {
+      return null;
+    }
+
+    const barHeight = getHeight(value);
+    if (!isValidNumber(barHeight)) {
+      return null;
+    }
+
+    // const barSeriesDatum = colorAccessor ? barSeries?.props?.data[index] : null;
+
+    return {
+      // key: `${stackIndex}-${barStack.key}-${index}`,
+      x: barX,
+      y: barY,
+      width: barWidth,
+      height: barHeight
+    };
+  };
+}

@@ -28,7 +28,7 @@ export function AxisDomainPath({
   className = '',
   stroke = 'currentColor',
   strokeLinecap = 'square',
-  shapeRendering = 'crispEdges', // TODO remove
+  shapeRendering = 'crispEdges',
   ...rest
 }: AxisDomainPathProps) {
   const points = createAxisDomainPath(orientation, outerTickLength, range, tickSign, renderingOffset);

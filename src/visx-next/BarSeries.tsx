@@ -1,12 +1,53 @@
-import { SVGProps, useContext } from 'react';
+import { SVGProps, useCallback, useContext } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 import { AxisScale } from '@visx/axis';
 import { Group } from '@visx/group';
 
-import { useBarTransitions } from './animation';
+import { useBarSeriesTransitions } from './animation';
 import { DataContext } from './DataContext';
-import { SeriesProps } from './types';
+import { PositionScale, SeriesProps } from './types';
 import { withRegisteredData, WithRegisteredDataProps } from './withRegisteredData';
+
+// export function AnimatedBars<XScale extends AxisScale, YScale extends AxisScale>({
+//   bars,
+//   xScale,
+//   yScale,
+//   horizontal,
+//   ...rectProps
+// }: BarsProps<XScale, YScale>) {
+//   const animatedBars = useTransition(bars, {
+//     ...useBarTransitionConfig({ horizontal, scale: horizontal ? xScale : yScale })
+//   });
+//   const isFocusable = Boolean(rectProps.onFocus || rectProps.onBlur);
+
+//   return (
+//     <>
+//       {animatedBars(
+//         (
+//           // @ts-expect-error x/y aren't in react-spring types (which are HTML CSS properties)
+//           { x, y, width, height, fill, opacity },
+//           item,
+//           { key }
+//         ) =>
+//           item == null || key == null ? null : (
+//             <animated.rect
+//               key={key}
+//               tabIndex={isFocusable ? 0 : undefined}
+//               className="visx-bar"
+//               x={x}
+//               y={y}
+//               width={width}
+//               height={height}
+//               // use the item's fill directly if it's not animate-able
+//               fill={colorHasUrl(item.fill) ? item.fill : fill}
+//               opacity={opacity}
+//               {...rectProps}
+//             />
+//           )
+//       )}
+//     </>
+//   );
+// }
 
 export type BarSeriesProps<
   XScale extends AxisScale,
@@ -19,7 +60,7 @@ export type BarSeriesProps<
   //  */
   // barPadding?: number;
   /** Given a Datum, returns its color. Falls back to theme color if unspecified or if a null-ish value is returned. */
-  colorAccessor?: (d: Datum) => string | null | undefined;
+  colorAccessor?: (d: Datum, index?: number) => string | null | undefined;
   /** Given a Datum, return its key. */
   // keyAccessor: (d: Datum) => Key;
   groupClassName?: string;
@@ -36,7 +77,7 @@ export type BarSeriesProps<
   offset?: number;
 };
 
-function BarSeries<XScale extends AxisScale, YScale extends AxisScale, Datum extends object>({
+export function BarSeries<XScale extends PositionScale, YScale extends PositionScale, Datum extends object>({
   // barPadding = 0.1,
   colorAccessor,
   data,
@@ -53,7 +94,7 @@ function BarSeries<XScale extends AxisScale, YScale extends AxisScale, Datum ext
   horizontal,
   offset
 }: BarSeriesProps<XScale, YScale, Datum> & WithRegisteredDataProps<XScale, YScale, Datum>) {
-  const transitions = useBarTransitions(
+  const transitions = useBarSeriesTransitions(
     data,
     xScale,
     yScale,
@@ -66,11 +107,12 @@ function BarSeries<XScale extends AxisScale, YScale extends AxisScale, Datum ext
     offset
   );
   return (
-    <Group {...groupProps} className={groupClassName}>
+    <Group data-test-id="bar-series" {...groupProps} className={groupClassName}>
       {transitions(({ opacity, x, y, width, height }, datum) => {
         const { style, ...restBarProps } = typeof barProps === 'function' ? barProps(datum) : barProps;
         return (
           <animated.rect
+            data-test-id="bar"
             x={x}
             y={y}
             width={width}
@@ -88,16 +130,26 @@ function BarSeries<XScale extends AxisScale, YScale extends AxisScale, Datum ext
   );
 }
 
-function XYChartBarSeriesInner<XScale extends AxisScale, YScale extends AxisScale, Datum extends object>(
-  props: Omit<BarSeriesProps<XScale, YScale, Datum>, 'horizontal'> &
-    WithRegisteredDataProps<XScale, YScale, Datum>
-) {
-  const { springConfig: fallbackSpringConfig, horizontal } = useContext(DataContext);
+function XYChartBarSeriesInner<
+  XScale extends PositionScale,
+  YScale extends PositionScale,
+  Datum extends object
+>({
+  colorAccessor,
+  springConfig,
+  dataKey,
+  ...rest
+}: Omit<BarSeriesProps<XScale, YScale, Datum>, 'horizontal'> &
+  WithRegisteredDataProps<XScale, YScale, Datum>) {
+  const { springConfig: fallbackSpringConfig, horizontal, colorScale } = useContext(DataContext);
+  const fallbackColorAccessor = useCallback(() => colorScale?.(dataKey) ?? '', [colorScale, dataKey]);
   return (
     <BarSeries
-      {...props}
+      {...rest}
       horizontal={horizontal ?? false}
-      springConfig={props.springConfig ?? fallbackSpringConfig}
+      springConfig={springConfig ?? fallbackSpringConfig}
+      dataKey={dataKey}
+      colorAccessor={colorAccessor ?? fallbackColorAccessor}
     />
   );
 }

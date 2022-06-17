@@ -1,16 +1,25 @@
-import { AxisScale } from '@visx/axis';
-
 import { createScaledValueAccessor, getScaleBandwidth, getScaleBaseline, ScaleInput } from '../scale';
+import { PositionScale } from '../types';
 import { isValidNumber } from '../types/typeguards/isValidNumber';
 
-export function createBarGenerator<XScale extends AxisScale, YScale extends AxisScale, Datum extends object>(
+// import { GridScale } from '../types';
+
+// export function getScaleBandwidth<Output>(scale: D3Scale<Output, any, any>) {
+//   return 'bandwidth' in scale ? scale.bandwidth() : 0;
+// }
+
+export function createBarSeriesPositioning<
+  XScale extends PositionScale,
+  YScale extends PositionScale,
+  Datum extends object
+>(
   xScale: XScale,
   yScale: YScale,
   xAccessor: (datum: Datum) => ScaleInput<XScale>,
   yAccessor: (datum: Datum) => ScaleInput<YScale>,
   horizontal: boolean,
   fallbackBandwidth: number,
-  offset: number = 0
+  renderingOffset: number = 0
 ) {
   const xScaleCopy = xScale.copy();
   const yScaleCopy = yScale.copy();
@@ -18,8 +27,9 @@ export function createBarGenerator<XScale extends AxisScale, YScale extends Axis
   const getScaledX = createScaledValueAccessor(xScaleCopy, xAccessor);
   const getScaledY = createScaledValueAccessor(yScaleCopy, yAccessor);
 
-  const scaleBandwidth = getScaleBandwidth(horizontal ? yScaleCopy : xScaleCopy);
-  const barThickness = scaleBandwidth || fallbackBandwidth;
+  const barThickness = getScaleBandwidth(horizontal ? yScaleCopy : xScaleCopy);
+  // const scaleBandwidth = getScaleBandwidth(horizontal ? yScaleCopy : xScaleCopy);
+  // const barThickness = scaleBandwidth || fallbackBandwidth;
 
   const xOffset = horizontal ? 0 : -barThickness / 2;
   const yOffset = horizontal ? -barThickness / 2 : 0;
@@ -44,8 +54,8 @@ export function createBarGenerator<XScale extends AxisScale, YScale extends Axis
     }
 
     return {
-      x: horizontal ? xZeroPosition + Math.min(0, barLength) : x + offset,
-      y: horizontal ? y + offset : yZeroPosition + Math.min(0, barLength),
+      x: horizontal ? xZeroPosition + Math.min(0, barLength) : x + renderingOffset,
+      y: horizontal ? y + renderingOffset : yZeroPosition + Math.min(0, barLength),
       width: horizontal ? Math.abs(barLength) : barThickness,
       height: horizontal ? barThickness : Math.abs(barLength)
     };

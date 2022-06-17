@@ -1,6 +1,6 @@
 import { ReactNode, SVGProps, useContext } from 'react';
 import { animated } from 'react-spring';
-import { AxisScale } from '@visx/axis';
+// import { AxisScale } from '@visx/axis';
 import { Group } from '@visx/group';
 import { getTicks, ScaleInput } from '@visx/scale';
 import { Text } from '@visx/text';
@@ -10,7 +10,7 @@ import { AxisDomainPath } from './AxisDomainPath';
 import { DataContext } from './DataContext';
 import { getLabelTransform } from './getLabelTransform';
 import { getTickFormatter } from './getTickFormatter';
-import { CommonAxisProps, SvgAxisRendererProps, TextProps, TicksRendererProps } from './types';
+import { AxisScale, CommonAxisProps, SvgAxisRendererProps, TextProps, TicksRendererProps } from './types';
 
 type SvgAxisTickLineProps = Omit<SVGProps<SVGLineElement>, 'ref'>;
 
@@ -119,8 +119,13 @@ function SvgAxisRenderer<Scale extends AxisScale>({
 }: SvgAxisRendererProps<Scale>) {
   const isLeft = orientation === 'left';
   const isTop = orientation === 'top';
-  // const horizontal = isTop || orientation === 'bottom';
+  const isVertical = orientation === 'left' || orientation === 'right';
   const tickSign = isLeft || isTop ? -1 : 1;
+  const rangeFrom = Number(scale.range()[0]) ?? 0;
+  const rangeTo = Number(scale.range()[1]) ?? 0;
+  const range = isVertical
+    ? [rangeFrom + rangePadding, rangeTo - rangePadding]
+    : [rangeFrom - rangePadding, rangeTo + rangePadding];
 
   // compute the max tick label size to compute label offset
   const allTickLabelProps = tickValues.map((value, index) =>
@@ -157,7 +162,7 @@ function SvgAxisRenderer<Scale extends AxisScale>({
           {...domainPathProps}
           orientation={orientation}
           renderingOffset={renderingOffset}
-          range={scale.range()}
+          range={range}
           outerTickLength={outerTickLength}
           tickSign={tickSign}
           animate={animate}
@@ -176,7 +181,7 @@ function SvgAxisRenderer<Scale extends AxisScale>({
             labelOffset,
             labelProps,
             orientation,
-            range: scale.range(),
+            range,
             maxTickLabelFontSize,
             tickLength
           })}
@@ -189,14 +194,10 @@ function SvgAxisRenderer<Scale extends AxisScale>({
 }
 
 export type SvgAxisProps<Scale extends AxisScale> = CommonAxisProps<Scale> & {
-  /** The class name applied to the outermost axis group element. */
-  // axisClassName?: string;
   /** A top pixel offset applied to the entire axis. */
   top?: number;
   /** A left pixel offset applied to the entire axis. */
   left?: number;
-  /** A [d3](https://github.com/d3/d3-scale) or [visx](https://github.com/airbnb/visx/tree/master/packages/visx-scale) scale function. */
-  // scale: Scale;
   /** An array of values that determine the number and values of the ticks. Falls back to `scale.ticks()` or `.domain()`. */
   tickValues?: ScaleInput<Scale>[];
   /** Use to override the default axis renderer. */
@@ -242,6 +243,7 @@ export type SvgXYChartAxisProps<Scale extends AxisScale> = Omit<
 export function SvgXYChartAxis<Scale extends AxisScale>({
   orientation,
   springConfig,
+  rangePadding,
   ...rest
 }: SvgXYChartAxisProps<Scale>) {
   const {
@@ -250,7 +252,9 @@ export function SvgXYChartAxis<Scale extends AxisScale>({
     margin,
     width,
     height,
-    springConfig: fallbackSpringConfig
+    springConfig: fallbackSpringConfig,
+    xRangePadding,
+    yRangePadding
   } = useContext(DataContext);
 
   const top =
@@ -267,7 +271,10 @@ export function SvgXYChartAxis<Scale extends AxisScale>({
       ? (width ?? 0) - (margin?.right ?? 0)
       : 0;
 
-  const scale = (orientation === 'left' || orientation === 'right' ? yScale : xScale) as Scale | undefined;
+  const isVertical = orientation === 'left' || orientation === 'right';
+  const fallbackRangePadding = isVertical ? yRangePadding : xRangePadding;
+  const scale = (isVertical ? yScale : xScale) as Scale | undefined;
+
   if (!scale) {
     return null;
   }
@@ -280,6 +287,7 @@ export function SvgXYChartAxis<Scale extends AxisScale>({
       left={left}
       orientation={orientation}
       springConfig={springConfig ?? fallbackSpringConfig}
+      rangePadding={rangePadding ?? fallbackRangePadding}
     />
   );
 }

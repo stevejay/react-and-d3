@@ -1,14 +1,16 @@
 import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 
-import { CategoryValueDatum, Margin } from '@/types';
+import { CategoryValueListDatum, Margin } from '@/types';
 import { SvgXYChartAxis } from '@/visx-next/Axis';
 import { XYChartBarSeries } from '@/visx-next/BarSeries';
+import { SvgXYChartBarStack } from '@/visx-next/BarStack';
 import { XYChartRowGrid } from '@/visx-next/RowGrid';
 import { SvgXYChart } from '@/visx-next/SvgXYChart';
 
-export interface BarChartProps {
-  data: CategoryValueDatum<string, number>[];
+export interface StackedBarChartProps {
+  data: readonly CategoryValueListDatum<string, number>[];
+  dataKeys: readonly string[];
   margin: Margin;
 }
 
@@ -21,19 +23,9 @@ const xScale: BandScaleConfig<string> = {
 
 const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
 
-function xAccessor(d: CategoryValueDatum<string, number>) {
-  return d.category;
-}
-
-function yAccessor(d: CategoryValueDatum<string, number>) {
-  return d.value;
-}
-
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
-// TODO I really think the scales and accessors should be labelled
-// independent and dependent.
-export function BarChart({ data, margin }: BarChartProps) {
+export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps) {
   return (
     <SvgXYChart
       margin={margin}
@@ -47,13 +39,18 @@ export function BarChart({ data, margin }: BarChartProps) {
       {/* <XYChartColumnGrid className="text-slate-600" /> */}
       <XYChartRowGrid className="text-red-600" tickCount={5} shapeRendering="crispEdges" />
       {/* TODO Use refs within barSeries for the accessors? */}
-      <XYChartBarSeries
-        dataKey="data-a"
-        data={data}
-        xAccessor={xAccessor}
-        yAccessor={yAccessor}
-        barProps={{ shapeRendering: 'crispEdges' }}
-      />
+      <SvgXYChartBarStack stackOffset="none">
+        {dataKeys.map((dataKey) => (
+          <XYChartBarSeries
+            key={dataKey}
+            dataKey={dataKey}
+            data={data}
+            xAccessor={(d) => d.category}
+            yAccessor={(d) => d.values[dataKey]}
+            barProps={{ shapeRendering: 'crispEdges' }}
+          />
+        ))}
+      </SvgXYChartBarStack>
       <SvgXYChartAxis
         orientation="top"
         label="Foobar Top"

@@ -1,9 +1,14 @@
 import { CSSProperties, FocusEvent, PointerEvent, ReactNode, Ref, SVGAttributes, SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
 import { AxisScale } from '@visx/axis';
-import { D3Scale, NumberLike, ScaleInput } from '@visx/scale';
+import { D3Scale, NumberLike, ScaleInput, ScaleTypeToD3Scale } from '@visx/scale';
+import { Series, SeriesPoint } from 'd3-shape';
 
 import { DataRegistry } from '../DataRegistry'; // TODO there's a dep loop here.
+import { STACK_OFFSETS } from '../stackOffset';
+import { STACK_ORDERS } from '../stackOrder';
+
+export type { AxisScale } from '@visx/axis';
 
 export interface Margin {
   top: number;
@@ -18,6 +23,9 @@ export type Angle = number;
 // In order to plot values on an axis, the output of the scale must be a number
 // or be number-like. Additionally, some scales return undefined.
 export type GridScaleOutput = number | NumberLike | undefined;
+
+/** A catch-all type for scales that returns number */
+export type PositionScale = D3Scale<number, any, any>;
 
 /** A catch-all type for scales that are compatible with grid */
 export type GridScale<Output extends GridScaleOutput = GridScaleOutput> = D3Scale<Output, any, any>;
@@ -81,7 +89,9 @@ export interface DataRegistryEntry<XScale extends AxisScale, YScale extends Axis
 export interface DataContextType<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> {
   xScale: XScale;
   yScale: YScale;
-  //   colorScale: ScaleTypeToD3Scale<string, string>['ordinal'];
+  xRangePadding: number;
+  yRangePadding: number;
+  colorScale: ScaleTypeToD3Scale<string, string>['ordinal'];
   width: number;
   height: number;
   innerWidth: number;
@@ -192,7 +202,7 @@ export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale,
 /** Bar shape. */
 export interface Bar {
   // /** Unique key for Bar (not dataKey). */
-  // key: string;
+  key: string;
   /** X coordinate of Bar. */
   x: number;
   /** Y coordinate of Bar. */
@@ -202,8 +212,15 @@ export interface Bar {
   /** Height of Bar. */
   height: number;
   // /** Fill color of Bar */
-  // fill?: string;
+  fill?: string;
 }
+
+export type BarsProps<XScale extends AxisScale, YScale extends AxisScale> = {
+  bars: Bar[];
+  xScale: XScale;
+  yScale: YScale;
+  horizontal?: boolean;
+} & Omit<SVGProps<SVGRectElement>, 'x' | 'y' | 'width' | 'height' | 'ref'>;
 
 // /** Props for base Bars components */
 // export type BarsProps<XScale extends AxisScale, YScale extends AxisScale> = {
@@ -323,76 +340,52 @@ export type TicksRendererProps<Scale extends AxisScale> = Pick<
 export type CommonAxisProps<Scale extends AxisScale> = {
   /** A [d3](https://github.com/d3/d3-scale) or [visx](https://github.com/airbnb/visx/tree/master/packages/visx-scale) scale function. */
   scale: Scale;
-  /** The class name applied to the axis line element. */
-  // axisLineClassName?: string;
+  /** The number of ticks wanted for the axis (note this is approximate)  */
+  tickCount?: number;
+  /** A [d3 formatter](https://github.com/d3/d3-scale/blob/master/README.md#continuous_tickFormat) for the tick text. */
+  tickFormat?: TickFormatter<ScaleInput<Scale>>;
+  /** Placement of the axis */
+  orientation: Orientation;
+  /** Pixel padding to apply to both sides of the axis. */
+  rangePadding?: number;
   /**  If true, will hide the axis line. */
   hideAxisLine?: boolean;
   /** If true, will hide the ticks (but not the tick labels). */
   hideTicks?: boolean;
   /** If true, will hide the '0' value tick and tick label. */
   hideZero?: boolean;
-  /** The text for the axis label. */
-  label?: string;
-  /** The class name applied to the axis label text element. */
-  // labelClassName?: string;
-  // /** Pixel offset of the axis label (does not include tick label font size, which is accounted for automatically)  */
-  labelOffset?: number;
-  /** Props applied to the axis label component. */
-  // labelProps?: Partial<TextProps>;
-  /** The number of ticks wanted for the axis (note this is approximate)  */
-  tickCount?: number;
-  /** Placement of the axis */
-  orientation: Orientation;
-  /** Pixel padding to apply to both sides of the axis. */
-  rangePadding?: number;
-  /** The color for the stroke of the lines. */
-  // stroke?: string;
-  /** The pixel value for the width of the lines. */
-  // strokeWidth?: number | string;
-  /** The pattern of dashes in the stroke. */
-  // strokeDasharray?: string;
-  /** Props to be applied to individual tick lines. */
-  tickLineProps?: LineProps;
-  /** The class name applied to each tick group. */
-  tickClassName?: string;
-  /** Override the component used to render tick labels (instead of <Text /> from @visx/text). */
-  // tickComponent?: (tickRendererProps: TickRendererProps) => ReactNode;
-  /** Override the component used to render all tick lines and labels. */
-  ticksComponent?: (tickRendererProps: TicksRendererProps<Scale>) => ReactNode;
-  /** A [d3 formatter](https://github.com/d3/d3-scale/blob/master/README.md#continuous_tickFormat) for the tick text. */
-  tickFormat?: TickFormatter<ScaleInput<Scale>>;
-  /** A function that returns props for a given tick label. */
+  /* A react-spring configuration object to control the axis animation. */
+  springConfig?: SpringConfig;
+  /** Whether the axis should be animated or not. */
+  animate?: boolean;
+  /** Props to apply to the <g> element that wraps the entire axis. */
+  axisGroupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'left' | 'right'> & { className?: string };
+  /** Props to apply to the <g> element that wraps each tick line and label. */
+  tickGroupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'style'>; // TODO think about removing style.
+  /** Padding between the tick lines and the tick labels. */
+  tickLabelPadding?: number;
+  /** The props to apply to the tick labels. Can be a props object or a function that returns a props object. */
   tickLabelProps?: TickLabelProps<ScaleInput<Scale>> | Partial<TextProps>;
   /** The length of the tick lines. */
   tickLength?: number;
-
+  /** The length of the outer ticks (added at the very start and very end of the axis domain). */
   outerTickLength?: number;
-  /** The color for the tick's stroke value. */
-  // tickStroke?: string;
-  /** A custom SVG transform value to be applied to each tick group. */
-  // tickTransform?: string;
-  /* A react-spring configuration object */
-  springConfig?: SpringConfig;
-
-  animate?: boolean;
-
-  axisGroupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'left' | 'right'> & { className?: string };
-
+  /** Props to be applied to individual tick lines. */
+  tickLineProps?: LineProps;
+  /** Override the component used to render all tick lines and labels. */
+  ticksComponent?: (tickRendererProps: TicksRendererProps<Scale>) => ReactNode;
+  /** Classes to apply to the axis domain path. */ // TODO think about putting into domainPathProps.
   domainPathClassName?: string;
+  /** Props to apply to the axis domain path. */
   domainPathProps?: Omit<SVGProps<SVGPathElement>, 'ref'>;
-
+  /** The text for the axis label. */
+  label?: string;
+  /** Pixel offset of the axis label. */
+  labelOffset?: number;
+  /** Classes to apply to the axis label. */ // TODO think about putting into labelProps.
   labelClassName?: string;
+  /** Props to apply to the axis label. */
   labelProps?: Partial<TextProps>;
-
-  tickGroupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'style'>; // TODO think about removing style.
-
-  // tickLabelAlignment: {
-  //   textAnchor: Anchor;
-  //   verticalAnchor: Anchor;
-  //   angle: Angle;
-  // };
-
-  tickLabelPadding?: number;
 };
 
 export type TickFormatter<T> = (
@@ -423,3 +416,28 @@ export type ComputedTick<Scale extends AxisScale> = {
 // In order to plot values on an axis, output of the scale must be number.
 // Some scales return undefined.
 export type AxisScaleOutput = number | NumberLike | undefined;
+
+export type StackPathConfig<Datum, Key> = {
+  /** Array of keys corresponding to stack layers. */
+  keys?: Key[];
+  /** Sets the stack offset to the pre-defined d3 offset, see https://github.com/d3/d3-shape#stack_offset. */
+  stackOffset?: keyof typeof STACK_OFFSETS;
+  /** Sets the stack order to the pre-defined d3 function, see https://github.com/d3/d3-shape#stack_order. */
+  stackOrder?: keyof typeof STACK_ORDERS;
+  /** Sets the value accessor for a Datum, which defaults to d[key]. */
+  value?: number | ((d: Datum, key: Key) => number);
+};
+
+export type CombinedStackData<XScale extends AxisScale, YScale extends AxisScale> = {
+  [dataKey: string]: ScaleInput<XScale> | ScaleInput<YScale>;
+} & { stack: ScaleInput<XScale> | ScaleInput<YScale>; positiveSum: number; negativeSum: number };
+
+// BarStack transforms its child series Datum into CombinedData<XScale, YScale>
+export type BarStackDatum<XScale extends AxisScale, YScale extends AxisScale> = SeriesPoint<
+  CombinedStackData<XScale, YScale>
+>;
+
+export type BarStackData<XScale extends AxisScale, YScale extends AxisScale> = Series<
+  CombinedStackData<XScale, YScale>,
+  string
+>[];

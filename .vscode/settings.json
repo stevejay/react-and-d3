@@ -29,7 +29,7 @@
   "stylelint.enable": true,
   "typescript.tsdk": "./node_modules/typescript/lib",
   "eslint.validate": ["html", "javascript", "typescript", "javascriptreact", "typescriptreact"],
-  "eslint.packageManager": "yarn",
+  "eslint.packageManager": "yarn"
   // Added for https://github.com/microsoft/vscode/issues/139818
-  "editor.hover.sticky": false
+  // "editor.hover.sticky": false
 }

@@ -1,12 +1,16 @@
 import { useEffect, useRef } from 'react';
 import { SpringConfig, useTransition } from 'react-spring';
-import { AxisScale } from '@visx/axis';
 import { isNil } from 'lodash-es';
 
-import { createBarGenerator } from '../generator';
+import { createBarSeriesPositioning } from '../positioning';
 import { isBandScale, ScaleInput } from '../scale';
+import { PositionScale } from '../types';
 
-export function useBarTransitions<XScale extends AxisScale, YScale extends AxisScale, Datum extends object>(
+export function useBarSeriesTransitions<
+  XScale extends PositionScale,
+  YScale extends PositionScale,
+  Datum extends object
+>(
   data: readonly Datum[],
   xScale: XScale,
   yScale: YScale,
@@ -17,9 +21,17 @@ export function useBarTransitions<XScale extends AxisScale, YScale extends AxisS
   fallbackBandwidth: number,
   springConfig?: Partial<SpringConfig>,
   animate?: boolean,
-  offset?: number
+  renderingOffset?: number
 ) {
-  const position = createBarGenerator(xScale, yScale, xAccessor, yAccessor, horizontal, fallbackBandwidth);
+  const position = createBarSeriesPositioning(
+    xScale,
+    yScale,
+    xAccessor,
+    yAccessor,
+    horizontal,
+    fallbackBandwidth,
+    renderingOffset
+  );
 
   const previousPositionRef = useRef<typeof position | null>(null);
   useEffect(() => {
