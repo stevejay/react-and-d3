@@ -48,17 +48,16 @@ export function withRegisteredData<
 
     const registryEntry = dataRegistry?.get(dataKey);
 
-    // if scales or data are not available in context, render nothing
+    // If scales or data are not available in context, render nothing...
     if (!xScale || !yScale || !registryEntry) {
       return null;
     }
 
-    // TODO coercion might be avoidable with variadic tuples in TS 4
     const BaseComponent = BaseSeriesComponent as unknown as ComponentType<
       SeriesProps<XScale, YScale, Datum> & WithRegisteredDataProps<XScale, YScale, Datum>
     >;
 
-    // otherwise pass props + over-write data/accessors
+    // ... otherwise pass props + over-write data/accessors:
     return (
       <BaseComponent
         {...props}

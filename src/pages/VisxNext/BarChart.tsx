@@ -41,7 +41,8 @@ export function BarChart({ data, margin }: BarChartProps) {
       yScale={yScale}
       springConfig={springConfig}
       role="graphics-document"
-      aria-label="Some title"
+      aria-roledescription="Bar chart"
+      aria-label="Some Important Results"
       yRangePadding={30}
     >
       {/* <XYChartColumnGrid className="text-slate-600" /> */}
@@ -52,7 +53,17 @@ export function BarChart({ data, margin }: BarChartProps) {
         data={data}
         xAccessor={xAccessor}
         yAccessor={yAccessor}
-        barProps={{ shapeRendering: 'crispEdges' }}
+        barProps={(datum: any) => ({
+          shapeRendering: 'crispEdges',
+          role: 'graphics-symbol',
+          'aria-roledescription': '',
+          'aria-label': `Category ${xAccessor(datum)}: ${yAccessor(datum)}`
+        })}
+        // groupProps={{
+        //   role: 'graphics-object',
+        //   'aria-roledescription': 'series',
+        //   'aria-label': 'Some series'
+        // }}
       />
       <SvgXYChartAxis
         orientation="top"

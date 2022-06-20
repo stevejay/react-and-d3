@@ -53,8 +53,6 @@ function BarStackSeries<XScale extends PositionScale, YScale extends PositionSca
   colorAccessor,
   colorScale
 }: BarStackSeriesProps<XScale, YScale>) {
-  // const registryEntry = dataRegistry?.get(dataKey);
-
   const transitions = useBarStackTransitions(
     data,
     xScale,
@@ -66,20 +64,6 @@ function BarStackSeries<XScale extends PositionScale, YScale extends PositionSca
     animate,
     renderingOffset
   );
-  // const transitions = useBarGroupTransitions(
-  //   registryEntry.data,
-  //   xScale,
-  //   yScale,
-  //   groupScale,
-  //   dataKey,
-  //   dataRegistry,
-  //   // keyAccessor: (datum: Datum) => Key,
-  //   horizontal,
-  //   //   fallbackBandwidth: number,
-  //   springConfig,
-  //   animate,
-  //   renderingOffset
-  // );
   return (
     <Group data-test-id="bar-stack-series" data-series-id={dataKey}>
       {transitions(({ opacity, x, y, width, height }, datum, _, index) => {
@@ -228,93 +212,6 @@ BaseBarStackProps<XScale, YScale, Datum>) {
       })}
     </>
   );
-
-  // const barThickness = getScaleBandwidth(horizontal ? yScale : xScale);
-  // const halfBarThickness = barThickness / 2;
-
-  // let getWidth: (bar: StackBar) => number | undefined;
-  // let getHeight: (bar: StackBar) => number | undefined;
-  // let getX: (bar: StackBar) => number | undefined;
-  // let getY: (bar: StackBar) => number | undefined;
-
-  // if (horizontal) {
-  //   getWidth = (bar) => (xScale(getSecondItem(bar)) ?? NaN) - (xScale(getFirstItem(bar)) ?? NaN);
-  //   getHeight = () => barThickness;
-  //   getX = (bar) => xScale(getFirstItem(bar));
-  //   getY = (bar) =>
-  //     'bandwidth' in yScale
-  //       ? yScale(getStackValue(bar.data))
-  //       : Math.max((yScale(getStackValue(bar.data)) ?? NaN) - halfBarThickness);
-  // } else {
-  //   getWidth = () => barThickness;
-  //   getHeight = (bar) => (yScale(getFirstItem(bar)) ?? NaN) - (yScale(getSecondItem(bar)) ?? NaN);
-  //   getX = (bar) =>
-  //     'bandwidth' in xScale
-  //       ? xScale(getStackValue(bar.data))
-  //       : Math.max((xScale(getStackValue(bar.data)) ?? NaN) - halfBarThickness);
-  //   getY = (bar) => yScale(getSecondItem(bar));
-  // }
-
-  // const bars = stackedData
-  //   .flatMap((barStack, stackIndex) => {
-  //     const entry = dataRegistry.get(barStack.key);
-  //     if (!entry) {
-  //       return null;
-  //     }
-
-  //     // get colorAccessor from child BarSeries, if available
-  //     const barSeries: ReactElement<BarSeriesProps<XScale, YScale, Datum>> | undefined = seriesChildren.find(
-  //       (child) => child.props.dataKey === barStack.key
-  //     );
-  //     const colorAccessor = barSeries?.props?.colorAccessor;
-
-  //     return barStack.map((bar, index) => {
-  //       const barX = getX(bar);
-  //       if (!isValidNumber(barX)) {
-  //         return null;
-  //       }
-
-  //       const barY = getY(bar);
-  //       if (!isValidNumber(barY)) {
-  //         return null;
-  //       }
-
-  //       const barWidth = getWidth(bar);
-  //       if (!isValidNumber(barWidth)) {
-  //         return null;
-  //       }
-
-  //       const barHeight = getHeight(bar);
-  //       if (!isValidNumber(barHeight)) {
-  //         return null;
-  //       }
-
-  //       const barSeriesDatum = colorAccessor ? barSeries?.props?.data[index] : null;
-
-  //       return {
-  //         key: `${stackIndex}-${barStack.key}-${index}`,
-  //         x: barX,
-  //         y: barY,
-  //         width: barWidth,
-  //         height: barHeight,
-  //         fill:
-  //           barSeriesDatum && colorAccessor ? colorAccessor(barSeriesDatum, index) : colorScale(barStack.key)
-  //       };
-  //     });
-  //   })
-  //   .filter((bar) => bar) as Bar[];
-
-  // return (
-  //   <g className="bar-stack">
-  //     <BarsComponent
-  //       bars={bars}
-  //       horizontal={horizontal}
-  //       xScale={xScale}
-  //       yScale={yScale}
-  //       //    {...eventEmitters}
-  //     />
-  //   </g>
-  // );
 }
 
 export function SvgXYChartBarStack<

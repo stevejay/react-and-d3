@@ -58,18 +58,21 @@ export type XYChartColumnGridProps<Scale extends GridScale> = Omit<
   'scale' | 'top' | 'height'
 >;
 
-export function XYChartColumnGrid<Scale extends GridScale>(props: XYChartColumnGridProps<Scale>) {
+export function XYChartColumnGrid<Scale extends GridScale>({
+  springConfig,
+  ...rest
+}: XYChartColumnGridProps<Scale>) {
   const { xScale, margin, innerHeight, springConfig: fallbackSpringConfig } = useContext(DataContext);
   if (!xScale || isNil(innerHeight)) {
     return null;
   }
   return (
     <ColumnGrid
-      {...props}
       top={margin?.top ?? 0}
       scale={xScale}
       height={innerHeight}
-      springConfig={props.springConfig ?? fallbackSpringConfig}
+      springConfig={springConfig ?? fallbackSpringConfig}
+      {...rest}
     />
   );
 }

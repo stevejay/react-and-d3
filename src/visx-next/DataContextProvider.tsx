@@ -21,7 +21,7 @@ export interface DataContextProviderProps<
   xScale: XScaleConfig;
   /** y-scale configuration whose shape depends on scale type. */
   yScale: YScaleConfig;
-  /** Optionally define the series' colors. */
+  /** Optionally define the series' colors. Must a stable array. */
   seriesColors?: readonly string[];
   /** Determines whether Series will be plotted horizontally (e.g., horizontal bars). */
   horizontal?: boolean;
@@ -67,7 +67,7 @@ export function DataContextProvider<
 
   const registryKeys = dataRegistry.keys();
 
-  // Give each series a fallback color accessor:
+  // Create a color scale that provides a fallback color for each series.
   const colorScale = useMemo(
     () =>
       scaleOrdinal({

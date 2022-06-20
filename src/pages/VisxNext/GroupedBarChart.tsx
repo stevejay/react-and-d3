@@ -1,5 +1,6 @@
 import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
+import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { CategoryValueListDatum, Margin } from '@/types';
 import { SvgXYChartAxis } from '@/visx-next/Axis';
@@ -21,6 +22,12 @@ const xScale: BandScaleConfig<string> = {
   round: true
 } as const;
 
+const colors = {
+  one: schemeCategory10[0],
+  two: schemeCategory10[1],
+  three: schemeCategory10[2]
+} as any; // TODO fix
+
 const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
 
 const springConfig = { duration: 1350, easing: easeCubicInOut };
@@ -41,16 +48,27 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
       {/* <XYChartColumnGrid className="text-slate-600" /> */}
       <XYChartRowGrid className="text-red-600" tickCount={5} shapeRendering="crispEdges" />
       {/* TODO Use refs within barSeries for the accessors? */}
-      <XYChartBarGroup>
+      <XYChartBarGroup padding={0}>
         {dataKeys.map((dataKey) => (
           <XYChartBarSeries
             key={dataKey}
             dataKey={dataKey}
             data={data}
-            xAccessor={(d) => d.category}
-            yAccessor={(d) => d.values[dataKey]}
-            // colorAccessor={() => colors[dataKey]} // as (d: object) => string}
-            barProps={{ shapeRendering: 'crispEdges' }}
+            xAccessor={(datum) => datum.category}
+            yAccessor={(datum) => datum.values[dataKey]}
+            colorAccessor={() => colors[dataKey]} // as (d: object) => string}
+            // barProps={{ shapeRendering: 'crispEdges' }}
+            barProps={(datum: any) => ({
+              shapeRendering: 'crispEdges',
+              role: 'graphics-symbol',
+              'aria-roledescription': '',
+              'aria-label': `Category ${datum.category}: ${datum.values[dataKey]}`
+            })}
+            groupProps={{
+              role: 'graphics-object',
+              'aria-roledescription': 'series',
+              'aria-label': `${dataKey}`
+            }}
           />
         ))}
       </XYChartBarGroup>

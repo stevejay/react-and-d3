@@ -79,7 +79,7 @@ export function SvgXYChart<
     }
   }, [setDimensions, width, height, margin]);
 
-  // if Context or dimensions are not available, wrap self in the needed providers
+  // if DataContext is not available, wrap self in that provider.
   if (!setDimensions) {
     if (!xScale || !yScale) {
       console.warn(
@@ -103,6 +103,7 @@ export function SvgXYChart<
     );
   }
 
+  // If hardcoded dimensions are not available, wrap self in ParentSize.
   if (isNil(width) || isNil(height)) {
     return (
       <ParentSize>
@@ -114,7 +115,7 @@ export function SvgXYChart<
   }
 
   return width && width > 0 && height && height > 0 ? (
-    <svg xmlns="http://www.w3.org/2000/svg" {...svgProps} width={width} height={height}>
+    <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} {...svgProps}>
       {children}
       {/* <rect
         x={margin.left}

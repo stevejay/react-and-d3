@@ -1,6 +1,5 @@
 import { ReactNode, SVGProps, useContext } from 'react';
 import { animated } from 'react-spring';
-// import { AxisScale } from '@visx/axis';
 import { Group } from '@visx/group';
 import { getTicks, ScaleInput } from '@visx/scale';
 import { Text } from '@visx/text';

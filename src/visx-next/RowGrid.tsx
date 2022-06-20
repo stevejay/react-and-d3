@@ -55,21 +55,24 @@ export function RowGrid<Scale extends GridScale>({
 
 export type XYChartRowGridProps<Scale extends GridScale> = Omit<
   RowGridProps<Scale>,
-  'scale' | 'left' | 'width'
+  'left' | 'scale' | 'width'
 >;
 
-export function XYChartRowGrid<Scale extends GridScale>(props: XYChartRowGridProps<Scale>) {
+export function XYChartRowGrid<Scale extends GridScale>({
+  springConfig,
+  ...rest
+}: XYChartRowGridProps<Scale>) {
   const { yScale, margin, innerWidth, springConfig: fallbackSpringConfig } = useContext(DataContext);
   if (!yScale || isNil(innerWidth)) {
     return null;
   }
   return (
     <RowGrid
-      {...props}
       left={margin?.left ?? 0}
       scale={yScale}
       width={innerWidth}
-      springConfig={props.springConfig ?? fallbackSpringConfig}
+      springConfig={springConfig ?? fallbackSpringConfig}
+      {...rest}
     />
   );
 }
