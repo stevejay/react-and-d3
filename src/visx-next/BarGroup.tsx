@@ -46,7 +46,7 @@ type BarGroupSeriesProps<XScale extends PositionScale, YScale extends PositionSc
   animate: boolean;
   /* A react-spring configuration object */
   springConfig?: SpringConfig;
-  colorAccessor?: (d: Datum, index?: number | undefined) => string | null | undefined;
+  colorAccessor?: (d: Datum, key: string) => string;
   colorScale?: ScaleOrdinal<string, string, never>;
   barClassName?: string;
   barProps?:
@@ -102,7 +102,7 @@ function BarGroupSeries<XScale extends PositionScale, YScale extends PositionSca
             y={y}
             width={width}
             height={height}
-            fill={colorAccessor?.(datum, index) ?? colorScale?.(dataKey) ?? 'gray'}
+            fill={colorAccessor?.(datum, dataKey) ?? colorScale?.(dataKey) ?? 'gray'}
             style={{ ...style, opacity }}
             className={barClassName}
             {...restBarProps}
@@ -152,8 +152,7 @@ function XYChartBarGroupSeries<
     <>
       {transitions((styles, datum) => {
         const child = barSeriesChildren.find((child) => child.props.dataKey === datum.key);
-        const { colorAccessor, groupProps, groupClassName, renderingOffset, barProps, barClassName } =
-          child?.props ?? {};
+        const { groupProps, groupClassName, renderingOffset, barProps, barClassName } = child?.props ?? {};
         const { style, ...restGroupProps } = groupProps ?? {};
         return (
           <animated.g
@@ -175,7 +174,7 @@ function XYChartBarGroupSeries<
               renderingOffset={renderingOffset}
               animate={animate}
               springConfig={springConfig}
-              colorAccessor={colorAccessor}
+              colorAccessor={datum.colorAccessor}
               colorScale={colorScale}
               barProps={barProps}
               barClassName={barClassName}
@@ -242,8 +241,8 @@ export function XYChartBarGroup<
     const dataKeys = barSeriesChildren.map((child) => child.props.dataKey).filter((key) => key);
     setGroupKeys((prev) => (isEqual(prev, dataKeys) ? prev : dataKeys));
     const dataToRegister = barSeriesChildren.map((child) => {
-      const { dataKey: key, data, xAccessor, yAccessor } = child.props;
-      return { key, data, xAccessor, yAccessor };
+      const { dataKey: key, data, xAccessor, yAccessor, colorAccessor } = child.props;
+      return { key, data, xAccessor, yAccessor, colorAccessor };
     });
     registerData?.(dataToRegister);
     return () => unregisterData?.(dataKeys);

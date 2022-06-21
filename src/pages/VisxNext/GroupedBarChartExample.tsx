@@ -23,15 +23,15 @@ const dataSets: {
     ]
   },
   {
-    seriesKeys: ['one'],
+    seriesKeys: ['two'],
     data: [
-      { category: 'B', values: { one: 150 } },
-      { category: 'C', values: { one: 20 } },
-      { category: 'D', values: { one: 63.9 } }
+      { category: 'B', values: { two: 150 } },
+      { category: 'C', values: { two: 20 } },
+      { category: 'D', values: { two: 63.9 } }
     ]
   },
   {
-    seriesKeys: ['one', 'two', 'three'],
+    seriesKeys: ['one', 'three', 'two'],
     data: [
       { category: 'A', values: { one: 0, two: 90, three: 10 } },
       { category: 'B', values: { one: 10, two: 45, three: 58 } },

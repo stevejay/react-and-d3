@@ -1,5 +1,6 @@
 import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
+import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { CategoryValueListDatum, Margin } from '@/types';
 import { SvgXYChartAxis } from '@/visx-next/Axis';
@@ -23,7 +24,18 @@ const xScale: BandScaleConfig<string> = {
 
 const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
 
-const springConfig = { duration: 1350, easing: easeCubicInOut };
+const colors = {
+  one: schemeCategory10[0],
+  two: schemeCategory10[1],
+  three: schemeCategory10[2]
+} as any; // TODO fix
+
+function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) {
+  console.log('>>key', key);
+  return colors[key];
+}
+
+const springConfig = { duration: 350, easing: easeCubicInOut };
 
 export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps) {
   return (
@@ -47,7 +59,19 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
             data={data}
             xAccessor={(d) => d.category}
             yAccessor={(d) => d.values[dataKey]}
-            barProps={{ shapeRendering: 'crispEdges' }}
+            colorAccessor={colorAccessor}
+            // barProps={{ shapeRendering: 'crispEdges' }}
+            barProps={(datum: any) => ({
+              shapeRendering: 'crispEdges',
+              role: 'graphics-symbol',
+              'aria-roledescription': '',
+              'aria-label': 'Disaster' // `Category ${datum.category}: ${datum.values[dataKey]}`
+            })}
+            groupProps={{
+              role: 'graphics-object',
+              'aria-roledescription': 'series',
+              'aria-label': `${dataKey}`
+            }}
           />
         ))}
       </SvgXYChartBarStack>

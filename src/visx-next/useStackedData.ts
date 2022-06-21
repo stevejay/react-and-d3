@@ -131,7 +131,12 @@ export function useStackedData<
       }, [])
     ) as [number, number];
 
-    const dataToRegister = getBarStackRegistryData(stackedData, comprehensiveDomain, horizontal);
+    const dataToRegister = getBarStackRegistryData(
+      stackedData,
+      comprehensiveDomain,
+      barSeriesChildren,
+      horizontal
+    );
     registerData(dataToRegister);
     // unregister data on unmount
     return () => unregisterData(dataKeys);

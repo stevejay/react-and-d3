@@ -13,8 +13,8 @@ export type BarSeriesProps<
   YScale extends AxisScale,
   Datum extends object
 > = SeriesProps<XScale, YScale, Datum> & {
-  /** Given a Datum, returns its color. Falls back to theme color if unspecified or if a null-ish value is returned. */
-  colorAccessor?: (d: Datum, index?: number) => string | null | undefined;
+  /** Given a Datum, returns its color. */
+  colorAccessor?: (d: Datum, key: string) => string;
   /** Given a Datum, return its key. */
   // keyAccessor: (d: Datum) => Key;
   groupClassName?: string;
@@ -74,7 +74,7 @@ export function BarSeries<XScale extends PositionScale, YScale extends PositionS
             y={y}
             width={width}
             height={height}
-            fill={colorAccessor?.(datum) ?? restBarProps.fill}
+            fill={colorAccessor?.(datum, dataKey) ?? restBarProps.fill}
             style={{ ...style, opacity }}
             className={barClassName}
             {...restBarProps}
@@ -115,7 +115,8 @@ const MemoizedXYChartBarSeriesInner = memo(
     prevProps.yScale === nextProps.yScale &&
     prevProps.data === nextProps.data &&
     prevProps.xAccessor === nextProps.xAccessor &&
-    prevProps.yAccessor === nextProps.yAccessor
+    prevProps.yAccessor === nextProps.yAccessor &&
+    prevProps.colorAccessor === nextProps.colorAccessor
 );
 
 export const XYChartBarSeries = withRegisteredData(MemoizedXYChartBarSeriesInner);

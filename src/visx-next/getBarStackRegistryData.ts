@@ -1,6 +1,8 @@
+import { JSXElementConstructor, ReactElement } from 'react';
 import { AxisScale } from '@visx/axis';
 import { extent } from 'd3-array';
 
+import { BarSeriesProps } from './BarSeries';
 import { getFirstItem, getSecondItem } from './getItem';
 import { BarStackData, BarStackDatum, DataRegistryEntry } from './types';
 
@@ -17,16 +19,23 @@ const getNumericValue = <XScale extends AxisScale, YScale extends AxisScale>(
 export function getBarStackRegistryData<XScale extends AxisScale, YScale extends AxisScale>(
   stackedData: BarStackData<XScale, YScale>,
   comprehensiveDomain: [number, number],
+  barSeriesChildren: ReactElement<BarSeriesProps<XScale, YScale, any>, string | JSXElementConstructor<any>>[],
   horizontal?: boolean
 ) {
   const [xAccessor, yAccessor] = horizontal ? [getNumericValue, getStack] : [getStack, getNumericValue];
+
   return stackedData
     .map((data, index) => {
+      // TODO the data types don't match.
+      const matchingChild = barSeriesChildren.find((child) => child.props.dataKey === data.key); // as any;
+      const colorAccessor = matchingChild?.props?.colorAccessor;
+
       const entry: DataRegistryEntry<XScale, YScale, BarStackDatum<XScale, YScale>> = {
         key: data.key,
         data,
         xAccessor,
-        yAccessor
+        yAccessor,
+        colorAccessor
       };
 
       // update the numeric domain to account for full data stack

@@ -72,7 +72,7 @@ const LinearScaleChartTemplate: Story<ChartTemplateProps> = ({ orientation }) =>
         data={data}
         xAccessor={xAccessor}
         yAccessor={yAccessor}
-        colorAccessor={colorAccessor as (d: object) => string}
+        colorAccessor={colorAccessor}
         barProps={{ shapeRendering: 'crispEdges' }}
       />
       <SvgXYChartAxis

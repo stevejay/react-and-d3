@@ -76,6 +76,8 @@ export interface DataRegistryEntry<XScale extends AxisScale, YScale extends Axis
   xAccessor: (d: Datum) => ScaleInput<XScale>;
   /** function that returns the y value of a datum. */
   yAccessor: (d: Datum) => ScaleInput<YScale>;
+  /** function that returns the color value of a datum. */
+  colorAccessor?: (d: Datum, key: string) => string;
   /** whether the entry supports mouse events. */
   mouseEvents?: boolean;
   /** Optionally update the xScale. */
@@ -136,6 +138,8 @@ export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale,
   xAccessor: (d: Datum) => ScaleInput<XScale>;
   /** Given a Datum, returns the y-scale value. */
   yAccessor: (d: Datum) => ScaleInput<YScale>;
+
+  colorAccessor?: (d: Datum, key: string) => string;
 
   // TODO REMOVE!!!!
   // colorAccessor: (d: Datum) => string | null | undefined;

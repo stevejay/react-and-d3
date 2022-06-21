@@ -1,4 +1,4 @@
-import { JSXElementConstructor, ReactElement, useContext } from 'react';
+import { JSXElementConstructor, ReactElement, SVGProps, useContext } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 import { ScaleOrdinal } from 'd3-scale';
 import { SeriesPoint } from 'd3-shape';
@@ -29,12 +29,17 @@ type BarStackSeriesProps<XScale extends PositionScale, YScale extends PositionSc
   horizontal: boolean;
   renderingOffset?: number;
   animate?: boolean;
-  colorAccessor?: (
-    d: SeriesPoint<CombinedStackData<XScale, YScale>>,
-    index?: number | undefined
-  ) => string | null | undefined;
+  colorAccessor?: (d: SeriesPoint<CombinedStackData<XScale, YScale>>, key: string) => string;
   springConfig?: SpringConfig;
   colorScale?: ScaleOrdinal<string, string, never>;
+  barClassName?: string;
+  barProps?:
+    | Omit<SVGProps<SVGRectElement>, 'x' | 'y' | 'width' | 'height' | 'ref'>
+    | ((
+        datum: any, // TODO FIXME
+        index: number,
+        dataKey: string
+      ) => Omit<SVGProps<SVGRectElement>, 'x' | 'y' | 'width' | 'height' | 'ref'>);
 };
 
 function BarStackSeries<XScale extends PositionScale, YScale extends PositionScale>({
@@ -50,7 +55,9 @@ function BarStackSeries<XScale extends PositionScale, YScale extends PositionSca
   springConfig,
   animate = true,
   colorAccessor,
-  colorScale
+  colorScale,
+  barClassName = '',
+  barProps = {}
 }: BarStackSeriesProps<XScale, YScale>) {
   const transitions = useBarStackTransitions(
     data,
@@ -68,6 +75,8 @@ function BarStackSeries<XScale extends PositionScale, YScale extends PositionSca
   return (
     <>
       {transitions(({ opacity, x, y, width, height }, datum, _, index) => {
+        const { style, ...restBarProps } =
+          typeof barProps === 'function' ? barProps(datum, index, dataKey) : barProps;
         return (
           <animated.rect
             data-test-id="bar"
@@ -75,12 +84,12 @@ function BarStackSeries<XScale extends PositionScale, YScale extends PositionSca
             y={y}
             width={width}
             height={height}
-            fill={colorAccessor?.(datum, index) ?? colorScale?.(dataKey) ?? 'gray'}
-            style={{ opacity }}
+            fill={colorAccessor?.(datum, dataKey) ?? colorScale?.(dataKey) ?? 'gray'}
+            style={{ ...style, opacity }}
             // role="presentation"
             // aria-hidden
-            // className={barClassName}
-            // {...restBarProps}
+            className={barClassName}
+            {...restBarProps}
           />
         );
       })}
@@ -148,7 +157,9 @@ function XYChartBarStackSeries<
         // }
         const child = barSeriesChildren.find((child) => child.props.dataKey === datum.key);
         const {
-          // colorAccessor, barProps, barClassName,
+          // colorAccessor,
+          barProps,
+          barClassName,
           groupProps,
           groupClassName,
           renderingOffset
@@ -165,7 +176,6 @@ function XYChartBarStackSeries<
               dataKey={datum.key}
               dataKeys={dataKeys}
               data={datum.data}
-              // dataKeys={dataKeys}
               xScale={xScale}
               yScale={yScale}
               xAccessor={datum.xAccessor}
@@ -174,11 +184,10 @@ function XYChartBarStackSeries<
               renderingOffset={renderingOffset}
               animate={animate}
               springConfig={springConfig}
-              // colorAccessor={colorAccessor} // TODO Fix
+              colorAccessor={datum.colorAccessor}
               colorScale={colorScale}
-              // barProps={barProps}
-              // barClassName={barClassName}
-              // dataRegistry={dataRegistry}
+              barProps={barProps}
+              barClassName={barClassName}
             />
           </animated.g>
         );

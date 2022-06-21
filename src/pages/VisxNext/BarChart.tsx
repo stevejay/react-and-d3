@@ -1,5 +1,6 @@
 import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
+import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { CategoryValueDatum, Margin } from '@/types';
 import { SvgXYChartAxis } from '@/visx-next/Axis';
@@ -29,6 +30,10 @@ function yAccessor(d: CategoryValueDatum<string, number>) {
   return d.value;
 }
 
+function colorAccessor() {
+  return schemeCategory10[8];
+}
+
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
 // TODO I really think the scales and accessors should be labelled
@@ -53,6 +58,7 @@ export function BarChart({ data, margin }: BarChartProps) {
         data={data}
         xAccessor={xAccessor}
         yAccessor={yAccessor}
+        colorAccessor={colorAccessor}
         barProps={(datum: any) => ({
           shapeRendering: 'crispEdges',
           role: 'graphics-symbol',

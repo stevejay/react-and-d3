@@ -28,9 +28,13 @@ const colors = {
   three: schemeCategory10[2]
 } as any; // TODO fix
 
+function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) {
+  return colors[key];
+}
+
 const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
 
-const springConfig = { duration: 1350, easing: easeCubicInOut };
+const springConfig = { duration: 350, easing: easeCubicInOut };
 
 // TODO I really think the scales and accessors should be labelled
 // independent and dependent.
@@ -56,7 +60,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
             data={data}
             xAccessor={(datum) => datum.category}
             yAccessor={(datum) => datum.values[dataKey]}
-            colorAccessor={() => colors[dataKey]} // as (d: object) => string}
+            colorAccessor={colorAccessor}
             // barProps={{ shapeRendering: 'crispEdges' }}
             barProps={(datum: any) => ({
               shapeRendering: 'crispEdges',
