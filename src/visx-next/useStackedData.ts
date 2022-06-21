@@ -1,8 +1,9 @@
-import { ReactElement, useContext, useEffect, useMemo } from 'react';
+import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
 import { AxisScale } from '@visx/axis';
 import { StackPathConfig } from '@visx/shape';
 import { extent } from 'd3-array';
-import { SeriesPoint, stack as d3stack } from 'd3-shape';
+import { Series, SeriesPoint, stack as d3stack } from 'd3-shape';
+import { isEqual } from 'lodash-es';
 
 import { getChildrenAndGrandchildrenWithProps } from './types/typeguards/isChildWithProps';
 import { BarSeriesProps } from './BarSeries';
@@ -27,23 +28,25 @@ export function useStackedData<
 >({ children, stackOrder, stackOffset }: UseStackedData<Datum>) {
   type StackDatum = SeriesPoint<CombinedStackData<XScale, YScale>>;
 
+  const [groupKeys, setGroupKeys] = useState<string[]>([]);
+  const [stackedData, setStackedData] = useState<Series<CombinedStackData<XScale, YScale>, string>[]>();
+
   const { horizontal, registerData, unregisterData } = useContext(DataContext) as unknown as DataContextType<
     XScale,
     YScale,
     StackDatum
   >;
 
-  // TODO I doubt this memoization works.
   const barSeriesChildren = useMemo(
     () => getChildrenAndGrandchildrenWithProps<BarSeriesProps<XScale, YScale, Datum>>(children),
     [children]
   );
 
   // extract data keys from child series
-  const dataKeys: string[] = useMemo(
-    () => barSeriesChildren.map((child) => child.props.dataKey ?? '').filter((key) => key),
-    [barSeriesChildren]
-  );
+  // const dataKeys: string[] = useMemo(
+  //   () => barSeriesChildren.map((child) => child.props.dataKey ?? '').filter((key) => key),
+  //   [barSeriesChildren]
+  // );
 
   // find series children
   // @TODO: memoization doesn't work well if at all for this
@@ -60,13 +63,49 @@ export function useStackedData<
 
   // group all child data by stack value { [x | y]: { [dataKey]: value } }
   // this format is needed by d3Stack
-  const combinedData = useMemo(
-    () => combineBarStackData<XScale, YScale, Datum>(barSeriesChildren, horizontal),
-    [horizontal, barSeriesChildren]
-  );
+  // const combinedData = useMemo(
+  //   () => combineBarStackData<XScale, YScale, Datum>(barSeriesChildren, horizontal),
+  //   [horizontal, barSeriesChildren]
+  // );
 
-  // stack data
-  const stackedData = useMemo(() => {
+  // // stack data
+  // const stackedData = useMemo(() => {
+  //   // automatically set offset to diverging if it's undefined and negative values are present
+  //   const hasSomeNegativeValues = stackOffset ? null : combinedData.some((d) => d.negativeSum < 0);
+
+  //   const stack = d3stack<CombinedStackData<XScale, YScale>, string>();
+  //   stack.keys(dataKeys);
+  //   if (stackOrder) {
+  //     stack.order(getStackOrder(stackOrder));
+  //   }
+  //   if (stackOffset || hasSomeNegativeValues) {
+  //     stack.offset(getStackOffset(stackOffset || 'diverging'));
+  //   }
+
+  //   return stack(combinedData);
+  // }, [combinedData, dataKeys, stackOrder, stackOffset]);
+
+  // update the domain to account for the (directional) stacked value
+  // const comprehensiveDomain = useMemo(
+  //   () =>
+  //     extent(
+  //       stackedData.reduce((allDatum: number[], stack) => {
+  //         stack.forEach(([min, max]) => {
+  //           allDatum.push(min);
+  //           allDatum.push(max);
+  //         });
+  //         return allDatum;
+  //       }, [])
+  //     ) as [number, number],
+  //   [stackedData]
+  // );
+
+  // register all child data using the stack-transformed values
+  useEffect(() => {
+    const dataKeys = barSeriesChildren.map((child) => child.props.dataKey).filter((key) => key);
+    setGroupKeys((prev) => (isEqual(prev, dataKeys) ? prev : dataKeys));
+
+    const combinedData = combineBarStackData<XScale, YScale, Datum>(barSeriesChildren, horizontal);
     // automatically set offset to diverging if it's undefined and negative values are present
     const hasSomeNegativeValues = stackOffset ? null : combinedData.some((d) => d.negativeSum < 0);
 
@@ -79,39 +118,34 @@ export function useStackedData<
       stack.offset(getStackOffset(stackOffset || 'diverging'));
     }
 
-    return stack(combinedData);
-  }, [combinedData, dataKeys, stackOrder, stackOffset]);
+    const stackedData = stack(combinedData);
+    setStackedData(stackedData);
 
-  // update the domain to account for the (directional) stacked value
-  const comprehensiveDomain = useMemo(
-    () =>
-      extent(
-        stackedData.reduce((allDatum: number[], stack) => {
-          stack.forEach(([min, max]) => {
-            allDatum.push(min);
-            allDatum.push(max);
-          });
-          return allDatum;
-        }, [])
-      ) as [number, number],
-    [stackedData]
-  );
+    const comprehensiveDomain = extent(
+      stackedData.reduce((allDatum: number[], stack) => {
+        stack.forEach(([min, max]) => {
+          allDatum.push(min);
+          allDatum.push(max);
+        });
+        return allDatum;
+      }, [])
+    ) as [number, number];
 
-  // register all child data using the stack-transformed values
-  useEffect(() => {
     const dataToRegister = getBarStackRegistryData(stackedData, comprehensiveDomain, horizontal);
     registerData(dataToRegister);
     // unregister data on unmount
     return () => unregisterData(dataKeys);
   }, [
-    dataKeys,
-    comprehensiveDomain,
+    // dataKeys,
+    // comprehensiveDomain,
     horizontal,
-    stackedData,
+    // stackedData,
     registerData,
     unregisterData,
-    barSeriesChildren
+    barSeriesChildren,
+    stackOffset,
+    stackOrder
   ]);
 
-  return { seriesChildren: barSeriesChildren, dataKeys, stackedData };
+  return { seriesChildren: barSeriesChildren, groupKeys, stackedData };
 }

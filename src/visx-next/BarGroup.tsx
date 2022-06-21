@@ -150,7 +150,7 @@ function XYChartBarGroupSeries<
   );
   return (
     <>
-      {transitions((styles, datum, { phase }) => {
+      {transitions((styles, datum) => {
         const child = barSeriesChildren.find((child) => child.props.dataKey === datum.key);
         const { colorAccessor, groupProps, groupClassName, renderingOffset, barProps, barClassName } =
           child?.props ?? {};

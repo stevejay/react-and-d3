@@ -23,7 +23,7 @@ const xScale: BandScaleConfig<string> = {
 
 const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
 
-const springConfig = { duration: 350, easing: easeCubicInOut };
+const springConfig = { duration: 1350, easing: easeCubicInOut };
 
 export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps) {
   return (

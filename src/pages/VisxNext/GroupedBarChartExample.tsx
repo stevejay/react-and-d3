@@ -5,7 +5,13 @@ import { InView } from '@/visx-next/InView';
 
 import { GroupedBarChart } from './GroupedBarChart';
 
-const dataSets = [
+const dataSets: {
+  seriesKeys: readonly string[];
+  data: readonly {
+    category: string;
+    values: { one?: number; two?: number; three?: number };
+  }[];
+}[] = [
   {
     seriesKeys: ['one', 'two', 'three'],
     data: [
