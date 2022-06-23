@@ -8,7 +8,7 @@ export type WithRegisteredDataProps<
   XScale extends AxisScale,
   YScale extends AxisScale,
   Datum extends object
-> = Pick<DataContextType<XScale, YScale, Datum>, 'xScale' | 'yScale'>;
+> = Pick<DataContextType<XScale, YScale, Datum, Datum>, 'xScale' | 'yScale'>;
 
 /**
  * An HOC that handles registering the Series's data and renders the
@@ -37,7 +37,7 @@ export function withRegisteredData<
     const { dataKey, data, xAccessor, yAccessor, colorAccessor } = props;
     const { xScale, yScale, dataRegistry, springConfig } = useContext(
       DataContext
-    ) as unknown as DataContextType<XScale, YScale, Datum>;
+    ) as unknown as DataContextType<XScale, YScale, Datum, Datum>;
 
     useEffect(() => {
       if (dataRegistry) {

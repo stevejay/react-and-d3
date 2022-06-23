@@ -3,7 +3,6 @@ import { AxisScale } from '@visx/axis';
 import { StackPathConfig } from '@visx/shape';
 import { extent } from 'd3-array';
 import { Series, SeriesPoint, stack as d3stack } from 'd3-shape';
-import { isEqual } from 'lodash-es';
 
 import { getChildrenAndGrandchildrenWithProps } from './types/typeguards/isChildWithProps';
 import { BarSeriesProps } from './BarSeries';
@@ -26,15 +25,17 @@ export function useStackedData<
   Datum extends object,
   ChildrenProps extends SeriesProps<XScale, YScale, Datum>
 >({ children, stackOrder, stackOffset }: UseStackedData<Datum>) {
-  type StackDatum = SeriesPoint<CombinedStackData<XScale, YScale>>;
+  type StackDatum = SeriesPoint<CombinedStackData<XScale, YScale, Datum>>;
 
   const [groupKeys, setGroupKeys] = useState<string[]>([]);
-  const [stackedData, setStackedData] = useState<Series<CombinedStackData<XScale, YScale>, string>[]>();
+  const [stackedData, setStackedData] =
+    useState<Series<CombinedStackData<XScale, YScale, Datum>, string>[]>();
 
   const { horizontal, registerData, unregisterData } = useContext(DataContext) as unknown as DataContextType<
     XScale,
     YScale,
-    StackDatum
+    StackDatum,
+    Datum
   >;
 
   const barSeriesChildren = useMemo(
@@ -103,23 +104,26 @@ export function useStackedData<
   // register all child data using the stack-transformed values
   useEffect(() => {
     const dataKeys = barSeriesChildren.map((child) => child.props.dataKey).filter((key) => key);
-    setGroupKeys((prev) => (isEqual(prev, dataKeys) ? prev : dataKeys));
 
     const combinedData = combineBarStackData<XScale, YScale, Datum>(barSeriesChildren, horizontal);
     // automatically set offset to diverging if it's undefined and negative values are present
-    const hasSomeNegativeValues = stackOffset ? null : combinedData.some((d) => d.negativeSum < 0);
+    const hasSomeNegativeValues = stackOffset ? false : combinedData.some((d) => d.negativeSum < 0);
 
-    const stack = d3stack<CombinedStackData<XScale, YScale>, string>();
+    const stack = d3stack<CombinedStackData<XScale, YScale, Datum>, string>();
     stack.keys(dataKeys);
+
     if (stackOrder) {
       stack.order(getStackOrder(stackOrder));
     }
+
     if (stackOffset || hasSomeNegativeValues) {
       stack.offset(getStackOffset(stackOffset || 'diverging'));
     }
 
     const stackedData = stack(combinedData);
     setStackedData(stackedData);
+
+    setGroupKeys(stackedData.map((x) => x.key));
 
     const comprehensiveDomain = extent(
       stackedData.reduce((allDatum: number[], stack) => {

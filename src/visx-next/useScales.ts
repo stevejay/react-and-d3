@@ -7,7 +7,12 @@ import { isDiscreteScaleConfig } from './scale/isDiscreteScale';
 import { DataRegistry } from './DataRegistry';
 
 /** A hook for creating memoized x- and y-scales. */
-export function useScales<XScale extends AxisScale, YScale extends AxisScale, Datum extends object>({
+export function useScales<
+  XScale extends AxisScale,
+  YScale extends AxisScale,
+  Datum extends object,
+  OriginalDatum extends object
+>({
   dataRegistry,
   xRange,
   xScaleConfig,
@@ -16,7 +21,7 @@ export function useScales<XScale extends AxisScale, YScale extends AxisScale, Da
 }: {
   xScaleConfig: ScaleConfig<AxisScaleOutput>;
   yScaleConfig: ScaleConfig<AxisScaleOutput>;
-  dataRegistry: Omit<DataRegistry<XScale, YScale, Datum>, 'registry' | 'registryKeys'>;
+  dataRegistry: Omit<DataRegistry<XScale, YScale, Datum, OriginalDatum>, 'registry' | 'registryKeys'>;
   xRange: [number, number];
   yRange: [number, number];
 }) {

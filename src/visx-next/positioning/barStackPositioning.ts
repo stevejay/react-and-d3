@@ -8,10 +8,10 @@ import { isValidNumber } from '../types/typeguards/isValidNumber';
 
 export function createBarStackPositioning<
   XScale extends PositionScale,
-  YScale extends PositionScale
-  // Datum extends object
+  YScale extends PositionScale,
+  Datum extends object
 >(xScale: XScale, yScale: YScale, horizontal: boolean, renderingOffset: number = 0) {
-  type StackBar = SeriesPoint<CombinedStackData<XScale, YScale>>;
+  type StackBar = SeriesPoint<CombinedStackData<XScale, YScale, Datum>>;
 
   const xScaleCopy = xScale.copy();
   const yScaleCopy = yScale.copy();
@@ -42,7 +42,7 @@ export function createBarStackPositioning<
     getY = (bar) => yScaleCopy(getSecondItem(bar));
   }
 
-  return (value: SeriesPoint<CombinedStackData<XScale, YScale>>, dataKey: string) => {
+  return (value: SeriesPoint<CombinedStackData<XScale, YScale, Datum>>, dataKey: string) => {
     const barX = getX(value);
     if (!isValidNumber(barX)) {
       return null;
@@ -63,10 +63,7 @@ export function createBarStackPositioning<
       return null;
     }
 
-    // const barSeriesDatum = colorAccessor ? barSeries?.props?.data[index] : null;
-
     return {
-      // key: `${stackIndex}-${barStack.key}-${index}`,
       x: barX,
       y: barY,
       width: barWidth,

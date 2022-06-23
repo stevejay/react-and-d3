@@ -36,7 +36,8 @@ export interface DataContextProviderProps<
 export function DataContextProvider<
   XScaleConfig extends ScaleConfig<AxisScaleOutput>,
   YScaleConfig extends ScaleConfig<AxisScaleOutput>,
-  Datum extends object
+  Datum extends object,
+  OriginalDatum extends object
 >({
   initialDimensions,
   xScale: xScaleConfig,
@@ -55,7 +56,7 @@ export function DataContextProvider<
   type XScale = ScaleConfigToD3Scale<XScaleConfig, AxisScaleOutput, any, any>;
   type YScale = ScaleConfigToD3Scale<YScaleConfig, AxisScaleOutput, any, any>;
 
-  const dataRegistry = useDataRegistry<XScale, YScale, Datum>();
+  const dataRegistry = useDataRegistry<XScale, YScale, Datum, OriginalDatum>();
 
   const { xScale, yScale }: { xScale?: XScale; yScale?: YScale } = useScales({
     dataRegistry,

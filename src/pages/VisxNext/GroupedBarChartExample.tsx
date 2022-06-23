@@ -38,6 +38,15 @@ const dataSets: {
       { category: 'D', values: { one: 63, two: 28, three: 4 } },
       { category: 'E', values: { one: 24, two: 16, three: 110 } }
     ]
+  },
+  {
+    seriesKeys: ['one', 'two', 'three'],
+    data: [
+      { category: 'A', values: { one: 0, two: 90, three: 10 } },
+      { category: 'B', values: { one: 10, two: 45, three: 58 } },
+      { category: 'D', values: { one: 63, two: 28, three: 4 } },
+      { category: 'E', values: { one: 24, two: 16, three: 110 } }
+    ]
   }
 ];
 

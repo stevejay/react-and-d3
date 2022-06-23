@@ -27,8 +27,6 @@ export function createBarSeriesPositioning<
   const getScaledY = createScaledValueAccessor(yScaleCopy, yAccessor);
 
   const barThickness = getScaleBandwidth(horizontal ? yScaleCopy : xScaleCopy);
-  // const scaleBandwidth = getScaleBandwidth(horizontal ? yScaleCopy : xScaleCopy);
-  // const barThickness = scaleBandwidth || fallbackBandwidth;
 
   const xOffset = horizontal ? 0 : -barThickness / 2;
   const yOffset = horizontal ? -barThickness / 2 : 0;

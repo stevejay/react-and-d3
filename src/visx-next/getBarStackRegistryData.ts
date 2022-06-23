@@ -6,18 +6,23 @@ import { BarSeriesProps } from './BarSeries';
 import { getFirstItem, getSecondItem } from './getItem';
 import { BarStackData, BarStackDatum, DataRegistryEntry } from './types';
 
-const getStack = <XScale extends AxisScale, YScale extends AxisScale>(bar: BarStackDatum<XScale, YScale>) =>
-  bar?.data?.stack;
+const getStack = <XScale extends AxisScale, YScale extends AxisScale, Datum extends object>(
+  bar: BarStackDatum<XScale, YScale, Datum>
+) => bar?.data?.stack;
 
 // returns average of top + bottom of bar (the middle) as this enables more accurately
 // finding the nearest datum to a FocusEvent (which is based on the middle of the rect bounding box)
-const getNumericValue = <XScale extends AxisScale, YScale extends AxisScale>(
-  bar: BarStackDatum<XScale, YScale>
+const getNumericValue = <XScale extends AxisScale, YScale extends AxisScale, Datum extends object>(
+  bar: BarStackDatum<XScale, YScale, Datum>
 ) => (getFirstItem(bar) + getSecondItem(bar)) / 2;
 
 /** Constructs the `DataRegistryEntry`s for a BarStack, using the stacked data. */
-export function getBarStackRegistryData<XScale extends AxisScale, YScale extends AxisScale>(
-  stackedData: BarStackData<XScale, YScale>,
+export function getBarStackRegistryData<
+  XScale extends AxisScale,
+  YScale extends AxisScale,
+  Datum extends object
+>(
+  stackedData: BarStackData<XScale, YScale, Datum>,
   comprehensiveDomain: [number, number],
   barSeriesChildren: ReactElement<BarSeriesProps<XScale, YScale, any>, string | JSXElementConstructor<any>>[],
   horizontal?: boolean
@@ -30,7 +35,7 @@ export function getBarStackRegistryData<XScale extends AxisScale, YScale extends
       const matchingChild = barSeriesChildren.find((child) => child.props.dataKey === data.key); // as any;
       const colorAccessor = matchingChild?.props?.colorAccessor;
 
-      const entry: DataRegistryEntry<XScale, YScale, BarStackDatum<XScale, YScale>> = {
+      const entry: DataRegistryEntry<XScale, YScale, BarStackDatum<XScale, YScale, Datum>, Datum> = {
         key: data.key,
         data,
         xAccessor,
@@ -52,5 +57,10 @@ export function getBarStackRegistryData<XScale extends AxisScale, YScale extends
 
       return entry;
     })
-    .filter((entry) => entry) as DataRegistryEntry<XScale, YScale, BarStackDatum<XScale, YScale>>[];
+    .filter((entry) => entry) as DataRegistryEntry<
+    XScale,
+    YScale,
+    BarStackDatum<XScale, YScale, Datum>,
+    Datum
+  >[];
 }

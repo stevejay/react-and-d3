@@ -67,7 +67,12 @@ export type CommonGridProps<Scale extends GridScale> = {
 
 export type LegendShape = 'rect' | 'line' | 'dashed-line' | 'circle';
 
-export interface DataRegistryEntry<XScale extends AxisScale, YScale extends AxisScale, Datum> {
+export interface DataRegistryEntry<
+  XScale extends AxisScale,
+  YScale extends AxisScale,
+  Datum,
+  OriginalDatum extends object
+> {
   /** unique data key */
   key: string;
   /** array of data for the key. */
@@ -77,7 +82,7 @@ export interface DataRegistryEntry<XScale extends AxisScale, YScale extends Axis
   /** function that returns the y value of a datum. */
   yAccessor: (d: Datum) => ScaleInput<YScale>;
   /** function that returns the color value of a datum. */
-  colorAccessor?: (d: Datum, key: string) => string;
+  colorAccessor?: (d: OriginalDatum, key: string) => string;
   /** whether the entry supports mouse events. */
   mouseEvents?: boolean;
   /** Optionally update the xScale. */
@@ -88,7 +93,12 @@ export interface DataRegistryEntry<XScale extends AxisScale, YScale extends Axis
   legendShape?: LegendShape;
 }
 
-export interface DataContextType<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> {
+export interface DataContextType<
+  XScale extends AxisScale,
+  YScale extends AxisScale,
+  Datum extends object,
+  OriginalDatum extends object
+> {
   xScale: XScale;
   yScale: YScale;
   xRangePadding: number;
@@ -99,9 +109,11 @@ export interface DataContextType<XScale extends AxisScale, YScale extends AxisSc
   innerWidth: number;
   innerHeight: number;
   margin: Margin;
-  dataRegistry: Omit<DataRegistry<XScale, YScale, Datum>, 'registry' | 'registryKeys'>;
+  dataRegistry: Omit<DataRegistry<XScale, YScale, Datum, OriginalDatum>, 'registry' | 'registryKeys'>;
   registerData: (
-    data: DataRegistryEntry<XScale, YScale, Datum> | DataRegistryEntry<XScale, YScale, Datum>[]
+    data:
+      | DataRegistryEntry<XScale, YScale, Datum, OriginalDatum>
+      | DataRegistryEntry<XScale, YScale, Datum, OriginalDatum>[]
   ) => void;
   unregisterData: (keyOrKeys: string | string[]) => void;
   setDimensions: (dims: { width: number; height: number; margin: Margin }) => void;
@@ -432,16 +444,23 @@ export type StackPathConfig<Datum, Key> = {
   value?: number | ((d: Datum, key: Key) => number);
 };
 
-export type CombinedStackData<XScale extends AxisScale, YScale extends AxisScale> = {
+export type CombinedStackData<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> = {
   [dataKey: string]: ScaleInput<XScale> | ScaleInput<YScale>;
-} & { stack: ScaleInput<XScale> | ScaleInput<YScale>; positiveSum: number; negativeSum: number };
+} & {
+  stack: ScaleInput<XScale> | ScaleInput<YScale>;
+  positiveSum: number;
+  negativeSum: number;
+  __datum__: Datum;
+};
 
 // BarStack transforms its child series Datum into CombinedData<XScale, YScale>
-export type BarStackDatum<XScale extends AxisScale, YScale extends AxisScale> = SeriesPoint<
-  CombinedStackData<XScale, YScale>
->;
+export type BarStackDatum<
+  XScale extends AxisScale,
+  YScale extends AxisScale,
+  Datum extends object
+> = SeriesPoint<CombinedStackData<XScale, YScale, Datum>>;
 
-export type BarStackData<XScale extends AxisScale, YScale extends AxisScale> = Series<
-  CombinedStackData<XScale, YScale>,
+export type BarStackData<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> = Series<
+  CombinedStackData<XScale, YScale, Datum>,
   string
 >[];

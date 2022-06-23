@@ -5,16 +5,21 @@ import { DataRegistryEntry } from './types';
 // TODO use a Map.
 
 /** A class for holding data entries */
-export class DataRegistry<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> {
-  private registry: { [key: string]: DataRegistryEntry<XScale, YScale, Datum> } = {};
+export class DataRegistry<
+  XScale extends AxisScale,
+  YScale extends AxisScale,
+  Datum extends object,
+  OriginalDatum extends object
+> {
+  private registry: { [key: string]: DataRegistryEntry<XScale, YScale, Datum, OriginalDatum> } = {};
 
   private registryKeys: string[] = [];
 
   /** Add one or more entries to the registry. */
   public registerData(
     entryOrEntries:
-      | DataRegistryEntry<XScale, YScale, Datum>
-      | readonly DataRegistryEntry<XScale, YScale, Datum>[]
+      | DataRegistryEntry<XScale, YScale, Datum, OriginalDatum>
+      | readonly DataRegistryEntry<XScale, YScale, Datum, OriginalDatum>[]
   ) {
     const entries = Array.isArray(entryOrEntries) ? entryOrEntries : [entryOrEntries];
     entries.forEach((currEntry) => {

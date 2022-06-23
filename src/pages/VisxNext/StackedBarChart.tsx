@@ -17,22 +17,24 @@ export interface StackedBarChartProps {
 
 const xScale: BandScaleConfig<string> = {
   type: 'band',
-  paddingInner: 0.9,
+  paddingInner: 0.4,
   paddingOuter: 0.2,
   round: true
 } as const;
 
 const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
 
-const colors = {
-  one: schemeCategory10[0],
-  two: schemeCategory10[1],
-  three: schemeCategory10[2]
-} as any; // TODO fix
-
 function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) {
-  console.log('>>key', key);
-  return colors[key];
+  switch (key) {
+    case 'one':
+      return schemeCategory10[0];
+    case 'two':
+      return schemeCategory10[1];
+    case 'three':
+      return schemeCategory10[2];
+    default:
+      return 'gray';
+  }
 }
 
 const springConfig = { duration: 350, easing: easeCubicInOut };
@@ -51,7 +53,7 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
       {/* <XYChartColumnGrid className="text-slate-600" /> */}
       <XYChartRowGrid className="text-red-600" tickCount={5} shapeRendering="crispEdges" />
       {/* TODO Use refs within barSeries for the accessors? */}
-      <SvgXYChartBarStack stackOffset="none">
+      <SvgXYChartBarStack stackOffset="none" stackOrder="ascending" animate={true}>
         {dataKeys.map((dataKey) => (
           <XYChartBarSeries
             key={dataKey}
@@ -60,12 +62,11 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
             xAccessor={(d) => d.category}
             yAccessor={(d) => d.values[dataKey]}
             colorAccessor={colorAccessor}
-            // barProps={{ shapeRendering: 'crispEdges' }}
             barProps={(datum: any) => ({
               shapeRendering: 'crispEdges',
               role: 'graphics-symbol',
               'aria-roledescription': '',
-              'aria-label': 'Disaster' // `Category ${datum.category}: ${datum.values[dataKey]}`
+              'aria-label': `Category ${datum.category}: ${datum.values[dataKey]}`
             })}
             groupProps={{
               role: 'graphics-object',

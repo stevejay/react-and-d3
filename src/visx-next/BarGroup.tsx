@@ -130,7 +130,7 @@ function XYChartBarGroupSeries<
   animate
 }: {
   dataKeys: string[];
-  dataRegistry: Omit<DataRegistry<XScale, YScale, Datum>, 'registry' | 'registryKeys'>;
+  dataRegistry: Omit<DataRegistry<XScale, YScale, Datum, Datum>, 'registry' | 'registryKeys'>;
   barSeriesChildren: ReactElement<
     BarSeriesProps<XScale, YScale, Datum>,
     string | JSXElementConstructor<any>
@@ -197,8 +197,6 @@ export type XYChartBarGroupProps<
   padding?: number;
   /** Comparator function to sort `dataKeys` within a bar group. By default the DOM rendering order of `BarGroup`s `children` is used. Must be stable. */
   sortBars?: (dataKeyA: string, dataKeyB: string) => number;
-  /** Rendered component which is passed BarsProps by BaseBarGroup after processing. */
-  //   BarsComponent: React.FC<BarsProps<XScale, YScale>>;
   animate?: boolean;
   /* A react-spring configuration object */
   springConfig?: SpringConfig;
@@ -230,7 +228,7 @@ export function XYChartBarGroup<
     yScale,
     colorScale,
     springConfig: fallbackSpringConfig
-  } = useContext(DataContext) as unknown as DataContextType<XScale, YScale, Datum>;
+  } = useContext(DataContext) as unknown as DataContextType<XScale, YScale, Datum, Datum>;
 
   const barSeriesChildren = useMemo(
     () => getChildrenAndGrandchildrenWithProps<BarSeriesProps<XScale, YScale, Datum>>(children),

@@ -5,9 +5,14 @@ import { DataRegistryEntry, PositionScale } from '../types';
 export function useSeriesTransitions<
   XScale extends PositionScale,
   YScale extends PositionScale,
-  Datum extends object
->(data: DataRegistryEntry<XScale, YScale, Datum>[], springConfig?: Partial<SpringConfig>, animate?: boolean) {
-  return useTransition<DataRegistryEntry<XScale, YScale, Datum>, { opacity: number }>(data, {
+  Datum extends object,
+  OriginalDatum extends object
+>(
+  data: DataRegistryEntry<XScale, YScale, Datum, OriginalDatum>[],
+  springConfig?: Partial<SpringConfig>,
+  animate?: boolean
+) {
+  return useTransition<DataRegistryEntry<XScale, YScale, Datum, OriginalDatum>, { opacity: number }>(data, {
     initial: { opacity: 1 },
     from: { opacity: 0 },
     enter: { opacity: 1 },
