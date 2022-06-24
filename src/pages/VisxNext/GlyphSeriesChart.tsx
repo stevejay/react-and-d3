@@ -1,51 +1,48 @@
-import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
+import { LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
-import { CategoryValueDatum, Margin } from '@/types';
+import { Margin } from '@/types';
 import { SvgXYChartAxis } from '@/visx-next/Axis';
-import { XYChartBarSeries } from '@/visx-next/BarSeries';
 import { CircleGlyph } from '@/visx-next/glyphs/CircleGlyph';
 import { XYChartGlyphSeries } from '@/visx-next/GlyphSeries';
-import { XYChartLineSeries } from '@/visx-next/LineSeries';
 import { XYChartRowGrid } from '@/visx-next/RowGrid';
 import { SvgXYChart } from '@/visx-next/SvgXYChart';
 
-export interface BarChartProps {
-  data: CategoryValueDatum<string, number>[];
+export interface Datum {
+  a: number;
+  b: number;
+}
+
+export interface GlyphSeriesChartProps {
+  data: Datum[];
   margin: Margin;
 }
 
-const xScale: BandScaleConfig<string> = {
-  type: 'band',
-  paddingInner: 0.9,
-  paddingOuter: 0.2,
-  round: true
-} as const;
-
+const xScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
 const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
 
-function xAccessor(d: CategoryValueDatum<string, number>) {
-  return d.category;
+function xAccessor(d: Datum) {
+  return d.a;
 }
 
-function yAccessor(d: CategoryValueDatum<string, number>) {
-  return d.value;
+function yAccessor(d: Datum) {
+  return d.b;
 }
 
 function colorAccessor() {
   return schemeCategory10[8];
 }
 
-function glyphColorAccessor() {
-  return schemeCategory10[6];
-}
+// function keyAccessor(d: Datum) {
+//   return d.a;
+// }
 
-const springConfig = { duration: 350, easing: easeCubicInOut };
+const springConfig = { duration: 1350, easing: easeCubicInOut };
 
 // TODO I really think the scales and accessors should be labelled
 // independent and dependent.
-export function BarChart({ data, margin }: BarChartProps) {
+export function GlyphSeriesChart({ data, margin }: GlyphSeriesChartProps) {
   return (
     <SvgXYChart
       margin={margin}
@@ -60,31 +57,14 @@ export function BarChart({ data, margin }: BarChartProps) {
       {/* <XYChartColumnGrid className="text-slate-600" /> */}
       <XYChartRowGrid className="text-red-600" tickCount={5} shapeRendering="crispEdges" />
       {/* TODO Use refs within barSeries for the accessors? */}
-      <XYChartBarSeries
-        dataKey="data-a"
-        data={data}
-        xAccessor={xAccessor}
-        yAccessor={yAccessor}
-        colorAccessor={colorAccessor}
-        barProps={(datum: any) => ({
-          shapeRendering: 'crispEdges',
-          role: 'graphics-symbol',
-          'aria-roledescription': '',
-          'aria-label': `Category ${xAccessor(datum)}: ${yAccessor(datum)}`
-        })}
-        // groupProps={{
-        //   role: 'graphics-object',
-        //   'aria-roledescription': 'series',
-        //   'aria-label': 'Some series'
-        // }}
-      />
       <XYChartGlyphSeries
         size={5}
         dataKey="data-b"
         data={data}
         xAccessor={xAccessor}
         yAccessor={yAccessor}
-        colorAccessor={glyphColorAccessor}
+        // keyAccessor={keyAccessor}
+        colorAccessor={colorAccessor}
         renderGlyph={({ datum, ...rest }) => (
           <CircleGlyph
             shapeRendering="crispEdges"
@@ -94,35 +74,6 @@ export function BarChart({ data, margin }: BarChartProps) {
             {...rest}
           />
         )}
-        // glyphProps={(datum: any) => ({
-        //   shapeRendering: 'crispEdges',
-        //   role: 'graphics-symbol',
-        //   'aria-roledescription': '',
-        //   'aria-label': `Category ${xAccessor(datum)}: ${yAccessor(datum)}`
-        // })}
-      />
-      <XYChartLineSeries
-        size={5}
-        dataKey="data-c"
-        data={data}
-        xAccessor={xAccessor}
-        yAccessor={yAccessor}
-        colorAccessor={glyphColorAccessor}
-        // renderGlyph={({ datum, ...rest }) => (
-        //   <CircleGlyph
-        //     shapeRendering="crispEdges"
-        //     role="graphics-symbol"
-        //     aria-roledescription=""
-        //     aria-label={`Category ${xAccessor(datum as any)}: ${yAccessor(datum as any)}`} // TODO Fix
-        //     {...rest}
-        //   />
-        // )}
-        // glyphProps={(datum: any) => ({
-        //   shapeRendering: 'crispEdges',
-        //   role: 'graphics-symbol',
-        //   'aria-roledescription': '',
-        //   'aria-label': `Category ${xAccessor(datum)}: ${yAccessor(datum)}`
-        // })}
       />
       <SvgXYChartAxis
         orientation="top"

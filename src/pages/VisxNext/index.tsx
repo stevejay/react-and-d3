@@ -5,6 +5,7 @@ import { Paragraph } from '@/components/Paragraph';
 import { SectionHeading } from '@/components/SectionHeading';
 
 import { BarChartExample } from './BarChartExample';
+import { GlyphSeriesChartExample } from './GlyphSeriesChartExample';
 import { GroupedBarChartExample } from './GroupedBarChartExample';
 import { StackedBarChartExample } from './StackedBarChartExample';
 
@@ -19,6 +20,7 @@ function VisxNextPage() {
         This page is for creating a version of Visx that has better animations and extensibility.
       </Paragraph>
       <SectionHeading>Bar Chart</SectionHeading>
+      <GlyphSeriesChartExample />
       <BarChartExample />
       <StackedBarChartExample />
       <GroupedBarChartExample />
