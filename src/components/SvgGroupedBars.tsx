@@ -107,7 +107,7 @@ export function SvgGroupedBars<CategoryT extends DomainValue>({
     renderingOffset
   );
   const translateAxis = orientation === 'vertical' ? 'translateX' : 'translateY';
-  const transitions = useTransition<CategoryValueListDatum<CategoryT, number>, {}>(data, {
+  const transitions = useTransition<CategoryValueListDatum<CategoryT, number>, object>(data, {
     initial: (datum) => ({ opacity: 1, [translateAxis]: categoryScale(datum.category) }),
     from: (datum) => ({ opacity: 0, [translateAxis]: categoryScale(datum.category) }),
     enter: (datum) => ({ opacity: 1, [translateAxis]: categoryScale(datum.category) }),

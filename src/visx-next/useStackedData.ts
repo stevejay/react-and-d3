@@ -11,19 +11,20 @@ import { DataContext } from './DataContext';
 import { getBarStackRegistryData } from './getBarStackRegistryData';
 import getStackOffset from './stackOffset';
 import getStackOrder from './stackOrder';
-import { CombinedStackData, DataContextType, SeriesProps } from './types';
+import { CombinedStackData, DataContextType } from './types';
 
-interface JSXElement extends ReactElement<any, any> {}
+// interface JSXElement extends ReactElement<any, any> {}
 
 type UseStackedData<Datum extends object> = {
-  children: JSXElement | JSXElement[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  children: ReactElement<any, any> | ReactElement<any, any>[];
 } & Pick<StackPathConfig<Datum, string>, 'stackOffset' | 'stackOrder'>;
 
 export function useStackedData<
   XScale extends AxisScale,
   YScale extends AxisScale,
-  Datum extends object,
-  ChildrenProps extends SeriesProps<XScale, YScale, Datum>
+  Datum extends object
+  // ChildrenProps extends SeriesProps<XScale, YScale, Datum>
 >({ children, stackOrder, stackOffset }: UseStackedData<Datum>) {
   type StackDatum = SeriesPoint<CombinedStackData<XScale, YScale, Datum>>;
 

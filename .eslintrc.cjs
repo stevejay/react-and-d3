@@ -17,7 +17,8 @@ module.exports = {
     'testing-library',
     'jsx-a11y',
     'eslint-plugin-tsdoc',
-    'simple-import-sort'
+    'simple-import-sort',
+    '@typescript-eslint'
   ],
   extends: [
     'eslint:recommended',
@@ -28,6 +29,7 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:testing-library/react',
     'plugin:storybook/recommended',
+    'plugin:@typescript-eslint/recommended',
     'plugin:eslint-comments/recommended',
     'prettier'
   ],
@@ -66,7 +68,7 @@ module.exports = {
           pascalCase: true
         },
         // ignore ambient module declaration file names
-        ignore: ['\\.d\\.ts$', 'XYChart\\.tsx$']
+        ignore: ['\\.d\\.ts$', 'XYChart\\.tsx$', 'SVG', 'DOM']
       }
     ],
     'testing-library/no-node-access': 0,
@@ -75,7 +77,8 @@ module.exports = {
     'tsdoc/syntax': 0,
     'react/display-name': 'off', // forwardRef causing a problem here
     'react/prop-types': 'off', // forwardRef causing a problem here,
-    'no-unused-vars': 'off'
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
   },
   overrides: [
     {

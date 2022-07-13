@@ -1,6 +1,7 @@
 import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
+import { curveCatmullRom } from 'd3-shape';
 
 import { CategoryValueDatum, Margin } from '@/types';
 import { SvgXYChartAxis } from '@/visx-next/Axis';
@@ -41,6 +42,10 @@ function glyphColorAccessor() {
   return schemeCategory10[6];
 }
 
+function keyAccessor(d: CategoryValueDatum<string, number>) {
+  return d.category;
+}
+
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
 // TODO I really think the scales and accessors should be labelled
@@ -60,69 +65,59 @@ export function BarChart({ data, margin }: BarChartProps) {
       {/* <XYChartColumnGrid className="text-slate-600" /> */}
       <XYChartRowGrid className="text-red-600" tickCount={5} shapeRendering="crispEdges" />
       {/* TODO Use refs within barSeries for the accessors? */}
-      <XYChartBarSeries
-        dataKey="data-a"
-        data={data}
-        xAccessor={xAccessor}
-        yAccessor={yAccessor}
-        colorAccessor={colorAccessor}
-        barProps={(datum: any) => ({
-          shapeRendering: 'crispEdges',
-          role: 'graphics-symbol',
-          'aria-roledescription': '',
-          'aria-label': `Category ${xAccessor(datum)}: ${yAccessor(datum)}`
-        })}
-        // groupProps={{
-        //   role: 'graphics-object',
-        //   'aria-roledescription': 'series',
-        //   'aria-label': 'Some series'
-        // }}
-      />
-      <XYChartGlyphSeries
-        size={5}
-        dataKey="data-b"
-        data={data}
-        xAccessor={xAccessor}
-        yAccessor={yAccessor}
-        colorAccessor={glyphColorAccessor}
-        renderGlyph={({ datum, ...rest }) => (
-          <CircleGlyph
-            shapeRendering="crispEdges"
-            role="graphics-symbol"
-            aria-roledescription=""
-            aria-label={`Category ${xAccessor(datum as any)}: ${yAccessor(datum as any)}`} // TODO Fix
-            {...rest}
-          />
-        )}
-        // glyphProps={(datum: any) => ({
-        //   shapeRendering: 'crispEdges',
-        //   role: 'graphics-symbol',
-        //   'aria-roledescription': '',
-        //   'aria-label': `Category ${xAccessor(datum)}: ${yAccessor(datum)}`
-        // })}
-      />
+      {false && (
+        <XYChartBarSeries
+          dataKey="data-a"
+          data={data}
+          keyAccessor={keyAccessor}
+          xAccessor={xAccessor}
+          yAccessor={yAccessor}
+          colorAccessor={colorAccessor}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          barProps={(datum) => ({
+            shapeRendering: 'crispEdges',
+            role: 'graphics-symbol',
+            'aria-roledescription': '',
+            'aria-label': `Category ${xAccessor(datum as CategoryValueDatum<string, number>)}: ${yAccessor(
+              datum as CategoryValueDatum<string, number>
+            )}`
+          })}
+        />
+      )}
+      {false && (
+        <XYChartGlyphSeries
+          size={5}
+          dataKey="data-b"
+          data={data}
+          xAccessor={xAccessor}
+          yAccessor={yAccessor}
+          keyAccessor={keyAccessor}
+          colorAccessor={glyphColorAccessor}
+          renderGlyph={({ datum, ...rest }) => (
+            <CircleGlyph
+              shapeRendering="crispEdges"
+              role="graphics-symbol"
+              aria-roledescription=""
+              aria-label={`Category ${xAccessor(datum as CategoryValueDatum<string, number>)}: ${yAccessor(
+                datum as CategoryValueDatum<string, number>
+              )}`}
+              {...rest}
+            />
+          )}
+        />
+      )}
       <XYChartLineSeries
-        size={5}
         dataKey="data-c"
         data={data}
+        keyAccessor={keyAccessor}
         xAccessor={xAccessor}
         yAccessor={yAccessor}
-        colorAccessor={glyphColorAccessor}
-        // renderGlyph={({ datum, ...rest }) => (
-        //   <CircleGlyph
-        //     shapeRendering="crispEdges"
-        //     role="graphics-symbol"
-        //     aria-roledescription=""
-        //     aria-label={`Category ${xAccessor(datum as any)}: ${yAccessor(datum as any)}`} // TODO Fix
-        //     {...rest}
-        //   />
-        // )}
-        // glyphProps={(datum: any) => ({
-        //   shapeRendering: 'crispEdges',
-        //   role: 'graphics-symbol',
-        //   'aria-roledescription': '',
-        //   'aria-label': `Category ${xAccessor(datum)}: ${yAccessor(datum)}`
-        // })}
+        curve={curveCatmullRom}
+        pathProps={{
+          stroke: schemeCategory10[3],
+          strokeWidth: 3,
+          strokeLinecap: 'round' // without this a datum surrounded by nulls will not be visible
+        }}
       />
       <SvgXYChartAxis
         orientation="top"

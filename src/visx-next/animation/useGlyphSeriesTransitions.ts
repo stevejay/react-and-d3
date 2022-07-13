@@ -14,6 +14,7 @@ export function useGlyphSeriesTransitions<
   data: readonly Datum[],
   xScale: XScale,
   yScale: YScale,
+  keyAccessor: (datum: Datum) => string,
   xAccessor: (datum: Datum) => ScaleInput<XScale>,
   yAccessor: (datum: Datum) => ScaleInput<YScale>,
   horizontal: boolean,
@@ -68,7 +69,7 @@ export function useGlyphSeriesTransitions<
         : { opacity: 0 };
     },
     config: springConfig,
-    keys: horizontal ? yAccessor : xAccessor,
+    keys: keyAccessor, // horizontal ? yAccessor : xAccessor,
     immediate: !animate
   });
 }

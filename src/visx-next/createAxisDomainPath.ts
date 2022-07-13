@@ -35,13 +35,13 @@ export function createAxisDomainPath(
   outerTickLength: number,
   range: AxisScaleOutput[],
   tickSign: number,
-  renderingOffset: number = 0
+  renderingOffset = 0
 ): Point[] {
   // The pixel position to start drawing the axis domain line at.
-  let range0 = Number(range[0]) + renderingOffset;
+  const range0 = Number(range[0]) + renderingOffset;
 
   // The pixel position to finish drawing the axis domain line at.
-  let range1 = Number(range[range.length - 1]) + renderingOffset;
+  const range1 = Number(range[range.length - 1]) + renderingOffset;
 
   if (orientation === 'left' || orientation === 'right') {
     return [

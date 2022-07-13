@@ -5,7 +5,7 @@ export type AnnouncerContextType = {
   announce: (text: string) => void;
 };
 
-export const AnnouncerContext = createContext<AnnouncerContextType>({ announce: () => {} });
+export const AnnouncerContext = createContext<AnnouncerContextType | null>(null);
 
 export function AnnouncerProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<{ text: string } | null>(null);

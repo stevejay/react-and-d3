@@ -13,7 +13,7 @@ export function createGlyphSeriesPositioning<
   yAccessor: (datum: Datum) => ScaleInput<YScale>,
   horizontal: boolean,
   size: number | ((d: Datum) => number),
-  renderingOffset: number = 0
+  renderingOffset = 0
 ) {
   const xScaleCopy = xScale.copy();
   const yScaleCopy = yScale.copy();

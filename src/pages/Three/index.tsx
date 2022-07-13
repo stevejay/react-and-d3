@@ -1,13 +1,14 @@
 import { useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Canvas, useThree } from '@react-three/fiber';
+import { BufferGeometry, Material, Mesh } from 'three';
 
 import { PageHeading } from '@/components/PageHeading';
 import { Paragraph } from '@/components/Paragraph';
 import { SectionHeading } from '@/components/SectionHeading';
 
 function PlaneObject() {
-  const mesh = useRef<any>(); // TODO fix any
+  const mesh = useRef<Mesh<BufferGeometry, Material | Material[]>>(null);
   const { size } = useThree();
   return (
     <>

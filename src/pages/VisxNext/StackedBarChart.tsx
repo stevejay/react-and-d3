@@ -8,6 +8,7 @@ import { XYChartBarSeries } from '@/visx-next/BarSeries';
 import { SvgXYChartBarStack } from '@/visx-next/BarStack';
 import { XYChartRowGrid } from '@/visx-next/RowGrid';
 import { SvgXYChart } from '@/visx-next/SvgXYChart';
+import Tooltip from '@/visx-next/Tooltip';
 
 export interface StackedBarChartProps {
   data: readonly CategoryValueListDatum<string, number>[];
@@ -37,6 +38,10 @@ function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) 
   }
 }
 
+function keyAccessor(d: CategoryValueListDatum<string, number>) {
+  return `${d.category}`;
+}
+
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
 export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps) {
@@ -53,20 +58,28 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
       {/* <XYChartColumnGrid className="text-slate-600" /> */}
       <XYChartRowGrid className="text-red-600" tickCount={5} shapeRendering="crispEdges" />
       {/* TODO Use refs within barSeries for the accessors? */}
-      <SvgXYChartBarStack stackOffset="none" stackOrder="ascending" animate={true}>
+      <SvgXYChartBarStack
+        stackOffset="none"
+        stackOrder="ascending"
+        animate={true}
+        // onPointerMove={handlePointerMove}
+      >
         {dataKeys.map((dataKey) => (
           <XYChartBarSeries
             key={dataKey}
             dataKey={dataKey}
             data={data}
+            keyAccessor={keyAccessor}
             xAccessor={(d) => d.category}
             yAccessor={(d) => d.values[dataKey]}
             colorAccessor={colorAccessor}
-            barProps={(datum: any) => ({
+            barProps={(datum) => ({
               shapeRendering: 'crispEdges',
               role: 'graphics-symbol',
               'aria-roledescription': '',
-              'aria-label': `Category ${datum.category}: ${datum.values[dataKey]}`
+              'aria-label': `Category ${(datum as CategoryValueListDatum<string, number>).category}: ${
+                (datum as CategoryValueListDatum<string, number>).values[dataKey]
+              }`
             })}
             groupProps={{
               role: 'graphics-object',
@@ -163,6 +176,25 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
         labelOffset={36} // Does not take tick labels into account.
         // hideTicks
         // tickLength={0}
+      />
+      <Tooltip<CategoryValueListDatum<string, number>>
+        snapTooltipToDatumX //={false}
+        snapTooltipToDatumY //={false}
+        showVerticalCrosshair //={false}
+        showSeriesGlyphs
+        renderTooltip={({ tooltipData, colorScale }) => {
+          const datum = tooltipData?.nearestDatum;
+          if (!datum) {
+            return null;
+          }
+          return (
+            <div>
+              <span style={{ color: colorScale?.(datum.key) }}>{datum.key}</span> {datum.datum.category}
+              {': '}
+              {datum.datum.values[datum.key]}
+            </div>
+          );
+        }}
       />
     </SvgXYChart>
   );

@@ -1,4 +1,4 @@
-import { JSXElementConstructor, ReactElement, SVGProps, useContext } from 'react';
+import { JSXElementConstructor, ReactElement, SVGProps, useCallback, useContext } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 import { ScaleOrdinal } from 'd3-scale';
 import { SeriesPoint } from 'd3-shape';
@@ -7,15 +7,20 @@ import { useBarStackTransitions, useSeriesTransitions } from './animation';
 import { BarSeriesProps } from './BarSeries';
 import { DataContext } from './DataContext';
 import { DataRegistry } from './DataRegistry';
+import { BARSTACK_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './eventSources';
+import findNearestStackDatum from './findNearestStackDatum';
 import { ScaleInput } from './scale';
 import {
   BarStackDatum,
   CombinedStackData,
   DataContextType,
+  NearestDatumArgs,
+  NearestDatumReturnType,
   PositionScale,
   SeriesProps,
   StackPathConfig
 } from './types';
+import { useSeriesEvents } from './useSeriesEvents';
 import { useStackedData } from './useStackedData';
 
 type BarStackSeriesProps<XScale extends PositionScale, YScale extends PositionScale, Datum extends object> = {
@@ -24,12 +29,13 @@ type BarStackSeriesProps<XScale extends PositionScale, YScale extends PositionSc
   dataKeys: readonly string[];
   xScale: XScale;
   yScale: YScale;
+  keyAccessor: (d: Datum) => string; // TODO should be like colorAccessor
   xAccessor: (d: SeriesPoint<CombinedStackData<XScale, YScale, Datum>>) => ScaleInput<XScale>;
   yAccessor: (d: SeriesPoint<CombinedStackData<XScale, YScale, Datum>>) => ScaleInput<YScale>;
   horizontal: boolean;
   renderingOffset?: number;
   animate?: boolean;
-  colorAccessor?: (d: Datum, key: string) => string;
+  colorAccessor?: (d: Datum, dataKey: string) => string;
   springConfig?: SpringConfig;
   colorScale?: ScaleOrdinal<string, string, never>;
   barClassName?: string;
@@ -40,7 +46,7 @@ type BarStackSeriesProps<XScale extends PositionScale, YScale extends PositionSc
         index: number,
         dataKey: string
       ) => Omit<SVGProps<SVGRectElement>, 'x' | 'y' | 'width' | 'height' | 'ref'>);
-};
+} & Pick<SVGProps<SVGRectElement>, 'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onFocus' | 'onBlur'>;
 
 function BarStackSeries<XScale extends PositionScale, YScale extends PositionScale, Datum extends object>({
   dataKey,
@@ -48,6 +54,7 @@ function BarStackSeries<XScale extends PositionScale, YScale extends PositionSca
   data,
   xScale,
   yScale,
+  keyAccessor,
   xAccessor,
   yAccessor,
   horizontal,
@@ -57,7 +64,8 @@ function BarStackSeries<XScale extends PositionScale, YScale extends PositionSca
   colorAccessor,
   colorScale,
   barClassName = '',
-  barProps = {}
+  barProps = {},
+  ...events
 }: BarStackSeriesProps<XScale, YScale, Datum>) {
   const transitions = useBarStackTransitions(
     data,
@@ -65,6 +73,7 @@ function BarStackSeries<XScale extends PositionScale, YScale extends PositionSca
     xScale,
     yScale,
     dataKey,
+    keyAccessor,
     xAccessor,
     yAccessor,
     horizontal,
@@ -89,6 +98,7 @@ function BarStackSeries<XScale extends PositionScale, YScale extends PositionSca
             style={{ ...style, opacity }}
             className={barClassName}
             {...restBarProps}
+            {...events}
           />
         );
       })}
@@ -113,8 +123,9 @@ type XYChartBarStackSeriesProps<
   animate?: boolean;
   springConfig?: SpringConfig;
   colorScale?: ScaleOrdinal<string, string, never>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   seriesChildren: ReactElement<BarSeriesProps<XScale, YScale, Datum>, string | JSXElementConstructor<any>>[];
-};
+} & Pick<SVGProps<SVGRectElement>, 'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onFocus' | 'onBlur'>;
 
 function XYChartBarStackSeries<
   XScale extends PositionScale,
@@ -126,11 +137,11 @@ function XYChartBarStackSeries<
   xScale,
   yScale,
   horizontal,
-  renderingOffset,
   animate,
   springConfig,
   colorScale,
-  seriesChildren
+  seriesChildren,
+  ...events
 }: XYChartBarStackSeriesProps<XScale, YScale, Datum>) {
   const transitions = useSeriesTransitions(
     dataKeys.map((dataKey) => dataRegistry.get(dataKey)),
@@ -156,6 +167,7 @@ function XYChartBarStackSeries<
               data={datum.data}
               xScale={xScale}
               yScale={yScale}
+              keyAccessor={datum.keyAccessor}
               xAccessor={datum.xAccessor}
               yAccessor={datum.yAccessor}
               horizontal={horizontal ?? false}
@@ -166,6 +178,7 @@ function XYChartBarStackSeries<
               colorScale={colorScale}
               barProps={barProps}
               barClassName={barClassName}
+              {...events}
             />
           </animated.g>
         );
@@ -191,12 +204,11 @@ export type SvgXYChartBarStackProps<
     | ReactElement<BarStackChildProps<XScale, YScale, Datum>>[];
   animate?: boolean;
   springConfig?: SpringConfig;
-} & Pick<StackPathConfig<Datum, string>, 'stackOffset' | 'stackOrder'>;
-// &
-//   Pick<
-//     SeriesProps<XScale, YScale, Datum>,
-//     'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
-//   >;
+} & Pick<StackPathConfig<Datum, string>, 'stackOffset' | 'stackOrder'> &
+  Pick<
+    SeriesProps<XScale, YScale, Datum>,
+    'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
+  >;
 
 export function SvgXYChartBarStack<
   XScale extends PositionScale,
@@ -207,7 +219,13 @@ export function SvgXYChartBarStack<
   stackOrder,
   stackOffset,
   animate = true,
-  springConfig
+  springConfig,
+  onBlur,
+  onFocus,
+  onPointerMove,
+  onPointerOut,
+  onPointerUp,
+  enableEvents = true
 }: SvgXYChartBarStackProps<XScale, YScale, Datum>) {
   const {
     colorScale,
@@ -226,18 +244,40 @@ export function SvgXYChartBarStack<
   const { seriesChildren, groupKeys, stackedData } = useStackedData<
     XScale,
     YScale,
-    Datum,
-    BarSeriesProps<XScale, YScale, Datum>
+    Datum
+    // BarSeriesProps<XScale, YScale, Datum>
   >({
     children,
     stackOrder,
     stackOffset
   });
 
-  // const previousGroupKeys = useRef<string[]>([]);
-  // useEffect(() => {
-  //   previousGroupKeys.current = groupKeys;
-  // }, [groupKeys]);
+  // custom logic to find the nearest AreaStackDatum (context) and return the original Datum (props)
+  const findNearestDatum = useCallback(
+    (
+      params: NearestDatumArgs<XScale, YScale, BarStackDatum<XScale, YScale, Datum>>
+    ): NearestDatumReturnType<Datum> => {
+      const childData = seriesChildren.find((child) => child.props.dataKey === params.dataKey)?.props?.data;
+      return childData ? findNearestStackDatum(params, childData, horizontal) : null;
+    },
+    [seriesChildren, horizontal]
+  );
+
+  const ownEventSourceKey = `${BARSTACK_EVENT_SOURCE}-${groupKeys.join('-')}`;
+  const eventEmitters = useSeriesEvents<XScale, YScale, Datum>({
+    dataKey: groupKeys, // POINTER_EVENTS_NEAREST,
+    enableEvents,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore Datum input + return type are expected to be the same type but they differ for BarStack (registry data is StackedDatum, return type is user Datum)
+    findNearestDatum,
+    onBlur,
+    onFocus,
+    onPointerMove,
+    onPointerOut,
+    onPointerUp,
+    source: ownEventSourceKey,
+    allowedSources: [XYCHART_EVENT_SOURCE, ownEventSourceKey]
+  });
 
   // if scales and data are not available in the registry, bail
   if (!stackedData || !xScale || !yScale || !colorScale) {
@@ -255,6 +295,7 @@ export function SvgXYChartBarStack<
       horizontal={horizontal}
       springConfig={springConfig ?? fallbackSpringConfig}
       animate={animate}
+      {...eventEmitters}
       // Feels better to only animate the chart if the stack keys are the same.
       // animate={
       //   (isEmpty(previousGroupKeys.current) || isEqual(previousGroupKeys.current, groupKeys)) && animate

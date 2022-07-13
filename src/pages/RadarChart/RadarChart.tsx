@@ -242,6 +242,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
             isSelected={datum.data.category === selectedCategory}
             degree={degreesLookup.get(datum.data.category) ?? 0}
             label={categoryLabel(datum.data)}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             path={sliceArcGenerator(datum as any) ?? ''}
             sliceLabelFontSizePx={sliceLabelFontSizePx}
             lowerLabelArcId={lowerLabelArcId}
@@ -255,6 +256,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
       <path
         className="pointer-events-none fill-current"
         role="presentation"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         d={(indicatorSliceArc as any)()}
         style={{ transform: `rotate(${degreesLookup.get(selectedCategory) ?? 0}deg)` }}
       />

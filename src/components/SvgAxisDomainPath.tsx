@@ -28,10 +28,10 @@ export function SvgAxisDomainPath({
   animate
 }: SvgAxisDomainPathProps) {
   // The pixel position to start drawing the axis domain line at.
-  let range0 = +range[0] + renderingOffset;
+  const range0 = +range[0] + renderingOffset;
 
   // The pixel position to finish drawing the axis domain line at.
-  let range1 = +range[range.length - 1] + renderingOffset;
+  const range1 = +range[range.length - 1] + renderingOffset;
 
   const animations = useSpring({
     to: {

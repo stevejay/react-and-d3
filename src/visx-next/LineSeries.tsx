@@ -1,12 +1,16 @@
-import { memo, SVGProps, useCallback, useContext } from 'react';
-import { animated, SpringConfig } from 'react-spring';
+import { memo, SVGProps, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { animated, Spring, SpringConfig } from 'react-spring';
 import { AxisScale } from '@visx/axis';
 import { Group } from '@visx/group';
 import { CurveFactory, CurveFactoryLineOnly } from 'd3-shape';
+import { isNil } from 'lodash-es';
 
 import { useLineSeriesTransitions } from './animation';
 import { DataContext } from './DataContext';
+import { LINESERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './eventSources';
+import { createLineSeriesPositioning } from './positioning';
 import { PositionScale, SeriesProps } from './types';
+import { useSeriesEvents } from './useSeriesEvents';
 import { withRegisteredData, WithRegisteredDataProps } from './withRegisteredData';
 
 export type LineSeriesProps<
@@ -15,19 +19,11 @@ export type LineSeriesProps<
   Datum extends object
 > = SeriesProps<XScale, YScale, Datum> & {
   curve?: CurveFactory | CurveFactoryLineOnly;
-  colorAccessor?: (d: Datum, key: string) => string;
-  size?: number | ((d: Datum) => number);
+  colorAccessor?: () => string;
   groupClassName?: string;
   /** Props to apply to the <g> element containing the series. */
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
-  // renderLine: (props: {
-  //   size: SpringValue<number>;
-  //   x: SpringValue<number>;
-  //   y: SpringValue<number>;
-  //   opacity: SpringValue<number>;
-  //   fill?: string;
-  //   datum: Datum;
-  // }) => ReactNode;
+  pathProps?: Omit<SVGProps<SVGPathElement>, 'ref'>;
   animate?: boolean;
   springConfig?: SpringConfig;
   horizontal: boolean;
@@ -37,7 +33,6 @@ export type LineSeriesProps<
 export function LineSeries<XScale extends PositionScale, YScale extends PositionScale, Datum extends object>({
   curve,
   colorAccessor,
-  size = 0,
   data,
   dataKey,
   xAccessor,
@@ -46,17 +41,32 @@ export function LineSeries<XScale extends PositionScale, YScale extends Position
   yScale,
   groupClassName = '',
   groupProps = {},
+  pathProps = {},
   // renderLine,
   animate = true,
   springConfig,
   horizontal,
-  renderingOffset
+  renderingOffset,
+  onBlur,
+  onFocus,
+  onPointerMove,
+  onPointerOut,
+  onPointerUp,
+  enableEvents = true
 }: LineSeriesProps<XScale, YScale, Datum> & WithRegisteredDataProps<XScale, YScale, Datum>) {
-  // const isDefined = useCallback(
-  //   (d: Datum) => isValidNumber(xScale(xAccessor(d))) && isValidNumber(yScale(yAccessor(d))),
-  //   [xScale, xAccessor, yScale, yAccessor]
-  // );
-  const transitions = useLineSeriesTransitions(
+  const ownEventSourceKey = `${LINESERIES_EVENT_SOURCE}-${dataKey}`;
+  const eventEmitters = useSeriesEvents<XScale, YScale, Datum>({
+    dataKey,
+    enableEvents,
+    onBlur,
+    onFocus,
+    onPointerMove,
+    onPointerOut,
+    onPointerUp,
+    source: ownEventSourceKey,
+    allowedSources: [XYCHART_EVENT_SOURCE, ownEventSourceKey]
+  });
+  const transition = useLineSeriesTransitions(
     data,
     xScale,
     yScale,
@@ -70,22 +80,128 @@ export function LineSeries<XScale extends PositionScale, YScale extends Position
   );
   return (
     <Group data-test-id="line-series" {...groupProps} className={groupClassName}>
-      {transitions(
-        (styles, datum) => (
-          <animated.path
-            data-test-id="path"
-            fill="none"
-            // stroke={colorAccessor?.(datum, dataKey)}
-            stroke="blue"
-            role="presentation"
-            d={styles.d}
-            // className={className}
-            // {...domainProps}
-          />
-        )
+      <animated.path
+        data-test-id="path"
+        fill="none"
+        stroke={colorAccessor?.()}
+        role="presentation"
+        d={transition}
+        {...pathProps}
+        {...eventEmitters}
+      />
+    </Group>
+  );
+}
 
-        // renderLine({ ...styles, datum, fill: colorAccessor?.(datum, dataKey) })
+// From https://github.com/flashblaze/flashblaze-website/blob/39c459c7664590d80eac7329b596a1cfee1beb9a/src/posts/2020-06-15-svg-animations-using-react-spring.mdx
+function AnimatedPath({
+  d,
+  springConfig,
+  colorAccessor,
+  pathProps = {}
+}: {
+  d: string;
+  animate?: boolean;
+  springConfig?: SpringConfig;
+  colorAccessor?: () => string;
+  pathProps?: Omit<SVGProps<SVGPathElement>, 'ref'>;
+}) {
+  const pathRef = useRef<SVGPathElement>(null);
+  const [offset, setOffset] = useState<number | null>(null);
+
+  useEffect(() => {
+    setOffset(pathRef.current?.getTotalLength() ?? 0);
+  }, [offset]);
+
+  const { stroke, ...rest } = pathProps;
+
+  return (
+    <>
+      {!isNil(offset) ? (
+        <Spring from={{ x: offset }} to={{ x: 0 }} config={springConfig} immediate={!animated}>
+          {(props) => (
+            <animated.path
+              ref={pathRef}
+              d={d}
+              strokeDashoffset={props.x}
+              strokeDasharray={`${offset} ${offset}`}
+              fill="none"
+              strokeWidth="2"
+              strokeLinecap="round" // without this a datum surrounded by nulls will not be visible
+              stroke={stroke ?? colorAccessor?.()}
+              role="presentation"
+              {...rest}
+            />
+          )}
+        </Spring>
+      ) : (
+        <path ref={pathRef} strokeWidth="2" d={d} stroke="none" fill="none" {...rest} />
       )}
+    </>
+  );
+}
+
+export function CurtainLineSeries<
+  XScale extends PositionScale,
+  YScale extends PositionScale,
+  Datum extends object
+>({
+  curve,
+  colorAccessor,
+  data,
+  dataKey,
+  xAccessor,
+  yAccessor,
+  xScale,
+  yScale,
+  groupClassName = '',
+  groupProps = {},
+  pathProps = {},
+  // renderLine,
+  animate = true,
+  springConfig,
+  horizontal,
+  renderingOffset,
+  onBlur,
+  onFocus,
+  onPointerMove,
+  onPointerOut,
+  onPointerUp,
+  enableEvents = true
+}: LineSeriesProps<XScale, YScale, Datum> & WithRegisteredDataProps<XScale, YScale, Datum>) {
+  const ownEventSourceKey = `${LINESERIES_EVENT_SOURCE}-${dataKey}`;
+  const eventEmitters = useSeriesEvents<XScale, YScale, Datum>({
+    dataKey,
+    enableEvents,
+    onBlur,
+    onFocus,
+    onPointerMove,
+    onPointerOut,
+    onPointerUp,
+    source: ownEventSourceKey,
+    allowedSources: [XYCHART_EVENT_SOURCE, ownEventSourceKey]
+  });
+  const path = createLineSeriesPositioning({
+    xScale,
+    yScale,
+    xAccessor,
+    yAccessor,
+    horizontal,
+    curve,
+    renderingOffset
+  });
+  const pathD = path(data);
+  return (
+    <Group key={dataKey} data-test-id="line-series" {...groupProps} className={groupClassName}>
+      <AnimatedPath
+        key={pathD}
+        d={pathD ?? ''}
+        springConfig={springConfig}
+        colorAccessor={colorAccessor}
+        pathProps={pathProps}
+        animate={animate}
+        {...eventEmitters}
+      />
     </Group>
   );
 }
@@ -99,13 +215,15 @@ const MemoizedXYChartLineSeriesInner = memo(
     // colorAccessor,
     springConfig,
     dataKey,
+    animationType = 'morph',
     ...rest
   }: Omit<LineSeriesProps<XScale, YScale, Datum>, 'horizontal' | 'colorAccessor'> &
-    WithRegisteredDataProps<XScale, YScale, Datum>) {
+    WithRegisteredDataProps<XScale, YScale, Datum> & { animationType?: 'morph' | 'dashoffset' }) {
     const { springConfig: fallbackSpringConfig, horizontal, colorScale } = useContext(DataContext);
     const colorAccessor = useCallback(() => colorScale?.(dataKey) ?? '', [colorScale, dataKey]);
+    const Component = animationType === 'morph' ? LineSeries : CurtainLineSeries;
     return (
-      <LineSeries
+      <Component
         {...rest}
         horizontal={horizontal ?? false}
         springConfig={springConfig ?? fallbackSpringConfig}
@@ -120,7 +238,8 @@ const MemoizedXYChartLineSeriesInner = memo(
     prevProps.yScale === nextProps.yScale &&
     prevProps.data === nextProps.data &&
     prevProps.xAccessor === nextProps.xAccessor &&
-    prevProps.yAccessor === nextProps.yAccessor
+    prevProps.yAccessor === nextProps.yAccessor &&
+    prevProps.keyAccessor === nextProps.keyAccessor
   // prevProps.colorAccessor === nextProps.colorAccessor
 );
 

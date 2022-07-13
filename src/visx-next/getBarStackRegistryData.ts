@@ -1,6 +1,7 @@
 import { JSXElementConstructor, ReactElement } from 'react';
 import { AxisScale } from '@visx/axis';
 import { extent } from 'd3-array';
+import { identity } from 'lodash-es';
 
 import { BarSeriesProps } from './BarSeries';
 import { getFirstItem, getSecondItem } from './getItem';
@@ -24,6 +25,7 @@ export function getBarStackRegistryData<
 >(
   stackedData: BarStackData<XScale, YScale, Datum>,
   comprehensiveDomain: [number, number],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   barSeriesChildren: ReactElement<BarSeriesProps<XScale, YScale, any>, string | JSXElementConstructor<any>>[],
   horizontal?: boolean
 ) {
@@ -34,10 +36,12 @@ export function getBarStackRegistryData<
       // TODO the data types don't match.
       const matchingChild = barSeriesChildren.find((child) => child.props.dataKey === data.key); // as any;
       const colorAccessor = matchingChild?.props?.colorAccessor;
+      const keyAccessor = matchingChild?.props?.keyAccessor ?? identity; // TODO bad fallback.
 
       const entry: DataRegistryEntry<XScale, YScale, BarStackDatum<XScale, YScale, Datum>, Datum> = {
         key: data.key,
         data,
+        keyAccessor,
         xAccessor,
         yAccessor,
         colorAccessor

@@ -13,11 +13,12 @@ import { Margin, PointDatum, Rect } from '@/types';
 
 /* globals ElementTagNameMap */
 function ensureChild<K extends keyof ElementTagNameMap, ParentElementT extends SVGElement>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   svg: Selection<ParentElementT, any, any, any>,
   k: K,
   className?: string
 ) {
-  let element = svg.selectAll<ElementTagNameMap[K], null>(`.${className ?? k}`).data([null]);
+  const element = svg.selectAll<ElementTagNameMap[K], null>(`.${className ?? k}`).data([null]);
   const enter = element
     .enter()
     .append(k)

@@ -12,7 +12,9 @@ import { useScales } from './useScales';
 
 /** Props that can be passed to initialize/update the provider config. */
 export interface DataContextProviderProps<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   XScaleConfig extends ScaleConfig<AxisScaleOutput, any, any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   YScaleConfig extends ScaleConfig<AxisScaleOutput, any, any>
 > {
   /** Optionally define the initial dimensions. */
@@ -53,7 +55,9 @@ export function DataContextProvider<
   const innerWidth = Math.max(0, width - margin.left - margin.right);
   const innerHeight = Math.max(0, height - margin.top - margin.bottom);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   type XScale = ScaleConfigToD3Scale<XScaleConfig, AxisScaleOutput, any, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   type YScale = ScaleConfigToD3Scale<YScaleConfig, AxisScaleOutput, any, any>;
 
   const dataRegistry = useDataRegistry<XScale, YScale, Datum, OriginalDatum>();

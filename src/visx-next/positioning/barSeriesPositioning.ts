@@ -18,7 +18,7 @@ export function createBarSeriesPositioning<
   xAccessor: (datum: Datum) => ScaleInput<XScale>,
   yAccessor: (datum: Datum) => ScaleInput<YScale>,
   horizontal: boolean,
-  renderingOffset: number = 0
+  renderingOffset = 0
 ) {
   const xScaleCopy = xScale.copy();
   const yScaleCopy = yScale.copy();

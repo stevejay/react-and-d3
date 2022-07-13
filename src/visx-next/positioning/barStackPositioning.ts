@@ -10,7 +10,7 @@ export function createBarStackPositioning<
   XScale extends PositionScale,
   YScale extends PositionScale,
   Datum extends object
->(xScale: XScale, yScale: YScale, horizontal: boolean, renderingOffset: number = 0) {
+>(xScale: XScale, yScale: YScale, horizontal: boolean, _renderingOffset = 0) {
   type StackBar = SeriesPoint<CombinedStackData<XScale, YScale, Datum>>;
 
   const xScaleCopy = xScale.copy();
@@ -42,7 +42,7 @@ export function createBarStackPositioning<
     getY = (bar) => yScaleCopy(getSecondItem(bar));
   }
 
-  return (value: SeriesPoint<CombinedStackData<XScale, YScale, Datum>>, dataKey: string) => {
+  return (value: SeriesPoint<CombinedStackData<XScale, YScale, Datum>>, _dataKey: string) => {
     const barX = getX(value);
     if (!isValidNumber(barX)) {
       return null;

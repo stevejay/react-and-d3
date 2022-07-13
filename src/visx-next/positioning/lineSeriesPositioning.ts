@@ -55,9 +55,7 @@ export function createLineSeriesPositioning<
   yScale,
   xAccessor,
   yAccessor,
-  horizontal,
-  curve = curveLinear,
-  renderingOffset = 0
+  curve = curveLinear
 }: {
   xScale: XScale;
   yScale: YScale;
@@ -76,31 +74,5 @@ export function createLineSeriesPositioning<
   const isDefined = (datum: Datum) =>
     isValidNumber(xScale(xAccessor(datum))) && isValidNumber(yScale(yAccessor(datum)));
 
-  //   const xZeroPosition = xScaleCopy ? getScaleBaseline(xScaleCopy) : 0;
-  //   const yZeroPosition = yScaleCopy ? getScaleBaseline(yScaleCopy) : 0;
-
-  const path = line<Datum>({ x: getScaledX, y: getScaledY, defined: isDefined, curve });
-  return path;
-
-  //   return (datum: Datum) => {
-  //     const x = getScaledX(datum);
-  //     if (!isValidNumber(x)) {
-  //       return null;
-  //     }
-
-  //     const y = getScaledY(datum);
-  //     if (!isValidNumber(y)) {
-  //       return null;
-  //     }
-
-  //     // const barLength = horizontal ? x - xZeroPosition : y - yZeroPosition;
-  //     // if (!isValidNumber(barLength)) {
-  //     //   return null;
-  //     // }
-
-  //     return {
-  //       x: horizontal ? xZeroPosition + Math.min(0, barLength) : x + renderingOffset,
-  //       y: horizontal ? y + renderingOffset : yZeroPosition + Math.min(0, barLength)
-  //     };
-  //   };
+  return line<Datum>({ x: getScaledX, y: getScaledY, defined: isDefined, curve });
 }

@@ -5,7 +5,7 @@ import { AxisScale, PointDatum } from '@/types';
 export function createCircleGenerator<DatumT>(
   xScale: AxisScale<number>,
   yScale: AxisScale<number>,
-  renderingOffset: number = 0
+  renderingOffset = 0
 ) {
   const clonedXScale = xScale.copy();
   const clonedYScale = yScale.copy();

@@ -1,0 +1,2006 @@
+type Query {
+  # Data for a specific survey.
+  survey(survey: SurveyType!): Survey
+
+  # All surveys.
+  surveys: [SurveyItem]
+
+  # Data about a specific entity (tool, library, framework, features, etc.)
+  entity(id: ID!): Entity
+
+  # Get multiple entities (tools, libraries, frameworks, features, etc.)
+  entities(ids: [String], type: String, tag: String, tags: [String]): [Entity]
+
+  # Translate a string
+  translation(key: String!, localeId: String!): TranslationString
+
+  # Get a locale
+  locale(localeId: String!, contexts: [Contexts], enableFallbacks: Boolean): Locale
+
+  # Get multiple locales
+  locales(contexts: [Contexts], localeIds: [String], enableFallbacks: Boolean): [Locale]
+}
+
+enum SurveyType {
+  state_of_js
+  state_of_css
+  state_of_graphql
+}
+
+# All surveys
+type SurveyItem {
+  slug: String
+  hashtag: String
+  name: String
+  domain: String
+  editions: [SurveyEditionConfig]
+  data: SurveyData
+  emailOctopus: EmailOctopusConfig
+}
+
+type EmailOctopusConfig {
+  listId: String
+}
+
+type SurveyData {
+  foo: String
+}
+
+type SurveyEditionConfig {
+  # Unique identifier (usually survey name + year)
+  surveyId: String
+
+  # When the survey edition started
+  startedAt: String
+
+  # When the survey edition closed
+  endedAt: String
+
+  # Year
+  year: Int
+
+  # Status (preview/open/closed/hidden)
+  status: Int
+
+  # URL of the survey results, once they're published
+  resultsUrl: String
+
+  # URL of the survey questions
+  questionsUrl: String
+
+  # Main survey hero image
+  imageUrl: String
+
+  # Image used for social media sharing meta tag
+  socialImageUrl: String
+
+  # Favicon
+  faviconUrl: String
+
+  # Survey color scheme
+  colors: SurveyEditionColors
+
+  # Which entity tags to load
+  tags: [String]
+}
+
+type SurveyEditionColors {
+  primary: String
+  secondary: String
+  text: String
+  background: String
+  backgroundSecondary: String
+}
+
+# A survey
+type Survey {
+  # The survey's name
+  surveyName: SurveyType
+
+  # Total responses
+  totals(filters: Filters): Totals
+
+  # Experience results for a specific tool
+  tool(id: ToolID!): Tool
+
+  # Experience results for a range of tools
+  tools(ids: [ToolID]): [Tool]
+
+  # Other tools (browsers, editors, etc.)
+  tools_others(id: OtherToolsID!, filters: Filters, options: Options, facet: Facet): OtherTools
+
+  # Rankings (awareness, interest, satisfaction) for a range of tools
+  tools_rankings(ids: [ToolID]!): ToolsRankings
+
+  # Cardinality By User (by-users tool count breakdown for a specific set of tools and specific criteria)
+  tools_cardinality_by_user(
+    year: Int!
+    ids: [ToolID]!
+    experienceId: ToolExperienceID!
+  ): [ToolsCardinalityByUser]
+
+  # Usage results for a specific feature
+  feature(id: FeatureID!): Feature
+
+  # Usage results for a range of features
+  features(ids: [FeatureID]): [Feature]
+
+  # Choice based features
+  features_others(id: OtherFeaturesID!, filters: Filters, options: Options, facet: Facet): OtherFeatures
+
+  # Demographics data (gender, company size, salary, etc.)
+  demographics: Demographics
+
+  # Opinions data
+  opinion(id: OpinionID!, filters: Filters, options: Options, facet: Facet): Opinion
+
+  # Opinions data
+  opinions_others(id: OtherOpinionsID!, filters: Filters, options: Options, facet: Facet): OtherOpinions
+
+  # Resources (sites, blogs, podcasts, etc.)
+  resources(id: ResourcesID!, filters: Filters, options: Options, facet: Facet): Resources
+
+  # Data about a specific tool category
+  category(id: CategoryID!): Category
+
+  # Matrices data (used for cross-referencing heatmap charts)
+  matrices: Matrices
+
+  # Environments data, for those based on multiple choices,
+  # such as browsers, form factors... Only contain predifined
+  # choices, freeform answers are stored in `environmentsOthers`.
+  environments(id: EnvironmentID!, filters: Filters, options: Options, facet: Facet): Environments
+
+  # Environments data, for those based on rating, such as css for emails...
+  environments_ratings(id: EnvironmentID!, filters: Filters): EnvironmentsRatings
+
+  # Proficiency data, such as backend proficiency, javascript...
+  proficiency(id: ProficiencyID!, filters: Filters): Proficiency
+
+  # Happiness data, either for a specific category or more generally
+  happiness(id: HappinessID!, filters: Filters): Happiness
+
+  # Brackets
+  bracket_wins(id: BracketID!, filters: Filters, options: Options): BracketWins
+  bracket_matchups(id: BracketID!, filters: Filters, options: Options): BracketMatchups
+}
+
+enum AgeRange {
+  range_less_than_10
+  range_10_18
+  range_18_24
+  range_25_34
+  range_35_44
+  range_45_54
+  range_55_64
+  range_more_than_65
+}
+
+enum GenderID {
+  male
+  female
+  prefer_not_to_say
+  non_binary
+  not_listed
+}
+
+enum RaceEthnicityID {
+  biracial
+  black_african
+  east_asian
+  hispanic_latin
+  middle_eastern
+  multiracial
+  native_american_islander_australian
+  south_asian
+  white_european
+  south_east_asian
+  not_listed
+}
+
+enum SalaryRange {
+  range_work_for_free
+  range_0_10
+  range_10_30
+  range_30_50
+  range_50_100
+  range_100_200
+  range_more_than_200
+}
+
+enum CompanySizeRange {
+  range_1
+  range_1_5
+  range_5_10
+  range_10_20
+  range_20_50
+  range_50_100
+  range_100_1000
+  range_more_than_1000
+}
+
+enum WorkExperienceRange {
+  range_less_than_1
+  range_1_2
+  range_2_5
+  range_5_10
+  range_10_20
+  range_more_than_20
+}
+
+enum JobTitleID {
+  full_stack_developer
+  front_end_developer
+  web_developer
+  back_end_developer
+  web_designer
+  ui_designer
+  ux_designer
+  cto
+}
+
+enum IndustrySectorID {
+  ecommerce
+  news_media
+  healthcare
+  finance
+  programming_tools
+  socialmedia
+  marketing_tools
+  education
+  real_estate
+  entertainment
+  government
+  consulting
+}
+
+enum HigherEducationDegreeID {
+  no_degree
+  yes_related
+  yes_unrelated
+}
+
+enum DisabilityStatusID {
+  visual_impairments
+  hearing_impairments
+  mobility_impairments
+  cognitive_impairments
+  not_listed
+}
+
+enum ToolExperienceID {
+  would_use
+  would_not_use
+  interested
+  not_interested
+  never_heard
+}
+
+enum FeatureExperienceID {
+  never_heard
+  heard
+  used
+}
+
+# Completion ratio and count
+type YearCompletion {
+  # Total number of respondents who have answered the survey for a specific year
+  total: Int
+
+  # Number of respondents who have answered this question for a specific year
+  count: Int
+
+  # Completion percentage relative to total number of survey respondents for a given year
+  percentage_survey: Float
+}
+
+type FacetCompletion {
+  # Total number of respondents who have answered the survey for a specific year
+  total: Int
+
+  # Number of respondents in this facet
+  count: Int
+
+  # Completion percentage relative to total number of question respondents
+  percentage_question: Float
+
+  # Completion percentage relative to total number of survey respondents for a given year
+  percentage_survey: Float
+}
+
+enum Facet {
+  default
+  gender
+  country
+  race_ethnicity
+  yearly_salary
+  company_size
+  years_of_experience
+  source
+  industry_sector
+  higher_education_degree
+}
+
+input Options {
+  limit: Int
+  cutoff: Int
+  sort: SortSpecifier
+  facetSort: SortSpecifier
+  facetLimit: Int
+  facetMinPercent: Float
+  facetMinCount: Int
+}
+
+input SortSpecifier {
+  property: String
+  order: SortOrder
+}
+
+enum SortOrder {
+  asc
+  desc
+}
+
+input GenderFilter {
+  eq: GenderID
+  in: [GenderID]
+  nin: [GenderID]
+}
+
+input CountryFilter {
+  eq: CountryID
+  in: [CountryID]
+  nin: [CountryID]
+}
+
+input RaceEthnicityFilter {
+  eq: RaceEthnicityID
+}
+
+input IndustrySectorFilter {
+  eq: IndustrySectorID
+}
+
+input YearlySalaryRangeFilter {
+  eq: SalaryRange
+  in: [SalaryRange]
+  nin: [SalaryRange]
+}
+
+input CompanySizeFilter {
+  eq: CompanySizeRange
+  in: [CompanySizeRange]
+  nin: [CompanySizeRange]
+}
+
+input YearsOfExperienceFilter {
+  eq: WorkExperienceRange
+  in: [WorkExperienceRange]
+  nin: [WorkExperienceRange]
+}
+
+input SourceFilter {
+  eq: String
+  in: [String]
+  nin: [String]
+}
+
+input Filters {
+  gender: GenderFilter
+  country: CountryFilter
+  race_ethnicity: RaceEthnicityFilter
+  yearly_salary: YearlySalaryRangeFilter
+  company_size: CompanySizeFilter
+  years_of_experience: YearsOfExperienceFilter
+  source: SourceFilter
+  industry_sector: IndustrySectorFilter
+}
+
+enum CategoryID {
+  javascript_flavors
+  front_end_frameworks
+  data_layer
+  back_end_frameworks
+  testing
+  mobile_desktop
+  pre_post_processors
+  css_frameworks
+  css_methodologies
+  css_in_js
+}
+
+# Happiness
+type CategoryHappiness {
+  id: CategoryID!
+  all_years: [YearHappiness]
+  year(year: Int!): YearHappiness
+}
+
+# Other Tools
+type CategoryOtherTools {
+  id: CategoryID!
+  all_years: [YearOtherTools]
+  year(year: Int!): YearOtherTools
+}
+
+# Category
+type Category {
+  happiness(filters: Filters): CategoryHappiness
+  tools_others(filters: Filters): CategoryOtherTools
+}
+
+# Participation
+type YearParticipation {
+  year: Int
+  participants: Int
+}
+
+type Participation {
+  all_years: [YearParticipation]
+  year(year: Int!): YearParticipation
+}
+
+# Generic Types
+type DemographicsItemYear {
+  year: Int
+  completion: YearCompletion
+  facets: [EntityFacet]
+}
+
+type DemographicsItem {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+}
+
+# Other Types (get rid of this later?)
+type Age {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [AgeRange]
+}
+
+type Country {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [CountryID]
+}
+
+type LocaleStats {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [String]
+}
+
+type Source {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [String]
+}
+
+type Gender {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [GenderID]
+}
+
+type RaceEthnicity {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [RaceEthnicityID]
+}
+
+type Salary {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [SalaryRange]
+}
+
+type CompanySize {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [CompanySizeRange]
+}
+
+type WorkExperience {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [WorkExperienceRange]
+}
+
+type JobTitle {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [JobTitleID]
+}
+
+type IndustrySector {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [IndustrySectorID]
+}
+
+type KnowledgeScore {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [String]
+}
+
+type HigherEducationDegree {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [HigherEducationDegreeID]
+}
+
+type DisabilityStatus {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [DisabilityStatusID]
+}
+
+type OtherDisabilityStatus {
+  all_years: [DemographicsItemYear]
+  year(year: Int!): DemographicsItemYear
+  keys: [String]
+}
+
+# Information about particpants:
+# - overall participation
+# - gender
+# - salary
+# - company size
+# - …
+type Demographics {
+  # Participants count
+  participation(filters: Filters, options: Options, facet: Facet): Participation
+
+  # Age
+  age(filters: Filters, options: Options, facet: Facet): Age
+
+  # Country
+  country(filters: Filters, options: Options, facet: Facet): Country
+
+  # Locale
+  locale(filters: Filters, options: Options, facet: Facet): LocaleStats
+
+  # How respondents found the survey
+  source(filters: Filters, options: Options, facet: Facet): Source
+
+  # Gender
+  gender(filters: Filters, options: Options, facet: Facet): Gender
+
+  # Race & Ethnicity
+  race_ethnicity(filters: Filters, options: Options, facet: Facet): RaceEthnicity
+
+  # Salary
+  yearly_salary(filters: Filters, options: Options, facet: Facet): Salary
+
+  # Company size
+  company_size(filters: Filters, options: Options, facet: Facet): CompanySize
+
+  # Work experience as a developer
+  years_of_experience(filters: Filters, options: Options, facet: Facet): WorkExperience
+
+  # Job title
+  job_title(filters: Filters, options: Options, facet: Facet): JobTitle
+
+  # Industry Sector
+  industry_sector(filters: Filters, options: Options, facet: Facet): IndustrySector
+
+  # Knowledge Score
+  knowledge_score(filters: Filters, options: Options, facet: Facet): KnowledgeScore
+
+  # Higher Education Degree
+  higher_education_degree(filters: Filters, options: Options, facet: Facet): HigherEducationDegree
+
+  # Disability Status
+  disability_status(filters: Filters, options: Options, facet: Facet): DisabilityStatus
+
+  # Disability Status (Other)
+  disability_status_others(filters: Filters, options: Options, facet: Facet): OtherDisabilityStatus
+}
+
+enum CountryID {
+  AFG
+  ALA
+  ALB
+  DZA
+  ASM
+  AND
+  AGO
+  AIA
+  ATA
+  ATG
+  ARG
+  ARM
+  ABW
+  AUS
+  AUT
+  AZE
+  BHS
+  BHR
+  BGD
+  BRB
+  BLR
+  BEL
+  BLZ
+  BEN
+  BMU
+  BTN
+  BOL
+  BES
+  BIH
+  BWA
+  BVT
+  BRA
+  IOT
+  BRN
+  BGR
+  BFA
+  BDI
+  CPV
+  KHM
+  CMR
+  CAN
+  CYM
+  CAF
+  TCD
+  CHL
+  CHN
+  CXR
+  CCK
+  COL
+  COM
+  COG
+  COD
+  COK
+  CRI
+  CIV
+  HRV
+  CUB
+  CUW
+  CYP
+  CZE
+  DNK
+  DJI
+  DMA
+  DOM
+  ECU
+  EGY
+  SLV
+  GNQ
+  ERI
+  EST
+  SWZ
+  ETH
+  FLK
+  FRO
+  FJI
+  FIN
+  FRA
+  GUF
+  PYF
+  ATF
+  GAB
+  GMB
+  GEO
+  DEU
+  GHA
+  GIB
+  GRC
+  GRL
+  GRD
+  GLP
+  GUM
+  GTM
+  GGY
+  GIN
+  GNB
+  GUY
+  HTI
+  HMD
+  VAT
+  HND
+  HKG
+  HUN
+  ISL
+  IND
+  IDN
+  IRN
+  IRQ
+  IRL
+  IMN
+  ISR
+  ITA
+  JAM
+  JPN
+  JEY
+  JOR
+  KAZ
+  KEN
+  KIR
+  PRK
+  KOR
+  KWT
+  KGZ
+  LAO
+  LVA
+  LBN
+  LSO
+  LBR
+  LBY
+  LIE
+  LTU
+  LUX
+  MAC
+  MDG
+  MWI
+  MYS
+  MDV
+  MLI
+  MLT
+  MHL
+  MTQ
+  MRT
+  MUS
+  MYT
+  MEX
+  FSM
+  MDA
+  MCO
+  MNG
+  MNE
+  MSR
+  MAR
+  MOZ
+  MMR
+  NAM
+  NRU
+  NPL
+  NLD
+  NCL
+  NZL
+  NIC
+  NER
+  NGA
+  NIU
+  NFK
+  MKD
+  MNP
+  NOR
+  OMN
+  PAK
+  PLW
+  PSE
+  PAN
+  PNG
+  PRY
+  PER
+  PHL
+  PCN
+  POL
+  PRT
+  PRI
+  QAT
+  REU
+  ROU
+  RUS
+  RWA
+  BLM
+  SHN
+  KNA
+  LCA
+  MAF
+  SPM
+  VCT
+  WSM
+  SMR
+  STP
+  SAU
+  SEN
+  SRB
+  SYC
+  SLE
+  SGP
+  SXM
+  SVK
+  SVN
+  SLB
+  SOM
+  ZAF
+  SGS
+  SSD
+  ESP
+  LKA
+  SDN
+  SUR
+  SJM
+  SWE
+  CHE
+  SYR
+  TWN
+  TJK
+  TZA
+  THA
+  TLS
+  TGO
+  TKL
+  TON
+  TTO
+  TUN
+  TUR
+  TKM
+  TCA
+  TUV
+  UGA
+  UKR
+  ARE
+  GBR
+  USA
+  UMI
+  URY
+  UZB
+  VUT
+  VEN
+  VNM
+  VGB
+  VIR
+  WLF
+  ESH
+  YEM
+  ZMB
+  ZWE
+}
+
+# An entity is any object that can have associated metadata
+# (such as a homepage, github repo, description).
+# For example: a library, a podcast, a blog, a framework…
+type Entity {
+  id: String
+  name: String
+  otherName: String
+  homepage: Homepage
+  category: String
+  github: GitHub
+  npm: NPM
+  mdn: MDN
+  caniuse: CanIUse
+  description: String
+  type: String
+  tags: [String]
+  patterns: [String]
+  twitterName: String
+  twitter: Twitter
+  youtubeName: String
+  blog: String
+  rss: String
+  related: [Entity]
+  companyName: String
+  company: Entity
+}
+
+# Homepage Info
+type Homepage {
+  name: String
+  url: String
+}
+
+# CanIUse Info
+type CanIUse {
+  name: String
+  url: String
+}
+
+# NPM Info
+type NPM {
+  name: String
+  url: String
+}
+
+# A facet associated with a set of entities.
+type EntityFacet {
+  type: Facet
+  id: String
+  buckets: [EntityBucket]
+  entity: Entity
+  completion: FacetCompletion
+  mean: Float
+}
+
+# A datapoint associated with a given entity.
+type EntityBucket {
+  id: String
+
+  # Respondent count
+  count: Int
+
+  # Percentage relative to question respondents
+  percentage_question: Float
+
+  # Percentage relative to survey respondents
+  percentage_survey: Float
+
+  # Percentage relative to question respondents in facet
+  percentage_facet: Float
+
+  # Count of respondents in all facets (same as default/null facet)
+  count_all_facets: Int
+
+  # Percentage relative to question respondents in all facets (same as default/null faces)
+  percentage_all_facets: Float
+  entity: Entity
+}
+
+enum FeatureID {
+  destructuring
+  spread_operator
+  arrow_functions
+  nullish_coalescing
+  optional_chaining
+  private_fields
+  proxies
+  async_await
+  promises
+  decorators
+  promise_all_settled
+  dynamic_import
+  numeric_separators
+  string_replace_all
+  string_match_all
+  logical_assignment
+  promise_any
+  array_at
+  top_level_await
+  maps
+  sets
+  typed_arrays
+  array_prototype_flat
+  big_int
+  service_workers
+  local_storage
+  intl
+  web_audio
+  webgl
+  web_animations
+  webrtc
+  web_speech
+  webvr
+  websocket
+  fetch
+  custom_elements
+  shadow_dom
+  i18n
+  web_components
+  page_visibility
+  broadcast_channel
+  geolocation
+  file_system_access
+  web_share
+  webxr
+  pwa
+  wasm
+  grid
+  subgrid
+  regions
+  flexbox
+  multi_column
+  writing_modes
+  exclusions
+  position_sticky
+  logical_properties
+  aspect_ratio
+  content_visibility
+  flexbox_gap
+  break_rules
+  at_container
+  shapes
+  object_fit
+  clip_path
+  masks
+  blend_modes
+  filter_effects
+  backdrop_filter
+  intrinsic_sizing
+  conic_gradient
+  color_function
+  accent_color
+  color_gamut
+  scroll_snap
+  overscroll_behavior
+  overflow_anchor
+  touch_action
+  pointer_events
+  scroll_timeline
+  web_fonts
+  line_breaking
+  font_variant
+  initial_letter
+  font_variant_numeric
+  font_display
+  line_clamp
+  leading_trim
+  direction
+  variable_fonts
+  transitions
+  transforms
+  animations
+  perspective
+  prefers_reduced_data
+  prefers_reduced_motion
+  prefers_color_scheme
+  color_contrast
+  color_scheme
+  tabindex
+  aria_attributes
+  variables
+  feature_support_queries
+  containment
+  will_change
+  calc
+  houdini
+  comparison_functions
+  at_property
+  marker
+  px
+  pt
+  percent
+  em
+  rem
+  vh_vw
+  vmin_vmax
+  ch
+  ex
+  mm
+  cm
+  in
+  before
+  after
+  first_line
+  first_letter
+  selection
+  placeholder
+  backdrop
+  descendant
+  child
+  next_sibling
+  subsequent_sibling
+  root
+  empty
+  not
+  nth_child
+  nth_last_child
+  first_child
+  last_child
+  only_child
+  nth_of_type
+  nth_last_of_type
+  first_of_type
+  last_of_type
+  only_of_type
+  lang
+  is
+  where
+  presence
+  equality
+  starts_with
+  ends_with
+  contains_word
+  contains_substring
+  any_link
+  link_visited
+  local_link
+  target
+  hover
+  active
+  focus
+  focus_within
+  focus_visible
+  enabled_disabled
+  read_only_write
+  placeholder_shown
+  default
+  checked
+  indeterminate
+  valid_invalid
+  user_invalid
+  in_out_range
+  required_optional
+}
+
+# A feature experience datapoint
+type FeatureExperienceBucket {
+  id: FeatureExperienceID
+  count: Int
+  countDelta: Int
+  percentage_question: Float
+  percentage_survey: Float
+  percentage_facet: Float
+  percentageDelta: Float
+}
+
+# Feature data for a specific facet
+type FeatureFacet {
+  type: Facet
+  id: String
+  buckets: [FeatureExperienceBucket]
+  completion: FacetCompletion
+}
+
+# Feature data for a specific year
+type YearFeature {
+  year: Int
+  completion: YearCompletion
+  facets: [FeatureFacet]
+}
+
+type FeatureExperience {
+  all_years: [YearFeature]
+  year(year: Int!): YearFeature
+  keys: [FeatureExperienceID]
+}
+
+# A feature (e.g. arrow functions, websocket, etc.)
+type Feature {
+  id: FeatureID!
+  entity: Entity
+  name: String
+  mdn: MDN
+  experience(filters: Filters): FeatureExperience
+}
+
+enum OtherFeaturesID {
+  units
+  pseudo_elements
+  combinators
+  tree_document_structure
+  attributes
+  links_urls
+  interaction
+  form_controls
+}
+
+type FeatureBucket {
+  id: FeatureID
+  name: String
+  count: Int
+  percentage_question: Float
+  percentage_survey: Float
+  percentage_facet: Float
+}
+
+type YearOtherFeatures {
+  year: Int
+  completion: YearCompletion
+  buckets: [FeatureBucket]
+}
+
+type OtherFeatures {
+  id: OtherFeaturesID!
+  all_years: [YearOtherFeatures]
+  year(year: Int!): YearOtherFeatures
+}
+
+type GitHub {
+  name: String
+  full_name: String
+  description: String
+  url: String
+  stars: Int
+  forks: Int
+  opened_issues: Int
+  homepage: String
+}
+
+type Twitter {
+  userName: String
+  avatarUrl: String
+  id: ID
+  description: String
+  publicMetrics: TwittterPublicMetrics
+}
+
+type TwittterPublicMetrics {
+  followers: Int
+  following: Int
+  tweet: Int
+  listed: Int
+}
+
+enum ToolMatrixExperienceID {
+  would_use
+  would_not_use
+  interested
+  not_interested
+  never_heard
+
+  # `would_use` + `would_not_use` VS total
+  usage
+
+  # `would_use` + `interested` VS `would_use` + `would_not_use` + `interested` + `not_interested`
+  positive_sentiment
+
+  # `would_not_use` + `not_interested` VS `would_use` + `would_not_use` + `interested` + `not_interested`
+  negative_sentiment
+
+  # `would_use` VS `would_not_use`
+  satisfaction
+
+  # `interested` VS `not_interested`
+  interest
+
+  # `never_heard` VS total (inverted)
+  awareness
+}
+
+enum MatrixDimensionID {
+  company_size
+  source
+  yearly_salary
+  years_of_experience
+}
+
+type MatrixBucket {
+  # Id of the bucket dimension range, e.g. `range_50_100`
+  # for `company_size`.
+  id: String
+
+  # Number of responses for a given tool/feature in a specific range.
+  # e.g. users who picked `range_50_100` for `company_size` and also
+  # picked `would_use` for experience with `tailwind_css`.
+  count: Int
+
+  # Ratio from all respondents who picked a specific experience
+  # for the current tool and also answered to the question related
+  # to the dimension, e.g. `yearly_salary`.
+  # `count` VS `total`.
+  percentage: Float
+
+  # Total number of respondents for this specific range,
+  # e.g. number of users who selected `range_50_100`
+  # for the `company_size` question and also answered
+  # the experience question.
+  range_total: Int
+
+  # Ratio of experience in this specific range,
+  # `count` VS `range_total`.
+  range_percentage: Float
+
+  # Delta between the overall percentage of responses
+  # for the selected experience filter compared
+  # to the percentage in this range.
+  # `range_percentage` VS overall percentage.
+  range_percentage_delta: Float
+}
+
+type ToolMatrix {
+  id: ToolID
+  entity: Entity
+  count: Int
+  total: Int
+  percentage: Float
+  buckets: [MatrixBucket]
+}
+
+type ToolsExperienceDimensionMatrix {
+  dimension: MatrixDimensionID
+  tools: [ToolMatrix]
+}
+
+type ToolsExperienceMatrices {
+  experience: ToolMatrixExperienceID
+  dimensions: [ToolsExperienceDimensionMatrix]
+}
+
+type Matrices {
+  tools(
+    year: Int!
+    ids: [ToolID]!
+    experiences: [ToolMatrixExperienceID]!
+    dimensions: [MatrixDimensionID]!
+  ): [ToolsExperienceMatrices]
+}
+
+type MDN {
+  locale: String
+  url: String
+  title: String
+  summary: String
+}
+
+# Opinions
+enum OpinionID {
+  js_moving_in_right_direction
+  building_js_apps_overly_complex
+  js_over_used_online
+  enjoy_building_js_apps
+  would_like_js_to_be_main_lang
+  js_ecosystem_changing_to_fast
+  css_easy_to_learn
+  css_evolving_slowly
+  utility_classes_to_be_avoided
+  selector_nesting_to_be_avoided
+  css_is_programming_language
+  enjoy_writing_css
+}
+
+type OpinionBucket {
+  id: Int
+  count: Int
+  percentage_question: Float
+  percentage_survey: Float
+  percentage_facet: Float
+}
+
+type OpinionFacet {
+  type: Facet
+  id: String
+  buckets: [OpinionBucket]
+  completion: FacetCompletion
+}
+
+type YearOpinion {
+  year: Int
+
+  # Mean opinion score for the year, please note that despite the
+  # opinion indices starts at 0, the average is computed from 1.
+  mean: Float
+  completion: YearCompletion
+  facets: [OpinionFacet]
+}
+
+type Opinion {
+  id: OpinionID!
+  all_years: [YearOpinion]
+  year(year: Int!): YearOpinion
+  keys: [Int]
+}
+
+# Other Opinions
+enum OtherOpinionsID {
+  missing_from_js
+  currently_missing_from_css
+  currently_missing_from_js
+  browser_interoperability_features
+  css_pain_points
+  js_pain_points
+}
+
+type YearOtherOpinions {
+  year: Int
+  completion: YearCompletion
+  facets: [EntityFacet]
+}
+
+type OtherOpinions {
+  id: OtherOpinionsID!
+  all_years: [YearOtherOpinions]
+  year(year: Int!): YearOtherOpinions
+}
+
+enum ResourcesID {
+  blogs_news_magazines
+  blogs_news_magazines_others
+  sites_courses
+  sites_courses_others
+  podcasts
+  podcasts_others
+  first_steps
+  first_steps_others
+  people_others
+}
+
+type YearResources {
+  year: Int
+  completion: YearCompletion
+  facets: [EntityFacet]
+}
+
+type Resources {
+  id: ResourcesID!
+  all_years: [YearResources]
+  year(year: Int!): YearResources
+}
+
+enum ToolID {
+  typescript
+  reason
+  elm
+  clojurescript
+  purescript
+  react
+  vuejs
+  angular
+  preact
+  ember
+  svelte
+  alpinejs
+  litelement
+  stimulus
+  solid
+  redux
+  apollo
+  graphql
+  mobx
+  relay
+  xstate
+  vuex
+  express
+  nextjs
+  koa
+  meteor
+  sails
+  feathers
+  nuxt
+  gatsby
+  nest
+  strapi
+  fastify
+  hapi
+  redwood
+  astro
+  eleventy
+  blitz
+  remix
+  sveltekit
+  jest
+  mocha
+  storybook
+  cypress
+  enzyme
+  ava
+  jasmine
+  puppeteer
+  testing_library
+  playwright
+  webdriverio
+  vitest
+  webpack
+  parcel
+  gulp
+  rollup
+  browserify
+  tsc
+  rome
+  snowpack
+  swc
+  esbuild
+  vite
+  wmr
+  electron
+  reactnative
+  nativeapps
+  cordova
+  ionic
+  nwjs
+  expo
+  capacitor
+  quasar
+  tauri
+  rush
+  turborepo
+  yarn_workspaces
+  yalc
+  lerna
+  npm_workspaces
+  pnpm
+  nx
+  sass
+  less
+  post_css
+  stylus
+  assembler_css
+  bootstrap
+  materialize_css
+  ant_design
+  semantic_ui
+  bulma
+  foundation
+  ui_kit
+  tachyons
+  primer
+  tailwind_css
+  pure_css
+  skeleton
+  spectre_css
+  halfmoon
+  bem
+  atomic_css
+  oocss
+  smacss
+  it_css
+  cube_css
+  styled_components
+  jss
+  styled_jsx
+  radium
+  emotion
+  css_modules
+  styled_system
+  stitches
+  styletron
+  fela
+  linaria
+  astroturf
+  twin
+  theme_ui
+  vanilla_extract
+  windi_css
+}
+
+# An aggregation bucket for tool experience containing both an absolute count
+# for the parent year, and the percentage it corresponds to regarding
+# the total number of respondents who have answered the question
+# in this particular year.
+type ToolExperienceBucket {
+  id: ToolExperienceID
+  count: Int
+  countDelta: Int
+  percentage_question: Float
+  percentage_survey: Float
+  percentage_facet: Float
+  percentageDelta: Float
+}
+
+# Tool data for a specific facet
+type ToolExperienceFacet {
+  type: Facet
+  id: String
+  buckets: [ToolExperienceBucket]
+  completion: FacetCompletion
+}
+
+# Experience ranking for a tool in a specific year, even if the data
+# is computed at the same point in time, we estimate that there is a logical
+# progression in this:
+#
+# awareness > usage > interest > satisfaction
+type ToolAwarenessUsageInterestSatisfaction {
+  # Awareness is the total number of participants who answered to
+  # the experience question VS those who never heard of a tool.
+  #
+  # This value is expressed as a percentage.
+  awareness: Float
+
+  # Usage is the total number of participants who used the tool,
+  # include both users willing to use it again and those who wouldn't.
+  #
+  # This value is expressed as a percentage.
+  usage: Float
+
+  # Interest is the ratio of participants who heard of tool and
+  # are interested/not interested VS those who are only interested in it.
+  #
+  # This value is expressed as a percentage.
+  interest: Float
+
+  # Satisfaction is the ratio of participants who used of tool and
+  # are satisfied/not satisfied VS those who are willing to use it again.
+  #
+  # This value is expressed as a percentage.
+  satisfaction: Float
+}
+
+type ToolYearExperience {
+  year: Int
+  completion: YearCompletion
+  facets: [ToolExperienceFacet]
+}
+
+type ToolExperience {
+  all_years: [ToolYearExperience]
+  year(year: Int!): ToolYearExperience
+  keys: [ToolExperienceID]
+}
+
+type ToolExperienceGraphNode {
+  id: String
+  year: Int
+  experience: ToolExperienceID
+}
+
+# Aggregate the experience of multiple tools
+type ToolExperienceAggregatedBucket {
+  ids: [ToolExperienceID]
+  count: Int
+  countDelta: Int
+  percentage_question: Float
+  percentage_survey: Float
+  percentage_facet: Float
+  percentageDelta: Float
+}
+
+type ToolExperienceAggregatedFacet {
+  type: Facet
+  id: String
+  buckets: [ToolExperienceAggregatedBucket]
+}
+
+type ToolYearExperienceAggregated {
+  year: Int
+  facets: [ToolExperienceAggregatedFacet]
+}
+
+type ToolExperienceAggregated {
+  all_years: [ToolYearExperienceAggregated]
+  year(year: Int!): ToolYearExperienceAggregated
+  keys: [ToolExperienceID]
+}
+
+# Track number of connections between 2 nodes,
+# for example number of user who were interested in React in 206
+# and are willing to use it in 2017, connections are only established
+# for consecutive years.
+type ToolExperienceGraphLink {
+  source: String
+  target: String
+  count: Int
+}
+
+# A graph of users' experience over years, compared to just computing
+# the overall choice count for each year, this keeps continuity for each user.
+type ToolExperienceGraph {
+  nodes: [ToolExperienceGraphNode]
+  links: [ToolExperienceGraphLink]
+}
+
+type ToolExperienceRankingYearMetric {
+  year: Int
+  rank: Int
+  percentage_question: Float
+  percentage_survey: Float
+  percentage_facet: Float
+}
+
+# Used to represent the ranking of a tool compared to others
+# for awareness/interest and stisfaction.
+type ToolExperienceRanking {
+  id: ToolID
+  entity: Entity
+  awareness: [ToolExperienceRankingYearMetric]
+  usage: [ToolExperienceRankingYearMetric]
+  interest: [ToolExperienceRankingYearMetric]
+  satisfaction: [ToolExperienceRankingYearMetric]
+}
+
+# Contains various rankings for a set of tools.
+type ToolsRankings {
+  ids: [ToolID]!
+  years: [Int]
+  experience(filters: Filters): [ToolExperienceRanking]
+}
+
+type ToolExperienceTransitionsNode {
+  id: String
+  year: Int
+  choice: ToolExperienceID
+  count: Int
+}
+
+type ToolExperienceTransitionsTransition {
+  from: String
+  to: String
+  count: Int
+  percentage: Int
+}
+
+type ToolExperienceTransitions {
+  tool: ToolID
+  keys: [ToolExperienceID]
+  nodes: [ToolExperienceTransitionsNode]
+  transitions: [ToolExperienceTransitionsTransition]
+}
+
+type Tool {
+  id: ToolID!
+  experience(filters: Filters, options: Options, facet: Facet): ToolExperience
+  experienceAggregated(filters: Filters, options: Options, facet: Facet): ToolExperienceAggregated
+  experienceGraph(filters: Filters): ToolExperienceGraph
+  experienceTransitions(year: Int!): ToolExperienceTransitions
+  entity: Entity
+}
+
+enum OtherToolsID {
+  pre_post_processors_others
+  css_frameworks_others
+  css_methodologies_others
+  css_in_js_others
+  utilities
+  utilities_others
+  text_editors
+  text_editors_others
+  browsers
+  browsers_others
+  build_tools
+  build_tools_others
+  non_js_languages
+  non_js_languages_others
+  javascript_flavors
+  javascript_flavors_others
+  front_end_frameworks_others
+  datalayer_others
+  back_end_frameworks_others
+  testing_others
+  mobile_desktop_others
+  monorepo_tools_others
+  libraries
+  libraries_others
+  runtimes
+  runtimes_others
+}
+
+type YearOtherTools {
+  year: Int
+  completion: YearCompletion
+  facets: [EntityFacet]
+}
+
+type OtherTools {
+  id: OtherToolsID!
+  year(year: Int!): YearOtherTools
+  all_years: [YearOtherTools]
+}
+
+type ToolsCardinalityByUser {
+  cardinality: Int
+  count: Int
+
+  # Percentage against number of respondents for the related year.
+  percentage_survey: Float
+}
+
+enum Contexts {
+  projects
+  features
+  entities
+  common
+  homepage
+  results
+  accounts
+  surveys
+  state_of_js
+  state_of_js_2020
+  state_of_js_2020_survey
+  state_of_js_2021
+  state_of_js_2021_survey
+  state_of_js_2021_results
+  state_of_css
+  state_of_css_2020
+  state_of_css_2020_survey
+  state_of_css_2021
+  state_of_css_2021_survey
+  state_of_css_2021_results
+  state_of_graphql
+  how_to_help
+}
+
+type TranslationString {
+  key: String
+  t: String
+  tHtml: String
+  context: String
+  fallback: Boolean
+  aliasFor: String
+}
+
+type Locale {
+  id: String
+  label: String
+  translators: [String]
+  repo: String
+  strings: [TranslationString]
+  translatedCount: Int
+  totalCount: Int
+  completion: Int
+  untranslatedKeys: [String]
+}
+
+enum EnvironmentID {
+  browsers
+  browsers_others
+  form_factors
+  form_factors_others
+  accessibility_features
+  accessibility_features_others
+  what_do_you_use_css_for
+  what_do_you_use_css_for_others
+  css_for_print
+  css_for_email
+}
+
+type YearEnvironments {
+  year: Int
+  completion: YearCompletion
+  facets: [EntityFacet]
+}
+
+# An environment, based on multiple choices (e.g. browsers, form factors, etc.)
+type Environments {
+  id: EnvironmentID!
+  year(year: Int!): YearEnvironments
+  all_years: [YearEnvironments]
+}
+
+type EnvironmentRatingBucket {
+  id: Int
+  count: Int
+  percentage_question: Float
+  percentage_survey: Float
+  percentage_facet: Float
+}
+
+type YearEnvironmentsRatings {
+  year: Int
+  completion: YearCompletion
+  buckets: [EnvironmentRatingBucket]
+}
+
+# An environment-based rating (e.g. css for emails, css for print, etc.)
+type EnvironmentsRatings {
+  id: EnvironmentID!
+  year(year: Int!): YearEnvironmentsRatings
+  all_years: [YearEnvironmentsRatings]
+}
+
+enum ProficiencyID {
+  backend_proficiency
+  javascript_proficiency
+  css_proficiency
+}
+
+type ProficiencyBucket {
+  id: Int
+  count: Int
+  percentage_question: Float
+  percentage_survey: Float
+  percentage_facet: Float
+}
+
+type YearProficiency {
+  year: Int
+  completion: YearCompletion
+  buckets: [ProficiencyBucket]
+}
+
+type Proficiency {
+  id: ProficiencyID!
+  all_years: [YearProficiency]
+  year(year: Int!): YearProficiency
+}
+
+type Totals {
+  all_years: Int
+  year(year: Int!): Int
+}
+
+enum HappinessID {
+  javascript_flavors
+  front_end_frameworks
+  datalayer
+  back_end_frameworks
+  testing
+  build_tools
+  mobile_desktop
+  monorepo_tools
+  state_of_js
+  pre_post_processors
+  css_frameworks
+  css_methodologies
+  css_in_js
+  state_of_css
+  state_of_the_web
+  state_of_graphql
+}
+
+# Happiness
+type HappinessBucket {
+  id: Int
+  count: Int
+  percentage_question: Float
+  percentage_survey: Float
+  percentage_facet: Float
+}
+
+type HappinessFacet {
+  type: Facet
+  id: String
+  buckets: [HappinessBucket]
+  completion: FacetCompletion
+}
+
+type YearHappiness {
+  year: Int
+
+  # Mean happiness score for the year, please note that despite the
+  # happiness indices starts at 0, the average is computed from 1.
+  mean: Float
+  completion: YearCompletion
+  facets: [HappinessFacet]
+}
+
+type Happiness {
+  id: HappinessID!
+  all_years: [YearHappiness]
+  year(year: Int!): YearHappiness
+  keys: [Int]
+}
+
+enum BracketID {
+  tools_others__tool_evaluation
+  opinions__css_pain_points
+  opinions__js_pain_points
+  opinions__currently_missing_from_css
+  opinions__currently_missing_from_js
+}
+
+enum BracketKey {
+  combined
+  round1
+  round2
+  round3
+}
+
+# Bracket Wins
+# (how many wins a player has accumulated)
+type BracketWinsStats {
+  count: Int
+  percentage: Float
+}
+
+type BracketWinsBucket {
+  id: String
+  round1: BracketWinsStats
+  round2: BracketWinsStats
+  round3: BracketWinsStats
+  combined: BracketWinsStats
+}
+
+type BracketWinsFacet {
+  type: Facet
+  id: String
+  buckets: [BracketWinsBucket]
+  completion: FacetCompletion
+}
+
+type YearBracketWins {
+  year: Int
+  completion: YearCompletion
+  facets: [BracketWinsFacet]
+}
+
+type BracketWins {
+  id: BracketID!
+  keys: [BracketKey]
+  all_years: [YearBracketWins]
+  year(year: Int!): YearBracketWins
+}
+
+# Bracket Matchups
+# (how a player fared against other players)
+type BracketMatchupStats {
+  id: String
+  count: Int
+  percentage: Float
+}
+
+type BracketMatchupsBucket {
+  id: String
+  matchups: [BracketMatchupStats]
+}
+
+type BracketMatchupsFacet {
+  type: Facet
+  id: String
+  buckets: [BracketMatchupsBucket]
+  completion: FacetCompletion
+}
+
+type YearBracketMatchups {
+  year: Int
+  completion: YearCompletion
+  facets: [BracketMatchupsFacet]
+}
+
+type BracketMatchups {
+  id: BracketID!
+  all_years: [YearBracketMatchups]
+  year(year: Int!): YearBracketMatchups
+}

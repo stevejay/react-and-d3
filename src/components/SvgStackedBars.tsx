@@ -124,7 +124,7 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
       } as MappedDatum<CategoryT>)
   );
 
-  const transitions = useTransition<MappedDatum<CategoryT>, {}>(mappedData, {
+  const transitions = useTransition<MappedDatum<CategoryT>, object>(mappedData, {
     initial: (datum) => ({ opacity: 1, [translateAxis]: categoryScale(datum.category) }),
     from: (datum) => ({ opacity: 0, [translateAxis]: categoryScale(datum.category) }),
     enter: (datum) => ({ opacity: 1, [translateAxis]: categoryScale(datum.category) }),

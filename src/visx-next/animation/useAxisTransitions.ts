@@ -6,12 +6,16 @@ import { createTickPositioning } from '../positioning';
 import { isBandScale, ScaleInput } from '../scale';
 import { GridScale } from '../types';
 
+function keyAccessor<Scale extends GridScale>(tickValue: ScaleInput<Scale>) {
+  return tickValue.toString();
+}
+
 export function useAxisTransitions<Scale extends GridScale>(
   scale: Scale,
   ticks: ScaleInput<Scale>[],
   springConfig: SpringConfig | undefined,
   animate: boolean,
-  offset: number = 0
+  offset = 0
 ) {
   const position = createTickPositioning(scale, offset);
 
@@ -45,7 +49,7 @@ export function useAxisTransitions<Scale extends GridScale>(
       return isFinite(exitPosition) ? { opacity: 0, translate: exitPosition + offset } : { opacity: 0 };
     },
     config: springConfig,
-    keys: (tickValue) => tickValue.toString(),
+    keys: keyAccessor, //(tickValue) => tickValue.toString(),
     immediate: !animate
   });
 }

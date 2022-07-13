@@ -7,7 +7,7 @@ export function createBarGenerator<CategoryT extends DomainValue>(
   categoryScale: AxisScale<CategoryT>,
   valueScale: AxisScale<number>,
   orientation: ChartOrientation,
-  renderingOffset: number = 0
+  renderingOffset = 0
 ) {
   const clonedCategoryScale = categoryScale.copy();
   const clonedValueScale = valueScale.copy();

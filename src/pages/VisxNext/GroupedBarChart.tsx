@@ -8,6 +8,7 @@ import { XYChartBarGroup } from '@/visx-next/BarGroup';
 import { XYChartBarSeries } from '@/visx-next/BarSeries';
 import { XYChartRowGrid } from '@/visx-next/RowGrid';
 import { SvgXYChart } from '@/visx-next/SvgXYChart';
+import Tooltip from '@/visx-next/Tooltip';
 
 export interface GroupedBarChartProps {
   data: readonly CategoryValueListDatum<string, number>[];
@@ -22,14 +23,19 @@ const xScale: BandScaleConfig<string> = {
   round: true
 } as const;
 
-const colors = {
-  one: schemeCategory10[0],
-  two: schemeCategory10[1],
-  three: schemeCategory10[2]
-} as any; // TODO fix
-
 function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) {
-  return colors[key];
+  switch (key) {
+    case 'one':
+      return schemeCategory10[0];
+    case 'two':
+      return schemeCategory10[1];
+    default:
+      return schemeCategory10[2];
+  }
+}
+
+function keyAccessor(d: CategoryValueListDatum<string, number>) {
+  return `${d.category}`;
 }
 
 const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
@@ -58,15 +64,18 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
             key={dataKey}
             dataKey={dataKey}
             data={data}
+            keyAccessor={keyAccessor}
             xAccessor={(datum) => datum.category}
             yAccessor={(datum) => datum.values[dataKey]}
             colorAccessor={colorAccessor}
             // barProps={{ shapeRendering: 'crispEdges' }}
-            barProps={(datum: any) => ({
+            barProps={(datum) => ({
               shapeRendering: 'crispEdges',
               role: 'graphics-symbol',
               'aria-roledescription': '',
-              'aria-label': `Category ${datum.category}: ${datum.values[dataKey]}`
+              'aria-label': `Category ${(datum as CategoryValueListDatum<string, number>).category}: ${
+                (datum as CategoryValueListDatum<string, number>).values[dataKey]
+              }`
             })}
             groupProps={{
               role: 'graphics-object',
@@ -163,6 +172,25 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         labelOffset={36} // Does not take tick labels into account.
         // hideTicks
         // tickLength={0}
+      />
+      <Tooltip<CategoryValueListDatum<string, number>>
+        snapTooltipToDatumX //={false}
+        snapTooltipToDatumY //={false}
+        showVerticalCrosshair //={false}
+        showSeriesGlyphs
+        renderTooltip={({ tooltipData, colorScale }) => {
+          const datum = tooltipData?.nearestDatum;
+          if (!datum) {
+            return null;
+          }
+          return (
+            <div>
+              <span style={{ color: colorScale?.(datum.key) }}>{datum.key}</span> {datum.datum.category}
+              {': '}
+              {datum.datum.values[datum.key]}
+            </div>
+          );
+        }}
       />
     </SvgXYChart>
   );

@@ -116,9 +116,10 @@ export function useFollowOnHoverTooltip<DatumT>(
           api.start({ opacity: 0, config: springConfig, onRest: unmount });
         },
         visible: tooltipState.visible,
-        getReferenceClientRect: () => createVirtualReferenceElement(svgRef, tooltipState.rect!),
+        getReferenceClientRect: () => createVirtualReferenceElement(svgRef, tooltipState.rect as Rect),
         popperOptions,
         render: (attrs) => (
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           <Tooltip {...attrs} styles={styles as any} ariaHidden>
             {tooltipState.datum && renderContent(tooltipState.datum)}
           </Tooltip>

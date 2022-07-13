@@ -9,8 +9,8 @@ export function useTimeDomain<Datum>(
   accessor: (datum: Datum) => Date = identity
 ): readonly Date[] {
   return useMemo(() => {
-    let minValue = min(data, accessor);
-    let maxValue = max(data, accessor);
+    const minValue = min(data, accessor);
+    const maxValue = max(data, accessor);
     return isNil(minValue) || isNil(maxValue) ? [] : [minValue, maxValue];
     // Deliberately ignore accessor in useMemo deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps

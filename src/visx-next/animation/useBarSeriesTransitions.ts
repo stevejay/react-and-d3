@@ -12,6 +12,7 @@ export function useBarSeriesTransitions<
   data: readonly Datum[],
   xScale: XScale,
   yScale: YScale,
+  keyAccessor: (datum: Datum) => string,
   xAccessor: (datum: Datum) => ScaleInput<XScale>,
   yAccessor: (datum: Datum) => ScaleInput<YScale>,
   horizontal: boolean,
@@ -36,7 +37,7 @@ export function useBarSeriesTransitions<
       update: (datum) => ({ opacity: 1, ...position(datum) }),
       leave: () => ({ opacity: 0 }),
       config: springConfig,
-      keys: horizontal ? yAccessor : xAccessor,
+      keys: keyAccessor, // ? keyAccessor : horizontal ? yAccessor : xAccessor,
       immediate: !animate
     }
   );

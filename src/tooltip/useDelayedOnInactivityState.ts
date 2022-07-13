@@ -26,7 +26,7 @@ export type ReturnValue<StateT> = [
 // Derived from https://github.com/makannew/use-delayed-state/blob/master/src/index.js
 export function useDelayedOnInactivityState<StateT>(
   initialState: StateT,
-  delayBeforeWaitingForInactivityMs: number = 500
+  delayBeforeWaitingForInactivityMs = 500
 ): ReturnValue<StateT> {
   const [state, setState] = useState<StateT>(initialState);
   const setStateTimeoutRef = useRef<number | null>(null);

@@ -30,6 +30,11 @@ export interface CategoryValueDatum<CategoryT extends DomainValue, ValueT extend
   readonly value: ValueT;
 }
 
+export interface TimeValueDatum<ValueT extends DomainValue> {
+  readonly date: Date;
+  readonly value: ValueT;
+}
+
 // Limitation here: key is always a string.
 export interface CategoryValueListDatum<CategoryT extends DomainValue, ValueT extends DomainValue> {
   readonly category: CategoryT;
@@ -85,7 +90,9 @@ export interface Rect {
 }
 
 export type ExpandedAxisScale<DomainT extends DomainValue> = AxisScale<DomainT> & {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ticks?(...args: any[]): DomainT[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tickFormat?(...args: any[]): (datum: DomainT) => string;
 };
 
@@ -130,6 +137,7 @@ export interface BaseAxisProps<DomainT extends DomainValue> {
    * d3 axis component then use `tickArguments` instead (passing the args as an
    * array).
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tickArguments?: any[];
   /**
    * Sets the formatter function. Pass `null` to explicitly use the scale's

@@ -111,7 +111,7 @@ const dataSets: {
 //   }
 // ];
 
-const margin: Margin = { left: 72, right: 40, top: 40, bottom: 64 };
+const margin: Margin = { left: 72, right: 72, top: 64, bottom: 64 };
 
 export function StackedBarChartExample() {
   const [data, nextDataSet] = useSeriesDataSets(dataSets);

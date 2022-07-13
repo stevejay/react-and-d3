@@ -3,6 +3,7 @@ import {
   ReactElement,
   ReactNode,
   SVGProps,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -18,8 +19,17 @@ import { useBarGroupTransitions, useSeriesTransitions } from './animation';
 import { BarSeriesProps } from './BarSeries';
 import { DataContext } from './DataContext';
 import { DataRegistry } from './DataRegistry';
+import { BARGROUP_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './eventSources';
+import { findNearestGroupDatum } from './findNearestGroupDatum';
 import { getScaleBandwidth } from './scale';
-import { DataContextType, PositionScale } from './types';
+import {
+  DataContextType,
+  NearestDatumArgs,
+  NearestDatumReturnType,
+  PositionScale,
+  SeriesProps
+} from './types';
+import { useSeriesEvents } from './useSeriesEvents';
 
 export declare enum TransitionPhase {
   /** This transition is being mounted */
@@ -39,6 +49,7 @@ type BarGroupSeriesProps<XScale extends PositionScale, YScale extends PositionSc
   xScale: XScale;
   yScale: YScale;
   groupScale: ScaleBand<string>;
+  keyAccessor: (datum: Datum) => string;
   xAccessor: (datum: Datum) => ScaleInput<XScale>;
   yAccessor: (datum: Datum) => ScaleInput<YScale>;
   horizontal: boolean;
@@ -56,7 +67,10 @@ type BarGroupSeriesProps<XScale extends PositionScale, YScale extends PositionSc
         index: number,
         dataKey: string
       ) => Omit<SVGProps<SVGRectElement>, 'x' | 'y' | 'width' | 'height' | 'ref'>);
-};
+} & Pick<
+  SeriesProps<XScale, YScale, Datum>,
+  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
+>;
 
 function BarGroupSeries<XScale extends PositionScale, YScale extends PositionScale, Datum extends object>({
   dataKey,
@@ -65,6 +79,7 @@ function BarGroupSeries<XScale extends PositionScale, YScale extends PositionSca
   xScale,
   yScale,
   groupScale,
+  keyAccessor,
   xAccessor,
   yAccessor,
   horizontal,
@@ -74,13 +89,40 @@ function BarGroupSeries<XScale extends PositionScale, YScale extends PositionSca
   colorAccessor,
   colorScale,
   barClassName = '',
-  barProps = {}
+  barProps = {},
+  onBlur,
+  onFocus,
+  onPointerMove,
+  onPointerOut,
+  onPointerUp,
+  enableEvents = true
 }: BarGroupSeriesProps<XScale, YScale, Datum>) {
+  const findNearestDatum = useCallback(
+    (params: NearestDatumArgs<XScale, YScale, Datum>): NearestDatumReturnType<Datum> =>
+      findNearestGroupDatum(params, groupScale, horizontal),
+    [groupScale, horizontal]
+  );
+
+  const ownEventSourceKey = `${BARGROUP_EVENT_SOURCE}-${dataKeys.join('-')}}`;
+  const eventEmitters = useSeriesEvents<XScale, YScale, Datum>({
+    dataKey: dataKeys,
+    enableEvents,
+    findNearestDatum,
+    onBlur,
+    onFocus,
+    onPointerMove,
+    onPointerOut,
+    onPointerUp,
+    source: ownEventSourceKey,
+    allowedSources: [XYCHART_EVENT_SOURCE, ownEventSourceKey]
+  });
+
   const transitions = useBarGroupTransitions(
     data,
     xScale,
     yScale,
     groupScale,
+    keyAccessor,
     xAccessor,
     yAccessor,
     dataKey,
@@ -106,6 +148,7 @@ function BarGroupSeries<XScale extends PositionScale, YScale extends PositionSca
             style={{ ...style, opacity }}
             className={barClassName}
             {...restBarProps}
+            {...eventEmitters}
           />
         );
       })}
@@ -127,12 +170,14 @@ function XYChartBarGroupSeries<
   colorScale,
   horizontal,
   springConfig,
-  animate
+  animate,
+  ...events
 }: {
   dataKeys: string[];
   dataRegistry: Omit<DataRegistry<XScale, YScale, Datum, Datum>, 'registry' | 'registryKeys'>;
   barSeriesChildren: ReactElement<
     BarSeriesProps<XScale, YScale, Datum>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     string | JSXElementConstructor<any>
   >[];
   xScale: XScale;
@@ -142,7 +187,10 @@ function XYChartBarGroupSeries<
   animate: boolean;
   springConfig: SpringConfig;
   colorScale?: ScaleOrdinal<string, string, never>;
-}) {
+} & Pick<
+  SeriesProps<XScale, YScale, Datum>,
+  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
+>) {
   const transitions = useSeriesTransitions(
     dataKeys.map((dataKey) => dataRegistry.get(dataKey)),
     springConfig,
@@ -168,6 +216,7 @@ function XYChartBarGroupSeries<
               xScale={xScale}
               yScale={yScale}
               groupScale={groupScale}
+              keyAccessor={datum.keyAccessor}
               xAccessor={datum.xAccessor}
               yAccessor={datum.yAccessor}
               horizontal={horizontal ?? false}
@@ -178,6 +227,7 @@ function XYChartBarGroupSeries<
               colorScale={colorScale}
               barProps={barProps}
               barClassName={barClassName}
+              {...events}
             />
           </animated.g>
         );
@@ -200,11 +250,10 @@ export type XYChartBarGroupProps<
   animate?: boolean;
   /* A react-spring configuration object */
   springConfig?: SpringConfig;
-};
-// & Pick<
-//   SeriesProps<XScale, YScale, Datum>,
-//   'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
-// >;
+} & Pick<
+  SeriesProps<XScale, YScale, Datum>,
+  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
+>;
 
 export function XYChartBarGroup<
   XScale extends PositionScale,
@@ -215,7 +264,8 @@ export function XYChartBarGroup<
   padding = 0.1,
   springConfig,
   animate = true,
-  sortBars
+  sortBars,
+  ...events
 }: XYChartBarGroupProps<XScale, YScale, Datum>) {
   const [groupKeys, setGroupKeys] = useState<string[]>([]);
 
@@ -239,8 +289,8 @@ export function XYChartBarGroup<
     const dataKeys = barSeriesChildren.map((child) => child.props.dataKey).filter((key) => key);
     setGroupKeys((prev) => (isEqual(prev, dataKeys) ? prev : dataKeys));
     const dataToRegister = barSeriesChildren.map((child) => {
-      const { dataKey: key, data, xAccessor, yAccessor, colorAccessor } = child.props;
-      return { key, data, xAccessor, yAccessor, colorAccessor };
+      const { dataKey: key, data, keyAccessor, xAccessor, yAccessor, colorAccessor } = child.props;
+      return { key, data, keyAccessor, xAccessor, yAccessor, colorAccessor };
     });
     registerData?.(dataToRegister);
     return () => unregisterData?.(dataKeys);
@@ -275,6 +325,7 @@ export function XYChartBarGroup<
       horizontal={horizontal}
       springConfig={springConfig ?? fallbackSpringConfig}
       animate={animate}
+      {...events}
     />
   );
 }

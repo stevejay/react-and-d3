@@ -33,7 +33,7 @@ function updateTranslate(
 export type ReturnType<ElementT extends SVGElement> = [RefObject<ElementT>, ZoomTransform];
 
 export function useZoom<ElementT extends SVGElement>(): ReturnType<ElementT> {
-  const ref = useRef<ElementT>(null!);
+  const ref = useRef<ElementT>(null);
 
   // The underlying state.
   const [transform, setTransform] = useState(zoomIdentity);
@@ -47,7 +47,7 @@ export function useZoom<ElementT extends SVGElement>(): ReturnType<ElementT> {
 
   // TODO why use these?
   useEffect(() => {
-    const handler = (e: any) => e.preventDefault();
+    const handler = (e: Event) => e.preventDefault();
     document.addEventListener('gesturestart', handler);
     document.addEventListener('gesturechange', handler);
     //   document.addEventListener('gestureend', handler);
@@ -68,7 +68,7 @@ export function useZoom<ElementT extends SVGElement>(): ReturnType<ElementT> {
       },
       onPinch: ({ first, origin: [originX, originY], memo, offset: [k] }) => {
         let currentMemo = memo;
-        if (first) {
+        if (first && ref.current) {
           const { top, left } = ref.current.getBoundingClientRect();
           // Get pinch starting coord relative to the top left corner of the rect element.
           const relativePoint = [originX - left, originY - top] as Point;

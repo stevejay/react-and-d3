@@ -16,7 +16,7 @@ export function createBarGroupPositioning<
   yAccessor: (datum: Datum) => ScaleInput<YScale>,
   groupScale: ScaleBand<string>,
   horizontal: boolean,
-  renderingOffset: number = 0
+  _renderingOffset = 0
 ) {
   const xScaleCopy = xScale.copy();
   const yScaleCopy = yScale.copy();

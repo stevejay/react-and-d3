@@ -24,7 +24,7 @@ export function useD3Zoom<ElementT extends SVGElement>(
   options?: OptionsType
 ): ReturnType<ElementT> {
   const { translateExtent, scaleExtent } = options ?? {};
-  const ref = useRef<ElementT>(null!);
+  const interactionRef = useRef<ElementT>(null);
   const zoomRef = useRef<ZoomBehavior<ElementT, null> | null>(null);
 
   // The underlying state.
@@ -33,7 +33,8 @@ export function useD3Zoom<ElementT extends SVGElement>(
   // One-time initialisation of the zoom component.
 
   useLayoutEffect(() => {
-    const refElement = ref.current;
+    const refElement = interactionRef.current;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onZoom = (event: any) => setTransform(event.transform);
     // How do I re-initialise the zoom component?
     zoomRef.current = zoom<ElementT, null>();
@@ -62,7 +63,9 @@ export function useD3Zoom<ElementT extends SVGElement>(
       [translate00, translate01],
       [translate10, translate11]
     ]);
-    zoomRef.current?.(select(ref.current));
+    if (interactionRef.current) {
+      zoomRef.current?.(select(interactionRef.current));
+    }
   }, [
     scaleExtent0,
     scaleExtent1,
@@ -79,8 +82,10 @@ export function useD3Zoom<ElementT extends SVGElement>(
   // Reset the zoom transform in the case that the chart has been updated.
   // https://stackoverflow.com/a/67976133/604006
   const reset = useCallback(() => {
-    zoomRef.current?.(select(ref.current), zoomRef.current?.transform, zoomIdentity);
+    if (interactionRef.current) {
+      zoomRef.current?.(select(interactionRef.current), zoomRef.current?.transform, zoomIdentity);
+    }
   }, []);
 
-  return [ref, transform, reset];
+  return [interactionRef, transform, reset];
 }

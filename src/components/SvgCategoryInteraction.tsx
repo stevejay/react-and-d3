@@ -114,7 +114,7 @@ export function SvgCategoryInteraction<
           // outside of the chart area.
           event.stopPropagation();
         }}
-        onTouchStart={(e) => {
+        onTouchStart={() => {
           isSwiping.current = false;
         }}
         onTouchMove={() => (isSwiping.current = true)}

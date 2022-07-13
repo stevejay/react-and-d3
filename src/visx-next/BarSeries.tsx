@@ -5,7 +5,9 @@ import { Group } from '@visx/group';
 
 import { useBarSeriesTransitions } from './animation';
 import { DataContext } from './DataContext';
+import { BARSERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './eventSources';
 import { PositionScale, SeriesProps } from './types';
+import { useSeriesEvents } from './useSeriesEvents';
 import { withRegisteredData, WithRegisteredDataProps } from './withRegisteredData';
 
 export type BarSeriesProps<
@@ -38,6 +40,7 @@ export function BarSeries<XScale extends PositionScale, YScale extends PositionS
   colorAccessor,
   data,
   dataKey,
+  keyAccessor,
   xAccessor,
   yAccessor,
   xScale,
@@ -49,12 +52,31 @@ export function BarSeries<XScale extends PositionScale, YScale extends PositionS
   animate = true,
   springConfig,
   horizontal,
-  renderingOffset
+  renderingOffset,
+  onBlur,
+  onFocus,
+  onPointerMove,
+  onPointerOut,
+  onPointerUp,
+  enableEvents = true
 }: BarSeriesProps<XScale, YScale, Datum> & WithRegisteredDataProps<XScale, YScale, Datum>) {
+  const ownEventSourceKey = `${BARSERIES_EVENT_SOURCE}-${dataKey}`;
+  const eventEmitters = useSeriesEvents<XScale, YScale, Datum>({
+    dataKey,
+    enableEvents,
+    onBlur,
+    onFocus,
+    onPointerMove,
+    onPointerOut,
+    onPointerUp,
+    source: ownEventSourceKey,
+    allowedSources: [XYCHART_EVENT_SOURCE, ownEventSourceKey]
+  });
   const transitions = useBarSeriesTransitions(
     data,
     xScale,
     yScale,
+    keyAccessor,
     xAccessor,
     yAccessor,
     horizontal,
@@ -78,6 +100,7 @@ export function BarSeries<XScale extends PositionScale, YScale extends PositionS
             style={{ ...style, opacity }}
             className={barClassName}
             {...restBarProps}
+            {...eventEmitters}
           />
         );
       })}
@@ -96,7 +119,11 @@ const MemoizedXYChartBarSeriesInner = memo(
     dataKey,
     ...rest
   }: Omit<BarSeriesProps<XScale, YScale, Datum>, 'horizontal'> &
-    WithRegisteredDataProps<XScale, YScale, Datum>) {
+    WithRegisteredDataProps<XScale, YScale, Datum> &
+    Pick<
+      SeriesProps<XScale, YScale, Datum>,
+      'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
+    >) {
     const { springConfig: fallbackSpringConfig, horizontal, colorScale } = useContext(DataContext);
     const fallbackColorAccessor = useCallback(() => colorScale?.(dataKey) ?? '', [colorScale, dataKey]);
     return (
@@ -116,7 +143,8 @@ const MemoizedXYChartBarSeriesInner = memo(
     prevProps.data === nextProps.data &&
     prevProps.xAccessor === nextProps.xAccessor &&
     prevProps.yAccessor === nextProps.yAccessor &&
-    prevProps.colorAccessor === nextProps.colorAccessor
+    prevProps.colorAccessor === nextProps.colorAccessor &&
+    prevProps.keyAccessor === nextProps.keyAccessor
 );
 
 export const XYChartBarSeries = withRegisteredData(MemoizedXYChartBarSeriesInner);

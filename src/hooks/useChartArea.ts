@@ -2,12 +2,7 @@ import { useMemo } from 'react';
 
 import { ChartArea, Margin, Point } from '@/types';
 
-export function useChartArea(
-  svgWidth: number,
-  svgHeight: number,
-  margins: Margin,
-  padding: number = 0
-): ChartArea {
+export function useChartArea(svgWidth: number, svgHeight: number, margins: Margin, padding = 0): ChartArea {
   return useMemo(() => {
     const width = svgWidth - margins.left - margins.right;
     const height = svgHeight - margins.top - margins.bottom;

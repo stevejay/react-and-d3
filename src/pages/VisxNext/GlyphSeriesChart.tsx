@@ -8,6 +8,7 @@ import { CircleGlyph } from '@/visx-next/glyphs/CircleGlyph';
 import { XYChartGlyphSeries } from '@/visx-next/GlyphSeries';
 import { XYChartRowGrid } from '@/visx-next/RowGrid';
 import { SvgXYChart } from '@/visx-next/SvgXYChart';
+import Tooltip from '@/visx-next/Tooltip';
 
 export interface Datum {
   a: number;
@@ -34,11 +35,11 @@ function colorAccessor() {
   return schemeCategory10[8];
 }
 
-// function keyAccessor(d: Datum) {
-//   return d.a;
-// }
+function keyAccessor(d: Datum) {
+  return `${d.a} ${d.b}`;
+}
 
-const springConfig = { duration: 1350, easing: easeCubicInOut };
+const springConfig = { duration: 350, easing: easeCubicInOut };
 
 // TODO I really think the scales and accessors should be labelled
 // independent and dependent.
@@ -63,14 +64,14 @@ export function GlyphSeriesChart({ data, margin }: GlyphSeriesChartProps) {
         data={data}
         xAccessor={xAccessor}
         yAccessor={yAccessor}
-        // keyAccessor={keyAccessor}
+        keyAccessor={keyAccessor}
         colorAccessor={colorAccessor}
         renderGlyph={({ datum, ...rest }) => (
           <CircleGlyph
             shapeRendering="crispEdges"
             role="graphics-symbol"
             aria-roledescription=""
-            aria-label={`Category ${xAccessor(datum as any)}: ${yAccessor(datum as any)}`} // TODO Fix
+            aria-label={`Category ${xAccessor(datum as Datum)}: ${yAccessor(datum as Datum)}`}
             {...rest}
           />
         )}
@@ -162,6 +163,26 @@ export function GlyphSeriesChart({ data, margin }: GlyphSeriesChartProps) {
         labelOffset={36} // Does not take tick labels into account.
         // hideTicks
         // tickLength={0}
+      />
+      <Tooltip<Datum>
+        snapTooltipToDatumX //={false}
+        snapTooltipToDatumY //={false}
+        showVerticalCrosshair //={false}
+        showSeriesGlyphs
+        renderTooltip={({ tooltipData, colorScale }) => {
+          const datum = tooltipData?.nearestDatum;
+          if (!datum) {
+            return null;
+          }
+          return (
+            <div>
+              <div style={{ color: colorScale?.(datum.key) }}>{datum.key}</div>
+              {xAccessor(datum.datum)}
+              {', '}
+              {yAccessor(datum.datum)}
+            </div>
+          );
+        }}
       />
     </SvgXYChart>
   );

@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -25,6 +26,7 @@ const ScatterplotPage = lazy(() => import('@/pages/Scatterplot'));
 const SparklinePage = lazy(() => import('@/pages/Sparkline'));
 const VisxPage = lazy(() => import('@/pages/Visx'));
 const VisxNextPage = lazy(() => import('@/pages/VisxNext'));
+const StateOfJSPage = lazy(() => import('@/pages/StateOfJS'));
 
 const pageLinks = [
   { href: '/', title: 'Home', pageComponent: HomePage },
@@ -38,7 +40,8 @@ const pageLinks = [
   { href: '/scatterplot', title: 'Scatterplot', pageComponent: ScatterplotPage },
   { href: '/sparkline', title: 'Sparkline', pageComponent: SparklinePage },
   { href: '/visx', title: 'Visx by Airbnb', pageComponent: VisxPage },
-  { href: '/visx-next', title: 'Visx Next', pageComponent: VisxNextPage }
+  { href: '/visx-next', title: 'Visx Next', pageComponent: VisxNextPage },
+  { href: '/state-of-js', title: 'State of JS', pageComponent: StateOfJSPage }
 ];
 
 const navigationData = [
@@ -55,26 +58,30 @@ const navigationData = [
   }
 ];
 
+const queryClient = new QueryClient();
+
 export function App() {
   return (
     <BrowserRouter>
       <ErrorBoundary>
-        <AnnouncerProvider>
-          <HelmetProvider>
-            <TitleAnnouncer />
-            {/* <ScrollToTopOnNavigation /> */}
-            <Header navigationData={navigationData} />
-            <ErrorBoundary>
-              <Suspense fallback={<LoadingPlaceholder />}>
-                <Routes>
-                  {pageLinks.map(({ href, pageComponent: PageComponent }) => (
-                    <Route key={href} path={href} element={<PageComponent />} />
-                  ))}
-                </Routes>
-              </Suspense>
-            </ErrorBoundary>
-          </HelmetProvider>
-        </AnnouncerProvider>
+        <QueryClientProvider client={queryClient}>
+          <AnnouncerProvider>
+            <HelmetProvider>
+              <TitleAnnouncer />
+              {/* <ScrollToTopOnNavigation /> */}
+              <Header navigationData={navigationData} />
+              <ErrorBoundary>
+                <Suspense fallback={<LoadingPlaceholder />}>
+                  <Routes>
+                    {pageLinks.map(({ href, pageComponent: PageComponent }) => (
+                      <Route key={href} path={href} element={<PageComponent />} />
+                    ))}
+                  </Routes>
+                </Suspense>
+              </ErrorBoundary>
+            </HelmetProvider>
+          </AnnouncerProvider>
+        </QueryClientProvider>
       </ErrorBoundary>
     </BrowserRouter>
   );

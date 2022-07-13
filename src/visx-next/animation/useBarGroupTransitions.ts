@@ -14,6 +14,7 @@ export function useBarGroupTransitions<
   xScale: XScale,
   yScale: YScale,
   groupScale: ScaleBand<string>,
+  keyAccessor: (datum: Datum) => string,
   xAccessor: (datum: Datum) => ScaleInput<XScale>,
   yAccessor: (datum: Datum) => ScaleInput<YScale>,
   dataKey: string,
@@ -42,7 +43,7 @@ export function useBarGroupTransitions<
       update: (datum) => (dataKeys.includes(dataKey) ? { opacity: 1, ...position(datum) } : { opacity: 1 }),
       leave: () => ({ opacity: 0 }),
       config: springConfig,
-      keys: (datum) => `${dataKey}-${(horizontal ? yAccessor : xAccessor)?.(datum)}`,
+      keys: keyAccessor, // (datum) => `${dataKey}-${(horizontal ? yAccessor : xAccessor)?.(datum)}`,
       immediate: !animate
     }
   );

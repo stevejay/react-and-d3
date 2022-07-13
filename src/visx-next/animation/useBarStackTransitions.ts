@@ -15,6 +15,7 @@ export function useBarStackTransitions<
   xScale: XScale,
   yScale: YScale,
   dataKey: string,
+  keyAccessor: (d: Datum) => string,
   xAccessor: (d: SeriesPoint<CombinedStackData<XScale, YScale, Datum>>) => ScaleInput<XScale>,
   yAccessor: (d: SeriesPoint<CombinedStackData<XScale, YScale, Datum>>) => ScaleInput<YScale>,
   horizontal: boolean,
@@ -23,6 +24,7 @@ export function useBarStackTransitions<
   renderingOffset?: number
 ) {
   const position = createBarStackPositioning(xScale, yScale, horizontal, renderingOffset);
+
   return useTransition<
     SeriesPoint<CombinedStackData<XScale, YScale, Datum>>,
     { x: number; y: number; width: number; height: number; opacity: number }
@@ -35,7 +37,7 @@ export function useBarStackTransitions<
       dataKeys.includes(dataKey) ? { opacity: 1, ...position(datum, dataKey) } : { opacity: 1 },
     leave: () => ({ opacity: 0 }),
     config: springConfig,
-    keys: (datum) => `${dataKey}-${(horizontal ? yAccessor : xAccessor)?.(datum)}`,
+    keys: (datum) => keyAccessor(datum.data.__datum__), // `${(horizontal ? yAccessor : xAccessor)?.(datum)}`,
     immediate: !animate
   });
 }
