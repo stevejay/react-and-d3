@@ -3,6 +3,7 @@ import { getFirstItem, getSecondItem } from '@visx/shape/lib/util/accessors';
 
 import { findNearestDatumX } from './findNearestDatumX';
 import { findNearestDatumY } from './findNearestDatumY';
+import { getScaleBandwidth } from './scale';
 import { BarStackDatum, NearestDatumArgs } from './types';
 
 /**
@@ -20,7 +21,7 @@ export default function findNearestStackDatum<
   seriesData: readonly Datum[],
   horizontal?: boolean
 ) {
-  const { xScale, yScale, point } = nearestDatumArgs;
+  const { xScale, yScale, point, xAccessor, yAccessor } = nearestDatumArgs;
   const datum = (horizontal ? findNearestDatumY : findNearestDatumX)(nearestDatumArgs);
   const seriesDatum = datum?.index == null ? null : seriesData[datum.index];
 
@@ -39,7 +40,12 @@ export default function findNearestStackDatum<
           : point.y <= (yScale(getFirstItem(datum.datum)) ?? -Infinity) &&
             point.y >= (yScale(getSecondItem(datum.datum)) ?? Infinity)
           ? 0
-          : datum.distanceY
+          : datum.distanceY,
+
+        stackDatum: datum.datum, // Added by me
+
+        snapLeft: Number(xScale(xAccessor(datum.datum))) + getScaleBandwidth(xScale) / 2 ?? 0,
+        snapTop: Number(yScale(yAccessor(datum.datum))) + getScaleBandwidth(yScale) / 2 ?? 0
       }
     : null;
 }

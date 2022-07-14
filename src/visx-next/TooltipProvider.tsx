@@ -28,8 +28,9 @@ export function TooltipProvider<Datum extends object>({
 
   const debouncedHideTooltip = useRef<ReturnType<typeof debounce> | null>(null);
 
+  // TODO turn into lazy init to avoid creating this func on every render.
   const showTooltip = useRef(
-    ({ svgPoint, index, key, datum, distanceX, distanceY }: EventHandlerParams<Datum>) => {
+    ({ svgPoint, index, key, datum, distanceX, distanceY, ...rest }: EventHandlerParams<Datum>) => {
       // cancel any hideTooltip calls so it won't hide after invoking the logic below
       if (debouncedHideTooltip.current) {
         debouncedHideTooltip.current.cancel();
@@ -53,13 +54,14 @@ export function TooltipProvider<Datum extends object>({
             nearestDatum:
               (currData?.nearestDatum?.key ?? '') !== key && currNearestDatumDistance < distance
                 ? currData?.nearestDatum
-                : { key, index, datum, distance },
+                : { key, index, datum, distance, ...rest },
             datumByKey: {
               ...currData?.datumByKey,
               [key]: {
                 datum,
                 index,
-                key
+                key,
+                ...rest
               }
             }
           }

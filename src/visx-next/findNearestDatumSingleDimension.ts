@@ -34,13 +34,23 @@ export function findNearestDatumSingleDimension<Scale extends AxisScale, Datum e
         ? nearestDatum1
         : nearestDatum0;
     nearestDatumIndex = nearestDatum === nearestDatum0 ? index - 1 : index;
-  } else if ('step' in coercedScale && typeof coercedScale.step !== 'undefined') {
-    // band scales don't have an invert function but they do have discrete domains
-    // so we manually invert
+  } else if ('bandwidth' in coercedScale && typeof coercedScale.bandwidth !== 'undefined') {
+    // band and point scales don't have an invert function but they do have discrete domains
+    // so we manually invert. We detect this scale type by looking for the bandwidth() method.
     const domain = scale.domain();
     const range = scale.range().map(Number);
     const sortedRange = [...range].sort((a, b) => a - b); // bisectLeft assumes sort
-    const rangePoints = d3Range(sortedRange[0], sortedRange[1], coercedScale.step());
+
+    // band scale has inner padding and outer padding; point scale has only outer padding
+    // (accessed as padding()).
+    const rangeStart =
+      'paddingInner' in coercedScale && typeof coercedScale.paddingInner !== 'undefined'
+        ? sortedRange[0] +
+          coercedScale.step() * coercedScale.paddingOuter() -
+          coercedScale.step() * coercedScale.paddingInner() * 0.5
+        : sortedRange[0] + coercedScale.step() * coercedScale.padding();
+
+    const rangePoints = d3Range(rangeStart, sortedRange[1], coercedScale.step());
     const domainIndex = bisectLeft(rangePoints, scaledValue);
     // y-axis scales may have reverse ranges, correct for this
     const sortedDomain = range[0] < range[1] ? domain : domain.reverse();

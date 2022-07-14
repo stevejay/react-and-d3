@@ -18,8 +18,8 @@ export interface GroupedBarChartProps {
 
 const xScale: BandScaleConfig<string> = {
   type: 'band',
-  paddingInner: 0.1,
-  paddingOuter: 0.2,
+  paddingInner: 0.2,
+  paddingOuter: 0.4,
   round: true
 } as const;
 
@@ -175,9 +175,9 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
       />
       <Tooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
-        snapTooltipToDatumY //={false}
+        snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}
-        showSeriesGlyphs
+        showSeriesGlyphs={false}
         renderTooltip={({ tooltipData, colorScale }) => {
           const datum = tooltipData?.nearestDatum;
           if (!datum) {

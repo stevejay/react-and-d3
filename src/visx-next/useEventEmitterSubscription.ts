@@ -18,7 +18,13 @@ export function useEventEmitterSubscription(
 ) {
   const emitter = useContext(EventEmitterContext);
   const allowedSourcesRef = useRef<string[] | undefined>();
-  allowedSourcesRef.current = allowedSources; // use ref so allowedSources[] can change without creating new handlers
+
+  // TODO This ref is being set when rendering.
+  // allowedSourcesRef.current = allowedSources; // use ref so allowedSources[] can change without creating new handlers
+
+  useEffect(() => {
+    allowedSourcesRef.current = allowedSources;
+  });
 
   useEffect(() => {
     if (emitter && eventType && handler) {

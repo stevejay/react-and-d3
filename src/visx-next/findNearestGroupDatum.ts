@@ -37,9 +37,14 @@ export function findNearestGroupDatum<
     return {
       ...datum,
       distanceX: 0, // we want all group bars to have same X distance so only Y distance matters
-      distanceY: cursorIsOnBar ? 0 : Math.abs(point.y - barMiddle)
+      distanceY: cursorIsOnBar ? 0 : Math.abs(point.y - barMiddle),
+
+      snapLeft: xScale(xAccessor(datum.datum)) ?? 0,
+      snapTop: barMiddle
     };
   }
+
+  // vertical
   const groupPosition = xScale(xAccessor(datum.datum));
   const barStart = (groupPosition ?? Infinity) + (barGroupOffset ?? Infinity);
   const barEnd = barStart + barWidth;
@@ -48,6 +53,9 @@ export function findNearestGroupDatum<
   return {
     ...datum,
     distanceY: 0, // we want all group bars to have same Y distance so only X distance matters
-    distanceX: cursorIsOnBar ? 0 : Math.abs(point.x - barMiddle)
+    distanceX: cursorIsOnBar ? 0 : Math.abs(point.x - barMiddle),
+
+    snapLeft: barMiddle,
+    snapTop: yScale(yAccessor(datum.datum)) ?? 0
   };
 }

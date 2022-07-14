@@ -179,21 +179,33 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
       />
       <Tooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
-        snapTooltipToDatumY //={false}
+        snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}
-        showSeriesGlyphs
+        showSeriesGlyphs={false}
         renderTooltip={({ tooltipData, colorScale }) => {
+          // console.log('tooltipData', tooltipData);
           const datum = tooltipData?.nearestDatum;
           if (!datum) {
             return null;
           }
           return (
-            <div>
-              <span style={{ color: colorScale?.(datum.key) }}>{datum.key}</span> {datum.datum.category}
-              {': '}
-              {datum.datum.values[datum.key]}
+            <div className="flex flex-col space-y-1 p-1">
+              {Object.keys(datum.datum.values).map((key) => {
+                return (
+                  <p key={key}>
+                    <span style={{ color: colorScale?.(key) }}>{key}</span>: {datum.datum.values[key]}
+                  </p>
+                );
+              })}
             </div>
           );
+          // return (
+          //   <div>
+          //     <span style={{ color: colorScale?.(datum.key) }}>{datum.key}</span> {datum.datum.category}
+          //     {': '}
+          //     {datum.datum.values[datum.key]}
+          //   </div>
+          // );
         }}
       />
     </SvgXYChart>

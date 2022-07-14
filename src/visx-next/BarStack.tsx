@@ -257,6 +257,14 @@ export function SvgXYChartBarStack<
     (
       params: NearestDatumArgs<XScale, YScale, BarStackDatum<XScale, YScale, Datum>>
     ): NearestDatumReturnType<Datum> => {
+      // const childProps = seriesChildren.find((child) => child.props.dataKey === params.dataKey)?.props;
+      // if (!childProps) {
+      //   return null;
+      // }
+      // const { data: childData, xAccessor, yAccessor } = childProps;
+      // const datum = findNearestStackDatum(params, childData, horizontal);
+      // return datum ? ({ ...datum, xAccessor, yAccessor } as any) : null;
+
       const childData = seriesChildren.find((child) => child.props.dataKey === params.dataKey)?.props?.data;
       return childData ? findNearestStackDatum(params, childData, horizontal) : null;
     },

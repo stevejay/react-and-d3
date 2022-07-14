@@ -143,6 +143,9 @@ export interface EventHandlerParams<Datum> {
   svgPoint?: { x: number; y: number };
   /** The PointerEvent or FocusEvent. */
   event?: PointerEvent | FocusEvent;
+
+  snapLeft: number;
+  snapTop: number;
 }
 
 /** Common props for data series. */
@@ -485,6 +488,11 @@ export type NearestDatumReturnType<Datum extends object> = {
   index: number;
   distanceX: number;
   distanceY: number;
+
+  snapLeft: number;
+  snapTop: number;
+  // xAccessor: (d: Datum) => ScaleInput<XScale>;
+  // yAccessor: (d: Datum) => ScaleInput<YScale>;
 } | null;
 
 export type TooltipDatum<Datum extends object> = {
@@ -494,6 +502,9 @@ export type TooltipDatum<Datum extends object> = {
   index: number;
   /** Datum. */
   datum: Datum;
+
+  snapLeft: number;
+  snapTop: number;
 };
 
 export type TooltipData<Datum extends object = object> = {

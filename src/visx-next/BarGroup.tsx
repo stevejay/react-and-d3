@@ -132,6 +132,7 @@ function BarGroupSeries<XScale extends PositionScale, YScale extends PositionSca
     animate,
     renderingOffset
   );
+
   return (
     <>
       {transitions(({ opacity, x, y, width, height }, datum, _, index) => {
