@@ -43,12 +43,17 @@ export function useTooltip<TooltipData = object>(
 
   const hideTooltip = useCallback(
     () =>
-      setTooltipState({
-        tooltipOpen: false,
-        tooltipLeft: undefined,
-        tooltipTop: undefined,
-        tooltipData: undefined
-      }),
+      setTooltipState((state) => ({
+        ...state,
+        tooltipOpen: false
+      })),
+    // () =>
+    //   setTooltipState({
+    //     tooltipOpen: false,
+    //     tooltipLeft: undefined,
+    //     tooltipTop: undefined,
+    //     tooltipData: undefined
+    //   }),
     [setTooltipState]
   );
 

@@ -28,6 +28,8 @@ export type SvgXYChartProps<
 > = {
   /** Whether to capture and dispatch pointer events to EventEmitter context (which e.g., Series subscribe to). */
   captureEvents?: boolean;
+
+  hideTooltipDebounceMs?: number;
   /**
    * Total width of the desired chart svg, including margin.
    * If `width`` is nil then XYChart will wrap itself in a ParentSizeModern and use it
@@ -97,6 +99,7 @@ export function SvgXYChart<
     onPointerUp,
     pointerEventsDataKey = 'nearest',
     captureEvents = true,
+    hideTooltipDebounceMs = 400,
     ...svgProps
   } = props;
 
@@ -161,7 +164,7 @@ export function SvgXYChart<
 
   if (isNil(tooltipContext)) {
     return (
-      <TooltipProvider>
+      <TooltipProvider hideTooltipDebounceMs={hideTooltipDebounceMs}>
         <SvgXYChart {...props} />
       </TooltipProvider>
     );

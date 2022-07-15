@@ -6,7 +6,6 @@ import { TooltipProps as BaseTooltipProps } from '@visx/tooltip/lib/tooltips/Too
 
 import { isValidNumber } from './types/typeguards/isValidNumber';
 import { DataContext } from './DataContext';
-// import { getScaleBandwidth } from './scale';
 import { TooltipContext } from './TooltipContext';
 import { TooltipContextType } from './types';
 
@@ -139,57 +138,15 @@ export default function Tooltip<Datum extends object>({
   let tooltipLeft = tooltipContext?.tooltipLeft;
   let tooltipTop = tooltipContext?.tooltipTop;
 
-  // const xScaleBandwidth = xScale ? getScaleBandwidth(xScale) : 0;
-  // const yScaleBandwidth = yScale ? getScaleBandwidth(yScale) : 0;
-
-  // const getDatumLeftTop = useCallback(
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   (key: string, datum: Datum, tooltipDatum: any) => {
-  //     // console.log('tooltipDatum', tooltipDatum);
-  //     const entry = dataRegistry?.get(key);
-  //     const xAccessor = entry?.xAccessor;
-  //     const yAccessor = entry?.yAccessor;
-
-  //     // console.log('datum', datum, xScale && xAccessor && xAccessor(datum));
-
-  //     const left =
-  //       xScale && xAccessor
-  //         ? Number(xScale(xAccessor(tooltipDatum?.stackDatum || datum))) + xScaleBandwidth / 2 ?? 0
-  //         : undefined;
-
-  //     const top =
-  //       yScale && yAccessor
-  //         ? Number(yScale(yAccessor(tooltipDatum?.stackDatum || datum))) + yScaleBandwidth / 2 ?? 0
-  //         : undefined;
-
-  //     // console.log('>>', left, tooltipDatum?.snapLeft, top, tooltipDatum?.snapTop);
-
-  //     return { left, top };
-  //   },
-  //   [dataRegistry, xScaleBandwidth, yScaleBandwidth, xScale, yScale]
-  // );
-
   const nearestDatum = tooltipContext?.tooltipData?.nearestDatum;
   const nearestDatumKey = nearestDatum?.key ?? '';
 
-  // console.log('data', showTooltip, nearestDatum, snapTooltipToDatumX || snapTooltipToDatumY);
-
   // snap x- or y-coord to the actual data point (not event coordinates)
   if (showTooltip && nearestDatum && (snapTooltipToDatumX || snapTooltipToDatumY)) {
-    // TODO snapLeft and snapTopare always defined.
-    // if (!isNil(nearestDatum.snapLeft) && !isNil(nearestDatum.snapTop)) {
-
     tooltipLeft =
       snapTooltipToDatumX && isValidNumber(nearestDatum.snapLeft) ? nearestDatum.snapLeft : tooltipLeft;
     tooltipTop =
       snapTooltipToDatumY && isValidNumber(nearestDatum.snapTop) ? nearestDatum.snapTop : tooltipTop;
-
-    // } else {
-    //   const { left, top } = getDatumLeftTop(nearestDatumKey, nearestDatum.datum, nearestDatum);
-    //   // console.log('left/top', left, top);
-    //   tooltipLeft = snapTooltipToDatumX && isValidNumber(left) ? left : tooltipLeft;
-    //   tooltipTop = snapTooltipToDatumY && isValidNumber(top) ? top : tooltipTop;
-    // }
   }
 
   // collect positions + styles for glyphs; glyphs always snap to Datum, not event coords
@@ -202,8 +159,6 @@ export default function Tooltip<Datum extends object>({
     if (showSeriesGlyphs) {
       Object.values(tooltipContext?.tooltipData?.datumByKey ?? {}).forEach((tooltipDatum) => {
         const color = colorScale?.(tooltipDatum.key) ?? theme?.htmlLabel?.color ?? '#222';
-        // const { left, top } = getDatumLeftTop(tooltipDatum.key, tooltipDatum.datum, tooltipDatum);
-
         const { snapLeft: left, snapTop: top } = tooltipDatum;
 
         // don't show glyphs if coords are unavailable
@@ -219,7 +174,6 @@ export default function Tooltip<Datum extends object>({
         });
       });
     } else if (nearestDatum) {
-      // const { left, top } = getDatumLeftTop(nearestDatumKey, nearestDatum.datum, nearestDatum);
       const { snapLeft: left, snapTop: top } = nearestDatum;
 
       // don't show glyphs if coords are unavailable

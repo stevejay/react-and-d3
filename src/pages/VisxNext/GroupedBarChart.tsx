@@ -6,6 +6,7 @@ import { CategoryValueListDatum, Margin } from '@/types';
 import { SvgXYChartAxis } from '@/visx-next/Axis';
 import { XYChartBarGroup } from '@/visx-next/BarGroup';
 import { XYChartBarSeries } from '@/visx-next/BarSeries';
+import { PopperTooltip } from '@/visx-next/PopperTooltip';
 import { XYChartRowGrid } from '@/visx-next/RowGrid';
 import { SvgXYChart } from '@/visx-next/SvgXYChart';
 import Tooltip from '@/visx-next/Tooltip';
@@ -26,11 +27,11 @@ const xScale: BandScaleConfig<string> = {
 function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) {
   switch (key) {
     case 'one':
-      return schemeCategory10[0];
+      return schemeCategory10[0]; // blue
     case 'two':
-      return schemeCategory10[1];
+      return schemeCategory10[1]; // orange
     default:
-      return schemeCategory10[2];
+      return schemeCategory10[2]; // green
   }
 }
 
@@ -54,6 +55,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
       role="graphics-document"
       aria-label="Some title"
       yRangePadding={30}
+      hideTooltipDebounceMs={0}
     >
       {/* <XYChartColumnGrid className="text-slate-600" /> */}
       <XYChartRowGrid className="text-red-600" tickCount={5} shapeRendering="crispEdges" />
@@ -173,19 +175,42 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         // hideTicks
         // tickLength={0}
       />
-      <Tooltip<CategoryValueListDatum<string, number>>
+      {false && (
+        <Tooltip<CategoryValueListDatum<string, number>>
+          snapTooltipToDatumX //={false}
+          snapTooltipToDatumY={false}
+          showVerticalCrosshair //={false}
+          showSeriesGlyphs={false}
+          renderTooltip={({ tooltipData }) => {
+            const datum = tooltipData?.nearestDatum;
+            if (!datum) {
+              return null;
+            }
+            return (
+              <div>
+                <span style={{ color: colorAccessor(datum.datum, datum.key) }}>{datum.key}</span>{' '}
+                {datum.datum.category}
+                {': '}
+                {datum.datum.values[datum.key]}
+              </div>
+            );
+          }}
+        />
+      )}
+      <PopperTooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}
         showSeriesGlyphs={false}
-        renderTooltip={({ tooltipData, colorScale }) => {
+        renderTooltip={({ tooltipData }) => {
           const datum = tooltipData?.nearestDatum;
           if (!datum) {
             return null;
           }
           return (
             <div>
-              <span style={{ color: colorScale?.(datum.key) }}>{datum.key}</span> {datum.datum.category}
+              <span style={{ color: colorAccessor(datum.datum, datum.key) }}>{datum.key}</span>{' '}
+              {datum.datum.category}
               {': '}
               {datum.datum.values[datum.key]}
             </div>

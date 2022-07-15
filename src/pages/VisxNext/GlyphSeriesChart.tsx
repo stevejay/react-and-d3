@@ -169,14 +169,14 @@ export function GlyphSeriesChart({ data, margin }: GlyphSeriesChartProps) {
         snapTooltipToDatumY //={false}
         showVerticalCrosshair //={false}
         showSeriesGlyphs
-        renderTooltip={({ tooltipData, colorScale }) => {
+        renderTooltip={({ tooltipData }) => {
           const datum = tooltipData?.nearestDatum;
           if (!datum) {
             return null;
           }
           return (
             <div>
-              <div style={{ color: colorScale?.(datum.key) }}>{datum.key}</div>
+              <div style={{ color: colorAccessor() }}>{datum.key}</div>
               {xAccessor(datum.datum)}
               {', '}
               {yAccessor(datum.datum)}

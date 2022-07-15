@@ -29,7 +29,9 @@ export function useVirtualElementTooltip<Datum>(popperOptions?: Partial<PopperOp
   const [isVisible, setVisible] = useState<boolean>(false);
   const [datum, setDatum] = useState<Datum | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
-  const referenceElement = useRef<HTMLElement | null>(null);
+
+  const referenceElement = useRef<HTMLElement | null>(null); // TODO should this be state?
+
   const virtualReferenceCoords = useRef<[number, number]>([0, 0]);
   const updateRef = useRef<ReturnType<typeof usePopper>['update']>();
 
@@ -57,10 +59,11 @@ export function useVirtualElementTooltip<Datum>(popperOptions?: Partial<PopperOp
 
   const show = useCallback<TooltipState<Datum>['show']>(
     (clientX, clientY, datum, isEqual = (prev, curr) => prev === curr) => {
-      const rect = referenceElement.current?.getBoundingClientRect() ?? {
-        top: 0,
-        left: 0
-      };
+      if (!referenceElement.current) {
+        setVisible(false);
+        return;
+      }
+      const rect = referenceElement.current.getBoundingClientRect();
       const x = clientX - rect.left;
       const y = clientY - rect.top;
       virtualReferenceCoords.current = [x, y];

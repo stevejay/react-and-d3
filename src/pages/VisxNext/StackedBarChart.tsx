@@ -6,9 +6,9 @@ import { CategoryValueListDatum, Margin } from '@/types';
 import { SvgXYChartAxis } from '@/visx-next/Axis';
 import { XYChartBarSeries } from '@/visx-next/BarSeries';
 import { SvgXYChartBarStack } from '@/visx-next/BarStack';
+import { PopperTooltip } from '@/visx-next/PopperTooltip';
 import { XYChartRowGrid } from '@/visx-next/RowGrid';
 import { SvgXYChart } from '@/visx-next/SvgXYChart';
-import Tooltip from '@/visx-next/Tooltip';
 
 export interface StackedBarChartProps {
   data: readonly CategoryValueListDatum<string, number>[];
@@ -58,12 +58,7 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
       {/* <XYChartColumnGrid className="text-slate-600" /> */}
       <XYChartRowGrid className="text-red-600" tickCount={5} shapeRendering="crispEdges" />
       {/* TODO Use refs within barSeries for the accessors? */}
-      <SvgXYChartBarStack
-        stackOffset="none"
-        stackOrder="ascending"
-        animate={true}
-        // onPointerMove={handlePointerMove}
-      >
+      <SvgXYChartBarStack stackOffset="none" stackOrder="ascending" animate={true}>
         {dataKeys.map((dataKey) => (
           <XYChartBarSeries
             key={dataKey}
@@ -177,13 +172,12 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
         // hideTicks
         // tickLength={0}
       />
-      <Tooltip<CategoryValueListDatum<string, number>>
+      <PopperTooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}
         showSeriesGlyphs={false}
-        renderTooltip={({ tooltipData, colorScale }) => {
-          // console.log('tooltipData', tooltipData);
+        renderTooltip={({ tooltipData }) => {
           const datum = tooltipData?.nearestDatum;
           if (!datum) {
             return null;
@@ -193,19 +187,13 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
               {Object.keys(datum.datum.values).map((key) => {
                 return (
                   <p key={key}>
-                    <span style={{ color: colorScale?.(key) }}>{key}</span>: {datum.datum.values[key]}
+                    <span style={{ color: colorAccessor(datum.datum, key) }}>{key}</span>:{' '}
+                    {datum.datum.values[key]}
                   </p>
                 );
               })}
             </div>
           );
-          // return (
-          //   <div>
-          //     <span style={{ color: colorScale?.(datum.key) }}>{datum.key}</span> {datum.datum.category}
-          //     {': '}
-          //     {datum.datum.values[datum.key]}
-          //   </div>
-          // );
         }}
       />
     </SvgXYChart>
