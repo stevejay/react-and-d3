@@ -28,6 +28,15 @@ export type RenderTooltipParams<Datum extends object> = TooltipContextType<Datum
   colorScale?: PickD3Scale<'ordinal', string, string>;
 };
 
+type GlyphProps = {
+  left?: number;
+  top?: number;
+  fill?: string;
+  stroke?: string;
+  strokeWidth: number;
+  radius: number;
+};
+
 export type PopperTooltipProps<Datum extends object> = {
   /**
    * When TooltipContext.tooltipOpen=true, this function is invoked and if the
@@ -76,16 +85,16 @@ const popperOptions: Partial<PopperOptions> = {
 export function PopperTooltip<Datum extends object>({
   renderTooltip,
   // scroll = true,
-  // showDatumGlyph = false,
-  // showHorizontalCrosshair = false,
+  showDatumGlyph = false,
+  showHorizontalCrosshair = false,
   // showSeriesGlyphs = false,
-  // showVerticalCrosshair = false,
+  showVerticalCrosshair = false,
   snapTooltipToDatumX = false,
   snapTooltipToDatumY = false
 }: // verticalCrosshairStyle,
 // ...tooltipProps
 PopperTooltipProps<Datum>) {
-  const { colorScale /*,  innerHeight, innerWidth, margin */ } = useContext(DataContext) || {};
+  const { colorScale, innerHeight, innerWidth, margin } = useContext(DataContext) || {};
   const tooltipContext = useContext(TooltipContext) as TooltipContextType<Datum>;
   const referenceElement = useRef<HTMLElement | null>(null); // TODO should this be state?
   const updateRef = useRef<ReturnType<typeof usePopper>['update']>();
@@ -272,6 +281,29 @@ PopperTooltipProps<Datum>) {
   //   }
   // }
 
+  // collect positions + styles for glyphs; glyphs always snap to Datum, not event coords
+  const glyphProps: GlyphProps[] = [];
+
+  if (showDatumGlyph) {
+    const radius = 4; // Number(glyphStyle?.radius ?? 4);
+    const strokeWidth = 1.5; // Number(glyphStyle?.strokeWidth ?? 1.5);
+
+    if (nearestDatum) {
+      const { snapLeft: left, snapTop: top } = nearestDatum;
+
+      // don't show glyphs if coords are unavailable
+      if (isValidNumber(left) && isValidNumber(top)) {
+        glyphProps.push({
+          left: left - radius - strokeWidth,
+          top: top - radius - strokeWidth,
+          fill: 'red',
+          radius,
+          strokeWidth
+        });
+      }
+    }
+  }
+
   const transitions = useTransition(showTooltip, {
     from: { opacity: 0 },
     enter: { opacity: 1 },
@@ -283,19 +315,60 @@ PopperTooltipProps<Datum>) {
     <>
       <svg ref={setContainerRef} style={INVISIBLE_STYLES} />
       {transitions(
-        (styles, item) =>
+        (springStyles, item) =>
           item && (
-            <Portal node={document && document.getElementById('portal-tooltip')}>
-              <animated.div
-                ref={setPopperElement}
-                style={{ ...styles, ...popperStyles.popper }}
-                className={`text-slate-900 bg-slate-100 pointer-events-none px-3 py-1 shadow-md max-w-[280px] `}
-                {...attributes.popper}
-                aria-hidden
-              >
-                {renderTooltip({ ...tooltipContext, colorScale })}
-              </animated.div>
-            </Portal>
+            <>
+              {showVerticalCrosshair && (
+                <animated.line
+                  x1={tooltipLeft}
+                  x2={tooltipLeft}
+                  y1={margin?.top ?? 0}
+                  y2={(margin?.top ?? 0) + (innerHeight ?? 0)}
+                  strokeWidth={1.5}
+                  stroke="red"
+                  style={{ ...springStyles }}
+                  // {...verticalCrosshairStyle}
+                />
+              )}
+              {showHorizontalCrosshair && (
+                <animated.line
+                  x1={margin?.left ?? 0}
+                  x2={(margin?.left ?? 0) + (innerWidth ?? 0)}
+                  y1={tooltipTop}
+                  y2={tooltipTop}
+                  strokeWidth={1.5}
+                  stroke="red"
+                  style={{ ...springStyles }}
+                />
+              )}
+              {glyphProps.map(({ left, top, fill, stroke, strokeWidth, radius }, i) =>
+                top == null || left == null ? null : (
+                  <animated.circle
+                    key={i}
+                    cx={left + radius + strokeWidth}
+                    cy={top + radius + strokeWidth}
+                    r={radius}
+                    fill={fill}
+                    stroke={stroke}
+                    strokeWidth={strokeWidth}
+                    paintOrder="fill"
+                    style={{ ...springStyles }}
+                    // {...glyphStyle}
+                  />
+                )
+              )}
+              <Portal node={document && document.getElementById('portal-tooltip')}>
+                <animated.div
+                  ref={setPopperElement}
+                  style={{ ...springStyles, ...popperStyles.popper }}
+                  className={`text-slate-900 bg-slate-100 pointer-events-none px-2 py-1 shadow-md max-w-[280px] text-sm leading-none rounded-sm`}
+                  {...attributes.popper}
+                  aria-hidden
+                >
+                  {renderTooltip({ ...tooltipContext, colorScale })}
+                </animated.div>
+              </Portal>
+            </>
           )
       )}
     </>

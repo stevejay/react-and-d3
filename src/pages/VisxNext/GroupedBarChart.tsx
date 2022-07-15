@@ -202,6 +202,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}
         showSeriesGlyphs={false}
+        showDatumGlyph
         renderTooltip={({ tooltipData }) => {
           const datum = tooltipData?.nearestDatum;
           if (!datum) {

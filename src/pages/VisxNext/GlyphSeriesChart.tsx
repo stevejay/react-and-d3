@@ -6,9 +6,9 @@ import { Margin } from '@/types';
 import { SvgXYChartAxis } from '@/visx-next/Axis';
 import { CircleGlyph } from '@/visx-next/glyphs/CircleGlyph';
 import { XYChartGlyphSeries } from '@/visx-next/GlyphSeries';
+import { PopperTooltip } from '@/visx-next/PopperTooltip';
 import { XYChartRowGrid } from '@/visx-next/RowGrid';
 import { SvgXYChart } from '@/visx-next/SvgXYChart';
-import Tooltip from '@/visx-next/Tooltip';
 
 export interface Datum {
   a: number;
@@ -164,11 +164,12 @@ export function GlyphSeriesChart({ data, margin }: GlyphSeriesChartProps) {
         // hideTicks
         // tickLength={0}
       />
-      <Tooltip<Datum>
+      <PopperTooltip<Datum>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY //={false}
         showVerticalCrosshair //={false}
-        showSeriesGlyphs
+        // showSeriesGlyphs
+        showDatumGlyph
         renderTooltip={({ tooltipData }) => {
           const datum = tooltipData?.nearestDatum;
           if (!datum) {
