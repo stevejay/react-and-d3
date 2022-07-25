@@ -1,8 +1,10 @@
-import { CSSProperties, ReactNode, SVGProps, useCallback, useContext, useEffect, useRef } from 'react';
+import { CSSProperties, ReactNode, SVGProps, useCallback, useContext, useRef } from 'react';
 import { PickD3Scale } from '@visx/scale';
 import { defaultStyles, useTooltipInPortal } from '@visx/tooltip';
 import { UseTooltipPortalOptions } from '@visx/tooltip/lib/hooks/useTooltipInPortal';
 import { TooltipProps as BaseTooltipProps } from '@visx/tooltip/lib/tooltips/Tooltip';
+
+import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { isValidNumber } from './types/typeguards/isValidNumber';
 import { DataContext } from './DataContext';
@@ -128,7 +130,7 @@ export default function Tooltip<Datum extends object>({
   // therefore we force refresh the bounds any time we transition from a hidden tooltip to
   // one that is visible.
   const lastShowTooltip = useRef(false);
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (showTooltip && !lastShowTooltip.current) {
       forceRefreshBounds();
     }

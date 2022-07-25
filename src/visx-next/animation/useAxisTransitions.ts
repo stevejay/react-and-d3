@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { SpringConfig, useTransition } from 'react-spring';
 import { isNil } from 'lodash-es';
+
+import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { createTickPositioning } from '../positioning';
 import { isBandScale, ScaleInput } from '../scale';
@@ -20,7 +22,7 @@ export function useAxisTransitions<Scale extends GridScale>(
   const position = createTickPositioning(scale, offset);
 
   const previousPositionRef = useRef<typeof position | null>(null);
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     previousPositionRef.current = position;
   });
 

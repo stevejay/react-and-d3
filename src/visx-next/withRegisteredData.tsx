@@ -1,5 +1,7 @@
-import { ComponentType, useContext, useLayoutEffect } from 'react';
+import { ComponentType, useContext } from 'react';
 import { AxisScale } from '@visx/axis';
+
+import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { DataContext } from './DataContext';
 import { DataContextType, SeriesProps } from './types';
@@ -39,7 +41,7 @@ export function withRegisteredData<
       DataContext
     ) as unknown as DataContextType<XScale, YScale, Datum, Datum>;
 
-    useLayoutEffect(() => {
+    useIsomorphicLayoutEffect(() => {
       if (dataRegistry) {
         dataRegistry.registerData({ key: dataKey, data, keyAccessor, xAccessor, yAccessor, colorAccessor });
         return () => dataRegistry.unregisterData(dataKey);

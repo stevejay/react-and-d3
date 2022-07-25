@@ -1,8 +1,10 @@
-import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
+import { ReactElement, useContext, useMemo, useState } from 'react';
 import { AxisScale } from '@visx/axis';
 import { StackPathConfig } from '@visx/shape';
 import { extent } from 'd3-array';
 import { Series, SeriesPoint, stack as d3stack } from 'd3-shape';
+
+import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { getChildrenAndGrandchildrenWithProps } from './types/typeguards/isChildWithProps';
 import { BarSeriesProps } from './BarSeries';
@@ -103,7 +105,7 @@ export function useStackedData<
   // );
 
   // register all child data using the stack-transformed values
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const dataKeys = barSeriesChildren.map((child) => child.props.dataKey).filter((key) => key);
 
     const combinedData = combineBarStackData<XScale, YScale, Datum>(barSeriesChildren, horizontal);

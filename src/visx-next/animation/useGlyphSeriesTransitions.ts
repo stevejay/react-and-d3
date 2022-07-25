@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { SpringConfig, useTransition } from 'react-spring';
 import { isNil } from 'lodash-es';
+
+import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { createGlyphSeriesPositioning } from '../positioning';
 import { isBandScale, ScaleInput } from '../scale';
@@ -34,7 +36,7 @@ export function useGlyphSeriesTransitions<
   );
 
   const previousPositionRef = useRef<typeof position | null>(null);
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     previousPositionRef.current = position;
   });
 

@@ -1,4 +1,6 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useRef } from 'react';
+
+import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { EventEmitterContext, EventType, HandlerParams } from './EventEmitterProvider';
 
@@ -22,11 +24,11 @@ export function useEventEmitterSubscription(
   // TODO This ref is being set when rendering.
   // allowedSourcesRef.current = allowedSources; // use ref so allowedSources[] can change without creating new handlers
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     allowedSourcesRef.current = allowedSources;
   });
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (emitter && eventType && handler) {
       // register handler, with source filtering as needed
       const handlerWithSourceFilter: Handler = (params?: HandlerParams) => {

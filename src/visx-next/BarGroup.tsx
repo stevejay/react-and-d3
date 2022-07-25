@@ -5,7 +5,6 @@ import {
   SVGProps,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState
 } from 'react';
@@ -13,6 +12,8 @@ import { animated, SpringConfig } from 'react-spring';
 import { scaleBand, ScaleInput } from '@visx/scale';
 import { ScaleBand, ScaleOrdinal } from 'd3-scale';
 import { isEmpty, isEqual } from 'lodash-es';
+
+import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { getChildrenAndGrandchildrenWithProps } from './types/typeguards/isChildWithProps';
 import { useBarGroupTransitions, useSeriesTransitions } from './animation';
@@ -286,7 +287,7 @@ export function XYChartBarGroup<
     [children]
   );
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const dataKeys = barSeriesChildren.map((child) => child.props.dataKey).filter((key) => key);
     setGroupKeys((prev) => (isEqual(prev, dataKeys) ? prev : dataKeys));
     const dataToRegister = barSeriesChildren.map((child) => {

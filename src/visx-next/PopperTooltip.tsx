@@ -4,7 +4,6 @@ import {
   SVGProps,
   useCallback,
   useContext,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState
@@ -145,7 +144,7 @@ PopperTooltipProps<Datum>) {
     referenceElement.current = ownRef ? ownRef.parentElement : null;
   }, []);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     updateRef.current?.();
   }, [showTooltip, tooltipLeft, tooltipTop]);
 

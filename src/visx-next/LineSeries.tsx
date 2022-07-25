@@ -1,9 +1,11 @@
-import { memo, SVGProps, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { memo, SVGProps, useCallback, useContext, useRef, useState } from 'react';
 import { animated, Spring, SpringConfig } from 'react-spring';
 import { AxisScale } from '@visx/axis';
 import { Group } from '@visx/group';
 import { CurveFactory, CurveFactoryLineOnly } from 'd3-shape';
 import { isNil } from 'lodash-es';
+
+import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { useLineSeriesTransitions } from './animation';
 import { DataContext } from './DataContext';
@@ -109,7 +111,7 @@ function AnimatedPath({
   const pathRef = useRef<SVGPathElement>(null);
   const [offset, setOffset] = useState<number | null>(null);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setOffset(pathRef.current?.getTotalLength() ?? 0);
   }, [offset]);
 

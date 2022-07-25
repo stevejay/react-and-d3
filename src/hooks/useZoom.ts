@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import {
   createUseGesture,
   dragAction,
@@ -11,6 +11,8 @@ import { zoomIdentity, ZoomTransform } from 'd3-zoom';
 import { throttle } from 'lodash-es';
 
 import { Point } from '@/types';
+
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 const useGesture = createUseGesture([dragAction, pinchAction, wheelAction]);
 const scaleThrottleMs = 100;
@@ -41,7 +43,7 @@ export function useZoom<ElementT extends SVGElement>(): ReturnType<ElementT> {
 
   // The transform via a ref so that the gesture callbacks can remain stable.
   const transformRef = useRef(transform);
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     transformRef.current = transform;
   });
 

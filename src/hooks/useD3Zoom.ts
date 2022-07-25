@@ -1,8 +1,10 @@
-import { RefObject, useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { RefObject, useCallback, useRef, useState } from 'react';
 import { select } from 'd3-selection';
 import { zoom, ZoomBehavior, zoomIdentity, ZoomTransform } from 'd3-zoom';
 
 import { Point } from '@/types';
+
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 const defaultTranslateExtent = [
   [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
@@ -32,7 +34,7 @@ export function useD3Zoom<ElementT extends SVGElement>(
 
   // One-time initialisation of the zoom component.
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const refElement = interactionRef.current;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onZoom = (event: any) => setTransform(event.transform);
@@ -53,7 +55,7 @@ export function useD3Zoom<ElementT extends SVGElement>(
   const [scaleExtent0, scaleExtent1] = scaleExtent ?? defaultScaleExtent;
   const [[translate00, translate01], [translate10, translate11]] = translateExtent ?? defaultTranslateExtent;
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     zoomRef.current?.extent([
       [extent00, extent01],
       [extent10, extent11]

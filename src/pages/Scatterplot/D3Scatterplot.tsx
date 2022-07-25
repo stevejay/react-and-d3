@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useLayoutEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { max, min } from 'd3-array';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { Delaunay } from 'd3-delaunay';
@@ -8,6 +8,7 @@ import { zoom, zoomIdentity } from 'd3-zoom';
 import { noop, uniqueId } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';
+import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 import { useFollowOnHoverTooltip } from '@/tooltip';
 import { Margin, PointDatum, Rect } from '@/types';
 
@@ -287,7 +288,7 @@ export function D3Scatterplot<DatumT>({
 
   const [renderer] = useState<D3ScatterplotRenderer<DatumT>>(() => new D3ScatterplotRenderer());
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     renderer.width = width;
     renderer.height = height;
     renderer.margins = margins;

@@ -1,7 +1,9 @@
-import { PointerEvent, ReactNode, SVGProps, useContext, useEffect } from 'react';
+import { PointerEvent, ReactNode, SVGProps, useContext } from 'react';
 import { SpringConfig } from 'react-spring';
 import { AxisScaleOutput } from '@visx/axis';
 import { isNil } from 'lodash-es';
+
+import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { DataContext } from './DataContext';
 import { DataContextProvider, DataContextProviderProps } from './DataContextProvider';
@@ -107,7 +109,7 @@ export function SvgXYChart<
   const { setDimensions } = useContext(DataContext);
   const emitter = useContext(EventEmitterContext);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (setDimensions && width && width > 0 && height && height > 0) {
       setDimensions({ width, height, margin });
     }
