@@ -26,7 +26,7 @@ export interface ParentSizeProps {
 /**
  * Allows the rendered chart to be sized to the available space in this component's parent element.
  */
-export function ParentSize({ className = '', debouncedMeasureWaitMs = 300, children }: ParentSizeProps) {
+export function ParentSize({ className = '', debouncedMeasureWaitMs = 0, children }: ParentSizeProps) {
   const [measureRef, dimensions] = useMeasure({ debounce: debouncedMeasureWaitMs });
   return (
     <div ref={measureRef} style={{ width: '100%', height: '100%' }} className={className}>

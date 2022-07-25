@@ -208,7 +208,7 @@ function SvgAxis<Scale extends AxisScale>({
   hideZero = false,
   left = 0,
   top = 0,
-  tickCount = 10,
+  tickCount,
   orientation = 'bottom',
   scale,
   tickFormat,

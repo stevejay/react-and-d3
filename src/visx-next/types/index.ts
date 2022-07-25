@@ -10,6 +10,7 @@ import { STACK_ORDERS } from '../stackOrder';
 import type { UseTooltipParams } from '../useTooltip';
 
 export type { AxisScale } from '@visx/axis';
+export type { ScaleInput } from '@visx/scale';
 
 export interface Margin {
   top: number;
@@ -264,7 +265,7 @@ export type BarsProps<XScale extends AxisScale, YScale extends AxisScale> = {
 
 export type Orientation = 'top' | 'bottom' | 'left' | 'right';
 
-type OwnProps = {
+type OwnTextProps = {
   /** className to apply to the SVGText element. */
   className?: string;
   /** Whether to scale the fontSize to accommodate the specified width.  */
@@ -307,9 +308,10 @@ type OwnProps = {
 
 type SVGTSpanProps = SVGAttributes<SVGTSpanElement>;
 type SVGTextProps = SVGAttributes<SVGTextElement>;
-type LineProps = Omit<SVGProps<SVGLineElement>, 'to' | 'from' | 'ref'>;
+export type LineProps = Omit<SVGProps<SVGLineElement>, 'to' | 'from' | 'ref'>;
+export type RectProps = Omit<SVGProps<SVGRectElement>, 'ref'>;
 
-export type TextProps = OwnProps & Omit<SVGTextProps, keyof OwnProps>;
+export type TextProps = OwnTextProps & Omit<SVGTextProps, keyof OwnTextProps>;
 
 export type FormattedValue = string | undefined;
 

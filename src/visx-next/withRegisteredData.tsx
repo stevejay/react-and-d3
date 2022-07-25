@@ -1,4 +1,4 @@
-import { ComponentType, useContext, useEffect } from 'react';
+import { ComponentType, useContext, useLayoutEffect } from 'react';
 import { AxisScale } from '@visx/axis';
 
 import { DataContext } from './DataContext';
@@ -39,7 +39,7 @@ export function withRegisteredData<
       DataContext
     ) as unknown as DataContextType<XScale, YScale, Datum, Datum>;
 
-    useEffect(() => {
+    useLayoutEffect(() => {
       if (dataRegistry) {
         dataRegistry.registerData({ key: dataKey, data, keyAccessor, xAccessor, yAccessor, colorAccessor });
         return () => dataRegistry.unregisterData(dataKey);

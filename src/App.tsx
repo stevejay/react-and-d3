@@ -12,6 +12,8 @@ import { AnnouncerProvider } from '@/contexts/Announcer';
 
 import 'focus-visible'; // A :focus-visible polyfill, for Safari.
 
+import { useLagRadar } from './hooks/useLagRadar';
+
 import './index.css';
 
 const HomePage = lazy(() => import('@/pages/Home'));
@@ -25,6 +27,8 @@ const RadarChartPage = lazy(() => import('@/pages/RadarChart'));
 const ScatterplotPage = lazy(() => import('@/pages/Scatterplot'));
 const SparklinePage = lazy(() => import('@/pages/Sparkline'));
 const VisxPage = lazy(() => import('@/pages/Visx'));
+const VisxConfigPage = lazy(() => import('@/pages/VisxConfig'));
+const VisxHybridPage = lazy(() => import('@/pages/VisxHybrid'));
 const VisxNextPage = lazy(() => import('@/pages/VisxNext'));
 const StateOfJSPage = lazy(() => import('@/pages/StateOfJS'));
 
@@ -40,6 +44,8 @@ const pageLinks = [
   { href: '/scatterplot', title: 'Scatterplot', pageComponent: ScatterplotPage },
   { href: '/sparkline', title: 'Sparkline', pageComponent: SparklinePage },
   { href: '/visx', title: 'Visx by Airbnb', pageComponent: VisxPage },
+  { href: '/visx-config', title: 'Visx Config', pageComponent: VisxConfigPage },
+  { href: '/visx-hybrid', title: 'Visx Hybrid', pageComponent: VisxHybridPage },
   { href: '/visx-next', title: 'Visx Next', pageComponent: VisxNextPage },
   { href: '/state-of-js', title: 'State of JS', pageComponent: StateOfJSPage }
 ];
@@ -61,6 +67,7 @@ const navigationData = [
 const queryClient = new QueryClient();
 
 export function App() {
+  useLagRadar();
   return (
     <BrowserRouter>
       <ErrorBoundary>

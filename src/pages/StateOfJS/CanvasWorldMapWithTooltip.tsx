@@ -2,6 +2,7 @@ import type { Options as PopperOptions } from '@popperjs/core';
 import { ScaleQuantize } from 'd3-scale';
 
 import { EntityBucket } from '@/api/stateofjs/generated';
+import { InView } from '@/components/InView';
 import { ParentSize } from '@/visx-next/ParentSize';
 
 import { CanvasWorldMap, FeatureWithDatum } from './CanvasWorldMap';
@@ -33,29 +34,31 @@ export function CanvasWorldMapWithTooltip({
 }: CanvasWorldMapWithTooltipProps) {
   const tooltip = useVirtualElementTooltip<FeatureWithDatum>(popperOptions);
   return (
-    <>
+    <div>
       <div
-        className={`relative w-full aspect-[12/9] bg-slate-700 overflow-hidden ${className}`}
+        className={`relative w-full aspect-[12/9] overflow-hidden ${className}`}
         ref={tooltip.referenceElement}
       >
-        <ParentSize>
-          {(dimensions) => (
-            <CanvasWorldMap
-              width={dimensions.width}
-              height={dimensions.height}
-              data={data}
-              colorScale={colorScale}
-              statistic={statistic}
-              showTooltip={tooltip.show}
-              hideTooltip={tooltip.hide}
-            />
-          )}
-        </ParentSize>
+        <InView>
+          <ParentSize>
+            {(dimensions) => (
+              <CanvasWorldMap
+                width={dimensions.width}
+                height={dimensions.height}
+                data={data}
+                colorScale={colorScale}
+                statistic={statistic}
+                showTooltip={tooltip.show}
+                hideTooltip={tooltip.hide}
+              />
+            )}
+          </ParentSize>
+        </InView>
       </div>
       <Tooltip tooltip={tooltip}>
         {tooltip.datum?.properties?.name}:{' '}
         {formatStatistic(tooltip.datum?.datum?.[statistic] ?? 0, statistic)}
       </Tooltip>
-    </>
+    </div>
   );
 }

@@ -16,8 +16,8 @@ import { PickD3Scale } from '@visx/scale';
 import { TooltipProps as BaseTooltipProps } from '@visx/tooltip/lib/tooltips/Tooltip';
 import { easeCubicInOut } from 'd3-ease';
 
+import { Portal } from '@/components/Portal';
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
-import { Portal } from '@/pages/StateOfJS/Portal';
 
 import { isValidNumber } from './types/typeguards/isValidNumber';
 import { DataContext } from './DataContext';
@@ -55,7 +55,7 @@ export type PopperTooltipProps<Datum extends object> = {
   /** Whether to show a glyph at the tooltip position for the (single) nearest Datum. */
   showDatumGlyph?: boolean;
   /** Whether to show a glyph for the nearest Datum in each series. */
-  showSeriesGlyphs?: boolean;
+  // showSeriesGlyphs?: boolean;
   /** Optional styles for the vertical crosshair, if visible. */
   verticalCrosshairStyle?: SVGProps<SVGLineElement>;
   /** Optional styles for the vertical crosshair, if visible. */
@@ -139,147 +139,15 @@ PopperTooltipProps<Datum>) {
     updateRef.current = update;
   }, [update]);
 
-  // const tooltip = useVirtualElementTooltip<Datum>(popperOptions);
-
-  // const { containerRef, TooltipInPortal, forceRefreshBounds } = useTooltipInPortal({
-  //   debounce,
-  //   detectBounds,
-  //   polyfill: resizeObserverPolyfill,
-  //   scroll
-  // });
-
   // To correctly position itself in a Portal, the tooltip must know its container bounds
   // this is done by rendering an invisible node whose ref can be used to find its parentElement
   const setContainerRef = useCallback((ownRef: HTMLElement | SVGElement | null) => {
     referenceElement.current = ownRef ? ownRef.parentElement : null;
-    // containerRef(ownRef?.parentElement ?? null);
   }, []);
 
   useLayoutEffect(() => {
     updateRef.current?.();
   }, [showTooltip, tooltipLeft, tooltipTop]);
-
-  // console.log('tooltip', tooltipLeft, nearestDatum?.snapLeft);
-
-  // const tooltipContent = tooltipContext?.tooltipOpen
-  //   ? renderTooltip({ ...tooltipContext, colorScale })
-  //   : null;
-
-  // const showTooltip = tooltipContext?.tooltipOpen && tooltipContent != null;
-
-  // useTooltipInPortal is powered by react-use-measure and will update portal positions upon
-  // resize and page scroll. however it **cannot** detect when a chart container moves on a
-  // page due to animation or drag-and-drop, etc.
-  // therefore we force refresh the bounds any time we transition from a hidden tooltip to
-  // one that is visible.
-  // const lastShowTooltip = useRef(false);
-  // useEffect(() => {
-  //   if (showTooltip && !lastShowTooltip.current) {
-  //     forceRefreshBounds();
-  //   }
-  //   lastShowTooltip.current = showTooltip;
-  // }, [showTooltip, forceRefreshBounds]);
-
-  // let tooltipLeft = tooltipContext?.tooltipLeft;
-  // let tooltipTop = tooltipContext?.tooltipTop;
-
-  // const xScaleBandwidth = xScale ? getScaleBandwidth(xScale) : 0;
-  // const yScaleBandwidth = yScale ? getScaleBandwidth(yScale) : 0;
-
-  // const getDatumLeftTop = useCallback(
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   (key: string, datum: Datum, tooltipDatum: any) => {
-  //     // console.log('tooltipDatum', tooltipDatum);
-  //     const entry = dataRegistry?.get(key);
-  //     const xAccessor = entry?.xAccessor;
-  //     const yAccessor = entry?.yAccessor;
-
-  //     // console.log('datum', datum, xScale && xAccessor && xAccessor(datum));
-
-  //     const left =
-  //       xScale && xAccessor
-  //         ? Number(xScale(xAccessor(tooltipDatum?.stackDatum || datum))) + xScaleBandwidth / 2 ?? 0
-  //         : undefined;
-
-  //     const top =
-  //       yScale && yAccessor
-  //         ? Number(yScale(yAccessor(tooltipDatum?.stackDatum || datum))) + yScaleBandwidth / 2 ?? 0
-  //         : undefined;
-
-  //     // console.log('>>', left, tooltipDatum?.snapLeft, top, tooltipDatum?.snapTop);
-
-  //     return { left, top };
-  //   },
-  //   [dataRegistry, xScaleBandwidth, yScaleBandwidth, xScale, yScale]
-  // );
-
-  // console.log('data', showTooltip, nearestDatum, snapTooltipToDatumX || snapTooltipToDatumY);
-
-  // snap x- or y-coord to the actual data point (not event coordinates)
-  // if (showTooltip && nearestDatum && (snapTooltipToDatumX || snapTooltipToDatumY)) {
-  //   // TODO snapLeft and snapTopare always defined.
-  //   // if (!isNil(nearestDatum.snapLeft) && !isNil(nearestDatum.snapTop)) {
-
-  //   tooltipLeft =
-  //     snapTooltipToDatumX && isValidNumber(nearestDatum.snapLeft) ? nearestDatum.snapLeft : tooltipLeft;
-  //   tooltipTop =
-  //     snapTooltipToDatumY && isValidNumber(nearestDatum.snapTop) ? nearestDatum.snapTop : tooltipTop;
-
-  //   // } else {
-  //   //   const { left, top } = getDatumLeftTop(nearestDatumKey, nearestDatum.datum, nearestDatum);
-  //   //   // console.log('left/top', left, top);
-  //   //   tooltipLeft = snapTooltipToDatumX && isValidNumber(left) ? left : tooltipLeft;
-  //   //   tooltipTop = snapTooltipToDatumY && isValidNumber(top) ? top : tooltipTop;
-  //   // }
-  // }
-
-  // collect positions + styles for glyphs; glyphs always snap to Datum, not event coords
-  // const glyphProps: GlyphProps[] = [];
-
-  // if (showTooltip && (showDatumGlyph || showSeriesGlyphs)) {
-  //   const radius = Number(glyphStyle?.radius ?? 4);
-  //   const strokeWidth = Number(glyphStyle?.strokeWidth ?? 1.5);
-
-  //   if (showSeriesGlyphs) {
-  //     Object.values(tooltipContext?.tooltipData?.datumByKey ?? {}).forEach((tooltipDatum) => {
-  //       const color = colorScale?.(tooltipDatum.key) ?? theme?.htmlLabel?.color ?? '#222';
-  //       // const { left, top } = getDatumLeftTop(tooltipDatum.key, tooltipDatum.datum, tooltipDatum);
-
-  //       const { snapLeft: left, snapTop: top } = tooltipDatum;
-
-  //       // don't show glyphs if coords are unavailable
-  //       if (!isValidNumber(left) || !isValidNumber(top)) return;
-
-  //       glyphProps.push({
-  //         left: left - radius - strokeWidth,
-  //         top: top - radius - strokeWidth,
-  //         fill: color,
-  //         stroke: theme?.backgroundColor,
-  //         strokeWidth,
-  //         radius
-  //       });
-  //     });
-  //   } else if (nearestDatum) {
-  //     // const { left, top } = getDatumLeftTop(nearestDatumKey, nearestDatum.datum, nearestDatum);
-  //     const { snapLeft: left, snapTop: top } = nearestDatum;
-
-  //     // don't show glyphs if coords are unavailable
-  //     if (isValidNumber(left) && isValidNumber(top)) {
-  //       glyphProps.push({
-  //         left: left - radius - strokeWidth,
-  //         top: top - radius - strokeWidth,
-  //         fill:
-  //           (nearestDatumKey && colorScale?.(nearestDatumKey)) ??
-  //           null ??
-  //           theme?.gridStyles?.stroke ??
-  //           theme?.htmlLabel?.color ??
-  //           '#222',
-  //         radius,
-  //         strokeWidth
-  //       });
-  //     }
-  //   }
-  // }
 
   // collect positions + styles for glyphs; glyphs always snap to Datum, not event coords
   const glyphProps: GlyphProps[] = [];
@@ -325,7 +193,7 @@ PopperTooltipProps<Datum>) {
                   y1={margin?.top ?? 0}
                   y2={(margin?.top ?? 0) + (innerHeight ?? 0)}
                   strokeWidth={1.5}
-                  stroke="red"
+                  stroke="#aaa"
                   style={{ ...springStyles }}
                   // {...verticalCrosshairStyle}
                 />
@@ -337,7 +205,7 @@ PopperTooltipProps<Datum>) {
                   y1={tooltipTop}
                   y2={tooltipTop}
                   strokeWidth={1.5}
-                  stroke="red"
+                  stroke="#aaa"
                   style={{ ...springStyles }}
                 />
               )}

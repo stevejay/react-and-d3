@@ -1,7 +1,7 @@
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
+import { InView } from '@/components/InView';
 import { useDataSets } from '@/hooks/useDataSets';
 import { Margin } from '@/types';
-import { InView } from '@/visx-next/InView';
 
 import { Sparkline } from './Sparkline';
 

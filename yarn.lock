@@ -3444,6 +3444,59 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-hook/debounce@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@react-hook/debounce@npm:3.0.0"
+  dependencies:
+    "@react-hook/latest": ^1.0.2
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 3e4aad1daa3b6194c8bb41e6dbcf9f089a0af8480025152a72bd563558e5eee483a5080ccedcd21c2a1f9822f4e8010ab8113642e9dd8c015b3e0081f84aa23d
+  languageName: node
+  linkType: hard
+
+"@react-hook/event@npm:^1.2.1":
+  version: 1.2.6
+  resolution: "@react-hook/event@npm:1.2.6"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 993855566ca081858347ad5e3ef10dec5026eb84ae199a4d860cd86ebd06d56f1cc8778cc7d8f5aaa0733f3901f690d3d6c78275b45119c0a12dbf0f3265dc7f
+  languageName: node
+  linkType: hard
+
+"@react-hook/latest@npm:^1.0.2":
+  version: 1.0.3
+  resolution: "@react-hook/latest@npm:1.0.3"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 2408c9cd35c5cfa7697b6da3bc5eebef254a932ade70955074c474f23be7dd3e2f81bbba12edcc9208bd0f89c6ed366d6b11d4f6d7b1052877a0bac8f74afad4
+  languageName: node
+  linkType: hard
+
+"@react-hook/throttle@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@react-hook/throttle@npm:2.2.0"
+  dependencies:
+    "@react-hook/latest": ^1.0.2
+  peerDependencies:
+    react: ">=16.8"
+  checksum: fb763dc559602d1ba0b5c601ccfb5f1d872454727c8e827079e41819467d906b6524dbc43c7f78b6818249a31bd96c726b7ed12e68214e0cc5a00b15e939ccca
+  languageName: node
+  linkType: hard
+
+"@react-hook/window-size@npm:^3.0.7":
+  version: 3.0.7
+  resolution: "@react-hook/window-size@npm:3.0.7"
+  dependencies:
+    "@react-hook/debounce": ^3.0.0
+    "@react-hook/event": ^1.2.1
+    "@react-hook/throttle": ^2.2.0
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 11f3b0a38631ab114b45ab77eff1df124d240acc7dc63e5a020479957ed676ecc76ef330c12bcb9f469a7c1169c4df297b639f1ad2e002914f3aa59f74c3ba99
+  languageName: node
+  linkType: hard
+
 "@react-spring/animated@npm:~9.4.5":
   version: 9.4.5
   resolution: "@react-spring/animated@npm:9.4.5"
@@ -5624,6 +5677,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/langmap@npm:^0":
+  version: 0.0.1
+  resolution: "@types/langmap@npm:0.0.1"
+  checksum: 3627ee14144b4547f13d2723b0e0aecd67ed1d88b869c451bd8021f12431f0b12cf72ce4694bff8c6fae9ba63db8d6fe6bdbece2b3b28daa4de057c9ec85ef34
+  languageName: node
+  linkType: hard
+
 "@types/lodash-es@npm:^4.17.6":
   version: 4.17.6
   resolution: "@types/lodash-es@npm:4.17.6"
@@ -5811,6 +5871,15 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: d7b3f870a9c2c0f6f9c27e3fedd4cb495bd377312d856ee846475152e8a817b032e47f8d349ec2a51a95be5c674a288288173ef658e469369d6fec1f77159cbb
+  languageName: node
+  linkType: hard
+
+"@types/react-resizable@npm:^3":
+  version: 3.0.2
+  resolution: "@types/react-resizable@npm:3.0.2"
+  dependencies:
+    "@types/react": "*"
+  checksum: 55d5a90f376cdacb00cb98e95f5ff8ebd8f05e8a033adfba059b2b6a22f29d52d2adc7a22dface005e267e41ad901eaa682e63c7efb8544f5ffc4a2b9e9ed9bb
   languageName: node
   linkType: hard
 
@@ -9324,6 +9393,13 @@ __metadata:
   version: 1.0.4
   resolution: "clone@npm:1.0.4"
   checksum: d06418b7335897209e77bdd430d04f882189582e67bd1f75a04565f3f07f5b3f119a9d670c943b6697d0afb100f03b866b3b8a1f91d4d02d72c4ecf2bb64b5dd
+  languageName: node
+  linkType: hard
+
+"clsx@npm:^1.1.1":
+  version: 1.2.1
+  resolution: "clsx@npm:1.2.1"
+  checksum: 30befca8019b2eb7dbad38cff6266cf543091dae2825c856a62a8ccf2c3ab9c2907c4d12b288b73101196767f66812365400a227581484a05f968b0307cfaf12
   languageName: node
   linkType: hard
 
@@ -15525,6 +15601,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"langmap@npm:^0.0.16":
+  version: 0.0.16
+  resolution: "langmap@npm:0.0.16"
+  checksum: ea409e502ede3492f2161e79c59394e6642d34706fdcae7a5df2116eda2110aa53b94f11282fc354f3fe5832f9e8783572471b3e28dd05899b1efe442122b7cc
+  languageName: node
+  linkType: hard
+
 "language-subtag-registry@npm:~0.3.2":
   version: 0.3.21
   resolution: "language-subtag-registry@npm:0.3.21"
@@ -18521,7 +18604,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.0.0, prop-types@npm:^15.5.10, prop-types@npm:^15.5.7, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:15.x, prop-types@npm:^15.0.0, prop-types@npm:^15.5.10, prop-types@npm:^15.5.7, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -18779,6 +18862,7 @@ __metadata:
     "@honkhonk/vite-plugin-svgr": ^1.1.0
     "@playwright/test": ^1.22.2
     "@popperjs/core": ^2.11.5
+    "@react-hook/window-size": ^3.0.7
     "@react-three/fiber": ^8.0.24
     "@storybook/addon-actions": ^6.5.9
     "@storybook/addon-docs": ^6.5.9
@@ -18808,6 +18892,7 @@ __metadata:
     "@types/d3-zoom": ^3.0.1
     "@types/eslint": ^8.4.3
     "@types/jsdom": ^16.2.14
+    "@types/langmap": ^0
     "@types/lodash-es": ^4.17.6
     "@types/node-fetch": ^2.6.2
     "@types/prettier": ^2.6.3
@@ -18815,6 +18900,7 @@ __metadata:
     "@types/react-dom": ^18.0.6
     "@types/react-portal": ^4
     "@types/react-reconciler": ^0.28.0
+    "@types/react-resizable": ^3
     "@types/react-simple-maps": ^1.0.8
     "@types/testing-library__jest-dom": ^5
     "@types/three": 0.141.0
@@ -18865,6 +18951,7 @@ __metadata:
     husky: ^8.0.1
     identity-obj-proxy: ^3.0.0
     jsdom: ^19.0.0
+    langmap: ^0.0.16
     lint-staged: ^13.0.1
     lodash-es: ^4.17.21
     markdownlint: ^0.25.1
@@ -18883,6 +18970,7 @@ __metadata:
     react-popper: ^2.3.0
     react-portal: ^4.2.2
     react-query: ^3.39.1
+    react-resizable: ^3.0.4
     react-router-dom: 6.3.0
     react-simple-maps: ^2.3.0
     react-spring: ^9.4.5
@@ -18944,6 +19032,19 @@ __metadata:
   peerDependencies:
     react: ^18.2.0
   checksum: 7d323310bea3a91be2965f9468d552f201b1c27891e45ddc2d6b8f717680c95a75ae0bc1e3f5cf41472446a2589a75aed4483aee8169287909fcd59ad149e8cc
+  languageName: node
+  linkType: hard
+
+"react-draggable@npm:^4.0.3":
+  version: 4.4.5
+  resolution: "react-draggable@npm:4.4.5"
+  dependencies:
+    clsx: ^1.1.1
+    prop-types: ^15.8.1
+  peerDependencies:
+    react: ">= 16.3.0"
+    react-dom: ">= 16.3.0"
+  checksum: 21c3775db086e13020967627c20acd41d1ddbc7c7d7fca51491a5bbb54a0aa7e1730a4bc9af17141eb50a4954e547a5e25b2368f5f54b70db6f2686a897bacf2
   languageName: node
   linkType: hard
 
@@ -19107,6 +19208,18 @@ __metadata:
   version: 0.13.0
   resolution: "react-refresh@npm:0.13.0"
   checksum: 1cf2b87ed99e1d388aa3923078bc30cd3ce43ee86e8936944e961d3643c6e85da41ebed6a0996e8bdad75a0d2ce3b7e10638b45018231380d4a174f63a451f75
+  languageName: node
+  linkType: hard
+
+"react-resizable@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "react-resizable@npm:3.0.4"
+  dependencies:
+    prop-types: 15.x
+    react-draggable: ^4.0.3
+  peerDependencies:
+    react: ">= 16.3"
+  checksum: cbf86ad04be0f073102489ad25a2ba101779f0f00e580d48e1be73c4057c36a4e8ee8308b020ad3dd91555bb24082ceeef674d5035a38d33a2d43aed192db7fa
   languageName: node
   linkType: hard
 

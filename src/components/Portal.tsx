@@ -1,7 +1,7 @@
 import { Component, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
-import { canUseDOM } from './canUseDOM';
+import { canUseDOM } from '@/utils/canUseDOM';
 
 export class Portal extends Component<{
   children: ReactNode;

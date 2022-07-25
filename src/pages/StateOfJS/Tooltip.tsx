@@ -2,7 +2,8 @@ import { ReactNode } from 'react';
 import { animated, useTransition } from 'react-spring';
 import { easeCubicInOut } from 'd3-ease';
 
-import { Portal } from './Portal';
+import { Portal } from '@/components/Portal';
+
 import { TooltipState } from './useVirtualElementTooltip';
 
 export interface TooltipProps<Datum> {

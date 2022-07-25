@@ -2749,6 +2749,11 @@ export type CountryQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CountryQuery = { __typename?: 'Query', survey?: { __typename?: 'Survey', demographics?: { __typename?: 'Demographics', country?: { __typename?: 'Country', keys?: Array<CountryId | undefined> | undefined, year?: { __typename?: 'DemographicsItemYear', year?: number | undefined, completion?: { __typename?: 'YearCompletion', total?: number | undefined, percentage_survey?: number | undefined, count?: number | undefined } | undefined, facets?: Array<{ __typename?: 'EntityFacet', id?: string | undefined, type?: Facet | undefined, completion?: { __typename?: 'FacetCompletion', total?: number | undefined, percentage_question?: number | undefined, percentage_survey?: number | undefined, count?: number | undefined } | undefined, buckets?: Array<{ __typename?: 'EntityBucket', id?: string | undefined, count?: number | undefined, percentage_question?: number | undefined, percentage_survey?: number | undefined } | undefined> | undefined } | undefined> | undefined } | undefined } | undefined } | undefined } | undefined };
 
+export type LocaleQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LocaleQuery = { __typename?: 'Query', survey?: { __typename?: 'Survey', demographics?: { __typename?: 'Demographics', locale?: { __typename?: 'LocaleStats', keys?: Array<string | undefined> | undefined, year?: { __typename?: 'DemographicsItemYear', year?: number | undefined, completion?: { __typename?: 'YearCompletion', total?: number | undefined, percentage_survey?: number | undefined, count?: number | undefined } | undefined, facets?: Array<{ __typename?: 'EntityFacet', id?: string | undefined, type?: Facet | undefined, completion?: { __typename?: 'FacetCompletion', total?: number | undefined, percentage_question?: number | undefined, percentage_survey?: number | undefined, count?: number | undefined } | undefined, buckets?: Array<{ __typename?: 'EntityBucket', id?: string | undefined, count?: number | undefined, percentage_question?: number | undefined, percentage_survey?: number | undefined } | undefined> | undefined } | undefined> | undefined } | undefined } | undefined } | undefined } | undefined };
+
 
 export const CountryDocument = `
     query country {
@@ -2795,5 +2800,52 @@ export const useCountryQuery = <
     useQuery<CountryQuery, TError, TData>(
       variables === undefined ? ['country'] : ['country', variables],
       fetcher<CountryQuery, CountryQueryVariables>(CountryDocument, variables),
+      options
+    );
+export const LocaleDocument = `
+    query locale {
+  survey(survey: state_of_js) {
+    demographics {
+      locale: locale(filters: {}, options: {cutoff: 20}, facet: null) {
+        keys
+        year(year: 2021) {
+          year
+          completion {
+            total
+            percentage_survey
+            count
+          }
+          facets {
+            id
+            type
+            completion {
+              total
+              percentage_question
+              percentage_survey
+              count
+            }
+            buckets {
+              id
+              count
+              percentage_question
+              percentage_survey
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const useLocaleQuery = <
+      TData = LocaleQuery,
+      TError = unknown
+    >(
+      variables?: LocaleQueryVariables,
+      options?: UseQueryOptions<LocaleQuery, TError, TData>
+    ) =>
+    useQuery<LocaleQuery, TError, TData>(
+      variables === undefined ? ['locale'] : ['locale', variables],
+      fetcher<LocaleQuery, LocaleQueryVariables>(LocaleDocument, variables),
       options
     );

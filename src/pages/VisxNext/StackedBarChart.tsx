@@ -176,7 +176,6 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}
-        showSeriesGlyphs={false}
         renderTooltip={({ tooltipData }) => {
           const datum = tooltipData?.nearestDatum;
           if (!datum) {

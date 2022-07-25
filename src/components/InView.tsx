@@ -1,7 +1,9 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { IntersectionOptions, useInView } from 'react-intersection-observer';
 
-const defaultIntersectOptions = { triggerOnce: true, rootMargin: '200px 0px' };
+export type { IntersectionOptions } from 'react-intersection-observer';
+
+export const defaultIntersectOptions: IntersectionOptions = { triggerOnce: true, rootMargin: '200px 0px' };
 
 export interface InViewProps {
   /**

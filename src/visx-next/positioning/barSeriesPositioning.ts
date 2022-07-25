@@ -28,8 +28,8 @@ export function createBarSeriesPositioning<
 
   const barThickness = getScaleBandwidth(horizontal ? yScaleCopy : xScaleCopy);
 
-  const xOffset = horizontal ? 0 : -barThickness / 2;
-  const yOffset = horizontal ? -barThickness / 2 : 0;
+  const xOffset = horizontal ? 0 : -barThickness * 0.5;
+  const yOffset = horizontal ? -barThickness * 0.5 : 0;
 
   const xZeroPosition = xScaleCopy ? getScaleBaseline(xScaleCopy) : 0;
   const yZeroPosition = yScaleCopy ? getScaleBaseline(yScaleCopy) : 0;
@@ -50,11 +50,18 @@ export function createBarSeriesPositioning<
       return null;
     }
 
+    const x1 = horizontal ? xZeroPosition + Math.min(0, barLength) : x + renderingOffset;
+    const y1 = horizontal ? y + renderingOffset : yZeroPosition + Math.min(0, barLength);
+    const width = horizontal ? Math.abs(barLength) : barThickness;
+    const height = horizontal ? barThickness : Math.abs(barLength);
+
     return {
-      x: horizontal ? xZeroPosition + Math.min(0, barLength) : x + renderingOffset,
-      y: horizontal ? y + renderingOffset : yZeroPosition + Math.min(0, barLength),
-      width: horizontal ? Math.abs(barLength) : barThickness,
-      height: horizontal ? barThickness : Math.abs(barLength)
+      x: x1,
+      y: y1,
+      x2: x1 + width,
+      y2: y1 + height,
+      width,
+      height
     };
   };
 }
