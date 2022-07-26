@@ -1,19 +1,24 @@
 // TODO:
 // - two dependent axes?
 // - resizable chart (drag handle).
-import type { SVGProps } from 'react';
+import { SVGProps, useContext } from 'react';
 import { SpringConfig } from 'react-spring';
 import type { AxisScaleOutput } from '@visx/axis';
 import { ScaleConfig } from '@visx/scale';
 import { isNil } from 'lodash-es';
 
+import { XYCHART_EVENT_SOURCE } from '@/visx-next/eventSources';
 import { ParentSize } from '@/visx-next/ParentSize';
 import { Margin } from '@/visx-next/types';
 
 import { defaultSpringConfig } from './constants';
 import { createScaleFromScaleConfig } from './createScaleFromScaleConfig';
 import { DataContext } from './DataContext';
+import { EventEmitterContext, EventEmitterProvider } from './EventEmitterProvider';
 import { getDataEntriesFromChildren } from './getDataEntriesFromChildren';
+import { TooltipContext } from './TooltipContext';
+import { TooltipProvider } from './TooltipProvider';
+import { useEventEmitters } from './useEventEmitters';
 // import { SVGAxis } from './SVGAxis';
 // import { SVGGrid } from './SVGGrid';
 // import { SVGXYChartConfig } from './types';
@@ -57,6 +62,8 @@ type SVGXYChartProps<
   renderingOffset?: number;
   independentRangePadding?: number;
   dependentRangePadding?: number;
+  captureEvents?: boolean;
+  hideTooltipDebounceMs?: number;
 } & Omit<SVGProps<SVGSVGElement>, 'width' | 'height'>;
 
 export function SVGXYChart<
@@ -66,7 +73,17 @@ export function SVGXYChart<
   DependentScaleConfig extends ScaleConfig<AxisScaleOutput, any, any>
   // Datum extends object
 >(props: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig>) {
-  const { width, height, parentSizeDebounceMs = 300 } = props;
+  const { width, height, parentSizeDebounceMs = 300, hideTooltipDebounceMs = 400 } = props;
+  const emitter = useContext(EventEmitterContext);
+  const tooltipContext = useContext(TooltipContext);
+
+  if (isNil(tooltipContext)) {
+    return (
+      <TooltipProvider hideTooltipDebounceMs={hideTooltipDebounceMs}>
+        <SVGXYChart {...props} />
+      </TooltipProvider>
+    );
+  }
 
   if (isNil(width) || isNil(height)) {
     // If hardcoded dimensions are not available, wrap self in ParentSize.
@@ -74,6 +91,15 @@ export function SVGXYChart<
       <ParentSize debouncedMeasureWaitMs={parentSizeDebounceMs}>
         {(dimensions) => <SVGXYChart {...props} width={dimensions.width} height={dimensions.height} />}
       </ParentSize>
+    );
+  }
+
+  // EventEmitterProvider should be the last wrapper so we do not duplicate handlers
+  if (isNil(emitter)) {
+    return (
+      <EventEmitterProvider>
+        <SVGXYChart {...props} />
+      </EventEmitterProvider>
     );
   }
 
@@ -100,6 +126,7 @@ function InnerChart<
   renderingOffset = 0,
   independentRangePadding = 0,
   dependentRangePadding = 0,
+  captureEvents = true,
   children,
   ...svgProps
 }: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig> & {
@@ -129,6 +156,11 @@ function InnerChart<
     dependentRange
   );
 
+  // Returns event handlers to be applied to the <rect> that is for capturing events.
+  // Each handler just emits the event.
+  const eventEmitters = useEventEmitters({ source: XYCHART_EVENT_SOURCE });
+
+  // TODO this happens if the combined domain for an axis is empty.
   if (isNil(independentScale) || isNil(dependentScale)) {
     console.log('fastreturning in SVGXYChart');
     return null;
@@ -156,8 +188,7 @@ function InnerChart<
   return width && width > 0 && height && height > 0 ? (
     <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} {...svgProps}>
       <DataContext.Provider value={value}>{children}</DataContext.Provider>
-      {/* {children} */}
-      {/* {captureEvents && (
+      {captureEvents && (
         <rect
           x={margin.left}
           y={margin.top}
@@ -168,7 +199,7 @@ function InnerChart<
           aria-hidden
           {...eventEmitters}
         />
-      )} */}
+      )}
     </svg>
   ) : null;
 

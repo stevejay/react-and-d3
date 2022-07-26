@@ -63,3 +63,16 @@ export interface TickDatum {
   index: number;
   label: string;
 }
+
+/** Arguments for findNearestDatum* functions. */
+export type NearestDatumArgs<Datum extends object> = {
+  dataKey: string;
+  point: { x: number; y: number } | null;
+  independentAccessor: (d: Datum) => ScaleInput<AxisScale>;
+  dependentAccessor: (d: Datum) => ScaleInput<AxisScale>;
+  data: readonly Datum[];
+  width: number;
+  height: number;
+  independentScale: AxisScale;
+  dependentScale: AxisScale;
+};

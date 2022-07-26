@@ -2,12 +2,14 @@ import { ReactNode, SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
 import { Group } from '@visx/group';
 
+import { BARSERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from '@/visx-next/eventSources';
 // import { isNil } from 'lodash-es';
 import { ScaleInput } from '@/visx-next/scale';
 import { AxisScale } from '@/visx-next/types';
 
 import { InferDataContext } from './DataContext';
 import { useDataContext } from './useDataContext';
+import { useSeriesEvents } from './useSeriesEvents';
 
 // export interface SVGBarSeriesProps<
 //   IndependentScale extends PositionScale,
@@ -138,12 +140,27 @@ export function SVGBarSeries<ElementProps extends object, Datum extends object>(
   props: SVGBarSeriesProps<ElementProps, Datum>
 ) {
   const { renderer, groupProps, springConfig, animate, ...rendererProps } = props;
+  const dataKey = props.dataKey;
   const context = useDataContext();
   // if (isNil(context?.independentScale) || isNil(context?.dependentScale)) {
   //   return null;
   // }
+  const ownEventSourceKey = `${BARSERIES_EVENT_SOURCE}-${dataKey}`;
+  // const eventEmitters =
+  useSeriesEvents<AxisScale, AxisScale, Datum>({
+    dataKey,
+    enableEvents: true,
+    // onBlur,
+    // onFocus,
+    // onPointerMove,
+    // onPointerOut,
+    // onPointerUp,
+    source: ownEventSourceKey,
+    allowedSources: [XYCHART_EVENT_SOURCE]
+  });
+
   return (
-    <Group data-test-id={`bar-series-${props.dataKey}`} {...groupProps}>
+    <Group data-test-id={`bar-series-${dataKey}`} {...groupProps}>
       {renderer({
         context,
         springConfig: springConfig ?? context.springConfig,

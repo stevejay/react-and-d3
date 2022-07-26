@@ -11,6 +11,7 @@ import { EntityBucket, useLocaleQuery } from '@/api/stateofjs/generated';
 import { InView } from '@/components/InView';
 import { SectionHeading } from '@/components/SectionHeading';
 import { isDefined } from '@/types/typeguards/isDefined';
+import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGAxisRenderer } from '@/visx-hybrid/SVGAxisRenderer';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
@@ -61,14 +62,14 @@ function getDependentAxisTickFormatter(statistic: Statistic) {
   }
 }
 
-// function getTooltipFormatter(statistic: Statistic) {
-//   switch (statistic) {
-//     case 'count':
-//       return format(',');
-//     default:
-//       return format('~%');
-//   }
-// }
+function getTooltipFormatter(statistic: Statistic) {
+  switch (statistic) {
+    case 'count':
+      return format(',');
+    default:
+      return format('~%');
+  }
+}
 
 function independentAxisTickFormatter(category: string) {
   return langmap[category]?.['englishName'] ?? 'Unknown';
@@ -244,6 +245,25 @@ export function RespondentsByLanguage() {
                     fontSize: 12,
                     textAnchor: 'end',
                     angle: -45
+                  }}
+                />
+                <PopperTooltip<EntityBucket>
+                  snapTooltipToDatumY
+                  showHorizontalCrosshair
+                  showDatumGlyph={false}
+                  renderTooltip={({ tooltipData }) => {
+                    const datum = tooltipData?.nearestDatum;
+                    if (!datum) {
+                      return null;
+                    }
+                    return (
+                      <div>
+                        <span className="text-slate-600">
+                          {independentAxisTickFormatter(datum.datum?.id ?? '')}:{' '}
+                        </span>
+                        {getTooltipFormatter(statistic)(datum.datum?.[statistic] ?? 0)}
+                      </div>
+                    );
                   }}
                 />
               </SVGXYChart>

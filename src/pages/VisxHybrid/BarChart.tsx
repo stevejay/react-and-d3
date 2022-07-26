@@ -3,6 +3,7 @@ import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { CategoryValueDatum, Margin } from '@/types';
+import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGAxisRenderer } from '@/visx-hybrid/SVGAxisRenderer';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
@@ -174,6 +175,22 @@ export function BarChart({ data, margin }: BarChartProps) {
           fontSize: 14
         }}
         labelOffset={36} // Does not take tick labels into account.
+      />
+      <PopperTooltip<CategoryValueDatum<string, number>>
+        snapTooltipToDatumX
+        showVerticalCrosshair
+        showDatumGlyph={false}
+        renderTooltip={({ tooltipData }) => {
+          const datum = tooltipData?.nearestDatum;
+          if (!datum) {
+            return null;
+          }
+          return (
+            <div>
+              {datum.datum?.category}: {datum.datum?.value}
+            </div>
+          );
+        }}
       />
     </SVGXYChart>
   );

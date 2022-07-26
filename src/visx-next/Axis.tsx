@@ -218,8 +218,6 @@ function SvgAxis<Scale extends AxisScale>({
   // );
   const ticks = getTicksData(scale, hideZero, tickFormat, tickCount, tickValues);
 
-  console.log('ticks', ticks);
-
   return (
     <Group data-test-id={`axis-${orientation}`} {...axisGroupProps} top={top} left={left}>
       {children({

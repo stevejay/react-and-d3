@@ -181,8 +181,6 @@ export function SvgXYChart<
     );
   }
 
-  console.log('XY render');
-
   return width && width > 0 && height && height > 0 ? (
     <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} {...svgProps}>
       {children}
