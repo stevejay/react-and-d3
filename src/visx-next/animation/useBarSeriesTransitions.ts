@@ -37,7 +37,7 @@ export function useBarSeriesTransitions<
       update: (datum) => ({ opacity: 1, ...position(datum) }),
       leave: () => ({ opacity: 0 }),
       config: springConfig,
-      keys: keyAccessor, // ? keyAccessor : horizontal ? yAccessor : xAccessor,
+      keys: keyAccessor,
       immediate: !animate
     }
   );

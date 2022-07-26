@@ -162,17 +162,17 @@ export function RespondentsByLanguage() {
                 className="bg-slate-700"
               >
                 <SVGGrid
+                  renderer={SVGStripeRenderer}
+                  variableType="independent"
+                  className="text-slate-600"
+                  even={false}
+                />
+                <SVGGrid
                   renderer={SVGGridRenderer}
                   variableType="dependent"
                   className="text-slate-500"
                   strokeDasharray="1,3"
                   tickCount={5}
-                />
-                <SVGGrid
-                  renderer={SVGStripeRenderer}
-                  variableType="independent"
-                  className="text-slate-600"
-                  even={false}
                 />
                 <SVGBarSeries
                   renderer={SVGFancyBarSeriesRenderer<EntityBucket>}
@@ -187,6 +187,10 @@ export function RespondentsByLanguage() {
                     'aria-roledescription': '',
                     'aria-label': `Category ${independentAccessor(datum)}: ${dependentAccessor(datum)}`
                   })}
+                  lineProps={{
+                    stroke: 'white',
+                    strokeWidth: 2
+                  }}
                 />
                 <SVGAxis
                   renderer={SVGAxisRenderer}

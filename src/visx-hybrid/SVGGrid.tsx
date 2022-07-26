@@ -2,8 +2,8 @@ import { ReactNode, SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
 import { Group } from '@visx/group';
 import { ScaleInput } from '@visx/scale';
-import { isNil } from 'lodash-es';
 
+// import { isNil } from 'lodash-es';
 import { AxisScale } from '@/visx-next/types';
 
 import { InferDataContext } from './DataContext';
@@ -66,9 +66,9 @@ export function SVGGrid<ElementProps extends object>(props: SVGGridProps<Element
   //   animate
   // } = useDataContext();
 
-  if (isNil(context.independentScale || isNil(context.dependentScale))) {
-    return null;
-  }
+  // if (isNil(context.independentScale || isNil(context.dependentScale))) {
+  //   return null;
+  // }
 
   // const scale = variableType === 'independent' ? independentScale : dependentScale;
   // if (!scale) {
@@ -92,10 +92,9 @@ export function SVGGrid<ElementProps extends object>(props: SVGGridProps<Element
   // const top =
   //   variableType === 'independent' ? (horizontal ? 0 : margin?.top ?? 0) : horizontal ? margin?.top ?? 0 : 0;
 
-  if (isNil(context?.independentScale) || isNil(context?.dependentScale)) {
-    console.log('shortcircuit grid');
-    return null;
-  }
+  // if (isNil(context?.independentScale) || isNil(context?.dependentScale)) {
+  //   return null;
+  // }
 
   return (
     <Group data-test-id={`grid-${variableType}`} {...groupProps} left={left} top={top}>

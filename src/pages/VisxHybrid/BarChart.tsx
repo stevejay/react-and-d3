@@ -6,7 +6,7 @@ import { CategoryValueDatum, Margin } from '@/types';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGAxisRenderer } from '@/visx-hybrid/SVGAxisRenderer';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
-import { SVGBarSeriesRenderer } from '@/visx-hybrid/SVGBarSeriesRenderer';
+import { SVGFancyBarSeriesRenderer } from '@/visx-hybrid/SVGFancyBarSeriesRenderer';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGGridRenderer } from '@/visx-hybrid/SVGGridRenderer';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
@@ -27,7 +27,8 @@ const dependentScale: LinearScaleConfig<number> = {
   type: 'linear',
   nice: true,
   round: true,
-  clamp: true
+  clamp: true,
+  zero: true
 } as const;
 
 function independentAccessor(d: CategoryValueDatum<string, number>) {
@@ -61,11 +62,12 @@ export function BarChart({ data, margin }: BarChartProps) {
       aria-roledescription="Bar chart"
       aria-label="Some Important Results"
       dependentRangePadding={30}
+      // horizontal
     >
       <rect x="120" width="100" height="100" rx="15" fill="blue" style={{ transform: 'scale(-1,1)' }} />
       <SVGGrid className="text-red-600" tickCount={5} renderer={SVGGridRenderer} variableType="dependent" />
       <SVGBarSeries
-        renderer={SVGBarSeriesRenderer<CategoryValueDatum<string, number>>}
+        renderer={SVGFancyBarSeriesRenderer<CategoryValueDatum<string, number>>}
         dataKey="data-a"
         data={data}
         keyAccessor={keyAccessor}
@@ -78,6 +80,10 @@ export function BarChart({ data, margin }: BarChartProps) {
           'aria-roledescription': '',
           'aria-label': `Category ${independentAccessor(datum)}: ${dependentAccessor(datum)}`
         })}
+        lineProps={{
+          stroke: 'white',
+          strokeWidth: 2
+        }}
       />
       <SVGAxis
         renderer={SVGAxisRenderer}

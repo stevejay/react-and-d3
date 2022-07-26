@@ -1,8 +1,8 @@
 import { ReactNode, SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
 import { Group } from '@visx/group';
-import { isNil } from 'lodash-es';
 
+// import { isNil } from 'lodash-es';
 import { ScaleInput } from '@/visx-next/scale';
 import { AxisScale } from '@/visx-next/types';
 
@@ -139,10 +139,9 @@ export function SVGBarSeries<ElementProps extends object, Datum extends object>(
 ) {
   const { renderer, groupProps, springConfig, animate, ...rendererProps } = props;
   const context = useDataContext();
-  if (isNil(context?.independentScale || isNil(context?.dependentScale))) {
-    console.log('shortcircuit bar series');
-    return null;
-  }
+  // if (isNil(context?.independentScale) || isNil(context?.dependentScale)) {
+  //   return null;
+  // }
   return (
     <Group data-test-id={`bar-series-${props.dataKey}`} {...groupProps}>
       {renderer({

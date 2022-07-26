@@ -6,6 +6,9 @@ import { PositionScale } from '@/visx-next/types';
 import { BarSeriesRendererProps } from './SVGBarSeries';
 import { useBarSeriesTransitions } from './useBarSeriesTransitions';
 
+type PolygonProps = Omit<SVGProps<SVGPolygonElement>, 'points' | 'ref'>;
+type LineProps = Omit<SVGProps<SVGLineElement>, 'x1' | 'y1' | 'x2' | 'y2' | 'ref'>;
+
 export function SVGFancyBarSeriesRenderer<Datum extends object>({
   data,
   dataKey,
@@ -15,20 +18,17 @@ export function SVGFancyBarSeriesRenderer<Datum extends object>({
   colorAccessor,
   springConfig,
   animate = true,
-  context: { horizontal, independentScale, dependentScale, renderingOffset },
-  barProps
+  context,
+  barProps,
+  lineProps
 }: BarSeriesRendererProps<
   {
-    barProps?:
-      | Omit<SVGProps<SVGRectElement>, 'x' | 'y' | 'width' | 'height' | 'ref'>
-      | ((
-          datum: Datum,
-          index: number,
-          dataKey: string
-        ) => Omit<SVGProps<SVGRectElement>, 'x' | 'y' | 'width' | 'height' | 'ref'>);
+    barProps?: PolygonProps | ((datum: Datum, index: number, dataKey: string) => PolygonProps);
+    lineProps?: LineProps | ((datum: Datum, index: number, dataKey: string) => LineProps);
   },
   Datum
 >) {
+  const { horizontal, independentScale, dependentScale, renderingOffset } = context;
   const transitions = useBarSeriesTransitions(
     data,
     (horizontal ? dependentScale : independentScale) as PositionScale,
@@ -43,31 +43,36 @@ export function SVGFancyBarSeriesRenderer<Datum extends object>({
   );
   return (
     <>
-      {transitions(({ opacity, x, y, x2, y2, width, height }, datum, _, index) => {
-        const { style, ...restBarProps } =
-          (typeof barProps === 'function' ? barProps(datum, index, dataKey) : barProps) ?? {};
+      {transitions(({ opacity, x1, y1, x2, y2, points }, datum, _, index) => {
+        const {
+          style: barPropsStyle,
+          fill,
+          ...restBarProps
+        } = (typeof barProps === 'function' ? barProps(datum, index, dataKey) : barProps) ?? {};
+        const { style: linePropsStyle, ...restLineProps } =
+          (typeof lineProps === 'function' ? lineProps(datum, index, dataKey) : lineProps) ?? {};
         return (
           <>
-            <animated.rect
+            <animated.polygon
               data-test-id="bar"
-              x={x}
-              y={y}
-              width={width}
-              height={height}
-              fill={colorAccessor?.(datum, dataKey) ?? restBarProps.fill}
-              style={{ ...style, opacity }}
+              points={points}
+              fill={colorAccessor?.(datum, dataKey) ?? fill}
+              style={{ ...barPropsStyle, opacity }}
               shapeRendering="crispEdges"
               {...restBarProps}
               // {...eventEmitters}
             />
             <animated.line
-              x1={horizontal ? x2 : x}
-              y1={y}
-              x2={x2}
-              y2={horizontal ? y2 : y}
-              stroke="white"
-              strokeWidth={2}
+              x1={x1}
+              y1={y1}
+              x2={horizontal ? x1 : x2}
+              y2={horizontal ? y2 : y1}
+              style={{ ...linePropsStyle, opacity }}
+              shapeRendering="crispEdges"
+              stroke="currenColor"
+              strokeWidth={1}
               strokeLinecap="butt"
+              {...restLineProps}
             />
           </>
         );

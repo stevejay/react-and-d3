@@ -5,16 +5,16 @@ import { isNil } from 'lodash-es';
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { createTickPositioning } from '../positioning';
-import { isBandScale, ScaleInput } from '../scale';
-import { GridScale } from '../types';
+import { isBandScale } from '../scale';
+import { GridScale, TickDatum } from '../types';
 
-function keyAccessor<Scale extends GridScale>(tickValue: ScaleInput<Scale>) {
-  return tickValue.toString();
+function keyAccessor(tickValue: TickDatum) {
+  return tickValue.value.toString();
 }
 
 export function useAxisTransitions<Scale extends GridScale>(
   scale: Scale,
-  ticks: ScaleInput<Scale>[],
+  ticks: TickDatum[],
   springConfig: SpringConfig | undefined,
   animate: boolean,
   offset = 0
@@ -30,7 +30,7 @@ export function useAxisTransitions<Scale extends GridScale>(
   // them for update animations.
   const scaleIsBandScale = isBandScale(scale);
 
-  return useTransition<ScaleInput<Scale>, { opacity: number; translate: number }>(ticks, {
+  return useTransition<TickDatum, { opacity: number; translate: number }>(ticks, {
     initial: (tickValue) => ({ opacity: 1, translate: position(tickValue) + offset }),
     from: (tickValue) => {
       if (scaleIsBandScale) {

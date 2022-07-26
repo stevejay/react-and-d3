@@ -12,7 +12,7 @@ import { SectionHeading } from '@/components/SectionHeading';
 import { isDefined } from '@/types/typeguards/isDefined';
 import { SvgXYChartAxis } from '@/visx-next/Axis';
 import { XYChartBarSeries } from '@/visx-next/BarSeries';
-import { XYChartColumnGrid } from '@/visx-next/ColumnGrid';
+// import { XYChartColumnGrid } from '@/visx-next/ColumnGrid';
 import { PopperTooltip } from '@/visx-next/PopperTooltip';
 import { BandScaleConfig, LinearScaleConfig } from '@/visx-next/scale';
 import { SvgXYChart } from '@/visx-next/SvgXYChart';
@@ -161,12 +161,12 @@ export function RespondentsByLanguage() {
                 aria-label="Some Important Results"
                 horizontal
               >
-                <XYChartColumnGrid
+                {/* <XYChartColumnGrid
                   className="text-slate-500"
                   shapeRendering="crispEdges"
                   strokeDasharray="1,3"
                   tickCount={5}
-                />
+                /> */}
                 <XYChartBarSeries
                   dataKey="data-a"
                   data={mappedData}
@@ -205,7 +205,7 @@ export function RespondentsByLanguage() {
                   tickLineProps={{ shapeRendering: 'crispEdges' }}
                   domainPathProps={{ shapeRendering: 'crispEdges' }}
                   labelOffset={10}
-                  animate={false}
+                  // animate={false}
                 />
                 {/* <SvgXYChartAxis
                   orientation="bottom"

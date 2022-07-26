@@ -129,6 +129,11 @@ function InnerChart<
     dependentRange
   );
 
+  if (isNil(independentScale) || isNil(dependentScale)) {
+    console.log('fastreturning in SVGXYChart');
+    return null;
+  }
+
   const value = {
     independentScale,
     dependentScale,
@@ -145,6 +150,8 @@ function InnerChart<
     springConfig,
     renderingOffset
   };
+
+  console.log('XY hybrid render');
 
   return width && width > 0 && height && height > 0 ? (
     <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} {...svgProps}>

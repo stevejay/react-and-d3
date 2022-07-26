@@ -30,8 +30,8 @@ export interface DataContextType<
   // Datum extends object,
   // OriginalDatum extends object
 > {
-  independentScale?: IndependentScale;
-  dependentScale?: DependentScale;
+  independentScale: IndependentScale;
+  dependentScale: DependentScale;
   independentRangePadding: number;
   dependentRangePadding: number;
   // colorScale: ScaleTypeToD3Scale<string, string>['ordinal'];

@@ -1,12 +1,12 @@
 import { AxisScale } from '@visx/axis';
 
-import { coerceNumber, getScaleBandwidth, ScaleInput } from '../scale';
-import { GridScale } from '../types';
+import { coerceNumber, getScaleBandwidth } from '../scale';
+import { GridScale, TickDatum } from '../types';
 
 export function createTickPositioning<Scale extends GridScale>(
   scale: Scale,
   offset: number
-): (d: ScaleInput<Scale>) => number {
+): (d: TickDatum) => number {
   const scaleCopy = scale.copy();
   let scaleOffset = Math.max(0, getScaleBandwidth(scaleCopy) - offset * 2) / 2;
 
@@ -17,5 +17,5 @@ export function createTickPositioning<Scale extends GridScale>(
   }
 
   // offset + getScaleBandwidth(scaleCopy) / 2;
-  return (d) => (coerceNumber(scaleCopy(d)) ?? 0) + scaleOffset;
+  return (d) => (coerceNumber(scaleCopy(d.value)) ?? 0) + scaleOffset;
 }

@@ -337,7 +337,7 @@ export type SvgAxisRendererProps<Scale extends AxisScale> = CommonAxisProps<Scal
   // /** Computed ticks with positions and formatted value */
   // ticks: ComputedTick<Scale>[];
 
-  tickValues: ScaleInput<Scale>[];
+  ticks: TickDatum[];
 
   renderingOffset?: number;
 };
@@ -347,7 +347,7 @@ export type TicksRendererProps<Scale extends AxisScale> = Pick<
   | 'hideTicks'
   | 'orientation'
   | 'scale'
-  | 'tickValues'
+  | 'ticks'
   | 'tickLineProps'
   | 'springConfig'
   | 'animate'
@@ -521,3 +521,10 @@ export type TooltipData<Datum extends object = object> = {
 export type TooltipContextType<Datum extends object> = UseTooltipParams<TooltipData<Datum>> & {
   showTooltip: (params: EventHandlerParams<Datum>) => void;
 };
+
+export interface TickDatum {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any; // FIXME  ?? ScaleInput<Scale> where <Scale extends GridScale> ??? ScaleInput<AxisScale> ???
+  index: number;
+  label: string;
+}

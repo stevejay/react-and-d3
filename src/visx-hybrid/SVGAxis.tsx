@@ -1,8 +1,8 @@
 import { ReactNode, SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
 import { Group } from '@visx/group';
-import { isNil } from 'lodash-es';
 
+// import { isNil } from 'lodash-es';
 import { AxisScale, LineProps, Orientation, ScaleInput, TextProps, TickFormatter } from '@/visx-next/types';
 
 import { useDataContext } from './useDataContext';
@@ -81,10 +81,9 @@ export function SVGAxis(props: SVGAxisProps) {
     animate: contextAnimate
   } = useDataContext();
 
-  if (isNil(independentScale || isNil(dependentScale))) {
-    console.log('shortcircuit bar series');
-    return null;
-  }
+  // if (isNil(independentScale || isNil(dependentScale))) {
+  //   return null;
+  // }
 
   const scale = variableType === 'independent' ? independentScale : dependentScale;
   if (!scale) {

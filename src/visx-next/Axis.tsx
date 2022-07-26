@@ -1,14 +1,14 @@
 import { ReactNode, SVGProps, useContext } from 'react';
 import { animated } from 'react-spring';
 import { Group } from '@visx/group';
-import { getTicks, ScaleInput } from '@visx/scale';
+import { ScaleInput } from '@visx/scale';
 import { Text } from '@visx/text';
 
 import { useAxisTransitions } from './animation';
 import { AxisDomainPath } from './AxisDomainPath';
 import { DataContext } from './DataContext';
 import { getLabelTransform } from './getLabelTransform';
-import { getTickFormatter } from './getTickFormatter';
+import { getTicksData } from './getTicksData';
 import { AxisScale, CommonAxisProps, SvgAxisRendererProps, TextProps, TicksRendererProps } from './types';
 
 type SvgAxisTickLineProps = Omit<SVGProps<SVGLineElement>, 'ref'>;
@@ -40,8 +40,7 @@ function Ticks<Scale extends AxisScale>({
   orientation,
   tickLabelProps,
   tickGroupProps,
-  tickValues,
-  tickFormat,
+  ticks,
   tickLength = 0,
   tickLineProps,
   springConfig,
@@ -49,14 +48,14 @@ function Ticks<Scale extends AxisScale>({
   renderingOffset,
   tickLabelPadding = 3
 }: TicksRendererProps<Scale>) {
-  const transitions = useAxisTransitions(scale, tickValues, springConfig, animate, renderingOffset);
+  const transitions = useAxisTransitions(scale, ticks, springConfig, animate, renderingOffset);
   const isVertical = orientation === 'left' || orientation === 'right';
   const tickTranslateAxis = isVertical ? 'translateY' : 'translateX';
   const tickLineAxis = isVertical ? 'x' : 'y';
   const tickSign = orientation === 'left' || orientation === 'top' ? -1 : 1;
   return (
     <>
-      {transitions(({ opacity, translate }, tickValue, _, index) => {
+      {transitions(({ opacity, translate }, { label, value }, _, index) => {
         return (
           <animated.g
             data-test-id="axis-tick-group"
@@ -72,10 +71,10 @@ function Ticks<Scale extends AxisScale>({
               aria-hidden
               {...{ [tickLineAxis]: tickSign * ((hideTicks ? 0 : tickLength) + tickLabelPadding) }}
               {...(typeof tickLabelProps === 'function'
-                ? tickLabelProps?.(tickValue, index, tickValues)
+                ? tickLabelProps?.(value, index, ticks)
                 : tickLabelProps)}
             >
-              {tickFormat?.(tickValue, index, tickValues) ?? ''}
+              {label}
             </Text>
           </animated.g>
         );
@@ -108,8 +107,7 @@ function SvgAxisRenderer<Scale extends AxisScale>({
   tickGroupProps,
   tickLength = 8,
   outerTickLength = 0,
-  tickFormat,
-  tickValues,
+  ticks,
   ticksComponent = Ticks,
   springConfig,
   renderingOffset,
@@ -127,8 +125,8 @@ function SvgAxisRenderer<Scale extends AxisScale>({
     : [rangeFrom - rangePadding, rangeTo + rangePadding];
 
   // compute the max tick label size to compute label offset
-  const allTickLabelProps = tickValues.map((value, index) =>
-    typeof tickLabelProps === 'function' ? tickLabelProps(value, index, tickValues) : tickLabelProps
+  const allTickLabelProps = ticks.map((value, index) =>
+    typeof tickLabelProps === 'function' ? tickLabelProps(value, index, ticks) : tickLabelProps
   );
 
   const maxTickLabelFontSize = Math.max(
@@ -144,9 +142,8 @@ function SvgAxisRenderer<Scale extends AxisScale>({
         scale,
         tickLabelProps,
         tickGroupProps,
-        tickFormat,
         tickLength,
-        tickValues,
+        ticks,
         tickLineProps,
         renderingOffset,
         animate,
@@ -216,9 +213,13 @@ function SvgAxis<Scale extends AxisScale>({
   children = SvgAxisRenderer,
   ...restProps
 }: SvgAxisProps<Scale>) {
-  const filteredTickValues = (tickValues ?? getTicks(scale, tickCount)).filter(
-    (value) => !hideZero || (value !== 0 && value !== '0')
-  );
+  // const filteredTickValues = (tickValues ?? getTicks(scale, tickCount)).filter(
+  //   (value) => !hideZero || (value !== 0 && value !== '0')
+  // );
+  const ticks = getTicksData(scale, hideZero, tickFormat, tickCount, tickValues);
+
+  console.log('ticks', ticks);
+
   return (
     <Group data-test-id={`axis-${orientation}`} {...axisGroupProps} top={top} left={left}>
       {children({
@@ -227,8 +228,7 @@ function SvgAxis<Scale extends AxisScale>({
         tickCount,
         orientation,
         scale,
-        tickFormat: tickFormat ?? getTickFormatter(scale),
-        tickValues: filteredTickValues
+        ticks
       })}
     </Group>
   );
