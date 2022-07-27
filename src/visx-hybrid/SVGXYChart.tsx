@@ -1,7 +1,7 @@
 // TODO:
 // - two dependent axes?
 // - resizable chart (drag handle).
-import { SVGProps, useContext } from 'react';
+import { SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
 import type { AxisScaleOutput } from '@visx/axis';
 import { ScaleConfig } from '@visx/scale';
@@ -14,9 +14,10 @@ import { Margin } from '@/visx-next/types';
 import { defaultSpringConfig } from './constants';
 import { createScaleFromScaleConfig } from './createScaleFromScaleConfig';
 import { DataContext } from './DataContext';
-import { EventEmitterContext, EventEmitterProvider } from './EventEmitterProvider';
+import { EventEmitterProvider } from './EventEmitterProvider';
+import { getAutoMarginFromChildren } from './getAutoMarginFromChildren';
 import { getDataEntriesFromChildren } from './getDataEntriesFromChildren';
-import { TooltipContext } from './TooltipContext';
+// import { TooltipContext } from './TooltipContext';
 import { TooltipProvider } from './TooltipProvider';
 import { useEventEmitters } from './useEventEmitters';
 // import { SVGAxis } from './SVGAxis';
@@ -30,7 +31,7 @@ import { useEventEmitters } from './useEventEmitters';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 //   type YScale = ScaleConfigToD3Scale<DependentScaleConfig, AxisScaleOutput, any, any>;
 
-const defaultMargin: Margin = { left: 0, right: 0, top: 0, bottom: 0 };
+// const defaultMargin: Margin = { left: 0, right: 0, top: 0, bottom: 0 };
 
 type SVGXYChartProps<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,16 +75,16 @@ export function SVGXYChart<
   // Datum extends object
 >(props: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig>) {
   const { width, height, parentSizeDebounceMs = 300, hideTooltipDebounceMs = 400 } = props;
-  const emitter = useContext(EventEmitterContext);
-  const tooltipContext = useContext(TooltipContext);
+  // const emitter = useContext(EventEmitterContext);
+  // const tooltipContext = useContext(TooltipContext);
 
-  if (isNil(tooltipContext)) {
-    return (
-      <TooltipProvider hideTooltipDebounceMs={hideTooltipDebounceMs}>
-        <SVGXYChart {...props} />
-      </TooltipProvider>
-    );
-  }
+  // if (isNil(tooltipContext)) {
+  //   return (
+  //     <TooltipProvider hideTooltipDebounceMs={hideTooltipDebounceMs}>
+  //       <SVGXYChart {...props} />
+  //     </TooltipProvider>
+  //   );
+  // }
 
   if (isNil(width) || isNil(height)) {
     // If hardcoded dimensions are not available, wrap self in ParentSize.
@@ -94,17 +95,21 @@ export function SVGXYChart<
     );
   }
 
-  // EventEmitterProvider should be the last wrapper so we do not duplicate handlers
-  if (isNil(emitter)) {
-    return (
-      <EventEmitterProvider>
-        <SVGXYChart {...props} />
-      </EventEmitterProvider>
-    );
-  }
+  // // EventEmitterProvider should be the last wrapper so we do not duplicate handlers
+  // if (isNil(emitter)) {
+  //   return (
+  //     <EventEmitterProvider>
+  //       <SVGXYChart {...props} />
+  //     </EventEmitterProvider>
+  //   );
+  // }
 
   return width && width > 0 && height && height > 0 ? (
-    <InnerChart {...props} width={width} height={height} />
+    <TooltipProvider hideTooltipDebounceMs={hideTooltipDebounceMs}>
+      <EventEmitterProvider>
+        <InnerChart {...props} width={width} height={height} />
+      </EventEmitterProvider>
+    </TooltipProvider>
   ) : null;
 }
 
@@ -119,7 +124,7 @@ function InnerChart<
   height,
   independentScale: independentScaleConfig,
   dependentScale: dependentScaleConfig,
-  margin = defaultMargin,
+  // margin = defaultMargin,
   horizontal = false,
   animate = true,
   springConfig = defaultSpringConfig,
@@ -137,23 +142,21 @@ function InnerChart<
   // console.log(dataEntries);
 
   // Calculate scales.
-  const innerWidth = Math.max(0, width - margin.left - margin.right);
-  const innerHeight = Math.max(0, height - margin.top - margin.bottom);
-  const independentRange: [number, number] = horizontal
-    ? [Math.max(0, height - margin.bottom - independentRangePadding), margin.top + independentRangePadding]
-    : [margin.left + independentRangePadding, Math.max(0, width - margin.right - independentRangePadding)];
-  const dependentRange: [number, number] = horizontal
-    ? [margin.left + dependentRangePadding, Math.max(0, width - margin.right - dependentRangePadding)]
-    : [Math.max(0, height - margin.bottom - dependentRangePadding), margin.top + dependentRangePadding];
+  // const independentRange: [number, number] = horizontal
+  //   ? [Math.max(0, height - margin.bottom - independentRangePadding), margin.top + independentRangePadding]
+  //   : [margin.left + independentRangePadding, Math.max(0, width - margin.right - independentRangePadding)];
+  // const dependentRange: [number, number] = horizontal
+  //   ? [margin.left + dependentRangePadding, Math.max(0, width - margin.right - dependentRangePadding)]
+  //   : [Math.max(0, height - margin.bottom - dependentRangePadding), margin.top + dependentRangePadding];
   const independentScale = createScaleFromScaleConfig(
     dataEntries.map((entry) => ({ accessor: entry.independentAccessor, data: entry.data })),
-    independentScaleConfig,
-    independentRange
+    independentScaleConfig
+    // independentRange
   );
   const dependentScale = createScaleFromScaleConfig(
     dataEntries.map((entry) => ({ accessor: entry.dependentAccessor, data: entry.data })),
-    dependentScaleConfig,
-    dependentRange
+    dependentScaleConfig
+    // dependentRange
   );
 
   // Returns event handlers to be applied to the <rect> that is for capturing events.
@@ -165,6 +168,22 @@ function InnerChart<
     console.log('fastreturning in SVGXYChart');
     return null;
   }
+
+  const margin = getAutoMarginFromChildren(children, horizontal, independentScale, dependentScale);
+  console.log('autoMargin', margin);
+
+  const independentRange: [number, number] = horizontal
+    ? [Math.max(0, height - margin.bottom - independentRangePadding), margin.top + independentRangePadding]
+    : [margin.left + independentRangePadding, Math.max(0, width - margin.right - independentRangePadding)];
+  const dependentRange: [number, number] = horizontal
+    ? [margin.left + dependentRangePadding, Math.max(0, width - margin.right - dependentRangePadding)]
+    : [Math.max(0, height - margin.bottom - dependentRangePadding), margin.top + dependentRangePadding];
+
+  independentScale.range(independentRange);
+  dependentScale.range(dependentRange);
+
+  const innerWidth = Math.max(0, width - margin.left - margin.right);
+  const innerHeight = Math.max(0, height - margin.top - margin.bottom);
 
   const value = {
     independentScale,
@@ -183,7 +202,7 @@ function InnerChart<
     renderingOffset
   };
 
-  console.log('XY hybrid render');
+  // console.log('XY hybrid render');
 
   return width && width > 0 && height && height > 0 ? (
     <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} {...svgProps}>

@@ -1,15 +1,27 @@
 import { ReactNode, SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
-import { Group } from '@visx/group';
 
+// import { Group } from '@visx/group';
 // import { isNil } from 'lodash-es';
-import { AxisScale, LineProps, Orientation, ScaleInput, TextProps, TickFormatter } from '@/visx-next/types';
+import {
+  AxisScale,
+  LineProps,
+  Margin,
+  Orientation,
+  ScaleInput,
+  TextProps,
+  TickFormatter
+} from '@/visx-next/types';
 
+// import { calculateAxisMargin } from './calculateAxisMargin';
+import { calculateOrientation } from './calculateOrientation';
+import { SVGAnimatedGroup } from './SVGAnimatedGroup';
 import { useDataContext } from './useDataContext';
 
 export type AxisRendererProps = {
   orientation: Orientation;
   scale: AxisScale;
+  margin: Margin;
   rangePadding: number;
   springConfig?: SpringConfig;
   animate?: boolean;
@@ -50,7 +62,7 @@ export type SVGAxisProps = Omit<
   AxisRendererProps,
   'ticks' | 'scale' | 'margin' | 'rangePadding' | 'orientation'
 > & {
-  groupProps?: SVGProps<SVGGElement>;
+  groupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'x' | 'y'>;
   position: 'start' | 'end';
   variableType: 'independent' | 'dependent';
   renderer: AxisRenderer;
@@ -81,31 +93,8 @@ export function SVGAxis(props: SVGAxisProps) {
     animate: contextAnimate
   } = useDataContext();
 
-  // if (isNil(independentScale || isNil(dependentScale))) {
-  //   return null;
-  // }
-
   const scale = variableType === 'independent' ? independentScale : dependentScale;
-  if (!scale) {
-    return null;
-  }
-
-  const orientation: Orientation =
-    horizontal && variableType === 'independent'
-      ? position === 'start'
-        ? 'left'
-        : 'right'
-      : horizontal && variableType === 'dependent'
-      ? position === 'start'
-        ? 'bottom'
-        : 'top'
-      : !horizontal && variableType == 'independent'
-      ? position === 'start'
-        ? 'bottom'
-        : 'top'
-      : position === 'start'
-      ? 'left'
-      : 'right'; // !horizontal && variableType === 'dependent'
+  const orientation = calculateOrientation(horizontal, variableType, position);
 
   const top =
     orientation === 'bottom'
@@ -122,12 +111,40 @@ export function SVGAxis(props: SVGAxisProps) {
       : 0;
 
   const rangePadding = variableType === 'independent' ? independentRangePadding : dependentRangePadding;
-
   const defaultTextAnchor = orientation === 'left' ? 'end' : orientation === 'right' ? 'start' : 'middle';
   const defaultVerticalAnchor = orientation === 'top' ? 'end' : orientation === 'bottom' ? 'start' : 'middle';
 
+  // const autoMargin = calculateAxisMargin(
+  //   orientation,
+  //   scale,
+  //   props.hideZero ?? false,
+  //   props.tickFormat,
+  //   props.tickCount,
+  //   props.tickValues,
+  //   props.tickLength ?? 8,
+  //   props.hideTicks ?? false,
+  //   props.tickLabelPadding ?? 6,
+  //   props.label,
+  //   props.labelOffset ?? 14
+  // );
+
+  // console.log(`autoMargin ${orientation}`, autoMargin);
+
+  // const styles = useSpring({
+  //   to: { x: left, y: top },
+  //   config: springConfig ?? contextSpringConfig,
+  //   immediate: !animate
+  // });
+
   return (
-    <Group data-test-id={`axis-${orientation}`} {...groupProps} top={top} left={left}>
+    <SVGAnimatedGroup
+      data-testid={`axis-${orientation}`}
+      x={left}
+      y={top}
+      springConfig={springConfig ?? contextSpringConfig}
+      animate={animate}
+      {...groupProps}
+    >
       {renderer({
         ...restProps,
         tickLabelProps: {
@@ -139,8 +156,33 @@ export function SVGAxis(props: SVGAxisProps) {
         scale,
         springConfig: springConfig ?? contextSpringConfig,
         animate: animate ?? contextAnimate,
-        rangePadding
+        rangePadding,
+        margin
       })}
-    </Group>
+    </SVGAnimatedGroup>
   );
+
+  // return (
+  //   <Group
+  //     data-test-id={`axis-${orientation}`}
+  //     {...groupProps}
+  //     top={top}
+  //     left={left}
+  //   >
+  //     {renderer({
+  //       ...restProps,
+  //       tickLabelProps: {
+  //         textAnchor: defaultTextAnchor,
+  //         verticalAnchor: defaultVerticalAnchor,
+  //         ...tickLabelProps
+  //       },
+  //       orientation,
+  //       scale,
+  //       springConfig: springConfig ?? contextSpringConfig,
+  //       animate: animate ?? contextAnimate,
+  //       rangePadding,
+  //       margin
+  //     })}
+  //   </Group>
+  // );
 }

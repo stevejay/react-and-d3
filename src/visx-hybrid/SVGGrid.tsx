@@ -1,12 +1,12 @@
 import { ReactNode, SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
-import { Group } from '@visx/group';
 import { ScaleInput } from '@visx/scale';
 
 // import { isNil } from 'lodash-es';
 import { AxisScale } from '@/visx-next/types';
 
 import { InferDataContext } from './DataContext';
+import { SVGAnimatedGroup } from './SVGAnimatedGroup';
 import { useDataContext } from './useDataContext';
 
 type GridRendererCoreProps = {
@@ -44,7 +44,7 @@ export type SVGGridProps<ElementProps extends object> = Omit<
   // | 'dependentRangePadding'
 > & {
   renderer: GridRenderer<ElementProps>;
-  groupProps?: SVGProps<SVGGElement>;
+  groupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'x' | 'y'>;
   // springConfig?: SpringConfig;
   // animate?: boolean;
 };
@@ -97,7 +97,14 @@ export function SVGGrid<ElementProps extends object>(props: SVGGridProps<Element
   // }
 
   return (
-    <Group data-test-id={`grid-${variableType}`} {...groupProps} left={left} top={top}>
+    <SVGAnimatedGroup
+      data-testid={`grid-${variableType}`}
+      x={left}
+      y={top}
+      springConfig={springConfig ?? context.springConfig}
+      animate={animate}
+      {...groupProps}
+    >
       {renderer({
         context,
         // scale,
@@ -114,6 +121,6 @@ export function SVGGrid<ElementProps extends object>(props: SVGGridProps<Element
         animate: animate ?? context.animate,
         ...rendererProps
       } as GridRendererProps<ElementProps>)}
-    </Group>
+    </SVGAnimatedGroup>
   );
 }

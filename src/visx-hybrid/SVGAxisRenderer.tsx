@@ -3,9 +3,9 @@ import { animated } from 'react-spring';
 import { Text } from '@visx/text';
 
 import { AxisDomainPath } from '@/visx-next/AxisDomainPath';
-import { getLabelTransform } from '@/visx-next/getLabelTransform';
 import { TextProps } from '@/visx-next/types';
 
+import { getLabelTransform } from './getLabelTransform';
 import { getTicksData } from './getTicksData';
 import { AxisRendererProps } from './SVGAxis';
 import { TickDatum } from './types';
@@ -39,6 +39,7 @@ export type SVGAxisTicksProps = Pick<
   | 'hideTicks'
   | 'orientation'
   | 'scale'
+  | 'margin'
   | 'tickLineProps'
   | 'springConfig'
   | 'animate'
@@ -106,6 +107,7 @@ function SVGAxisTicks({
 export function SVGAxisRenderer({
   orientation,
   scale,
+  margin,
   tickLabelProps: userTickLabelProps,
   domainPathProps = {},
   outerTickLength = 0,
@@ -172,6 +174,7 @@ export function SVGAxisRenderer({
         animate={animate}
         springConfig={springConfig}
         tickLabelPadding={tickLabelPadding}
+        margin={margin}
       />
       {!hideAxisLine && (
         <AxisDomainPath
@@ -201,7 +204,9 @@ export function SVGAxisRenderer({
             orientation,
             range: domainRange,
             maxTickLabelFontSize: tickLabelFontSize,
-            tickLength
+            tickLength,
+            tickLabelPadding,
+            margin
           })}
         >
           {label}

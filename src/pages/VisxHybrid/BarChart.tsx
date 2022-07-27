@@ -8,8 +8,8 @@ import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGAxisRenderer } from '@/visx-hybrid/SVGAxisRenderer';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGFancyBarSeriesRenderer } from '@/visx-hybrid/SVGFancyBarSeriesRenderer';
-import { SVGGrid } from '@/visx-hybrid/SVGGrid';
-import { SVGGridRenderer } from '@/visx-hybrid/SVGGridRenderer';
+import { SVGGrid } from '@/visx-hybrid/SVGGridNext';
+// import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 export interface BarChartProps {
@@ -63,10 +63,12 @@ export function BarChart({ data, margin }: BarChartProps) {
       aria-roledescription="Bar chart"
       aria-label="Some Important Results"
       dependentRangePadding={30}
+      independentRangePadding={20}
+      className="select-none"
       // horizontal
     >
-      <rect x="120" width="100" height="100" rx="15" fill="blue" style={{ transform: 'scale(-1,1)' }} />
-      <SVGGrid className="text-red-600" tickCount={5} renderer={SVGGridRenderer} variableType="dependent" />
+      <SVGGrid tickCount={5} variableType="dependent" className="text-red-600" />
+      {/* <SVGGrid className="text-red-600" tickCount={5} renderer={SVGGridRenderer} variableType="dependent" /> */}
       <SVGBarSeries
         renderer={SVGFancyBarSeriesRenderer<CategoryValueDatum<string, number>>}
         dataKey="data-a"
@@ -103,10 +105,9 @@ export function BarChart({ data, margin }: BarChartProps) {
         labelProps={{
           className: 'fill-slate-400 font-sans',
           textAnchor: 'middle',
+          verticalAnchor: 'start',
           fontSize: 14
         }}
-        // tickLineProps={{ shapeRendering: 'crispEdges' }}
-        // domainPathProps={{ shapeRendering: 'crispEdges' }}
         labelOffset={10}
       />
       <SVGAxis
@@ -126,10 +127,9 @@ export function BarChart({ data, margin }: BarChartProps) {
         labelProps={{
           className: 'fill-slate-400 font-sans',
           textAnchor: 'middle',
+          verticalAnchor: 'end',
           fontSize: 14
         }}
-        // tickLineProps={{ shapeRendering: 'crispEdges' }}
-        // domainPathProps={{ shapeRendering: 'crispEdges' }}
         labelOffset={10}
       />
       <SVGAxis
@@ -152,7 +152,8 @@ export function BarChart({ data, margin }: BarChartProps) {
           textAnchor: 'middle',
           fontSize: 14
         }}
-        labelOffset={36} // Does not take tick labels into account.
+        // labelOffset={36} // Does not take tick labels into account.
+        labelOffset={10}
       />
       <SVGAxis
         renderer={SVGAxisRenderer}
@@ -174,7 +175,8 @@ export function BarChart({ data, margin }: BarChartProps) {
           textAnchor: 'middle',
           fontSize: 14
         }}
-        labelOffset={36} // Does not take tick labels into account.
+        // labelOffset={36} // Does not take tick labels into account.
+        labelOffset={10}
       />
       <PopperTooltip<CategoryValueDatum<string, number>>
         snapTooltipToDatumX
@@ -187,7 +189,7 @@ export function BarChart({ data, margin }: BarChartProps) {
           }
           return (
             <div>
-              {datum.datum?.category}: {datum.datum?.value}
+              <span className="font-bold">{datum.datum?.category}</span>: {datum.datum?.value}
             </div>
           );
         }}

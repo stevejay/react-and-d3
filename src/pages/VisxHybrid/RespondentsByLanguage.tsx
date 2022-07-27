@@ -146,7 +146,7 @@ export function RespondentsByLanguage() {
           <h3 className="mb-2 text-base text-slate-300">Canvas implementation (Mercator)</h3>
           <CanvasWorldMapWithTooltip data={mapData} colorScale={colorScale} statistic={statistic} />
         </div> */}
-          <div className="relative w-full h-[720px]">
+          <div className="relative w-full h-[720px] bg-slate-700">
             <InView>
               <SVGXYChart
                 independentScale={independentScale}
@@ -160,7 +160,7 @@ export function RespondentsByLanguage() {
                 role="graphics-document"
                 aria-roledescription="Bar chart"
                 aria-label="Some Important Results"
-                className="bg-slate-700"
+                className="bg-slate-700 select-none"
               >
                 <SVGGrid
                   renderer={SVGStripeRenderer}

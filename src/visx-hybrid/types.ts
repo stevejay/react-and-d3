@@ -64,6 +64,8 @@ export interface TickDatum {
   label: string;
 }
 
+export type GridType = 'row' | 'column';
+
 /** Arguments for findNearestDatum* functions. */
 export type NearestDatumArgs<Datum extends object> = {
   dataKey: string;
