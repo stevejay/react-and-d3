@@ -24,6 +24,12 @@ export interface Margin {
   right: number;
 }
 
+/** Horizontal text anchor. */
+export type TextAnchor = 'start' | 'middle' | 'end' | 'inherit';
+
+/** Vertical text anchor. */
+export type VerticalTextAnchor = 'start' | 'middle' | 'end';
+
 export interface DataEntry<
   IndependentScale extends AxisScale,
   DependentScale extends AxisScale,
@@ -131,6 +137,12 @@ interface AxisStyles {
   tickLength?: number;
 }
 
+export interface ThemeLabelStyles {
+  font?: FontProperties | string;
+  fill?: string;
+  className?: string;
+}
+
 export interface XYChartTheme {
   svg?: {
     styles?: CSSProperties;
@@ -143,22 +155,14 @@ export interface XYChartTheme {
     // strokeWidth?: number;
     // strokeLinecap?: xxxx;
   } & Pick<SVGProps<SVGLineElement>, 'stroke' | 'strokeWidth' | 'strokeLinecap' | 'strokeDasharray'>;
-  stripes?: {
+  bandStripes?: {
     styles?: CSSProperties;
     className?: string;
   } & Pick<SVGProps<SVGRectElement>, 'fill'>;
   /** Styles to applied to big SVG labels (axis label, annotation title, etc.). */
-  svgLabelBig?: {
-    font?: FontProperties | string;
-    fill?: string;
-    className?: string;
-  };
+  svgLabelBig?: ThemeLabelStyles;
   /** Styles to applied to small SVG labels (tick label, annotation subtitle, etc.). */
-  svgLabelSmall?: {
-    font?: FontProperties | string;
-    fill?: string;
-    className?: string;
-  };
+  svgLabelSmall?: ThemeLabelStyles;
   axis?: {
     top?: AxisStyles;
     bottom?: AxisStyles;
@@ -444,3 +448,8 @@ export type TooltipProps = {
    */
   unstyled?: boolean;
 };
+
+export interface Point {
+  x: number;
+  y: number;
+}

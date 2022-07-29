@@ -2,9 +2,19 @@ import { ReactNode, SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
 
 import { calculateAxisOrientation } from './calculateAxisOrientation';
+import {
+  defaultHideTicks,
+  defaultHideZero,
+  defaultTickLabelAngle,
+  defaultTickLabelPadding,
+  defaultTickLength
+} from './constants';
 import { getDefaultAxisLabelAngle } from './getDefaultAxisLabelAngle';
+import { getTicksData } from './getTicksData';
 import { SVGAnimatedGroup } from './SVGAnimatedGroup';
+import { SVGAxisDomainPath } from './SVGAxisDomainPath';
 import { SVGAxisLabel } from './SVGAxisLabel';
+import { SVGAxisTicks } from './SVGAxisTicks';
 import type {
   AxisOrientation,
   AxisScale,
@@ -16,7 +26,8 @@ import type {
   TextProps,
   TickFormatter,
   TickLabelAngle,
-  VariableType
+  VariableType,
+  XYChartTheme
 } from './types';
 import { useDataContext } from './useDataContext';
 
@@ -43,7 +54,7 @@ export type AxisRendererProps = {
   /** Padding between the tick lines and the tick labels. */
   tickLabelPadding?: number;
   /** The props to apply to the tick labels. */
-  tickLabelProps?: Partial<TextProps>;
+  tickLabelProps?: Partial<Omit<TextProps, 'verticalAnchor' | 'textAnchor'>>;
   /** The length of the tick lines. */
   tickLength?: number;
   /** The length of the outer ticks (added at the very start and very end of the axis domain). */
@@ -60,15 +71,19 @@ export type AxisRendererProps = {
   labelAngle?: LabelAngle;
   /** Props to apply to the axis domain path. */
   domainPathProps?: Omit<SVGProps<SVGPathElement>, 'ref'>;
+  theme: XYChartTheme;
 };
 
 export type AxisRenderer = (props: AxisRendererProps) => ReactNode;
 
-export type SVGAxisProps = Omit<AxisRendererProps, 'scale' | 'margin' | 'rangePadding' | 'orientation'> & {
+export type SVGAxisProps = Omit<
+  AxisRendererProps,
+  'scale' | 'margin' | 'theme' | 'rangePadding' | 'orientation'
+> & {
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'x' | 'y'>;
   position: 'start' | 'end';
   variableType: VariableType;
-  renderer: AxisRenderer;
+  // renderer: AxisRenderer;
 };
 
 export function SVGAxis(props: SVGAxisProps) {
@@ -78,13 +93,24 @@ export function SVGAxis(props: SVGAxisProps) {
     groupProps,
     springConfig,
     animate = true,
-    renderer,
     tickLabelProps,
     labelProps,
     label,
-    tickLabelAngle,
+    tickLabelAngle = defaultTickLabelAngle,
     labelAngle,
-    ...restProps
+    domainPathProps = {},
+    outerTickLength = 0,
+    hideAxisLine = false,
+    tickLength = defaultTickLength,
+    hideTicks = defaultHideTicks,
+    tickGroupProps = {},
+    tickLineProps = {},
+    tickLabelPadding = defaultTickLabelPadding,
+    renderingOffset = 0,
+    hideZero = defaultHideZero,
+    tickFormat,
+    tickCount,
+    tickValues
   } = props;
 
   const {
@@ -119,8 +145,16 @@ export function SVGAxis(props: SVGAxisProps) {
       : 0;
 
   const rangePadding = variableType === 'independent' ? independentRangePadding : dependentRangePadding;
-  const defaultTextAnchor = orientation === 'left' ? 'end' : orientation === 'right' ? 'start' : 'middle';
-  const defaultVerticalAnchor = orientation === 'top' ? 'end' : orientation === 'bottom' ? 'start' : 'middle';
+  const isLeft = orientation === 'left';
+  const isTop = orientation === 'top';
+  const isVertical = orientation === 'left' || orientation === 'right';
+  const tickSign = isLeft || isTop ? -1 : 1;
+  const rangeFrom = Number(scale.range()[0]) ?? 0;
+  const rangeTo = Number(scale.range()[1]) ?? 0;
+  const domainRange = isVertical
+    ? [rangeFrom + rangePadding, rangeTo - rangePadding]
+    : [rangeFrom - rangePadding, rangeTo + rangePadding];
+  const ticks = getTicksData(scale, hideZero, tickFormat, tickCount, tickValues);
 
   return (
     <>
@@ -134,7 +168,7 @@ export function SVGAxis(props: SVGAxisProps) {
           width={width}
           height={height}
           labelAngle={labelAngle ?? getDefaultAxisLabelAngle(orientation)}
-          {...theme.svgLabelBig}
+          labelStyles={theme.svgLabelBig}
         />
       )}
       <SVGAnimatedGroup
@@ -145,46 +179,50 @@ export function SVGAxis(props: SVGAxisProps) {
         animate={animate && contextAnimate}
         {...groupProps}
       >
+        <SVGAxisTicks
+          hideTicks={hideTicks}
+          orientation={orientation}
+          scale={scale}
+          tickLabelProps={tickLabelProps}
+          tickGroupProps={tickGroupProps}
+          tickLength={tickLength}
+          ticks={ticks}
+          tickLineProps={tickLineProps}
+          renderingOffset={renderingOffset}
+          animate={animate && contextAnimate}
+          springConfig={springConfig ?? contextSpringConfig}
+          tickLabelPadding={tickLabelPadding}
+          margin={margin}
+          labelStyles={theme.svgLabelSmall}
+          tickLabelAngle={tickLabelAngle}
+        />
+        {!hideAxisLine && (
+          <SVGAxisDomainPath
+            data-testid="axis-domain"
+            {...domainPathProps}
+            orientation={orientation}
+            renderingOffset={renderingOffset}
+            range={domainRange}
+            outerTickLength={outerTickLength}
+            tickSign={tickSign}
+            animate={animate && contextAnimate}
+            springConfig={springConfig ?? contextSpringConfig}
+          />
+        )}
+        {/* 
         {renderer({
           ...restProps,
-          tickLabelProps: {
-            textAnchor: defaultTextAnchor,
-            verticalAnchor: defaultVerticalAnchor,
-            ...tickLabelProps
-          },
+          tickLabelProps,
           orientation,
           scale,
           springConfig: springConfig ?? contextSpringConfig,
           animate: animate && contextAnimate,
           rangePadding,
           margin,
-          tickLabelAngle
-        })}
+          tickLabelAngle,
+          theme
+        })} */}
       </SVGAnimatedGroup>
     </>
   );
-
-  // return (
-  //   <Group
-  //     data-testid={`axis-${orientation}`}
-  //     {...groupProps}
-  //     top={top}
-  //     left={left}
-  //   >
-  //     {renderer({
-  //       ...restProps,
-  //       tickLabelProps: {
-  //         textAnchor: defaultTextAnchor,
-  //         verticalAnchor: defaultVerticalAnchor,
-  //         ...tickLabelProps
-  //       },
-  //       orientation,
-  //       scale,
-  //       springConfig: springConfig ?? contextSpringConfig,
-  //       animate: animate && contextAnimate,
-  //       rangePadding,
-  //       margin
-  //     })}
-  //   </Group>
-  // );
 }

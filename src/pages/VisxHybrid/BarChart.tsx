@@ -5,7 +5,6 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 import { CategoryValueDatum, Margin } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
-import { SVGAxisRenderer } from '@/visx-hybrid/SVGAxisRenderer';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGFancyBarSeriesRenderer } from '@/visx-hybrid/SVGFancyBarSeriesRenderer';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
@@ -90,96 +89,46 @@ export function BarChart({ data }: BarChartProps) {
         }}
       />
       <SVGAxis
-        renderer={SVGAxisRenderer}
         variableType="independent"
         position="end"
         label="Foobar Top"
-        hideTicks
-        tickLabelPadding={6}
-        tickLabelProps={{
-          className: 'fill-slate-400 font-sans',
-          fontSize: 12,
-          textAnchor: 'middle',
-          verticalAnchor: 'end',
-          angle: 0
-        }}
-        // labelProps={{
-        //   className: 'fill-slate-400 font-sans',
-        //   // textAnchor: 'middle',
-        //   // verticalAnchor: 'start',
-        //   fontSize: 14
-        // }}
-        labelPadding={10}
+        // hideTicks
+        // tickLength={20}
+        // tickLabelPadding={20}
+        // tickLabelAngle="angled"
+        // labelPadding={0}
       />
       <SVGAxis
-        renderer={SVGAxisRenderer}
         variableType="independent"
         position="start"
         label="Foobar Bottom"
-        hideTicks
-        tickLabelPadding={6}
-        tickLabelProps={{
-          className: 'fill-slate-400 font-sans',
-          fontSize: 12,
-          textAnchor: 'middle',
-          verticalAnchor: 'start',
-          angle: 0
-        }}
-        // labelProps={{
-        //   // className: 'fill-slate-400 font-sans',
-        //   // textAnchor: 'middle',
-        //   // verticalAnchor: 'end',
-        //   // fontSize: 14
-        // }}
-        labelPadding={10}
+        // hideTicks
+        // tickLength={20}
+        // tickLabelPadding={10}
+        // tickLabelAngle="angled"
+        // labelPadding={0}
       />
       <SVGAxis
-        renderer={SVGAxisRenderer}
         variableType="dependent"
         position="start"
         label="Foobar Left"
         tickCount={5}
         hideZero
-        tickLabelPadding={6}
-        tickLabelProps={{
-          className: 'fill-slate-400 font-sans',
-          fontSize: 12,
-          textAnchor: 'end',
-          verticalAnchor: 'middle',
-          angle: -45
-        }}
-        // labelAngle="horizontal"
-        // labelProps={{
-        //   className: 'fill-slate-400 font-sans',
-        //   textAnchor: 'middle',
-        //   fontSize: 14
-        // }}
-        // labelPadding={36} // Does not take tick labels into account.
-        // labelPadding={10}
+        // tickLength={20}
+        // tickLabelPadding={10}
+        // tickLabelAngle="angled"
+        // labelPadding={0}
       />
       <SVGAxis
-        renderer={SVGAxisRenderer}
         variableType="dependent"
         position="end"
         label="Foobar Right"
         tickCount={5}
         hideZero
-        tickLabelPadding={6}
-        tickLabelProps={{
-          className: 'fill-slate-400 font-sans',
-          fontSize: 12,
-          textAnchor: 'start',
-          verticalAnchor: 'middle',
-          angle: -45
-        }}
-        // labelAngle="horizontal"
-        // labelProps={{
-        //   className: 'fill-slate-400 font-sans',
-        //   textAnchor: 'middle',
-        //   fontSize: 14
-        // }}
-        // labelPadding={36} // Does not take tick labels into account.
-        // labelPadding={10}
+        // tickLength={20}
+        // tickLabelPadding={10}
+        // tickLabelAngle="angled"
+        // labelPadding={0}
       />
       <PopperTooltip<CategoryValueDatum<string, number>>
         snapTooltipToDatumX

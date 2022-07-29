@@ -6,14 +6,17 @@ import { combineMargins } from './combineMargins';
 import {
   defaultHideTicks,
   defaultHideZero,
-  defaultLabelOffset,
+  defaultLabelPadding,
   defaultLabelTextProps,
+  defaultTickLabelAngle,
   defaultTickLabelPadding,
   defaultTickLabelTextProps,
   defaultTickLength
 } from './constants';
 import { getDefaultAxisLabelAngle } from './getDefaultAxisLabelAngle';
 import type { AxisScale, Margin, XYChartTheme } from './types';
+
+// const extraPaddingPx = 1;
 
 /**
  * Looks for children of the SVGXYChart that have component names that end in 'Axis'.
@@ -61,8 +64,8 @@ export function calculateAutoMarginFromChildren(
         axisOrientation,
         scale,
         rangePadding,
-        labelTextProps: theme?.svgLabelBig?.font ?? defaultLabelTextProps,
-        tickLabelTextProps: theme?.svgLabelSmall?.font ?? defaultTickLabelTextProps,
+        bigFont: theme?.svgLabelBig?.font ?? defaultLabelTextProps,
+        smallFont: theme?.svgLabelSmall?.font ?? defaultTickLabelTextProps,
         hideZero: element.props.hideZero ?? defaultHideZero,
         hideTicks: element.props.hideTicks ?? defaultHideTicks,
         label: element.props.label,
@@ -71,8 +74,8 @@ export function calculateAutoMarginFromChildren(
         tickValues: element.props.tickValues,
         tickLength: element.props.tickLength ?? defaultTickLength,
         tickLabelPadding: element.props.tickLabelPadding ?? defaultTickLabelPadding,
-        labelPadding: element.props.labelPadding ?? defaultLabelOffset,
-        tickLabelAngle: element.props.tickLabelAngle ?? 'horizontal',
+        labelPadding: element.props.labelPadding ?? defaultLabelPadding,
+        tickLabelAngle: element.props.tickLabelAngle ?? defaultTickLabelAngle,
         labelAngle: element.props.labelAngle ?? getDefaultAxisLabelAngle(axisOrientation)
       });
       marginList.push(autoMargin);
@@ -80,4 +83,12 @@ export function calculateAutoMarginFromChildren(
   });
 
   return combineMargins(marginList);
+
+  // const combinedMargin = combineMargins(marginList);
+  // return {
+  //   left: combinedMargin.left + extraPaddingPx,
+  //   right: combinedMargin.right + extraPaddingPx,
+  //   top: combinedMargin.top + extraPaddingPx,
+  //   bottom: combinedMargin.bottom + extraPaddingPx
+  // };
 }

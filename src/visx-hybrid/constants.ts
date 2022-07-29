@@ -1,6 +1,6 @@
 import { easeCubicInOut } from 'd3-ease';
 
-import type { XYChartTheme } from './types';
+import type { TickLabelAngle, XYChartTheme } from './types';
 
 export const defaultSpringConfig = { duration: 350, easing: easeCubicInOut };
 
@@ -8,9 +8,10 @@ export const defaultHideZero = false;
 export const defaultHideTicks = false;
 export const defaultTickLength = 8;
 export const defaultTickLabelPadding = 6;
-export const defaultLabelOffset = 14;
+export const defaultLabelPadding = 14;
 export const defaultHideTooltipDebounceMs = 400;
 export const defaultParentSizeDebounceMs = 300;
+export const defaultTickLabelAngle: TickLabelAngle = 'horizontal';
 
 export const defaultLabelTextProps = 'normal normal normal 14px/1 inherit';
 export const defaultTickLabelTextProps = 'normal normal normal 12px/1 inherit';
@@ -20,19 +21,17 @@ export const defaultTheme: XYChartTheme = {
     className: 'text-slate-500',
     strokeDasharray: '1 3'
   },
-  stripes: {
+  bandStripes: {
     className: 'text-slate-600'
   },
   svgLabelBig: {
     // font-style, font-variant, font-weight, font-size, line-height, font-family
     font: 'normal normal normal 16px/1 "Readex Pro"',
-    fill: 'green',
-    className: 'text-slate-300'
+    fill: 'green'
   },
   svgLabelSmall: {
     font: 'normal normal normal 14px/1 "Readex Pro"',
-    fill: 'pink',
-    className: 'text-slate-200'
+    fill: 'pink'
   }
 };
 

@@ -13,7 +13,6 @@ import { SectionHeading } from '@/components/SectionHeading';
 import { isDefined } from '@/types/typeguards/isDefined';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
-import { SVGAxisRenderer } from '@/visx-hybrid/SVGAxisRenderer';
 import { SVGBandStripes } from '@/visx-hybrid/SVGBandStripes';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 // import { SVGBarSeriesRenderer } from '@/visx-hybrid/SVGBarSeriesRenderer';
@@ -163,18 +162,8 @@ export function RespondentsByLanguage() {
                 className="bg-slate-700 select-none"
                 theme={darkTheme}
               >
-                <SVGBandStripes
-                  variableType="independent"
-                  // className="text-slate-600"
-                  even={false}
-                  ignoreRangePadding={false}
-                />
-                <SVGGrid
-                  variableType="dependent"
-                  // className="text-slate-500"
-                  // strokeDasharray="1,3"
-                  tickCount={5}
-                />
+                <SVGBandStripes variableType="independent" even={false} ignoreRangePadding={false} />
+                <SVGGrid variableType="dependent" tickCount={5} />
                 <SVGBarSeries
                   renderer={SVGFancyBarSeriesRenderer<EntityBucket>}
                   dataKey="data-a"
@@ -194,64 +183,29 @@ export function RespondentsByLanguage() {
                   }}
                 />
                 <SVGAxis
-                  renderer={SVGAxisRenderer}
                   variableType="dependent"
                   position="end"
                   tickFormat={dependentAxisTickFormatter}
                   hideTicks={false}
                   hideAxisLine
                   tickLabelPadding={6}
-                  tickLabelProps={{
-                    className: 'fill-slate-400 font-sans',
-                    fontSize: 12
-                  }}
-                  // labelProps={{
-                  //   className: 'fill-slate-400 font-sans',
-                  //   textAnchor: 'middle',
-                  //   fontSize: 14
-                  // }}
-                  // labelPadding={10}
                 />
                 <SVGAxis
-                  renderer={SVGAxisRenderer}
                   variableType="dependent"
                   position="start"
                   label={getDependentAxisLabel(statistic)}
                   tickFormat={dependentAxisTickFormatter}
                   hideTicks={false}
                   hideAxisLine
-                  tickLabelPadding={6} //  TODO move into tickLabelProps?
-                  tickLabelProps={{
-                    className: 'fill-slate-400 font-sans',
-                    fontSize: 12
-                  }}
+                  tickLabelPadding={6}
                   labelPadding={0}
-                  // labelProps={{
-                  //   fill: 'blue'
-                  // }}
-
-                  // labelProps={{
-                  //   className: 'fill-slate-400 font-sans',
-                  //   textAnchor: 'middle',
-                  //   fontSize: 14
-                  // }}
-                  // labelPadding={20}
                 />
                 <SVGAxis
-                  renderer={SVGAxisRenderer}
                   variableType="independent"
                   position="start"
                   tickFormat={independentAxisTickFormatter}
-                  // tickLabelPadding={0}
                   hideTicks
                   hideAxisLine
-                  // tickLabelAngle="angled"
-                  tickLabelProps={{
-                    className: 'fill-slate-400 font-sans',
-                    fontSize: 12,
-                    textAnchor: 'end'
-                    // angle: -45
-                  }}
                   tickLabelPadding={10}
                 />
                 <PopperTooltip<EntityBucket>

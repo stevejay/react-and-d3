@@ -53,7 +53,7 @@ function createStripesPositioning({
 }
 
 /** Generates the animations for stripes. It can only be used with a band scale. */
-export function useStripesTransitions(args: StripePositioningArgs) {
+export function useBandStripesTransitions(args: StripePositioningArgs) {
   if (!isBandScale(args.scale)) {
     throw new Error('Must be used with a band scale');
   }

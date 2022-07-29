@@ -29,20 +29,15 @@ export interface MarginCalculationInput {
 
   tickLabelPadding: number;
   tickLabelAngle: TickLabelAngle;
-  tickLabelTextProps: FontProperties | string;
+  smallFont: FontProperties | string;
 
   label?: string;
   labelPadding: number;
   labelAngle: LabelAngle;
-  labelTextProps: FontProperties | string;
+  bigFont: FontProperties | string;
 }
 
-function getTickLineMargin(
-  axisOrientation: AxisOrientation,
-  rangePadding: number,
-  tickLength: number,
-  hideTicks: boolean
-): Margin {
+function getTickLineMargin(axisOrientation: AxisOrientation, tickLength: number, hideTicks: boolean): Margin {
   const tickDimension = hideTicks ? 0 : tickLength;
   switch (axisOrientation) {
     case 'left':
@@ -149,7 +144,7 @@ function getTickLabelsMargin(
         return {
           left: halfHeight - rangePadding,
           right: width + halfHeight - rangePadding,
-          top: width + halfHeight,
+          top: width + halfHeight + tickLabelPadding,
           bottom: 0
         };
       } else {
@@ -157,7 +152,7 @@ function getTickLabelsMargin(
           left: width + halfHeight - rangePadding,
           right: halfHeight - rangePadding,
           top: 0,
-          bottom: width + halfHeight
+          bottom: width + halfHeight + tickLabelPadding
         };
       }
     }
@@ -170,12 +165,12 @@ function getLabelMargin(
   label: string | undefined,
   labelPadding: number,
   labelAngle: LabelAngle,
-  labelTextProps: FontProperties | string
+  font: FontProperties | string
 ): Margin {
   if (!label) {
     return { left: 0, right: 0, top: 0, bottom: 0 };
   }
-  const labelMeasurements = measureTextWithCache(label, labelTextProps);
+  const labelMeasurements = measureTextWithCache(label, font);
   const width = labelMeasurements.width + labelPadding;
   const height = labelMeasurements.height + labelPadding;
 
@@ -196,8 +191,8 @@ export function calculateMarginForAxis({
   axisOrientation,
   scale,
   rangePadding,
-  labelTextProps,
-  tickLabelTextProps,
+  bigFont,
+  smallFont,
   hideZero,
   tickFormat,
   tickCount,
@@ -212,16 +207,16 @@ export function calculateMarginForAxis({
 }: MarginCalculationInput): Margin {
   // Calculate the ticks that we need to display for this axis:
   const ticks = getTicksData(scale, hideZero, tickFormat, tickCount, tickValues);
-  const tickLineMargin = getTickLineMargin(axisOrientation, rangePadding, tickLength, hideTicks);
+  const tickLineMargin = getTickLineMargin(axisOrientation, tickLength, hideTicks);
   const tickLabelsMargin = getTickLabelsMargin(
     axisOrientation,
     rangePadding,
     ticks,
     tickLabelPadding,
     tickLabelAngle,
-    tickLabelTextProps
+    smallFont
   );
-  const labelMargin = getLabelMargin(axisOrientation, label, labelPadding, labelAngle, labelTextProps);
+  const labelMargin = getLabelMargin(axisOrientation, label, labelPadding, labelAngle, bigFont);
   return {
     left: tickLineMargin.left + tickLabelsMargin.left + labelMargin.left,
     right: tickLineMargin.right + tickLabelsMargin.right + labelMargin.right,

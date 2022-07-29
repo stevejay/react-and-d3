@@ -4,8 +4,8 @@ import { animated, SpringConfig } from 'react-spring';
 import { getTicksData } from './getTicksData';
 import { isBandScale } from './isBandScale';
 import type { AxisScale, ScaleInput, VariableType } from './types';
+import { useBandStripesTransitions } from './useBandStripesTransitions';
 import { useDataContext } from './useDataContext';
-import { useStripesTransitions } from './useStripesTransitions';
 
 interface SVGBandStripesCoreProps {
   /** Whether the stripes are for the independent or the dependent axis. */
@@ -65,7 +65,7 @@ export function SVGBandStripes({
     variableType === 'independent' ? (horizontal ? 'row' : 'column') : horizontal ? 'column' : 'row';
   const rangePadding = variableType === 'independent' ? dependentRangePadding : independentRangePadding;
   const ticks = getTicksData(scale, false, undefined, tickCount, tickValues);
-  const transitions = useStripesTransitions({
+  const transitions = useBandStripesTransitions({
     gridType,
     scale,
     rangePadding: ignoreRangePadding ? 0 : rangePadding,
@@ -80,7 +80,7 @@ export function SVGBandStripes({
   const { style, fill, className = '', ...restRectProps } = rectProps;
 
   return (
-    <g data-testid={`stripes-${variableType}`} {...groupProps}>
+    <g data-testid={`band-stripes-${variableType}`} {...groupProps}>
       {transitions(({ opacity, x, y, width, height }, _, __, index) => {
         if (index % 2 === (even ? 0 : 1)) {
           return null;
@@ -91,11 +91,11 @@ export function SVGBandStripes({
             y={y}
             width={width}
             height={height}
-            style={{ ...theme?.stripes?.styles, ...style, opacity }}
-            className={`${theme?.stripes?.className ?? ''} ${className}`}
+            style={{ ...theme?.bandStripes?.styles, ...style, opacity }}
+            className={`${theme?.bandStripes?.className ?? ''} ${className}`}
             role="presentation"
             aria-hidden
-            fill={fill ?? theme?.stripes?.fill ?? 'currentColor'}
+            fill={fill ?? theme?.bandStripes?.fill ?? 'currentColor'}
             shapeRendering="crispEdges"
             {...restRectProps}
           />

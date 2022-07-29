@@ -1,13 +1,11 @@
-import { defaultLabelTextProps } from './constants';
+import { defaultLabelTextProps, defaultTheme } from './constants';
 import { measureTextWithCache } from './measureTextWithCache';
-import type { AxisOrientation, AxisScale, FontProperties, LabelAngle, SVGTextProps } from './types';
+import type { AxisOrientation, AxisScale, LabelAngle, SVGTextProps, ThemeLabelStyles } from './types';
 
 export interface SVGAxisLabelProps {
   label: string;
   orientation: AxisOrientation;
-  font?: string | FontProperties;
-  fill?: string;
-  className?: string;
+  labelStyles?: ThemeLabelStyles;
   /** Props to apply to the axis label. */
   labelProps?: Partial<SVGTextProps>; // Partial<TextProps>;
   scale: AxisScale;
@@ -17,23 +15,24 @@ export interface SVGAxisLabelProps {
   labelAngle: LabelAngle;
 }
 
+// Note: Does not currently use labelPadding as it renders the axis labels flush against
+// the edges of the chart.
 export function SVGAxisLabel({
   label,
   labelProps = {},
   orientation,
-  font = defaultLabelTextProps,
   scale,
   rangePadding,
   width,
   height,
-  fill = 'currentColor',
-  className = '',
-  labelAngle
+  labelAngle,
+  labelStyles = defaultTheme.svgLabelBig
 }: SVGAxisLabelProps) {
   // Calculate the dimensions of the axis label (if there is one):
-  const labelMeasurements = measureTextWithCache(label, font);
+  const labelMeasurements = measureTextWithCache(label, labelStyles?.font ?? defaultLabelTextProps);
   const { style: labelPropsStyle, className: labelPropsClassname = '', ...restLabelProps } = labelProps;
-  const style = typeof font === 'string' ? { font, ...labelPropsStyle } : labelPropsStyle;
+  const style =
+    typeof labelStyles?.font === 'string' ? { font: labelStyles?.font, ...labelPropsStyle } : labelPropsStyle;
   const isVertical = orientation === 'left' || orientation === 'right';
   const rangeFrom = Number(scale.range()[0]) ?? 0;
   const rangeTo = Number(scale.range()[1]) ?? 0;
@@ -115,8 +114,8 @@ export function SVGAxisLabel({
       x={x}
       y={y}
       transform={transform}
-      fill={fill}
-      className={`${className} ${labelPropsClassname}`}
+      fill={labelStyles?.fill ?? 'currentColor'}
+      className={`${labelStyles?.className ?? ''} ${labelPropsClassname}`}
       {...restLabelProps}
     >
       {label}
