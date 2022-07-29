@@ -1,6 +1,7 @@
 import { animated, SpringConfig } from 'react-spring';
 import { Group } from '@visx/group';
 
+import { VariableType } from '@/visx-hybrid/types';
 import { AxisScale, Margin } from '@/visx-next/types';
 
 import { getTicksData } from './getTicksData';
@@ -11,7 +12,7 @@ export type SVGGridProps<Scale extends AxisScale> = {
   scale: Scale;
   gridConfig: GridConfig;
   horizontal: boolean;
-  variableType: 'independent' | 'dependent';
+  variableType: VariableType;
   innerWidth: number;
   innerHeight: number;
   margin: Margin;

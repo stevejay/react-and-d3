@@ -74,18 +74,18 @@ import { useSeriesEvents } from './useSeriesEvents';
 //     horizontal ? independentAccessor : dependentAccessor,
 //     horizontal,
 //     springConfig ?? contextSpringConfig,
-//     animate ?? contextAnimate,
+//     animate && contextAnimate,
 //     renderingOffset
 //   );
 
 //   return (
-//     <Group data-test-id="bar-series" {...groupProps}>
+//     <Group data-testid="bar-series" {...groupProps}>
 //       {transitions(({ opacity, x, y, width, height }, datum, _, index) => {
 //         const { style, ...restBarProps } =
 //           typeof barProps === 'function' ? barProps(datum, index, dataKey) : barProps;
 //         return (
 //           <animated.rect
-//             data-test-id="bar"
+//             data-testid="bar"
 //             x={x}
 //             y={y}
 //             width={width}
@@ -105,7 +105,7 @@ import { useSeriesEvents } from './useSeriesEvents';
 
 type BarSeriesRendererCoreProps<Datum extends object> = {
   context: Required<InferDataContext>;
-  // variableType: 'independent' | 'dependent';
+  // variableType: VariableType;
   springConfig?: SpringConfig;
   animate?: boolean;
   // hideZero?: boolean;
@@ -160,7 +160,7 @@ export function SVGBarSeries<ElementProps extends object, Datum extends object>(
   });
 
   return (
-    <Group data-test-id={`bar-series-${dataKey}`} {...groupProps}>
+    <Group data-testid={`bar-series-${dataKey}`} {...groupProps}>
       {renderer({
         context,
         springConfig: springConfig ?? context.springConfig,

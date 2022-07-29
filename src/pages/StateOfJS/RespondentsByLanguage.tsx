@@ -204,7 +204,7 @@ export function RespondentsByLanguage() {
                   }}
                   tickLineProps={{ shapeRendering: 'crispEdges' }}
                   domainPathProps={{ shapeRendering: 'crispEdges' }}
-                  labelOffset={10}
+                  labelPadding={10}
                   // animate={false}
                 />
                 {/* <SvgXYChartAxis
@@ -228,7 +228,7 @@ export function RespondentsByLanguage() {
                   }}
                   tickLineProps={{ shapeRendering: 'crispEdges' }}
                   domainPathProps={{ shapeRendering: 'crispEdges' }}
-                  labelOffset={20}
+                  labelPadding={20}
                   animate={false}
                 /> */}
                 {/* <SvgXYChartAxis

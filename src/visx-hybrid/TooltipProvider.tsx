@@ -1,10 +1,9 @@
 import { ReactNode, useCallback, useRef } from 'react';
 import { debounce } from 'lodash-es';
 
-import { EventHandlerParams, TooltipData } from '@/visx-next/types';
-import { isValidNumber } from '@/visx-next/types/typeguards/isValidNumber';
-
+import { isValidNumber } from './isValidNumber';
 import { TooltipContext } from './TooltipContext';
+import type { EventHandlerParams, TooltipData } from './types';
 import { useTooltip } from './useTooltip';
 
 type TooltipProviderProps = {

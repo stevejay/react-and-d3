@@ -98,7 +98,7 @@ export function GlyphSeries<
     renderingOffset
   );
   return (
-    <Group data-test-id="glyph-series" {...groupProps} className={groupClassName}>
+    <Group data-testid="glyph-series" {...groupProps} className={groupClassName}>
       {transitions((styles, datum) =>
         renderGlyph({ ...styles, datum, fill: colorAccessor?.(datum, dataKey), ...eventEmitters })
       )}

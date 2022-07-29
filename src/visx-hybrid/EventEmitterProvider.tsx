@@ -21,7 +21,7 @@ export type Events = {
 
 export type EventType = keyof Events;
 
-export type EventEmitterContextType = Emitter<Events>; // TODO fix any
+export type EventEmitterContextType = Emitter<Events>;
 
 export const EventEmitterContext = createContext<EventEmitterContextType | null>(null);
 

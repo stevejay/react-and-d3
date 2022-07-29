@@ -138,7 +138,7 @@ export function BarChart({ data, margin }: BarChartProps) {
         }}
         // tickLineProps={{ shapeRendering: 'crispEdges' }}
         // domainPathProps={{ shapeRendering: 'crispEdges' }}
-        labelOffset={10}
+        labelPadding={10}
       />
       <SvgXYChartAxis
         orientation="bottom"
@@ -159,7 +159,7 @@ export function BarChart({ data, margin }: BarChartProps) {
         }}
         // tickLineProps={{ shapeRendering: 'crispEdges' }}
         // domainPathProps={{ shapeRendering: 'crispEdges' }}
-        labelOffset={10}
+        labelPadding={10}
       />
       <SvgXYChartAxis
         orientation="left"
@@ -181,7 +181,7 @@ export function BarChart({ data, margin }: BarChartProps) {
         }}
         // tickLineProps={{ shapeRendering: 'crispEdges' }}
         // domainPathProps={{ shapeRendering: 'crispEdges' }}
-        labelOffset={36} // Does not take tick labels into account.
+        labelPadding={36} // Does not take tick labels into account.
       />
       <SvgXYChartAxis
         orientation="right"
@@ -203,7 +203,7 @@ export function BarChart({ data, margin }: BarChartProps) {
         }}
         // tickLineProps={{ shapeRendering: 'crispEdges' }}
         // domainPathProps={{ shapeRendering: 'crispEdges' }}
-        labelOffset={36} // Does not take tick labels into account.
+        labelPadding={36} // Does not take tick labels into account.
         // hideTicks
         // tickLength={0}
       />

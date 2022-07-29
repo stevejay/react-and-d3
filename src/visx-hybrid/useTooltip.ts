@@ -1,21 +1,6 @@
 import { useCallback, useState } from 'react';
 
-export type UseTooltipParams<TooltipData> = {
-  tooltipOpen: boolean;
-  tooltipLeft?: number;
-  tooltipTop?: number;
-  tooltipData?: TooltipData;
-  updateTooltip: (args: UpdateTooltipArgs<TooltipData>) => void;
-  showTooltip: (args: ShowTooltipArgs<TooltipData>) => void;
-  hideTooltip: () => void;
-};
-type UseTooltipState<TooltipData> = Pick<
-  UseTooltipParams<TooltipData>,
-  'tooltipOpen' | 'tooltipLeft' | 'tooltipTop' | 'tooltipData'
->;
-type ValueOrFunc<T> = T | ((t: T) => T);
-type ShowTooltipArgs<TooltipData> = ValueOrFunc<Omit<UseTooltipState<TooltipData>, 'tooltipOpen'>>;
-type UpdateTooltipArgs<TooltipData> = ValueOrFunc<UseTooltipState<TooltipData>>;
+import type { ShowTooltipArgs, UseTooltipParams, UseTooltipState } from './types';
 
 export function useTooltip<TooltipData = object>(
   /** Optional initial TooltipState. */
@@ -47,13 +32,6 @@ export function useTooltip<TooltipData = object>(
         ...state,
         tooltipOpen: false
       })),
-    // () =>
-    //   setTooltipState({
-    //     tooltipOpen: false,
-    //     tooltipLeft: undefined,
-    //     tooltipTop: undefined,
-    //     tooltipData: undefined
-    //   }),
     [setTooltipState]
   );
 

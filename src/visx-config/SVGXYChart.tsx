@@ -7,7 +7,7 @@ import { AnyD3Scale, createScale, ScaleConfig, ScaleInput } from '@visx/scale';
 import { extent as d3Extent } from 'd3-array';
 import { isNil } from 'lodash-es';
 
-import { ParentSize } from '@/visx-next/ParentSize';
+import { ParentSize } from '@/visx-hybrid/ParentSize';
 import { isDiscreteScaleConfig } from '@/visx-next/scale';
 import { scaleCanBeZeroed } from '@/visx-next/scaleCanBeZeroed';
 

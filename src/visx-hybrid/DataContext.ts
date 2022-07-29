@@ -1,7 +1,6 @@
 import { createContext } from 'react';
-import { AxisScale } from '@visx/axis';
 
-import { DataContextType } from './types';
+import type { AxisScale, DataContextType } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyDataContext = DataContextType<AxisScale, AxisScale>;
@@ -17,23 +16,9 @@ export type InferYScaleConfig<X extends AnyDataContext> = X extends DataContextT
   ? T
   : AxisScale;
 
-// // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// export type InferDatum<X extends AnyDataContext> = X extends DataContextType<any, any, infer T, any>
-//   ? T
-//   : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     any;
-
-// // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// export type InferOriginalDatum<X extends AnyDataContext> = X extends DataContextType<any, any, any, infer T>
-//   ? T
-//   : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     any;
-
 export type InferDataContext<C extends AnyDataContext = AnyDataContext> = DataContextType<
   InferXScaleConfig<C>,
   InferYScaleConfig<C>
-  // InferDatum<C>,
-  // InferOriginalDatum<C>
 >;
 
 export const DataContext = createContext<InferDataContext | null>(null);

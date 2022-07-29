@@ -15,7 +15,7 @@ export function CircleGlyph({ x, y, size, opacity, fill, ...rest }: CircleGlyphP
   return (
     <animated.circle
       {...rest}
-      data-test-id="glyph"
+      data-testid="glyph"
       cx={x}
       cy={y}
       r={size}

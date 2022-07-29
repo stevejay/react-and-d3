@@ -3,6 +3,7 @@ import { animated, SpringConfig } from 'react-spring';
 import { Group } from '@visx/group';
 import { Text } from '@visx/text';
 
+import { VariableType } from '@/visx-hybrid/types';
 import { AxisDomainPath } from '@/visx-next/AxisDomainPath';
 import { getLabelTransform } from '@/visx-next/getLabelTransform';
 import { AxisScale, LineProps, Margin, Orientation, TextProps } from '@/visx-next/types';
@@ -22,7 +23,7 @@ function SVGAxisTickLine({
 }: SVGAxisTickLineProps) {
   return (
     <line
-      data-test-id="axis-tick"
+      data-testid="axis-tick"
       stroke={stroke}
       strokeWidth={strokeWidth}
       strokeLinecap={strokeLinecap}
@@ -73,7 +74,7 @@ function SVGAxisTicks<Scale extends AxisScale>({
     <>
       {transitions(({ opacity, translate }, { label }) => (
         <animated.g
-          data-test-id="axis-tick-group"
+          data-testid="axis-tick-group"
           {...tickGroupProps}
           style={{ opacity, [tickTranslateAxis]: translate }}
         >
@@ -81,7 +82,7 @@ function SVGAxisTicks<Scale extends AxisScale>({
             <SVGAxisTickLine {...{ [tickLineAxis + '2']: tickSign * tickLength }} {...tickLineProps} />
           )}
           <Text
-            data-test-id="axis-label"
+            data-testid="axis-label"
             role="presentation"
             aria-hidden
             // className='fill-slate-400 font-sans'
@@ -133,7 +134,7 @@ export type SvgAxisRendererProps<Scale extends AxisScale> = {
   /** The text for the axis label. */
   label?: string;
   /** Pixel offset of the axis label. */
-  labelOffset?: number;
+  labelPadding?: number;
   /** Props to apply to the axis label. */
   labelProps?: Partial<TextProps>;
   /** Props to apply to the axis domain path. */
@@ -149,7 +150,7 @@ function SvgAxisRenderer<Scale extends AxisScale>({
   hideAxisLine = false,
   label = '',
   labelProps = {},
-  labelOffset = 14,
+  labelPadding = 14,
   tickLength = 8,
   hideTicks = false,
   tickGroupProps = {},
@@ -208,7 +209,7 @@ function SvgAxisRenderer<Scale extends AxisScale>({
       />
       {!hideAxisLine && (
         <AxisDomainPath
-          data-test-id="axis-domain"
+          data-testid="axis-domain"
           {...domainPathProps}
           orientation={orientation}
           renderingOffset={renderingOffset}
@@ -221,7 +222,7 @@ function SvgAxisRenderer<Scale extends AxisScale>({
       )}
       {label && (
         <Text
-          data-test-id="axis-label"
+          data-testid="axis-label"
           role="presentation"
           aria-hidden
           className="fill-slate-400 font-sans"
@@ -229,7 +230,7 @@ function SvgAxisRenderer<Scale extends AxisScale>({
           fontSize={14}
           {...labelProps}
           {...getLabelTransform({
-            labelOffset,
+            labelPadding,
             labelProps,
             orientation,
             range: domainRange,
@@ -248,7 +249,7 @@ export type SVGAxisProps<Scale extends AxisScale> = {
   scale: Scale;
   axisConfig: AxisConfig;
   horizontal: boolean;
-  variableType: 'independent' | 'dependent';
+  variableType: VariableType;
   width: number;
   height: number;
   margin: Margin;
@@ -309,7 +310,7 @@ export function SVGAxis<Scale extends AxisScale>({
 
   return (
     <Group
-      data-test-id={`axis-${orientation}`}
+      data-testid={`axis-${orientation}`}
       // {...axisGroupProps}
       top={top}
       left={left}

@@ -1,27 +1,21 @@
 import { useEffect, useRef } from 'react';
 import { SpringConfig, useTransition } from 'react-spring';
-import { coerceNumber } from '@visx/scale';
 import { isNil } from 'lodash-es';
 
-import { getScaleBandwidth, isBandScale } from '@/visx-next/scale';
-import { AxisScale, GridScale } from '@/visx-next/types';
-
-import { TickDatum } from './types';
+import { coerceNumber } from './coerceNumber';
+import { getScaleBandwidth } from './getScaleBandwidth';
+import { isBandScale } from './isBandScale';
+import type { AxisScale, TickDatum } from './types';
 
 function keyAccessor(tickValue: TickDatum) {
   return tickValue.value.toString(); // Should this be tickValue.label ?
 }
 
-function createTickPositioning<Scale extends GridScale>(
-  scale: Scale,
-  offset: number
-): (d: TickDatum) => number {
+function createTickPositioning(scale: AxisScale, offset: number): (d: TickDatum) => number {
   const scaleCopy = scale.copy();
   let scaleOffset = Math.max(0, getScaleBandwidth(scaleCopy) - offset * 2) / 2;
 
-  // Broaden type before using 'round' in s as typeguard.
-  const s = scale as AxisScale;
-  if ('round' in s) {
+  if ('round' in scale) {
     scaleOffset = Math.round(scaleOffset);
   }
 
@@ -29,8 +23,8 @@ function createTickPositioning<Scale extends GridScale>(
   return (d) => (coerceNumber(scaleCopy(d.value)) ?? 0) + scaleOffset;
 }
 
-export function useAxisTransitions<Scale extends GridScale>(
-  scale: Scale,
+export function useAxisTransitions(
+  scale: AxisScale,
   ticks: TickDatum[],
   springConfig: SpringConfig | undefined,
   animate: boolean,

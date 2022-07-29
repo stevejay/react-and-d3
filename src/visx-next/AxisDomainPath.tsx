@@ -41,7 +41,7 @@ export function AxisDomainPath({
   });
   return (
     <animated.path
-      data-test-id="domain-path"
+      data-testid="domain-path"
       fill="none"
       stroke={stroke}
       strokeLinecap={strokeLinecap}

@@ -5,7 +5,6 @@ import { Text } from '@visx/text';
 import { AxisDomainPath } from '@/visx-next/AxisDomainPath';
 import { TextProps } from '@/visx-next/types';
 
-import { getLabelTransform } from './getLabelTransform';
 import { getTicksData } from './getTicksData';
 import { AxisRendererProps } from './SVGAxis';
 import { TickDatum } from './types';
@@ -22,7 +21,7 @@ function SVGAxisTickLine({
 }: SVGAxisTickLineProps) {
   return (
     <line
-      data-test-id="axis-tick"
+      data-testid="axis-tick"
       stroke={stroke}
       strokeWidth={strokeWidth}
       strokeLinecap={strokeLinecap}
@@ -73,7 +72,7 @@ function SVGAxisTicks({
     <>
       {transitions(({ opacity, translate }, { label }) => (
         <animated.g
-          data-test-id="axis-tick-group"
+          data-testid="axis-tick-group"
           {...tickGroupProps}
           style={{ opacity, [tickTranslateAxis]: translate }}
         >
@@ -81,7 +80,7 @@ function SVGAxisTicks({
             <SVGAxisTickLine {...{ [tickLineAxis + '2']: tickSign * tickLength }} {...tickLineProps} />
           )}
           <Text
-            data-test-id="axis-label"
+            data-testid="axis-label"
             role="presentation"
             aria-hidden
             // className='fill-slate-400 font-sans'
@@ -112,9 +111,6 @@ export function SVGAxisRenderer({
   domainPathProps = {},
   outerTickLength = 0,
   hideAxisLine = false,
-  label = '',
-  labelProps = {},
-  labelOffset = 14,
   tickLength = 8,
   hideTicks = false,
   tickGroupProps = {},
@@ -128,7 +124,8 @@ export function SVGAxisRenderer({
   tickFormat,
   tickCount,
   tickValues
-}: AxisRendererProps) {
+}: // tickLabelAngle = 'horizontal'
+AxisRendererProps) {
   const isLeft = orientation === 'left';
   const isTop = orientation === 'top';
   const isVertical = orientation === 'left' || orientation === 'right';
@@ -158,7 +155,7 @@ export function SVGAxisRenderer({
     ...userTickLabelProps
   };
 
-  const tickLabelFontSize = typeof tickLabelProps?.fontSize === 'number' ? tickLabelProps.fontSize : 0;
+  // const tickLabelFontSize = typeof tickLabelProps?.fontSize === 'number' ? tickLabelProps.fontSize : 0;
   return (
     <>
       <SVGAxisTicks
@@ -178,7 +175,7 @@ export function SVGAxisRenderer({
       />
       {!hideAxisLine && (
         <AxisDomainPath
-          data-test-id="axis-domain"
+          data-testid="axis-domain"
           {...domainPathProps}
           orientation={orientation}
           renderingOffset={renderingOffset}
@@ -189,9 +186,9 @@ export function SVGAxisRenderer({
           springConfig={springConfig}
         />
       )}
-      {label && (
+      {/* {label && (
         <Text
-          data-test-id="axis-label"
+          data-testid="axis-label"
           role="presentation"
           aria-hidden
           className="fill-slate-400 font-sans"
@@ -199,7 +196,7 @@ export function SVGAxisRenderer({
           fontSize={14}
           {...labelProps}
           {...getLabelTransform({
-            labelOffset,
+            labelPadding,
             labelProps,
             orientation,
             range: domainRange,
@@ -211,7 +208,7 @@ export function SVGAxisRenderer({
         >
           {label}
         </Text>
-      )}
+      )} */}
     </>
   );
 }

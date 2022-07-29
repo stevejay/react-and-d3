@@ -1,11 +1,8 @@
-import {
-  createScaledValueAccessor,
-  getScaleBandwidth,
-  getScaleBaseline,
-  ScaleInput
-} from '@/visx-next/scale';
-import { PositionScale } from '@/visx-next/types';
-import { isValidNumber } from '@/visx-next/types/typeguards/isValidNumber';
+import { createScaledValueAccessor } from './createScaledValueAccessor';
+import { getScaleBandwidth } from './getScaleBandwidth';
+import { getScaleBaseline } from './getScaleBaseline';
+import { isValidNumber } from './isValidNumber';
+import type { PositionScale, ScaleInput } from './types';
 
 // Defines polygons such that it animates correctly through zero when
 // transitioning from positive to negative, or vice versa.

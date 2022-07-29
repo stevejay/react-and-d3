@@ -1,15 +1,12 @@
 import { Children, Fragment, isValidElement, ReactNode } from 'react';
-// import { extent } from 'd3-array';
 import { stack as d3stack } from 'd3-shape';
 import { identity } from 'lodash-es';
 
-import getStackOffset from '@/visx-next/stackOffset';
-import getStackOrder from '@/visx-next/stackOrder';
-import { AxisScale, CombinedStackData } from '@/visx-next/types';
-
 import { combineBarStackData } from './combineBarStackData';
 import { getBarStackDataEntry } from './getBarStackDataEntry';
-import { DataEntry } from './types';
+import { getStackOffset } from './stackOffset';
+import { getStackOrder } from './stackOrder';
+import type { AxisScale, CombinedStackData, DataEntry } from './types';
 
 export function getDataEntriesFromChildren<
   IndependentScale extends AxisScale,
@@ -19,14 +16,8 @@ export function getDataEntriesFromChildren<
 
   Children.forEach(children, (element) => {
     if (!isValidElement(element)) {
-      // Ignore non-elements. This allows people to more easily inline
-      // conditionals in their route config.
       return;
     }
-
-    // if (element.type === 'string') {
-    //   return;
-    // }
 
     if (element.type === Fragment) {
       // Transparently support React.Fragment and its children.
@@ -34,18 +25,7 @@ export function getDataEntriesFromChildren<
         element.props.children,
         horizontal
       ).forEach((entry) => dataEntries.push(entry));
-      //   dataEntries.push.apply(dataEntries, getDataEntriesFromChildren(element.props.children));
-      return;
-    }
-
-    // invariant(
-    //   element.type === Route,
-    //   `[${
-    //     typeof element.type === 'string' ? element.type : element.type.name
-    //   }] is not a <Route> component. All component children of <Routes> must be a <Route> or <React.Fragment>`
-    // );
-
-    if (typeof element.type !== 'string' && element.type.name.endsWith('Stack')) {
+    } else if (typeof element.type !== 'string' && element.type.name.endsWith('Stack')) {
       const childDataEntries = getDataEntriesFromChildren<IndependentScale, DependentScale>(
         element.props.children,
         horizontal
@@ -94,10 +74,6 @@ export function getDataEntriesFromChildren<
         horizontal
       );
 
-      // ------
-
-      // console.log('found stack', stackDataEntries);
-
       stackDataEntries.forEach((entry) => dataEntries.push(entry));
     } else if (element.props.dataKey) {
       const dataEntry: DataEntry<IndependentScale, DependentScale> = {
@@ -110,10 +86,6 @@ export function getDataEntriesFromChildren<
       };
       dataEntries.push(dataEntry);
     }
-
-    // if (element.props.children) {
-    //   dataEntry.children = getDataEntriesFromChildren(element.props.children);
-    // }
   });
 
   return dataEntries;

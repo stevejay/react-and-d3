@@ -120,7 +120,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         }}
         // tickLineProps={{ shapeRendering: 'crispEdges' }}
         // domainPathProps={{ shapeRendering: 'crispEdges' }}
-        labelOffset={10}
+        labelPadding={10}
       />
       <SVGAxis
         renderer={SVGAxisRenderer}
@@ -143,7 +143,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         }}
         // tickLineProps={{ shapeRendering: 'crispEdges' }}
         // domainPathProps={{ shapeRendering: 'crispEdges' }}
-        labelOffset={10}
+        labelPadding={10}
       />
       <SVGAxis
         renderer={SVGAxisRenderer}
@@ -167,7 +167,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         }}
         // tickLineProps={{ shapeRendering: 'crispEdges' }}
         // domainPathProps={{ shapeRendering: 'crispEdges' }}
-        labelOffset={36} // Does not take tick labels into account.
+        labelPadding={36} // Does not take tick labels into account.
       />
       <SVGAxis
         renderer={SVGAxisRenderer}
@@ -191,7 +191,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         }}
         // tickLineProps={{ shapeRendering: 'crispEdges' }}
         // domainPathProps={{ shapeRendering: 'crispEdges' }}
-        labelOffset={36} // Does not take tick labels into account.
+        labelPadding={36} // Does not take tick labels into account.
         // hideTicks
         // tickLength={0}
       />

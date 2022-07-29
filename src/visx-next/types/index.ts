@@ -403,7 +403,7 @@ export type CommonAxisProps<Scale extends AxisScale> = {
   /** The text for the axis label. */
   label?: string;
   /** Pixel offset of the axis label. */
-  labelOffset?: number;
+  labelPadding?: number;
   /** Classes to apply to the axis label. */ // TODO think about putting into labelProps.
   labelClassName?: string;
   /** Props to apply to the axis label. */

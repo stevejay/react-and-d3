@@ -1,19 +1,11 @@
 import { FocusEvent, PointerEvent, useCallback } from 'react';
-// import { AxisScale } from '@visx/axis';
 import { isNil } from 'lodash-es';
 
-// import { DataContext } from './DataContext';
-import { HandlerParams } from '@/visx-next/EventEmitterProvider';
-import {
-  // DataContextType,
-  EventHandlerParams,
-  NearestDatumReturnType
-} from '@/visx-next/types';
-import { isPointerEvent } from '@/visx-next/types/typeguards/isPointerEvent';
-
+import { HandlerParams } from './EventEmitterProvider';
 import { findNearestDatumX } from './findNearestDatumX';
 import { findNearestDatumY } from './findNearestDatumY';
-import { NearestDatumArgs } from './types';
+import { isPointerEvent } from './isPointerEvent';
+import type { EventHandlerParams, NearestDatumArgs, NearestDatumReturnType } from './types';
 import { useDataContext } from './useDataContext';
 import { useEventEmitterSubscription } from './useEventEmitterSubscription';
 
@@ -53,11 +45,6 @@ export function useEventHandlers<Datum extends object>({
   onPointerUp,
   allowedSources
 }: PointerEventHandlerParams<Datum>) {
-  // const { width, height, horizontal, dataRegistry, xScale, yScale } = useContext(
-  //   DataContext
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // ) as unknown as DataContextType<XScale, YScale, any, Datum>; // Not sure about this use of any.
-
   const { width, height, horizontal, dataEntries, independentScale, dependentScale } = useDataContext();
 
   const findNearestDatum = findNearestDatumProps || (horizontal ? findNearestDatumY : findNearestDatumX);

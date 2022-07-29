@@ -45,7 +45,7 @@ export interface AxisConfig {
   /** The text for the axis label. */
   label?: string;
   /** Pixel offset of the axis label. */
-  labelOffset?: number;
+  labelPadding?: number;
   /** Props to apply to the axis label. */
   labelProps?: Partial<TextProps>;
   /** Props to apply to the axis domain path. */

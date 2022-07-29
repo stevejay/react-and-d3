@@ -1,10 +1,9 @@
+import { getTicks } from '@visx/scale';
 import { isNil } from 'lodash-es';
 
 import { getTickFormatter } from '@/visx-next/getTickFormatter';
-import { getTicks, ScaleInput } from '@/visx-next/scale';
-import { AxisScale, TickFormatter } from '@/visx-next/types';
 
-import { TickDatum } from './types';
+import type { AxisScale, ScaleInput, TickDatum, TickFormatter } from './types';
 
 export function getTicksData(
   scale: AxisScale | undefined,

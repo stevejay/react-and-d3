@@ -43,7 +43,7 @@ export function SvgAxisDomainPath({
 
   return (
     <animated.path
-      data-test-id="domain-path"
+      data-testid="domain-path"
       fill="none"
       stroke="currentColor"
       role="presentation"

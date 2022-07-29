@@ -1,25 +1,27 @@
 import { ReactNode, SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
 
-// import { Group } from '@visx/group';
-// import { isNil } from 'lodash-es';
-import {
+import { calculateAxisOrientation } from './calculateAxisOrientation';
+import { getDefaultAxisLabelAngle } from './getDefaultAxisLabelAngle';
+import { SVGAnimatedGroup } from './SVGAnimatedGroup';
+import { SVGAxisLabel } from './SVGAxisLabel';
+import type {
+  AxisOrientation,
   AxisScale,
+  LabelAngle,
   LineProps,
   Margin,
-  Orientation,
   ScaleInput,
+  SVGTextProps,
   TextProps,
-  TickFormatter
-} from '@/visx-next/types';
-
-// import { calculateAxisMargin } from './calculateAxisMargin';
-import { calculateOrientation } from './calculateOrientation';
-import { SVGAnimatedGroup } from './SVGAnimatedGroup';
+  TickFormatter,
+  TickLabelAngle,
+  VariableType
+} from './types';
 import { useDataContext } from './useDataContext';
 
 export type AxisRendererProps = {
-  orientation: Orientation;
+  orientation: AxisOrientation;
   scale: AxisScale;
   margin: Margin;
   rangePadding: number;
@@ -36,6 +38,8 @@ export type AxisRendererProps = {
   hideTicks?: boolean;
   /** Props to apply to the <g> element that wraps each tick line and label. */
   tickGroupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'style'>; // TODO think about removing style.
+  /** The angle that the tick label will be rendered at. */
+  tickLabelAngle?: TickLabelAngle;
   /** Padding between the tick lines and the tick labels. */
   tickLabelPadding?: number;
   /** The props to apply to the tick labels. */
@@ -49,22 +53,21 @@ export type AxisRendererProps = {
   /** The text for the axis label. */
   label?: string;
   /** Pixel offset of the axis label. */
-  labelOffset?: number;
+  labelPadding?: number;
   /** Props to apply to the axis label. */
-  labelProps?: Partial<TextProps>;
+  labelProps?: Partial<SVGTextProps>;
+  /** The angle that the axis label will be rendered at. */
+  labelAngle?: LabelAngle;
   /** Props to apply to the axis domain path. */
   domainPathProps?: Omit<SVGProps<SVGPathElement>, 'ref'>;
 };
 
 export type AxisRenderer = (props: AxisRendererProps) => ReactNode;
 
-export type SVGAxisProps = Omit<
-  AxisRendererProps,
-  'ticks' | 'scale' | 'margin' | 'rangePadding' | 'orientation'
-> & {
+export type SVGAxisProps = Omit<AxisRendererProps, 'scale' | 'margin' | 'rangePadding' | 'orientation'> & {
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'x' | 'y'>;
   position: 'start' | 'end';
-  variableType: 'independent' | 'dependent';
+  variableType: VariableType;
   renderer: AxisRenderer;
 };
 
@@ -77,6 +80,10 @@ export function SVGAxis(props: SVGAxisProps) {
     animate = true,
     renderer,
     tickLabelProps,
+    labelProps,
+    label,
+    tickLabelAngle,
+    labelAngle,
     ...restProps
   } = props;
 
@@ -90,11 +97,12 @@ export function SVGAxis(props: SVGAxisProps) {
     width,
     height,
     springConfig: contextSpringConfig,
-    animate: contextAnimate
+    animate: contextAnimate,
+    theme
   } = useDataContext();
 
   const scale = variableType === 'independent' ? independentScale : dependentScale;
-  const orientation = calculateOrientation(horizontal, variableType, position);
+  const orientation = calculateAxisOrientation(horizontal, variableType, position);
 
   const top =
     orientation === 'bottom'
@@ -114,57 +122,51 @@ export function SVGAxis(props: SVGAxisProps) {
   const defaultTextAnchor = orientation === 'left' ? 'end' : orientation === 'right' ? 'start' : 'middle';
   const defaultVerticalAnchor = orientation === 'top' ? 'end' : orientation === 'bottom' ? 'start' : 'middle';
 
-  // const autoMargin = calculateAxisMargin(
-  //   orientation,
-  //   scale,
-  //   props.hideZero ?? false,
-  //   props.tickFormat,
-  //   props.tickCount,
-  //   props.tickValues,
-  //   props.tickLength ?? 8,
-  //   props.hideTicks ?? false,
-  //   props.tickLabelPadding ?? 6,
-  //   props.label,
-  //   props.labelOffset ?? 14
-  // );
-
-  // console.log(`autoMargin ${orientation}`, autoMargin);
-
-  // const styles = useSpring({
-  //   to: { x: left, y: top },
-  //   config: springConfig ?? contextSpringConfig,
-  //   immediate: !animate
-  // });
-
   return (
-    <SVGAnimatedGroup
-      data-testid={`axis-${orientation}`}
-      x={left}
-      y={top}
-      springConfig={springConfig ?? contextSpringConfig}
-      animate={animate}
-      {...groupProps}
-    >
-      {renderer({
-        ...restProps,
-        tickLabelProps: {
-          textAnchor: defaultTextAnchor,
-          verticalAnchor: defaultVerticalAnchor,
-          ...tickLabelProps
-        },
-        orientation,
-        scale,
-        springConfig: springConfig ?? contextSpringConfig,
-        animate: animate ?? contextAnimate,
-        rangePadding,
-        margin
-      })}
-    </SVGAnimatedGroup>
+    <>
+      {label && (
+        <SVGAxisLabel
+          label={label}
+          orientation={orientation}
+          labelProps={labelProps}
+          scale={scale}
+          rangePadding={rangePadding}
+          width={width}
+          height={height}
+          labelAngle={labelAngle ?? getDefaultAxisLabelAngle(orientation)}
+          {...theme.svgLabelBig}
+        />
+      )}
+      <SVGAnimatedGroup
+        data-testid={`axis-${orientation}`}
+        x={left}
+        y={top}
+        springConfig={springConfig ?? contextSpringConfig}
+        animate={animate && contextAnimate}
+        {...groupProps}
+      >
+        {renderer({
+          ...restProps,
+          tickLabelProps: {
+            textAnchor: defaultTextAnchor,
+            verticalAnchor: defaultVerticalAnchor,
+            ...tickLabelProps
+          },
+          orientation,
+          scale,
+          springConfig: springConfig ?? contextSpringConfig,
+          animate: animate && contextAnimate,
+          rangePadding,
+          margin,
+          tickLabelAngle
+        })}
+      </SVGAnimatedGroup>
+    </>
   );
 
   // return (
   //   <Group
-  //     data-test-id={`axis-${orientation}`}
+  //     data-testid={`axis-${orientation}`}
   //     {...groupProps}
   //     top={top}
   //     left={left}
@@ -179,7 +181,7 @@ export function SVGAxis(props: SVGAxisProps) {
   //       orientation,
   //       scale,
   //       springConfig: springConfig ?? contextSpringConfig,
-  //       animate: animate ?? contextAnimate,
+  //       animate: animate && contextAnimate,
   //       rangePadding,
   //       margin
   //     })}

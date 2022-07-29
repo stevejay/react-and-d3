@@ -22,7 +22,7 @@ function SvgAxisTickLine({
 }: SvgAxisTickLineProps) {
   return (
     <line
-      data-test-id="axis-tick"
+      data-testid="axis-tick"
       stroke={stroke}
       strokeWidth={strokeWidth}
       strokeLinecap={strokeLinecap}
@@ -58,7 +58,7 @@ function Ticks<Scale extends AxisScale>({
       {transitions(({ opacity, translate }, { label, value }, _, index) => {
         return (
           <animated.g
-            data-test-id="axis-tick-group"
+            data-testid="axis-tick-group"
             {...tickGroupProps}
             style={{ opacity, [tickTranslateAxis]: translate }}
           >
@@ -66,7 +66,7 @@ function Ticks<Scale extends AxisScale>({
               <SvgAxisTickLine {...{ [tickLineAxis + '2']: tickSign * tickLength }} {...tickLineProps} />
             )}
             <Text
-              data-test-id="axis-label"
+              data-testid="axis-label"
               role="presentation"
               aria-hidden
               {...{ [tickLineAxis]: tickSign * ((hideTicks ? 0 : tickLength) + tickLabelPadding) }}
@@ -99,7 +99,7 @@ function SvgAxisRenderer<Scale extends AxisScale>({
   hideTicks,
   rangePadding = 0,
   label = '',
-  labelOffset = 14,
+  labelPadding = 14,
   orientation = 'bottom',
   scale,
   tickLineProps,
@@ -153,7 +153,7 @@ function SvgAxisRenderer<Scale extends AxisScale>({
 
       {!hideAxisLine && (
         <AxisDomainPath
-          data-test-id="axis-domain"
+          data-testid="axis-domain"
           className={domainPathClassName}
           {...domainPathProps}
           orientation={orientation}
@@ -168,13 +168,13 @@ function SvgAxisRenderer<Scale extends AxisScale>({
 
       {label && (
         <Text
-          data-test-id="axis-label"
+          data-testid="axis-label"
           role="presentation"
           aria-hidden
           className={labelClassName}
           {...labelProps}
           {...getLabelTransform({
-            labelOffset,
+            labelPadding,
             labelProps,
             orientation,
             range,
@@ -219,7 +219,7 @@ function SvgAxis<Scale extends AxisScale>({
   const ticks = getTicksData(scale, hideZero, tickFormat, tickCount, tickValues);
 
   return (
-    <Group data-test-id={`axis-${orientation}`} {...axisGroupProps} top={top} left={left}>
+    <Group data-testid={`axis-${orientation}`} {...axisGroupProps} top={top} left={left}>
       {children({
         ...restProps,
         hideZero,

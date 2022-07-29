@@ -30,14 +30,17 @@ export function useEventEmitters({
     (event: PointerEvent) => emit?.('pointermove', event, source),
     [emit, source]
   );
+
   const emitPointerOut = useCallback(
     (event: PointerEvent) => emit?.('pointerout', event, source),
     [emit, source]
   );
+
   const emitPointerUp = useCallback(
     (event: PointerEvent) => emit?.('pointerup', event, source),
     [emit, source]
   );
+
   const emitFocus = useCallback((event: FocusEvent) => emit?.('focus', event, source), [emit, source]);
   const emitBlur = useCallback((event: FocusEvent) => emit?.('blur', event, source), [emit, source]);
 

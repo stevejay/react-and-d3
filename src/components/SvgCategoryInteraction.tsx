@@ -83,7 +83,7 @@ export function SvgCategoryInteraction<
 
   return (
     <SvgGroup
-      data-test-id="category-interaction"
+      data-testid="category-interaction"
       translateX={chartArea.translateLeft}
       translateY={chartArea.translateTop}
       className={className}
@@ -91,7 +91,7 @@ export function SvgCategoryInteraction<
       stroke="none"
     >
       <rect
-        data-test-id="interaction-area"
+        data-testid="interaction-area"
         role="presentation"
         className="touch-manipulation"
         x={0}

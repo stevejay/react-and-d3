@@ -1,8 +1,6 @@
 import { AxisScale } from '@visx/axis';
 
-import { CombinedStackData } from '@/visx-next/types';
-
-import { DataEntry } from './types';
+import type { CombinedStackData, DataEntry } from './types';
 
 /** Returns the value which forms a stack group. */
 export const getStackValue = <

@@ -1,13 +1,12 @@
-// TODO:
-// - two dependent axes?
-// - resizable chart (drag handle).
-import type { AxisScaleOutput } from '@visx/axis';
-import { AnyD3Scale, createScale, ScaleConfig, ScaleInput } from '@visx/scale';
+import type { AnyD3Scale, ScaleConfig, ScaleInput } from '@visx/scale';
+// TODO visx/scale is enormous.
+import { createScale } from '@visx/scale';
 import { extent as d3Extent } from 'd3-array';
 import { isNil } from 'lodash-es';
 
-import { isDiscreteScaleConfig } from '@/visx-next/scale';
-import { scaleCanBeZeroed } from '@/visx-next/scaleCanBeZeroed';
+import { isDiscreteScaleConfig } from './isDiscreteScaleConfig';
+import { scaleCanBeZeroed } from './scaleCanBeZeroed';
+import type { AxisScaleOutput } from './types';
 
 export function createScaleFromScaleConfig<Scale extends AnyD3Scale, Datum extends object>(
   entries: { data: readonly Datum[]; accessor: (d: Datum) => ScaleInput<Scale> }[],
@@ -34,7 +33,7 @@ export function createScaleFromScaleConfig<Scale extends AnyD3Scale, Datum exten
 
   return !isNil(domain) && 'zero' in scaleConfig && scaleConfig.zero === true && scaleCanBeZeroed(scaleConfig)
     ? createScale({
-        domain, // as [ScaleInput<Scale>, ScaleInput<Scale>],
+        domain,
         range,
         zero: true,
         ...scaleConfig

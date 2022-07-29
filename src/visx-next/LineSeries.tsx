@@ -81,9 +81,9 @@ export function LineSeries<XScale extends PositionScale, YScale extends Position
     renderingOffset
   );
   return (
-    <Group data-test-id="line-series" {...groupProps} className={groupClassName}>
+    <Group data-testid="line-series" {...groupProps} className={groupClassName}>
       <animated.path
-        data-test-id="path"
+        data-testid="path"
         fill="none"
         stroke={colorAccessor?.()}
         role="presentation"
@@ -194,7 +194,7 @@ export function CurtainLineSeries<
   });
   const pathD = path(data);
   return (
-    <Group key={dataKey} data-test-id="line-series" {...groupProps} className={groupClassName}>
+    <Group key={dataKey} data-testid="line-series" {...groupProps} className={groupClassName}>
       <AnimatedPath
         key={pathD}
         d={pathD ?? ''}

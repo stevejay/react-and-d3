@@ -48,10 +48,10 @@ export function SvgBars<CategoryT extends DomainValue>({
   });
 
   return (
-    <g data-test-id="bars-group" className={className} fill="currentColor" stroke="none">
+    <g data-testid="bars-group" className={className} fill="currentColor" stroke="none">
       {transitions((styles, datum) => (
         <animated.rect
-          data-test-id="bar"
+          data-testid="bar"
           className={className}
           style={styles}
           role="graphics-symbol"

@@ -1,10 +1,6 @@
-import { AxisScale } from '@visx/axis';
-
-import { getScaleBandwidth } from '@/visx-next/scale';
-import { NearestDatumReturnType } from '@/visx-next/types';
-
 import { findNearestDatumSingleDimension } from './findNearestDatumSingleDimension';
-import { NearestDatumArgs } from './types';
+import { getScaleBandwidth } from './getScaleBandwidth';
+import type { AxisScale, NearestDatumArgs, NearestDatumReturnType } from './types';
 
 export function findNearestDatumY<Datum extends object>({
   independentScale: scale,

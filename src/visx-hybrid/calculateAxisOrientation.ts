@@ -1,10 +1,10 @@
-import { Orientation } from '@/visx-next/types';
+import type { AxisOrientation, VariableType } from './types';
 
-export function calculateOrientation(
+export function calculateAxisOrientation(
   horizontal: boolean,
-  variableType: 'independent' | 'dependent',
+  variableType: VariableType,
   position: 'start' | 'end'
-): Orientation {
+): AxisOrientation {
   return horizontal && variableType === 'independent'
     ? position === 'start'
       ? 'left'

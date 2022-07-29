@@ -85,13 +85,13 @@ export function BarSeries<XScale extends PositionScale, YScale extends PositionS
     renderingOffset
   );
   return (
-    <Group data-test-id="bar-series" {...groupProps} className={groupClassName}>
+    <Group data-testid="bar-series" {...groupProps} className={groupClassName}>
       {transitions(({ opacity, x, y, width, height }, datum, _, index) => {
         const { style, ...restBarProps } =
           typeof barProps === 'function' ? barProps(datum, index, dataKey) : barProps;
         return (
           <animated.rect
-            data-test-id="bar"
+            data-testid="bar"
             x={x}
             y={y}
             width={width}

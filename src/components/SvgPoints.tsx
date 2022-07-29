@@ -50,10 +50,10 @@ export function SvgPoints<DatumT>({
   });
 
   return (
-    <g data-test-id="points-group" className={pointsGroupClassName} fill="currentColor" stroke="none">
+    <g data-testid="points-group" className={pointsGroupClassName} fill="currentColor" stroke="none">
       {transitions((styles, datum) => (
         <animated.circle
-          data-test-id="point"
+          data-testid="point"
           r={typeof pointRadius === 'number' ? pointRadius : pointRadius(datum)}
           className={typeof pointClassName === 'string' ? pointClassName : pointClassName(datum)}
           role="graphics-symbol"

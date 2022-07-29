@@ -1,7 +1,7 @@
 import { AxisScaleOutput, Orientation, TextProps } from './types';
 
 export interface GetLabelTransformArgs {
-  labelOffset: number;
+  labelPadding: number;
   labelProps: Partial<TextProps>;
   orientation: Orientation;
   range: AxisScaleOutput[];
@@ -10,7 +10,7 @@ export interface GetLabelTransformArgs {
 }
 
 export function getLabelTransform({
-  labelOffset,
+  labelPadding,
   labelProps,
   orientation,
   range,
@@ -27,10 +27,10 @@ export function getLabelTransform({
       orientation === 'bottom' && typeof labelProps.fontSize === 'number' ? labelProps.fontSize : 0;
 
     x = (Number(range[0]) + Number(range[range.length - 1])) / 2;
-    y = sign * (tickLength + labelOffset + maxTickLabelFontSize + yBottomOffset);
+    y = sign * (tickLength + labelPadding + maxTickLabelFontSize + yBottomOffset);
   } else {
     x = sign * ((Number(range[0]) + Number(range[range.length - 1])) / 2);
-    y = -(tickLength + labelOffset);
+    y = -(tickLength + labelPadding);
     transform = `rotate(${sign * 90})`;
   }
 

@@ -51,7 +51,7 @@ function SeriesBars<CategoryT extends DomainValue>({
 
   return transitions(({ x, y, width, height, ...rest }, { seriesKey }) => (
     <animated.rect
-      data-test-id="bar"
+      data-testid="bar"
       className={className}
       fill={seriesColor(seriesKey)}
       role="graphics-symbol"
@@ -137,14 +137,14 @@ export function SvgStackedBars<CategoryT extends DomainValue>({
   return (
     <g
       role="presentation"
-      data-test-id="stacked-bars-group"
+      data-testid="stacked-bars-group"
       className={className}
       fill="currentColor"
       stroke="none"
     >
       {transitions((styles, datum) => (
         <animated.g
-          data-test-id="category-group"
+          data-testid="category-group"
           role="graphics-object"
           style={styles}
           aria-roledescription={categoryAriaRoleDescription?.(datum.category)}

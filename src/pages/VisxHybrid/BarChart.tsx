@@ -8,9 +8,11 @@ import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGAxisRenderer } from '@/visx-hybrid/SVGAxisRenderer';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGFancyBarSeriesRenderer } from '@/visx-hybrid/SVGFancyBarSeriesRenderer';
-import { SVGGrid } from '@/visx-hybrid/SVGGridNext';
+import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 // import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
+
+import { darkTheme } from './darkTheme';
 
 export interface BarChartProps {
   data: CategoryValueDatum<string, number>[];
@@ -50,12 +52,10 @@ function keyAccessor(d: CategoryValueDatum<string, number>) {
 
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
-// TODO I really think the scales and accessors should be labelled
-// independent and dependent.
-export function BarChart({ data, margin }: BarChartProps) {
+export function BarChart({ data }: BarChartProps) {
   return (
     <SVGXYChart
-      margin={margin}
+      // margin={margin}
       independentScale={independentScale}
       dependentScale={dependentScale}
       springConfig={springConfig}
@@ -65,9 +65,10 @@ export function BarChart({ data, margin }: BarChartProps) {
       dependentRangePadding={30}
       independentRangePadding={20}
       className="select-none"
+      theme={darkTheme}
       // horizontal
     >
-      <SVGGrid tickCount={5} variableType="dependent" className="text-red-600" />
+      <SVGGrid tickCount={5} variableType="dependent" />
       {/* <SVGGrid className="text-red-600" tickCount={5} renderer={SVGGridRenderer} variableType="dependent" /> */}
       <SVGBarSeries
         renderer={SVGFancyBarSeriesRenderer<CategoryValueDatum<string, number>>}
@@ -102,13 +103,13 @@ export function BarChart({ data, margin }: BarChartProps) {
           verticalAnchor: 'end',
           angle: 0
         }}
-        labelProps={{
-          className: 'fill-slate-400 font-sans',
-          textAnchor: 'middle',
-          verticalAnchor: 'start',
-          fontSize: 14
-        }}
-        labelOffset={10}
+        // labelProps={{
+        //   className: 'fill-slate-400 font-sans',
+        //   // textAnchor: 'middle',
+        //   // verticalAnchor: 'start',
+        //   fontSize: 14
+        // }}
+        labelPadding={10}
       />
       <SVGAxis
         renderer={SVGAxisRenderer}
@@ -124,13 +125,13 @@ export function BarChart({ data, margin }: BarChartProps) {
           verticalAnchor: 'start',
           angle: 0
         }}
-        labelProps={{
-          className: 'fill-slate-400 font-sans',
-          textAnchor: 'middle',
-          verticalAnchor: 'end',
-          fontSize: 14
-        }}
-        labelOffset={10}
+        // labelProps={{
+        //   // className: 'fill-slate-400 font-sans',
+        //   // textAnchor: 'middle',
+        //   // verticalAnchor: 'end',
+        //   // fontSize: 14
+        // }}
+        labelPadding={10}
       />
       <SVGAxis
         renderer={SVGAxisRenderer}
@@ -147,13 +148,14 @@ export function BarChart({ data, margin }: BarChartProps) {
           verticalAnchor: 'middle',
           angle: -45
         }}
-        labelProps={{
-          className: 'fill-slate-400 font-sans',
-          textAnchor: 'middle',
-          fontSize: 14
-        }}
-        // labelOffset={36} // Does not take tick labels into account.
-        labelOffset={10}
+        // labelAngle="horizontal"
+        // labelProps={{
+        //   className: 'fill-slate-400 font-sans',
+        //   textAnchor: 'middle',
+        //   fontSize: 14
+        // }}
+        // labelPadding={36} // Does not take tick labels into account.
+        // labelPadding={10}
       />
       <SVGAxis
         renderer={SVGAxisRenderer}
@@ -170,13 +172,14 @@ export function BarChart({ data, margin }: BarChartProps) {
           verticalAnchor: 'middle',
           angle: -45
         }}
-        labelProps={{
-          className: 'fill-slate-400 font-sans',
-          textAnchor: 'middle',
-          fontSize: 14
-        }}
-        // labelOffset={36} // Does not take tick labels into account.
-        labelOffset={10}
+        // labelAngle="horizontal"
+        // labelProps={{
+        //   className: 'fill-slate-400 font-sans',
+        //   textAnchor: 'middle',
+        //   fontSize: 14
+        // }}
+        // labelPadding={36} // Does not take tick labels into account.
+        // labelPadding={10}
       />
       <PopperTooltip<CategoryValueDatum<string, number>>
         snapTooltipToDatumX

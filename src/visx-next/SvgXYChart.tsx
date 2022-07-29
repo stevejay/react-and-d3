@@ -5,11 +5,12 @@ import { isNil } from 'lodash-es';
 
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
+import { ParentSize } from '../visx-hybrid/ParentSize';
+
 import { DataContext } from './DataContext';
 import { DataContextProvider, DataContextProviderProps } from './DataContextProvider';
 import { EventEmitterContext, EventEmitterProvider } from './EventEmitterProvider';
 import { XYCHART_EVENT_SOURCE } from './eventSources';
-import { ParentSize } from './ParentSize';
 import { ScaleConfig } from './scale';
 import { TooltipContext } from './TooltipContext';
 import { TooltipProvider } from './TooltipProvider';

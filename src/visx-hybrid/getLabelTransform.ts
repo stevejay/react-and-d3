@@ -1,10 +1,9 @@
-import { Margin } from '@/types';
-import { AxisScaleOutput, Orientation, TextProps } from '@/visx-next/types';
+import type { AxisOrientation, AxisScaleOutput, Margin, TextProps } from './types';
 
 export interface GetLabelTransformArgs {
-  labelOffset: number;
+  labelPadding: number;
   labelProps: Partial<TextProps>;
-  orientation: Orientation;
+  orientation: AxisOrientation;
   range: AxisScaleOutput[];
   maxTickLabelFontSize: number;
   tickLength: number;
@@ -13,7 +12,7 @@ export interface GetLabelTransformArgs {
 }
 
 export function getLabelTransform({
-  labelOffset,
+  labelPadding,
   labelProps,
   orientation,
   range,
@@ -33,11 +32,11 @@ export function getLabelTransform({
     // orientation === 'bottom' && typeof labelProps.fontSize === 'number' ? labelProps.fontSize : 0;
 
     x = (Number(range[0]) + Number(range[range.length - 1])) / 2;
-    y = sign * (tickLength + tickLabelPadding + maxTickLabelFontSize + labelOffset + yBottomOffset);
+    y = sign * (tickLength + tickLabelPadding + maxTickLabelFontSize + labelPadding + yBottomOffset);
   } else {
     const width = orientation === 'left' ? margin.left : margin.right;
     x = sign * ((Number(range[0]) + Number(range[range.length - 1])) / 2);
-    y = -(width - fontSize); // -(tickLength + labelOffset);
+    y = -(width - fontSize); // -(tickLength + labelPadding);
     transform = `rotate(${sign * 90})`;
   }
 

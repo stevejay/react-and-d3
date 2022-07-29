@@ -30,7 +30,9 @@ const dataSets = [
     { category: 'B', value: 10 },
     { category: 'D', value: 63 },
     { category: 'E', value: 24 }
-  ]
+  ],
+  [{ category: 'A', value: 0 }],
+  []
 ];
 
 const margin: Margin = { left: 72, right: 72, top: 64, bottom: 64 };

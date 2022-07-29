@@ -54,7 +54,7 @@ export function SVGFancyBarSeriesRenderer<Datum extends object>({
         return (
           <>
             <animated.polygon
-              data-test-id="bar"
+              data-testid="bar"
               points={points}
               fill={colorAccessor?.(datum, dataKey) ?? fill}
               style={{ ...barPropsStyle, opacity }}

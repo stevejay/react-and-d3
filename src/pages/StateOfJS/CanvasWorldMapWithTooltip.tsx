@@ -3,7 +3,7 @@ import { ScaleQuantize } from 'd3-scale';
 
 import { EntityBucket } from '@/api/stateofjs/generated';
 import { InView } from '@/components/InView';
-import { ParentSize } from '@/visx-next/ParentSize';
+import { ParentSize } from '@/visx-hybrid/ParentSize';
 
 import { CanvasWorldMap, FeatureWithDatum } from './CanvasWorldMap';
 import { formatStatistic } from './formatStatistic';

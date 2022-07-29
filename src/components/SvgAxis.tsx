@@ -266,7 +266,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
 
   return (
     <SvgGroup
-      data-test-id={`axis-${orientation}`}
+      data-testid={`axis-${orientation}`}
       translateX={translateX}
       translateY={translateY}
       textAnchor={orientation === 'right' ? 'start' : orientation === 'left' ? 'end' : 'middle'}
@@ -289,22 +289,22 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
       )}
       {tickTransitions((styles, tickValue) => (
         <animated.g
-          data-test-id="tick-group"
+          data-testid="tick-group"
           style={styles}
           className={tickGroupClassName}
           {...tickGroupProps}
         >
           <line
-            data-test-id="tick"
+            data-testid="tick"
             {...{ [x + '2']: k * tickSizeInner }}
             stroke="currentColor"
             role="presentation"
             className={tickLineClassName}
             {...tickLineProps}
           />
-          <g data-test-id="tick-label-group" style={{ transform: labelGroupTransform }}>
+          <g data-testid="tick-label-group" style={{ transform: labelGroupTransform }}>
             <text
-              data-test-id="tick-label"
+              data-testid="tick-label"
               stroke="none"
               fill="currentColor"
               role="presentation"
@@ -319,9 +319,9 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
         </animated.g>
       ))}
       {axisLabel && (
-        <g data-test-id="axis-label-group" transform={axisLabelOrientationProps.transform}>
+        <g data-testid="axis-label-group" transform={axisLabelOrientationProps.transform}>
           <text
-            data-test-id="axis-label"
+            data-testid="axis-label"
             stroke="none"
             fill="currentColor"
             className={axisLabelClassName}

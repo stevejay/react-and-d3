@@ -33,7 +33,7 @@ export function SvgLineAnnotation({
 
   return (
     <animated.line
-      data-test-id="annotation"
+      data-testid="annotation"
       stroke="currentColor"
       strokeWidth={1}
       role="presentation"

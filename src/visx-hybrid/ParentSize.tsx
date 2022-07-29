@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import useMeasure, { RectReadOnly } from 'react-use-measure';
 
 export interface ParentSizeProps {
@@ -8,7 +8,7 @@ export interface ParentSizeProps {
   className?: string;
   /**
    * The debounce time to observe when the chart is changing size.
-   * Defaults to 300 ms.
+   * Defaults to 0 ms.
    */
   debouncedMeasureWaitMs?: number;
   /**

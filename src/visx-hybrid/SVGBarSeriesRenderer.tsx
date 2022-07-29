@@ -42,7 +42,7 @@ export function SVGBarSeriesRenderer<Datum extends object>({
           (typeof barProps === 'function' ? barProps(datum, index, dataKey) : barProps) ?? {};
         return (
           <animated.polygon
-            data-test-id="bar"
+            data-testid="bar"
             points={points}
             fill={colorAccessor?.(datum, dataKey) ?? fill}
             style={{ ...style, opacity }}
@@ -61,7 +61,7 @@ export function SVGBarSeriesRenderer<Datum extends object>({
   //         (typeof barProps === 'function' ? barProps(datum, index, dataKey) : barProps) ?? {};
   //       return (
   //         <animated.rect
-  //           data-test-id="bar"
+  //           data-testid="bar"
   //           x={x}
   //           y={y}
   //           width={width}

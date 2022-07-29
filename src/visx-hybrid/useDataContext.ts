@@ -6,7 +6,7 @@ import { DataContext } from './DataContext';
 export function useDataContext() {
   const value = useContext(DataContext);
   if (isNil(value)) {
-    throw new Error('No data context found');
+    throw new Error('No context value found for DataContext.');
   }
   return value;
 }

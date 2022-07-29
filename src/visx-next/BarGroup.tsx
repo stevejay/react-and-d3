@@ -141,7 +141,7 @@ function BarGroupSeries<XScale extends PositionScale, YScale extends PositionSca
           typeof barProps === 'function' ? barProps(datum, index, dataKey) : barProps;
         return (
           <animated.rect
-            data-test-id="bar"
+            data-testid="bar"
             x={x}
             y={y}
             width={width}
@@ -206,7 +206,7 @@ function XYChartBarGroupSeries<
         const { style, ...restGroupProps } = groupProps ?? {};
         return (
           <animated.g
-            data-test-id="bar-series"
+            data-testid="bar-series"
             {...restGroupProps}
             className={groupClassName}
             style={{ ...style, ...styles }}
