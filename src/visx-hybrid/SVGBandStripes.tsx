@@ -7,7 +7,7 @@ import type { AxisScale, ScaleInput, VariableType } from './types';
 import { useDataContext } from './useDataContext';
 import { useStripesTransitions } from './useStripesTransitions';
 
-interface SVGStripesCoreProps {
+interface SVGBandStripesCoreProps {
   /** Whether the stripes are for the independent or the dependent axis. */
   variableType: VariableType;
   /** By default the odd-numbered stripes are rendered. Set this prop to `true` to render the even-numbered stripes instead. Optional. */
@@ -26,11 +26,11 @@ interface SVGStripesCoreProps {
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
 }
 
-export type SVGStripesProps = SVGStripesCoreProps &
-  Omit<Omit<SVGProps<SVGRectElement>, 'ref' | 'x' | 'y' | 'width' | 'height'>, keyof SVGStripesCoreProps>;
+export type SVGBandStripesProps = SVGBandStripesCoreProps &
+  Omit<Omit<SVGProps<SVGRectElement>, 'ref' | 'x' | 'y' | 'width' | 'height'>, keyof SVGBandStripesCoreProps>;
 
 /** Renders a series of stripes for the given axis (independent or dependent). It can only be used with a band scale. */
-export function SVGStripes({
+export function SVGBandStripes({
   variableType,
   springConfig,
   animate = true,
@@ -40,7 +40,7 @@ export function SVGStripes({
   tickValues,
   even,
   ...rectProps
-}: SVGStripesProps) {
+}: SVGBandStripesProps) {
   const {
     independentScale,
     dependentScale,
@@ -58,7 +58,7 @@ export function SVGStripes({
 
   const scale = variableType === 'independent' ? independentScale : dependentScale;
   if (!isBandScale(scale)) {
-    throw new Error('The <SVGStripes> component can only be used with a band scale.');
+    throw new Error('The <SVGBandStripes> component can only be used with a band scale.');
   }
 
   const gridType =

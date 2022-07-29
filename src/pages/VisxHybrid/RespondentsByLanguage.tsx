@@ -14,11 +14,11 @@ import { isDefined } from '@/types/typeguards/isDefined';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGAxisRenderer } from '@/visx-hybrid/SVGAxisRenderer';
+import { SVGBandStripes } from '@/visx-hybrid/SVGBandStripes';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 // import { SVGBarSeriesRenderer } from '@/visx-hybrid/SVGBarSeriesRenderer';
 import { SVGFancyBarSeriesRenderer } from '@/visx-hybrid/SVGFancyBarSeriesRenderer';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
-import { SVGStripes } from '@/visx-hybrid/SVGStripes';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 import { BandScaleConfig, LinearScaleConfig } from '@/visx-next/scale';
 
@@ -163,7 +163,7 @@ export function RespondentsByLanguage() {
                 className="bg-slate-700 select-none"
                 theme={darkTheme}
               >
-                <SVGStripes
+                <SVGBandStripes
                   variableType="independent"
                   // className="text-slate-600"
                   even={false}

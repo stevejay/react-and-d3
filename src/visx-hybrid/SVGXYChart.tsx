@@ -1,5 +1,5 @@
 import { SVGProps } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { animated, SpringConfig, useTransition } from 'react-spring';
 import type { ScaleConfig } from '@visx/scale';
 import { isNil } from 'lodash-es';
 
@@ -12,7 +12,7 @@ import {
   XYCHART_EVENT_SOURCE
 } from './constants';
 import { createScaleFromScaleConfig } from './createScaleFromScaleConfig';
-import { DataContext } from './DataContext';
+import { DataContext, InferDataContext } from './DataContext';
 import { EventEmitterProvider } from './EventEmitterProvider';
 import { getDataEntriesFromChildren } from './getDataEntriesFromChildren';
 import { ParentSize } from './ParentSize';
@@ -23,10 +23,10 @@ import { useEventEmitters } from './useEventEmitters';
 // TODO:
 // - Support two dependent axes?
 
-type SVGXYChartProps<
+interface SVGXYChartCoreProps<
   IndependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
   DependentScaleConfig extends ScaleConfig<AxisScaleOutput>
-> = {
+> {
   /** The width of the chart. Optional. If either of `width` or `height` are not given then the chart will wrap itself in a `ParentSize` component. */
   width?: number;
   /** The height of the chart. Optional. If either of `width` or `height` are not given then the chart will wrap itself in a `ParentSize` component. */
@@ -57,7 +57,18 @@ type SVGXYChartProps<
   hideTooltipDebounceMs?: number;
   /** A custom theme for the chart. Optional. If not given then a default theme is applied. This should be a stable object. */
   theme?: XYChartTheme;
-} & Omit<SVGProps<SVGSVGElement>, 'width' | 'height'>;
+
+  animateSVG?: boolean;
+}
+
+export type SVGXYChartProps<
+  IndependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
+  DependentScaleConfig extends ScaleConfig<AxisScaleOutput>
+> = SVGXYChartCoreProps<IndependentScaleConfig, DependentScaleConfig> &
+  Omit<
+    Omit<SVGProps<SVGSVGElement>, keyof SVGXYChartCoreProps<IndependentScaleConfig, DependentScaleConfig>>,
+    'ref'
+  >;
 
 /** The root component for the XY chart. */
 export function SVGXYChart<
@@ -80,38 +91,44 @@ export function SVGXYChart<
     );
   }
 
-  return width && width > 0 && height && height > 0 ? (
+  return (
     <TooltipProvider hideTooltipDebounceMs={hideTooltipDebounceMs}>
       <EventEmitterProvider>
         <InnerChart {...props} width={width} height={height} />
       </EventEmitterProvider>
     </TooltipProvider>
-  ) : null;
+  );
+
+  // return width && width > 0 && height && height > 0 ? (
+  //   <TooltipProvider hideTooltipDebounceMs={hideTooltipDebounceMs}>
+  //     <EventEmitterProvider>
+  //       <InnerChart {...props} width={width} height={height} />
+  //     </EventEmitterProvider>
+  //   </TooltipProvider>
+  // ) : null;
 }
 
 function InnerChart<
   IndependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
   DependentScaleConfig extends ScaleConfig<AxisScaleOutput>
 >({
-  width,
-  height,
+  width = 0,
+  height = 0,
   independentScale: independentScaleConfig,
   dependentScale: dependentScaleConfig,
+  independentRangePadding = 0,
+  dependentRangePadding = 0,
   margin: userMargin,
   horizontal = false,
   animate = true,
+  animateSVG = true,
   springConfig = defaultSpringConfig,
   renderingOffset = 0,
-  independentRangePadding = 0,
-  dependentRangePadding = 0,
   captureEvents = true,
-  children,
   theme = defaultTheme,
+  children,
   ...svgProps
-}: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig> & {
-  width: number;
-  height: number;
-}) {
+}: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig>) {
   // Gather all the series data from the chart's child components:
   const dataEntries = getDataEntriesFromChildren(children, horizontal);
 
@@ -130,81 +147,132 @@ function InnerChart<
   const eventEmitters = useEventEmitters({ source: XYCHART_EVENT_SOURCE });
 
   // A scale will be undefined if the combined domain for a scale is empty.
-  if (isNil(independentScale) || isNil(dependentScale)) {
-    return null;
-  }
+  // if (isNil(independentScale) || isNil(dependentScale)) {
+  //   return null;
+  // }
 
-  // Use the given margin object or calculate it automatically:
-  const margin =
-    userMargin ??
-    calculateAutoMarginFromChildren(
-      children,
-      horizontal,
+  let dataContextValue: InferDataContext | null = null;
+  const hasValidContent = !isNil(independentScale) && !isNil(dependentScale) && width > 0 && height > 0;
+
+  if (hasValidContent) {
+    // Use the given margin object or calculate it automatically:
+    const margin =
+      userMargin ??
+      calculateAutoMarginFromChildren(
+        children,
+        horizontal,
+        independentScale,
+        dependentScale,
+        independentRangePadding,
+        dependentRangePadding,
+        theme
+      );
+
+    // Now that we know the margin to use, calculate the range for each scale:
+    const independentRange: [number, number] = horizontal
+      ? [Math.max(0, height - margin.bottom - independentRangePadding), margin.top + independentRangePadding]
+      : [margin.left + independentRangePadding, Math.max(0, width - margin.right - independentRangePadding)];
+    const dependentRange: [number, number] = horizontal
+      ? [margin.left + dependentRangePadding, Math.max(0, width - margin.right - dependentRangePadding)]
+      : [Math.max(0, height - margin.bottom - dependentRangePadding), margin.top + dependentRangePadding];
+
+    // Update the scales with those calculated ranges:
+    independentScale.range(independentRange);
+    dependentScale.range(dependentRange);
+
+    // Calculate the size of the chart area:
+    const innerWidth = Math.max(0, width - margin.left - margin.right);
+    const innerHeight = Math.max(0, height - margin.top - margin.bottom);
+
+    dataContextValue = {
       independentScale,
       dependentScale,
       independentRangePadding,
       dependentRangePadding,
+      width,
+      height,
+      innerWidth,
+      innerHeight,
+      margin,
+      dataEntries,
+      horizontal,
+      animate,
+      springConfig,
+      renderingOffset,
       theme
-    );
-
-  // Now that we know the margin to use, calculate the range for each scale:
-  const independentRange: [number, number] = horizontal
-    ? [Math.max(0, height - margin.bottom - independentRangePadding), margin.top + independentRangePadding]
-    : [margin.left + independentRangePadding, Math.max(0, width - margin.right - independentRangePadding)];
-  const dependentRange: [number, number] = horizontal
-    ? [margin.left + dependentRangePadding, Math.max(0, width - margin.right - dependentRangePadding)]
-    : [Math.max(0, height - margin.bottom - dependentRangePadding), margin.top + dependentRangePadding];
-
-  // Update the scales with those calculated ranges:
-  independentScale.range(independentRange);
-  dependentScale.range(dependentRange);
-
-  // Calculate the size of the chart area:
-  const innerWidth = Math.max(0, width - margin.left - margin.right);
-  const innerHeight = Math.max(0, height - margin.top - margin.bottom);
-
-  const dataContextValue = {
-    independentScale,
-    dependentScale,
-    independentRangePadding,
-    dependentRangePadding,
-    width,
-    height,
-    innerWidth,
-    innerHeight,
-    margin,
-    dataEntries,
-    horizontal,
-    animate,
-    springConfig,
-    renderingOffset,
-    theme
-  };
+    };
+  }
 
   const { style, className = '', ...restSvgProps } = svgProps;
 
+  const transitions = useTransition(dataContextValue, {
+    initial: { opacity: 0 },
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    update: { opacity: 1 },
+    leave: { opacity: 0 },
+    config: springConfig,
+    key: Boolean(dataContextValue),
+    immediate: !(animate && animateSVG)
+  });
+
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={width}
-      height={height}
-      style={{ ...theme?.svg?.styles, ...style }}
-      className={`${className} ${theme?.svg?.className ?? ''}`}
-      {...restSvgProps}
-    >
-      <DataContext.Provider value={dataContextValue}>{children}</DataContext.Provider>
-      {captureEvents && (
-        <rect
-          x={margin.left}
-          y={margin.top}
-          width={width - margin.left - margin.right}
-          height={height - margin.top - margin.bottom}
-          fill="transparent"
-          role="presentation"
-          aria-hidden
-          {...eventEmitters}
-        />
+    <>
+      {transitions(({ opacity }, value) =>
+        value ? (
+          <animated.svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={width}
+            height={height}
+            style={{ ...theme?.svg?.styles, ...style, opacity }}
+            className={`${className} ${theme?.svg?.className ?? ''}`}
+            {...restSvgProps}
+          >
+            <DataContext.Provider value={value}>{children}</DataContext.Provider>
+            {captureEvents && (
+              <rect
+                x={value.margin.left}
+                y={value.margin.top}
+                width={width - value.margin.left - value.margin.right}
+                height={height - value.margin.top - value.margin.bottom}
+                fill="transparent"
+                role="presentation"
+                aria-hidden
+                {...eventEmitters}
+              />
+            )}
+          </animated.svg>
+        ) : null
       )}
-    </svg>
+    </>
   );
+
+  // return (
+  //   <svg
+  //     xmlns="http://www.w3.org/2000/svg"
+  //     width={width}
+  //     height={height}
+  //     style={{ ...theme?.svg?.styles, ...style }}
+  //     className={`${className} ${theme?.svg?.className ?? ''}`}
+  //     {...restSvgProps}
+  //   >
+  //     {hasValidContent && dataContextValue && (
+  //       <>
+  //         <DataContext.Provider value={dataContextValue}>{children}</DataContext.Provider>
+  //         {captureEvents && (
+  //           <rect
+  //             x={dataContextValue.margin.left}
+  //             y={dataContextValue.margin.top}
+  //             width={width - dataContextValue.margin.left - dataContextValue.margin.right}
+  //             height={height - dataContextValue.margin.top - dataContextValue.margin.bottom}
+  //             fill="transparent"
+  //             role="presentation"
+  //             aria-hidden
+  //             {...eventEmitters}
+  //           />
+  //         )}
+  //       </>
+  //     )}
+  //   </svg>
+  // );
 }
