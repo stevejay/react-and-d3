@@ -1,4 +1,4 @@
-import type { Anchor, SVGTextProps, ThemeLabelStyles } from './types';
+import type { Anchor, SVGTextProps, TextStyles } from './types';
 
 const SVGStyle = { overflow: 'visible' };
 
@@ -9,7 +9,7 @@ interface SVGSimpleTextOwnProps {
   verticalAnchor?: Anchor;
   /** Fill color of text. */
   // fill?: string;
-  textStyles?: ThemeLabelStyles; // font, fill, className
+  textStyles?: TextStyles; // font, fill, className
   // style?: CSSProperties;
   angle?: number;
   x: number;

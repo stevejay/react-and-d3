@@ -1,23 +1,32 @@
 import type { SVGProps } from 'react';
 
-export type SVGAxisTickLineProps = Omit<SVGProps<SVGLineElement>, 'ref'>;
+import { defaultShapeRendering } from './constants';
+import type { LineStyles } from './types';
+
+export type SVGAxisTickLineProps = { lineStyles?: LineStyles } & Omit<SVGProps<SVGLineElement>, 'ref'>;
 
 export function SVGAxisTickLine({
-  stroke = 'currentColor',
-  strokeLinecap = 'square',
-  strokeWidth = 1,
-  shapeRendering = 'crispEdges',
+  lineStyles,
+  stroke,
+  strokeLinecap,
+  strokeWidth,
+  strokeDasharray,
+  className,
+  style,
   ...rest
 }: SVGAxisTickLineProps) {
   return (
     <line
       data-testid="axis-tick"
-      stroke={stroke}
-      strokeWidth={strokeWidth}
-      strokeLinecap={strokeLinecap}
-      shapeRendering={shapeRendering}
       role="presentation"
       aria-hidden
+      style={{ ...lineStyles?.style, ...style }}
+      className={`${lineStyles?.className ?? ''} ${className ?? ''}`}
+      stroke={stroke ?? lineStyles?.stroke ?? 'currentColor'}
+      strokeWidth={strokeWidth ?? lineStyles?.strokeWidth ?? 1}
+      strokeLinecap={strokeLinecap ?? lineStyles?.strokeLinecap ?? 'square'}
+      strokeDasharray={strokeDasharray ?? lineStyles?.strokeDasharray ?? undefined}
+      shapeRendering={defaultShapeRendering}
       {...rest}
     />
   );

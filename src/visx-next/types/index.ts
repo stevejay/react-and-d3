@@ -371,7 +371,7 @@ export type CommonAxisProps<Scale extends AxisScale> = {
   /** Pixel padding to apply to both sides of the axis. */
   rangePadding?: number;
   /**  If true, will hide the axis line. */
-  hideAxisLine?: boolean;
+  hideAxisPath?: boolean;
   /** If true, will hide the ticks (but not the tick labels). */
   hideTicks?: boolean;
   /** If true, will hide the '0' value tick and tick label. */

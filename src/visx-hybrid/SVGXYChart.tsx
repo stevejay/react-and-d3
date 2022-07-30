@@ -23,7 +23,7 @@ import { useEventEmitters } from './useEventEmitters';
 // TODO:
 // - Support two dependent axes?
 
-interface SVGXYChartCoreProps<
+interface SVGXYChartOwnProps<
   IndependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
   DependentScaleConfig extends ScaleConfig<AxisScaleOutput>
 > {
@@ -42,11 +42,13 @@ interface SVGXYChartCoreProps<
   /** By default the chart has the independent scale as the x-axis and the dependent scale as the y-axis. Set `horizontal` to `true` to switch this around. Optional. */
   horizontal?: boolean;
   /** A value in pixels for adding padding to the start and end of the independent axis. Optional. Defaults to `0`. */
-  independentRangePadding?: number;
+  independentRangePadding?: number; // TODO support [number, number]
   /** A value in pixels for adding padding to the start and end of the dependent axis. Optional. Defaults to `0`. */
-  dependentRangePadding?: number;
+  dependentRangePadding?: number; // TODO support [number, number]
   /** Enables or disables animation for the entire chart. Optional. Defaults to `true`. */
   animate?: boolean;
+  /** Whether the SVG should be animated to fade in when mounted and fade out when there is no data. Optional. Defaults to `true`. */
+  animateSVG?: boolean;
   /** A react-spring configuration object to use as the default for the entire chart. Optional. A default time-based configuration is used as the default if none is given. This should be a stable object. */
   springConfig?: SpringConfig;
   /** An offset value in pixels that can be used to improve rendering on non-retina displays. Optional. */
@@ -57,16 +59,14 @@ interface SVGXYChartCoreProps<
   hideTooltipDebounceMs?: number;
   /** A custom theme for the chart. Optional. If not given then a default theme is applied. This should be a stable object. */
   theme?: XYChartTheme;
-
-  animateSVG?: boolean;
 }
 
 export type SVGXYChartProps<
   IndependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
   DependentScaleConfig extends ScaleConfig<AxisScaleOutput>
-> = SVGXYChartCoreProps<IndependentScaleConfig, DependentScaleConfig> &
+> = SVGXYChartOwnProps<IndependentScaleConfig, DependentScaleConfig> &
   Omit<
-    Omit<SVGProps<SVGSVGElement>, keyof SVGXYChartCoreProps<IndependentScaleConfig, DependentScaleConfig>>,
+    Omit<SVGProps<SVGSVGElement>, keyof SVGXYChartOwnProps<IndependentScaleConfig, DependentScaleConfig>>,
     'ref'
   >;
 
@@ -224,7 +224,7 @@ function InnerChart<
             xmlns="http://www.w3.org/2000/svg"
             width={width}
             height={height}
-            style={{ ...theme?.svg?.styles, ...style, opacity }}
+            style={{ ...theme?.svg?.style, ...style, opacity }}
             className={`${className} ${theme?.svg?.className ?? ''}`}
             {...restSvgProps}
           >

@@ -13,16 +13,17 @@ import { TextProps } from './SVGSimpleText';
 import type {
   AxisOrientation,
   AxisScale,
+  AxisStyles,
   LineProps,
   Margin,
-  ThemeLabelStyles,
+  TextStyles,
   TickDatum,
   TickLabelAngle
 } from './types';
 import { useAxisTransitions } from './useAxisTransitions';
 
 export interface SVGAxisTicksProps {
-  orientation: AxisOrientation;
+  axisOrientation: AxisOrientation;
   scale: AxisScale;
   margin: Margin;
   springConfig?: SpringConfig;
@@ -43,13 +44,14 @@ export interface SVGAxisTicksProps {
   /** Props to be applied to individual tick lines. */
   tickLineProps?: LineProps;
   ticks: TickDatum[];
-  labelStyles?: ThemeLabelStyles;
+  labelStyles?: TextStyles;
+  axisStyles?: AxisStyles;
 }
 
 export function SVGAxisTicks({
   scale,
   hideTicks = defaultHideTicks,
-  orientation,
+  axisOrientation,
   tickLabelProps = {},
   tickGroupProps,
   ticks,
@@ -60,14 +62,14 @@ export function SVGAxisTicks({
   renderingOffset,
   tickLabelPadding = defaultTickLabelPadding,
   labelStyles,
-  tickLabelAngle = defaultTickLabelAngle
+  tickLabelAngle = defaultTickLabelAngle,
+  axisStyles
 }: SVGAxisTicksProps) {
   const transitions = useAxisTransitions(scale, ticks, springConfig, animate, renderingOffset);
-  const isVertical = orientation === 'left' || orientation === 'right';
+  const isVertical = axisOrientation === 'left' || axisOrientation === 'right';
   const tickTranslateAxis = isVertical ? 'translateY' : 'translateX';
   const tickLineAxis = isVertical ? 'x' : 'y';
-  const tickSign = orientation === 'left' || orientation === 'top' ? -1 : 1;
-
+  const tickSign = axisOrientation === 'left' || axisOrientation === 'top' ? -1 : 1;
   return (
     <>
       {transitions(({ opacity, translate }, { label }) => (
@@ -77,10 +79,14 @@ export function SVGAxisTicks({
           style={{ opacity, [tickTranslateAxis]: translate }}
         >
           {!hideTicks && (
-            <SVGAxisTickLine {...{ [tickLineAxis + '2']: tickSign * tickLength }} {...tickLineProps} />
+            <SVGAxisTickLine
+              {...{ [tickLineAxis + '2']: tickSign * tickLength }}
+              lineStyles={axisStyles?.tickLine}
+              {...tickLineProps}
+            />
           )}
           <SVGAxisTickLabel
-            orientation={orientation}
+            axisOrientation={axisOrientation}
             label={label}
             hideTicks={hideTicks}
             tickLabelProps={tickLabelProps}

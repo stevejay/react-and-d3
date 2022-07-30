@@ -140,7 +140,7 @@ function InnerChart<
     <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} {...rest}>
       {independentScale && config.independentGrid && (
         <SVGGrid
-          variableType="independent"
+          variable="independent"
           scale={independentScale}
           gridConfig={config.independentGrid}
           horizontal={horizontal}
@@ -156,7 +156,7 @@ function InnerChart<
       )}
       {dependentScale && config.dependentGrid && (
         <SVGGrid
-          variableType="dependent"
+          variable="dependent"
           scale={dependentScale}
           gridConfig={config.dependentGrid}
           horizontal={horizontal}
@@ -172,7 +172,7 @@ function InnerChart<
       )}
       {independentScale && config.independentAxis && (
         <SVGAxis
-          variableType="independent"
+          variable="independent"
           scale={independentScale}
           axisConfig={config.independentAxis}
           horizontal={horizontal}
@@ -186,7 +186,7 @@ function InnerChart<
       )}
       {dependentScale && config.dependentAxis && (
         <SVGAxis
-          variableType="dependent"
+          variable="dependent"
           scale={dependentScale}
           axisConfig={config.dependentAxis}
           horizontal={horizontal}

@@ -66,8 +66,8 @@ export function BarChart({ data }: BarChartProps) {
       theme={darkTheme}
       // horizontal
     >
-      <SVGGrid tickCount={5} variableType="dependent" />
-      {/* <SVGGrid className="text-red-600" tickCount={5} renderer={SVGGridRenderer} variableType="dependent" /> */}
+      <SVGGrid tickCount={5} variable="dependent" />
+      {/* <SVGGrid className="text-red-600" tickCount={5} renderer={SVGGridRenderer} variable="dependent" /> */}
       <SVGBarSeries
         renderer={SVGFancyBarSeriesRenderer<CategoryValueDatum<string, number>>}
         dataKey="data-a"
@@ -88,10 +88,10 @@ export function BarChart({ data }: BarChartProps) {
         }}
       />
       <SVGAxis
-        variableType="independent"
+        variable="independent"
         position="end"
         label="Foobar Topy"
-        // hideAxisLine
+        // hideAxisPath
         // hideTicks
         // tickLength={20}
         // tickLabelPadding={20}
@@ -100,10 +100,10 @@ export function BarChart({ data }: BarChartProps) {
         // labelAngle="vertical"
       />
       <SVGAxis
-        variableType="independent"
+        variable="independent"
         position="start"
         label="Foobar Bottomy"
-        // hideAxisLine
+        // hideAxisPath
         // outerTickLength={20}
         // hideTicks
         // tickLength={20}
@@ -113,12 +113,12 @@ export function BarChart({ data }: BarChartProps) {
         // labelAngle="vertical"
       />
       <SVGAxis
-        variableType="dependent"
+        variable="dependent"
         position="start"
         label="Foobar Lefty"
         tickCount={5}
         hideZero
-        // hideAxisLine
+        // hideAxisPath
 
         // tickLength={20}
         // tickLabelPadding={10}
@@ -127,12 +127,12 @@ export function BarChart({ data }: BarChartProps) {
         // labelAngle="horizontal"
       />
       <SVGAxis
-        variableType="dependent"
+        variable="dependent"
         position="end"
         label="Foobar Righty"
         tickCount={5}
         hideZero
-        // hideAxisLine
+        // hideAxisPath
 
         // tickLength={20}
         // tickLabelPadding={10}

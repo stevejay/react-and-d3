@@ -162,8 +162,8 @@ export function RespondentsByLanguage() {
                 className="bg-slate-700 select-none"
                 theme={darkTheme}
               >
-                <SVGBandStripes variableType="independent" even={false} ignoreRangePadding={false} />
-                <SVGGrid variableType="dependent" tickCount={5} />
+                <SVGBandStripes variable="independent" even={false} ignoreRangePadding={false} />
+                <SVGGrid variable="dependent" tickCount={5} />
                 <SVGBarSeries
                   renderer={SVGFancyBarSeriesRenderer<EntityBucket>}
                   dataKey="data-a"
@@ -183,29 +183,29 @@ export function RespondentsByLanguage() {
                   }}
                 />
                 <SVGAxis
-                  variableType="dependent"
+                  variable="dependent"
                   position="end"
                   tickFormat={dependentAxisTickFormatter}
                   hideTicks={false}
-                  hideAxisLine
+                  hideAxisPath
                   tickLabelPadding={6}
                 />
                 <SVGAxis
-                  variableType="dependent"
+                  variable="dependent"
                   position="start"
                   label={getDependentAxisLabel(statistic)}
                   tickFormat={dependentAxisTickFormatter}
                   hideTicks={false}
-                  hideAxisLine
+                  hideAxisPath
                   tickLabelPadding={6}
                   autoMarginLabelPadding={0}
                 />
                 <SVGAxis
-                  variableType="independent"
+                  variable="independent"
                   position="start"
                   tickFormat={independentAxisTickFormatter}
                   hideTicks
-                  hideAxisLine
+                  hideAxisPath
                   tickLabelPadding={10}
                 />
                 <PopperTooltip<EntityBucket>

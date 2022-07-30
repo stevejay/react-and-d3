@@ -95,7 +95,7 @@ function SvgAxisRenderer<Scale extends AxisScale>({
   domainPathProps = {},
   labelClassName = '',
   labelProps = {},
-  hideAxisLine = false,
+  hideAxisPath = false,
   hideTicks,
   rangePadding = 0,
   label = '',
@@ -151,7 +151,7 @@ function SvgAxisRenderer<Scale extends AxisScale>({
         tickLabelPadding
       })}
 
-      {!hideAxisLine && (
+      {!hideAxisPath && (
         <AxisDomainPath
           data-testid="axis-domain"
           className={domainPathClassName}

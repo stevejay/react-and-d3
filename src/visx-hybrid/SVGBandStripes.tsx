@@ -1,15 +1,16 @@
 import type { SVGProps } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 
+import { defaultShapeRendering } from './constants';
 import { getTicksData } from './getTicksData';
 import { isBandScale } from './isBandScale';
-import type { AxisScale, ScaleInput, VariableType } from './types';
+import type { AxisScale, ScaleInput, Variable } from './types';
 import { useBandStripesTransitions } from './useBandStripesTransitions';
 import { useDataContext } from './useDataContext';
 
-interface SVGBandStripesCoreProps {
+interface SVGBandStripesOwnProps {
   /** Whether the stripes are for the independent or the dependent axis. */
-  variableType: VariableType;
+  variable: Variable;
   /** By default the odd-numbered stripes are rendered. Set this prop to `true` to render the even-numbered stripes instead. Optional. */
   even?: boolean;
   /** Whether the stripes should animate. Optional. Defaults to `true`. */
@@ -26,12 +27,12 @@ interface SVGBandStripesCoreProps {
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
 }
 
-export type SVGBandStripesProps = SVGBandStripesCoreProps &
-  Omit<Omit<SVGProps<SVGRectElement>, 'ref' | 'x' | 'y' | 'width' | 'height'>, keyof SVGBandStripesCoreProps>;
+export type SVGBandStripesProps = SVGBandStripesOwnProps &
+  Omit<Omit<SVGProps<SVGRectElement>, 'ref' | 'x' | 'y' | 'width' | 'height'>, keyof SVGBandStripesOwnProps>;
 
 /** Renders a series of stripes for the given axis (independent or dependent). It can only be used with a band scale. */
 export function SVGBandStripes({
-  variableType,
+  variable,
   springConfig,
   animate = true,
   groupProps,
@@ -56,14 +57,14 @@ export function SVGBandStripes({
     theme
   } = useDataContext();
 
-  const scale = variableType === 'independent' ? independentScale : dependentScale;
+  const scale = variable === 'independent' ? independentScale : dependentScale;
   if (!isBandScale(scale)) {
     throw new Error('The <SVGBandStripes> component can only be used with a band scale.');
   }
 
   const gridType =
-    variableType === 'independent' ? (horizontal ? 'row' : 'column') : horizontal ? 'column' : 'row';
-  const rangePadding = variableType === 'independent' ? dependentRangePadding : independentRangePadding;
+    variable === 'independent' ? (horizontal ? 'row' : 'column') : horizontal ? 'column' : 'row';
+  const rangePadding = variable === 'independent' ? dependentRangePadding : independentRangePadding;
   const ticks = getTicksData(scale, false, undefined, tickCount, tickValues);
   const transitions = useBandStripesTransitions({
     gridType,
@@ -77,10 +78,9 @@ export function SVGBandStripes({
     animate: animate && contextAnimate,
     renderingOffset
   });
-  const { style, fill, className = '', ...restRectProps } = rectProps;
-
+  const { style, fill, className, ...restRectProps } = rectProps;
   return (
-    <g data-testid={`band-stripes-${variableType}`} {...groupProps}>
+    <g data-testid={`band-stripes-${variable}`} {...groupProps}>
       {transitions(({ opacity, x, y, width, height }, _, __, index) => {
         if (index % 2 === (even ? 0 : 1)) {
           return null;
@@ -91,12 +91,12 @@ export function SVGBandStripes({
             y={y}
             width={width}
             height={height}
-            style={{ ...theme?.bandStripes?.styles, ...style, opacity }}
-            className={`${theme?.bandStripes?.className ?? ''} ${className}`}
             role="presentation"
             aria-hidden
+            style={{ ...theme?.bandStripes?.style, ...style, opacity }}
+            className={`${theme?.bandStripes?.className ?? ''} ${className ?? ''}`}
             fill={fill ?? theme?.bandStripes?.fill ?? 'currentColor'}
-            shapeRendering="crispEdges"
+            shapeRendering={defaultShapeRendering}
             {...restRectProps}
           />
         );

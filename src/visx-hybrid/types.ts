@@ -1,4 +1,12 @@
-import type { CSSProperties, FocusEvent, PointerEvent, ReactNode, Ref, SVGAttributes, SVGProps } from 'react';
+import type {
+  CSSProperties,
+  FocusEvent,
+  PointerEvent,
+  ReactNode,
+  // Ref,
+  SVGAttributes,
+  SVGProps
+} from 'react';
 import type { SpringConfig } from 'react-spring';
 import type { D3Scale, ScaleInput } from '@visx/scale';
 import type { Series, SeriesPoint } from 'd3-shape';
@@ -97,7 +105,7 @@ export interface TickDatum {
 
 export type GridType = 'row' | 'column';
 
-export type VariableType = 'independent' | 'dependent';
+export type Variable = 'independent' | 'dependent';
 
 export type LabelAngle = 'horizontal' | 'vertical';
 export type TickLabelAngle = 'horizontal' | 'angled' | 'vertical';
@@ -125,47 +133,57 @@ export type NearestDatumReturnType<Datum extends object> = {
   snapTop: number;
 } | null;
 
-export type LineStyles = Omit<React.SVGAttributes<SVGLineElement>, 'Key'>;
+export type LineStyles = {
+  style?: CSSProperties;
+  className?: string;
+} & Pick<SVGProps<SVGLineElement>, 'stroke' | 'strokeWidth' | 'strokeLinecap' | 'strokeDasharray'>;
 
-interface AxisStyles {
-  /** Axis label styles. */
-  axisLabel?: SVGTextProps;
+export type PathStyles = {
+  style?: CSSProperties;
+  className?: string;
+} & Pick<SVGProps<SVGPathElement>, 'stroke' | 'strokeWidth' | 'strokeLinecap' | 'strokeDasharray'>;
+
+export interface TextStyles {
+  font?: FontProperties | string;
+  fill?: string;
+  className?: string;
+  // `style` is deliberately not a property of this interface.
+}
+
+export interface AxisStyles {
+  // /** Axis label styles. */
+  // axisLabel?: SVGTextProps;
   /** Axis line styles. */
-  axisLine?: LineStyles;
-  /** Tick label styles. */
-  tickLabel?: SVGTextProps;
+  axisPath?: PathStyles;
+  // /** Tick label styles. */
+  // tickLabel?: SVGTextProps;
   /** Tick line styles. */
   tickLine?: LineStyles;
   /** Length of axis tick lines. */
   tickLength?: number;
 }
 
-export interface ThemeLabelStyles {
-  font?: FontProperties | string;
-  fill?: string;
+export type RectStyles = {
+  style?: CSSProperties;
+  className?: string;
+} & Pick<SVGProps<SVGRectElement>, 'fill'>;
+
+export interface SVGStyles {
+  style?: CSSProperties;
   className?: string;
 }
 
 export interface XYChartTheme {
-  svg?: {
-    styles?: CSSProperties;
-    className?: string;
-  };
+  svg?: SVGStyles;
   grid?: {
-    styles?: CSSProperties;
-    className?: string;
-    // stroke?: string;
-    // strokeWidth?: number;
-    // strokeLinecap?: xxxx;
-  } & Pick<SVGProps<SVGLineElement>, 'stroke' | 'strokeWidth' | 'strokeLinecap' | 'strokeDasharray'>;
-  bandStripes?: {
-    styles?: CSSProperties;
-    className?: string;
-  } & Pick<SVGProps<SVGRectElement>, 'fill'>;
+    independent?: LineStyles;
+    dependent?: LineStyles;
+  };
+  bandStripes?: RectStyles;
   /** Styles to applied to big SVG labels (axis label, annotation title, etc.). */
-  bigLabels?: ThemeLabelStyles;
+  bigLabels?: TextStyles;
   /** Styles to applied to small SVG labels (tick label, annotation subtitle, etc.). */
-  smallLabels?: ThemeLabelStyles;
+  smallLabels?: TextStyles;
   axis?: {
     top?: AxisStyles;
     bottom?: AxisStyles;
@@ -378,53 +396,53 @@ export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale,
   enableEvents?: boolean;
 }
 
-type SVGTSpanProps = SVGAttributes<SVGTSpanElement>;
+// type SVGTSpanProps = SVGAttributes<SVGTSpanElement>;
 export type SVGTextProps = SVGAttributes<SVGTextElement>;
 
-type OwnTextProps = {
-  /** className to apply to the SVGText element. */
-  className?: string;
-  /** Whether to scale the fontSize to accommodate the specified width.  */
-  scaleToFit?: boolean | 'shrink-only';
-  /** Rotational angle of the text. */
-  angle?: number;
-  /** Horizontal text anchor. */
-  textAnchor?: 'start' | 'middle' | 'end' | 'inherit';
-  /** Vertical text anchor. */
-  verticalAnchor?: 'start' | 'middle' | 'end';
-  /** Styles to be applied to the text (and used in computation of its size). */
-  style?: CSSProperties;
-  /** Ref passed to the Text SVG element. */
-  innerRef?: Ref<SVGSVGElement>;
-  /** Ref passed to the Text text element */
-  innerTextRef?: Ref<SVGTextElement>;
-  /** x position of the text. */
-  x?: string | number;
-  /** y position of the text. */
-  y?: string | number;
-  /** dx offset of the text. */
-  dx?: string | number;
-  /** dy offset of the text. */
-  dy?: string | number;
-  /** Desired "line height" of the text, implemented as y offsets. */
-  lineHeight?: SVGTSpanProps['dy'];
-  /** Cap height of the text. */
-  capHeight?: SVGTSpanProps['capHeight'];
-  /** Font size of text. */
-  fontSize?: string | number;
-  /** Font family of text. */
-  fontFamily?: string;
-  /** Fill color of text. */
-  fill?: string;
-  /** Maximum width to occupy (approximate as words are not split). */
-  width?: number;
-  /** String (or number coercible to one) to be styled and positioned. */
-  children?: string | number;
-};
+// type OwnTextProps = {
+//   /** className to apply to the SVGText element. */
+//   className?: string;
+//   /** Whether to scale the fontSize to accommodate the specified width.  */
+//   scaleToFit?: boolean | 'shrink-only';
+//   /** Rotational angle of the text. */
+//   angle?: number;
+//   /** Horizontal text anchor. */
+//   textAnchor?: 'start' | 'middle' | 'end' | 'inherit';
+//   /** Vertical text anchor. */
+//   verticalAnchor?: 'start' | 'middle' | 'end';
+//   /** Styles to be applied to the text (and used in computation of its size). */
+//   style?: CSSProperties;
+//   /** Ref passed to the Text SVG element. */
+//   innerRef?: Ref<SVGSVGElement>;
+//   /** Ref passed to the Text text element */
+//   innerTextRef?: Ref<SVGTextElement>;
+//   /** x position of the text. */
+//   x?: string | number;
+//   /** y position of the text. */
+//   y?: string | number;
+//   /** dx offset of the text. */
+//   dx?: string | number;
+//   /** dy offset of the text. */
+//   dy?: string | number;
+//   /** Desired "line height" of the text, implemented as y offsets. */
+//   lineHeight?: SVGTSpanProps['dy'];
+//   /** Cap height of the text. */
+//   capHeight?: SVGTSpanProps['capHeight'];
+//   /** Font size of text. */
+//   fontSize?: string | number;
+//   /** Font family of text. */
+//   fontFamily?: string;
+//   /** Fill color of text. */
+//   fill?: string;
+//   /** Maximum width to occupy (approximate as words are not split). */
+//   width?: number;
+//   /** String (or number coercible to one) to be styled and positioned. */
+//   children?: string | number;
+// };
 
 export type LineProps = Omit<SVGProps<SVGLineElement>, 'to' | 'from' | 'ref'>;
 export type RectProps = Omit<SVGProps<SVGRectElement>, 'ref'>;
-export type TextProps = OwnTextProps & Omit<SVGTextProps, keyof OwnTextProps>;
+// export type TextProps = OwnTextProps & Omit<SVGTextProps, keyof OwnTextProps>;
 
 export type TooltipProps = {
   /** Tooltip content. */

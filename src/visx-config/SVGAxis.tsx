@@ -3,7 +3,7 @@ import { animated, SpringConfig } from 'react-spring';
 import { Group } from '@visx/group';
 import { Text } from '@visx/text';
 
-import { VariableType } from '@/visx-hybrid/types';
+import { Variable } from '@/visx-hybrid/types';
 import { AxisDomainPath } from '@/visx-next/AxisDomainPath';
 import { getLabelTransform } from '@/visx-next/getLabelTransform';
 import { AxisScale, LineProps, Margin, Orientation, TextProps } from '@/visx-next/types';
@@ -114,7 +114,7 @@ export type SvgAxisRendererProps<Scale extends AxisScale> = {
   animate: boolean;
   renderingOffset: number;
   /**  If true, will hide the axis line. */
-  hideAxisLine?: boolean;
+  hideAxisPath?: boolean;
   /** If true, will hide the ticks (but not the tick labels). */
   hideTicks?: boolean;
   /** Props to apply to the <g> element that wraps each tick line and label. */
@@ -145,7 +145,7 @@ function SvgAxisRenderer<Scale extends AxisScale>({
   tickLabelProps: userTickLabelProps,
   domainPathProps = {},
   outerTickLength = 0,
-  hideAxisLine = false,
+  hideAxisPath = false,
   label = '',
   labelProps = {},
   labelPadding = 14,
@@ -205,7 +205,7 @@ function SvgAxisRenderer<Scale extends AxisScale>({
         springConfig={springConfig}
         tickLabelPadding={tickLabelPadding}
       />
-      {!hideAxisLine && (
+      {!hideAxisPath && (
         <AxisDomainPath
           data-testid="axis-domain"
           {...domainPathProps}
@@ -247,7 +247,7 @@ export type SVGAxisProps<Scale extends AxisScale> = {
   scale: Scale;
   axisConfig: AxisConfig;
   horizontal: boolean;
-  variableType: VariableType;
+  variable: Variable;
   width: number;
   height: number;
   margin: Margin;
@@ -261,7 +261,7 @@ export function SVGAxis<Scale extends AxisScale>({
   scale,
   axisConfig,
   horizontal,
-  variableType,
+  variable,
   width,
   height,
   margin,
@@ -271,21 +271,21 @@ export function SVGAxis<Scale extends AxisScale>({
   renderingOffset = 0
 }: SVGAxisProps<Scale>) {
   const orientation =
-    horizontal && variableType === 'independent'
+    horizontal && variable === 'independent'
       ? axisConfig.position === 'start'
         ? 'left'
         : 'right'
-      : horizontal && variableType === 'dependent'
+      : horizontal && variable === 'dependent'
       ? axisConfig.position === 'start'
         ? 'bottom'
         : 'top'
-      : !horizontal && variableType == 'independent'
+      : !horizontal && variable == 'independent'
       ? axisConfig.position === 'start'
         ? 'bottom'
         : 'top'
       : axisConfig.position === 'start'
       ? 'left'
-      : 'right'; // !horizontal && variableType === 'dependent'
+      : 'right'; // !horizontal && variable === 'dependent'
 
   const top =
     orientation === 'bottom'

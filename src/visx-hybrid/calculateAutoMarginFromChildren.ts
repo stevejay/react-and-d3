@@ -5,12 +5,12 @@ import { calculateMarginForAxis } from './calculateMarginForAxis';
 import { combineMargins } from './combineMargins';
 import {
   defaultAutoMarginLabelPadding,
+  defaultBigLabelsTextStyle,
   defaultHideTicks,
   defaultHideZero,
-  defaultLabelTextProps,
+  defaultSmallLabelsTextStyle,
   defaultTickLabelAngle,
   defaultTickLabelPadding,
-  defaultTickLabelTextProps,
   defaultTickLength
 } from './constants';
 import { getDefaultAxisLabelAngle } from './getDefaultAxisLabelAngle';
@@ -54,18 +54,18 @@ export function calculateAutoMarginFromChildren(
     } else if (typeof element.type !== 'string' && element.type.name.endsWith('Axis')) {
       const axisOrientation = calculateAxisOrientation(
         horizontal,
-        element.props.variableType,
+        element.props.variable,
         element.props.position
       );
-      const scale = element.props.variableType === 'independent' ? independentScale : dependentScale;
+      const scale = element.props.variable === 'independent' ? independentScale : dependentScale;
       const rangePadding =
-        element.props.variableType === 'independent' ? independentRangePadding : dependentRangePadding;
+        element.props.variable === 'independent' ? independentRangePadding : dependentRangePadding;
       const autoMargin = calculateMarginForAxis({
         axisOrientation,
         scale,
         rangePadding,
-        bigFont: theme?.bigLabels?.font ?? defaultLabelTextProps,
-        smallFont: theme?.smallLabels?.font ?? defaultTickLabelTextProps,
+        bigFont: theme?.bigLabels?.font ?? defaultBigLabelsTextStyle.font,
+        smallFont: theme?.smallLabels?.font ?? defaultSmallLabelsTextStyle.font,
         hideZero: element.props.hideZero ?? defaultHideZero,
         hideTicks: element.props.hideTicks ?? defaultHideTicks,
         label: element.props.label,

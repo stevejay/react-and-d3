@@ -1,29 +1,25 @@
-import { Text } from '@visx/text';
+import type { CSSProperties } from 'react';
 
-import { TextProps } from './SVGSimpleText';
-import type {
-  AxisOrientation,
-  TextAnchor,
-  ThemeLabelStyles,
-  TickLabelAngle,
-  VerticalTextAnchor
-} from './types';
+import { defaultSmallLabelsFont } from './constants';
+import { getFontMetricsWithCache } from './getFontMetricsWithCache';
+import { SVGSimpleText, TextProps } from './SVGSimpleText';
+import type { Anchor, AxisOrientation, FontProperties, TextStyles, TickLabelAngle } from './types';
 
-function getTextAnchor(orientation: AxisOrientation, tickLabelAngle: TickLabelAngle): TextAnchor {
-  let textAnchor: TextAnchor = 'middle';
-  if (orientation === 'left') {
+function getTextAnchor(axisOrientation: AxisOrientation, tickLabelAngle: TickLabelAngle): Anchor {
+  let textAnchor: Anchor = 'middle';
+  if (axisOrientation === 'left') {
     if (tickLabelAngle !== 'vertical') {
       textAnchor = 'end';
     }
-  } else if (orientation === 'right') {
+  } else if (axisOrientation === 'right') {
     if (tickLabelAngle !== 'vertical') {
       textAnchor = 'start';
     }
-  } else if (orientation === 'top') {
+  } else if (axisOrientation === 'top') {
     if (tickLabelAngle === 'vertical') {
       textAnchor = 'start';
     }
-  } else if (orientation === 'bottom') {
+  } else if (axisOrientation === 'bottom') {
     if (tickLabelAngle === 'vertical') {
       textAnchor = 'end';
     }
@@ -31,27 +27,24 @@ function getTextAnchor(orientation: AxisOrientation, tickLabelAngle: TickLabelAn
   return textAnchor;
 }
 
-function getVerticalTextAnchor(
-  orientation: AxisOrientation,
-  tickLabelAngle: TickLabelAngle
-): VerticalTextAnchor {
-  let verticalAnchor: VerticalTextAnchor = 'middle';
-  if (orientation === 'left' || orientation === 'right') {
+function getVerticalTextAnchor(axisOrientation: AxisOrientation, tickLabelAngle: TickLabelAngle): Anchor {
+  let verticalAnchor: Anchor = 'middle';
+  if (axisOrientation === 'left' || axisOrientation === 'right') {
     if (tickLabelAngle === 'vertical') {
       verticalAnchor = 'end';
     }
-  } else if (orientation === 'top') {
+  } else if (axisOrientation === 'top') {
     verticalAnchor = 'end';
-  } else if (orientation === 'bottom') {
+  } else if (axisOrientation === 'bottom') {
     verticalAnchor = 'start';
   }
   return verticalAnchor;
 }
 
-function getTextAngle(orientation: AxisOrientation, tickLabelAngle: TickLabelAngle): number {
+function getTextAngle(axisOrientation: AxisOrientation, tickLabelAngle: TickLabelAngle): number {
   let angle = 0;
   if (tickLabelAngle === 'vertical') {
-    if (orientation === 'right') {
+    if (axisOrientation === 'right') {
       angle = 90;
     } else {
       angle = -90;
@@ -62,43 +55,30 @@ function getTextAngle(orientation: AxisOrientation, tickLabelAngle: TickLabelAng
   return angle;
 }
 
-function getDelta(orientation: AxisOrientation, tickLabelAngle: TickLabelAngle): { dx: string; dy: string } {
-  const delta = { dx: '0em', dy: '0em' };
-  if (tickLabelAngle === 'vertical') {
-    if (orientation === 'top' || orientation === 'right') {
-      delta.dx = '0.31em';
-    } else {
-      delta.dx = '-0.31em';
-    }
-  } else if (tickLabelAngle === 'horizontal') {
-    if (orientation === 'top') {
-      delta.dy = '-0.31em';
-    } else if (orientation === 'bottom') {
-      delta.dy = '0.31em';
-    }
+function combineStyles(font: string | FontProperties | undefined, style: CSSProperties | undefined) {
+  if (typeof font === 'string') {
+    return { font, ...style };
+  } else if (font) {
+    return { ...font, ...style };
   } else {
-    // Angled.
-    if (orientation === 'top') {
-      delta.dx = '0.31em';
-    } else if (orientation === 'bottom') {
-      delta.dx = '-0.31em';
-    }
+    return style;
   }
-  return delta;
 }
 
 export interface SVGAxisTickLabelProps {
-  orientation: AxisOrientation;
+  /** The tick label. */
   label: string;
-  labelStyles?: ThemeLabelStyles;
-  /** If true, will hide the ticks (but not the tick labels). */
+  /** The orientation of the axis. */
+  axisOrientation: AxisOrientation;
+  labelStyles?: TextStyles;
+  /** Whether the axis ticks should be hidden. (The tick labels will always be shown.) Optional. Defaults to `false`. */
   hideTicks?: boolean;
   /** The angle that the tick label will be rendered at. */
   tickLabelAngle: TickLabelAngle;
   /** Padding between the tick lines and the tick labels. */
   tickLabelPadding: number;
   /** The props to apply to the tick labels. */
-  tickLabelProps?: Partial<TextProps>;
+  tickLabelProps?: Partial<TextProps>; // Partial<Omit<TextProps, 'verticalAnchor' | 'textAnchor'>>;
   /** The length of the tick lines. */
   tickLength: number;
 }
@@ -106,73 +86,46 @@ export interface SVGAxisTickLabelProps {
 export function SVGAxisTickLabel({
   label,
   hideTicks,
-  orientation,
+  axisOrientation,
   tickLabelProps = {},
   tickLength,
   tickLabelPadding,
   labelStyles,
   tickLabelAngle
 }: SVGAxisTickLabelProps) {
-  const isVerticalAxis = orientation === 'left' || orientation === 'right';
+  const fontMetrics = getFontMetricsWithCache(labelStyles?.font ?? defaultSmallLabelsFont);
+  const isVerticalAxis = axisOrientation === 'left' || axisOrientation === 'right';
   const tickLineAxis = isVerticalAxis ? 'x' : 'y';
-  const tickSign = orientation === 'left' || orientation === 'top' ? -1 : 1;
-
+  const tickSign = axisOrientation === 'left' || axisOrientation === 'top' ? -1 : 1;
   const {
     style: labelPropsStyle,
-    className: labelPropsClassname = ''
-    // ...restTickLabelProps
+    className: labelPropsClassname = '',
+    ...restTickLabelProps
   } = tickLabelProps;
-  const style =
-    typeof labelStyles?.font === 'string' ? { font: labelStyles?.font, ...labelPropsStyle } : labelPropsStyle;
-
-  const textAnchor = getTextAnchor(orientation, tickLabelAngle);
-  const verticalAnchor = getVerticalTextAnchor(orientation, tickLabelAngle);
-  const angle = getTextAngle(orientation, tickLabelAngle);
-  const delta = getDelta(orientation, tickLabelAngle);
-
-  // return (
-  //   <text
-  //     data-testid="axis-label"
-  //     role="presentation"
-  //     aria-hidden
-  //     textAnchor={textAnchor}
-  //     fill={labelStyles?.fill ?? 'currentColor'}
-  //     style={style}
-  //     className={`${labelStyles?.className ?? ''} ${labelPropsClassname}`}
-  //     {...{
-  //       [tickLineAxis]: tickSign * ((hideTicks ? 0 : tickLength) + tickLabelPadding)
-  //       // [tickCrossAxis]: y
-  //     }}
-  //     dy={y}
-  //     // dy="0.35rem"
-
-  //     transform={
-  //       isVerticalAxis
-  //         ? `rotate(${angle}, ${tickSign * ((hideTicks ? 0 : tickLength) + tickLabelPadding)}, 0)`
-  //         : `rotate(${angle}, 0, ${tickSign * ((hideTicks ? 0 : tickLength) + tickLabelPadding)})`
-  //     }
-  //   >
-  //     {label}
-  //   </text>
-  // );
-
+  const style = combineStyles(labelStyles?.font, labelPropsStyle);
+  const textAnchor = getTextAnchor(axisOrientation, tickLabelAngle);
+  const verticalAnchor = getVerticalTextAnchor(axisOrientation, tickLabelAngle);
+  const angle = getTextAngle(axisOrientation, tickLabelAngle);
   return (
-    <Text
-      data-testid="axis-label"
-      role="presentation"
-      aria-hidden
+    <SVGSimpleText
       textAnchor={textAnchor}
       verticalAnchor={verticalAnchor}
       angle={angle}
-      fill={labelStyles?.fill ?? 'currentColor'}
+      x={0}
+      y={0}
+      {...{
+        [tickLineAxis]: tickSign * ((hideTicks ? 0 : tickLength) + tickLabelPadding)
+      }}
+      role="presentation"
+      aria-hidden
+      fill={restTickLabelProps?.fill ?? labelStyles?.fill ?? 'currentColor'}
+      fontHeight={fontMetrics.height}
+      fontHeightFromBaseline={fontMetrics.heightFromBaseline}
       style={style}
-      className={`${labelStyles?.className ?? ''} ${labelPropsClassname}`}
-      {...{ [tickLineAxis]: tickSign * ((hideTicks ? 0 : tickLength) + tickLabelPadding) }}
-      // {...restTickLabelProps}
-      dx={delta.dx}
-      dy={delta.dy}
+      className={`${labelStyles?.className ?? ''} ${labelPropsClassname ?? ''}`}
+      {...restTickLabelProps}
     >
       {label}
-    </Text>
+    </SVGSimpleText>
   );
 }

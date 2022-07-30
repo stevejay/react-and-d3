@@ -188,7 +188,7 @@ export function RespondentsByLanguage() {
                   orientation="top"
                   tickFormat={xAxisTickFormatter}
                   hideTicks={false}
-                  hideAxisLine
+                  hideAxisPath
                   tickLabelPadding={6}
                   tickLabelProps={{
                     className: 'fill-slate-400 font-sans',
@@ -212,7 +212,7 @@ export function RespondentsByLanguage() {
                   label={getXAxisLabel(statistic)}
                   tickFormat={xAxisTickFormatter}
                   hideTicks={false}
-                  hideAxisLine
+                  hideAxisPath
                   tickLabelPadding={14}
                   tickLabelProps={{
                     className: 'fill-slate-400 font-sans',

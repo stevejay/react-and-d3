@@ -1,23 +1,23 @@
-import type { AxisOrientation, VariableType } from './types';
+import type { AxisOrientation, Variable } from './types';
 
 export function calculateAxisOrientation(
   horizontal: boolean,
-  variableType: VariableType,
+  variable: Variable,
   position: 'start' | 'end'
 ): AxisOrientation {
-  return horizontal && variableType === 'independent'
+  return horizontal && variable === 'independent'
     ? position === 'start'
       ? 'left'
       : 'right'
-    : horizontal && variableType === 'dependent'
+    : horizontal && variable === 'dependent'
     ? position === 'start'
       ? 'bottom'
       : 'top'
-    : !horizontal && variableType == 'independent'
+    : !horizontal && variable == 'independent'
     ? position === 'start'
       ? 'bottom'
       : 'top'
     : position === 'start'
     ? 'left'
-    : 'right'; // !horizontal && variableType === 'dependent'
+    : 'right'; // !horizontal && variable === 'dependent'
 }

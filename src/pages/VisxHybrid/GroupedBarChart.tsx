@@ -99,7 +99,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         ))}
       </SVGBarGroup>
       <SVGAxis
-        variableType="independent"
+        variable="independent"
         position="end"
         label="Foobar Top"
         hideTicks
@@ -107,7 +107,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         autoMarginLabelPadding={10}
       />
       <SVGAxis
-        variableType="independent"
+        variable="independent"
         position="start"
         label="Foobar Bottom"
         hideTicks
@@ -115,7 +115,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         autoMarginLabelPadding={10}
       />
       <SVGAxis
-        variableType="dependent"
+        variable="dependent"
         position="start"
         label="Foobar Left"
         tickCount={5}
@@ -124,7 +124,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         autoMarginLabelPadding={36} // Does not take tick labels into account.
       />
       <SVGAxis
-        variableType="dependent"
+        variable="dependent"
         position="end"
         label="Foobar Right"
         tickCount={5}

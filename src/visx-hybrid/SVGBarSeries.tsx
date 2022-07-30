@@ -100,9 +100,9 @@ import { useSeriesEvents } from './useSeriesEvents';
 //   );
 // }
 
-type BarSeriesRendererCoreProps<Datum extends object> = {
+type BarSeriesRendererOwnProps<Datum extends object> = {
   context: Required<InferDataContext>;
-  // variableType: VariableType;
+  // variable: Variable;
   springConfig?: SpringConfig;
   animate?: boolean;
   // hideZero?: boolean;
@@ -119,7 +119,7 @@ type BarSeriesRendererCoreProps<Datum extends object> = {
 export type BarSeriesRendererProps<
   ElementProps extends object,
   Datum extends object
-> = BarSeriesRendererCoreProps<Datum> & Omit<ElementProps, keyof BarSeriesRendererCoreProps<Datum>>;
+> = BarSeriesRendererOwnProps<Datum> & Omit<ElementProps, keyof BarSeriesRendererOwnProps<Datum>>;
 
 export type BarSeriesRenderer<ElementProps extends object, Datum extends object> = (
   props: BarSeriesRendererProps<ElementProps, Datum>

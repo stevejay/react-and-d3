@@ -25,7 +25,7 @@ export interface AxisConfig {
   tickValues?: ScaleInput<AxisScale>[]; // wrong
 
   /**  If true, will hide the axis line. */
-  hideAxisLine?: boolean;
+  hideAxisPath?: boolean;
   /** If true, will hide the ticks (but not the tick labels). */
   hideTicks?: boolean;
   /** Props to apply to the <g> element that wraps the entire axis. */
