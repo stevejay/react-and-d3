@@ -1,27 +1,22 @@
-import type { CSSProperties } from 'react';
-
+import { combineFontPropertiesWithStyles } from './combineFontPropertiesWithStyles';
 import { defaultSmallLabelsFont } from './constants';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { SVGSimpleText, TextProps } from './SVGSimpleText';
-import type { Anchor, AxisOrientation, FontProperties, TextStyles, TickLabelAngle } from './types';
+import type { Anchor, AxisOrientation, TextStyles, TickLabelAngle } from './types';
 
-function getTextAnchor(axisOrientation: AxisOrientation, tickLabelAngle: TickLabelAngle): Anchor {
+function getTextAnchor(axisOrientation: AxisOrientation, labelAngle: TickLabelAngle): Anchor {
   let textAnchor: Anchor = 'middle';
-  if (axisOrientation === 'left') {
-    if (tickLabelAngle !== 'vertical') {
+  if (labelAngle === 'vertical') {
+    if (axisOrientation === 'top') {
+      textAnchor = 'start';
+    } else if (axisOrientation === 'bottom') {
       textAnchor = 'end';
     }
-  } else if (axisOrientation === 'right') {
-    if (tickLabelAngle !== 'vertical') {
-      textAnchor = 'start';
-    }
-  } else if (axisOrientation === 'top') {
-    if (tickLabelAngle === 'vertical') {
-      textAnchor = 'start';
-    }
-  } else if (axisOrientation === 'bottom') {
-    if (tickLabelAngle === 'vertical') {
+  } else if (labelAngle === 'horizontal') {
+    if (axisOrientation === 'left') {
       textAnchor = 'end';
+    } else if (axisOrientation === 'right') {
+      textAnchor = 'start';
     }
   }
   return textAnchor;
@@ -55,16 +50,6 @@ function getTextAngle(axisOrientation: AxisOrientation, tickLabelAngle: TickLabe
   return angle;
 }
 
-function combineStyles(font: string | FontProperties | undefined, style: CSSProperties | undefined) {
-  if (typeof font === 'string') {
-    return { font, ...style };
-  } else if (font) {
-    return { ...font, ...style };
-  } else {
-    return style;
-  }
-}
-
 export interface SVGAxisTickLabelProps {
   /** The tick label. */
   label: string;
@@ -74,11 +59,11 @@ export interface SVGAxisTickLabelProps {
   /** Whether the axis ticks should be hidden. (The tick labels will always be shown.) Optional. Defaults to `false`. */
   hideTicks?: boolean;
   /** The angle that the tick label will be rendered at. */
-  tickLabelAngle: TickLabelAngle;
+  labelAngle: TickLabelAngle;
   /** Padding between the tick lines and the tick labels. */
-  tickLabelPadding: number;
+  labelPadding: number;
   /** The props to apply to the tick labels. */
-  tickLabelProps?: Partial<TextProps>; // Partial<Omit<TextProps, 'verticalAnchor' | 'textAnchor'>>;
+  labelProps?: Partial<TextProps>; // Partial<Omit<TextProps, 'verticalAnchor' | 'textAnchor'>>;
   /** The length of the tick lines. */
   tickLength: number;
 }
@@ -87,25 +72,22 @@ export function SVGAxisTickLabel({
   label,
   hideTicks,
   axisOrientation,
-  tickLabelProps = {},
+  labelProps = {},
   tickLength,
-  tickLabelPadding,
+  labelPadding,
   labelStyles,
-  tickLabelAngle
+  labelAngle
 }: SVGAxisTickLabelProps) {
   const fontMetrics = getFontMetricsWithCache(labelStyles?.font ?? defaultSmallLabelsFont);
   const isVerticalAxis = axisOrientation === 'left' || axisOrientation === 'right';
   const tickLineAxis = isVerticalAxis ? 'x' : 'y';
   const tickSign = axisOrientation === 'left' || axisOrientation === 'top' ? -1 : 1;
-  const {
-    style: labelPropsStyle,
-    className: labelPropsClassname = '',
-    ...restTickLabelProps
-  } = tickLabelProps;
-  const style = combineStyles(labelStyles?.font, labelPropsStyle);
-  const textAnchor = getTextAnchor(axisOrientation, tickLabelAngle);
-  const verticalAnchor = getVerticalTextAnchor(axisOrientation, tickLabelAngle);
-  const angle = getTextAngle(axisOrientation, tickLabelAngle);
+  const { style: labelPropsStyle, className: labelPropsClassname, ...restLabelProps } = labelProps;
+  const style = combineFontPropertiesWithStyles(labelStyles?.font, labelPropsStyle);
+  const textAnchor = getTextAnchor(axisOrientation, labelAngle);
+  const verticalAnchor = getVerticalTextAnchor(axisOrientation, labelAngle);
+  const angle = getTextAngle(axisOrientation, labelAngle);
+
   return (
     <SVGSimpleText
       textAnchor={textAnchor}
@@ -113,17 +95,18 @@ export function SVGAxisTickLabel({
       angle={angle}
       x={0}
       y={0}
+      // The following overrides either the x or the y prop value:
       {...{
-        [tickLineAxis]: tickSign * ((hideTicks ? 0 : tickLength) + tickLabelPadding)
+        [tickLineAxis]: tickSign * ((hideTicks ? 0 : tickLength) + labelPadding)
       }}
       role="presentation"
       aria-hidden
-      fill={restTickLabelProps?.fill ?? labelStyles?.fill ?? 'currentColor'}
+      fill={restLabelProps?.fill ?? labelStyles?.fill ?? 'currentColor'}
       fontHeight={fontMetrics.height}
       fontHeightFromBaseline={fontMetrics.heightFromBaseline}
       style={style}
       className={`${labelStyles?.className ?? ''} ${labelPropsClassname ?? ''}`}
-      {...restTickLabelProps}
+      {...restLabelProps}
     >
       {label}
     </SVGSimpleText>

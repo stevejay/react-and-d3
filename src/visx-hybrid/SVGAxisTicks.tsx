@@ -89,11 +89,11 @@ export function SVGAxisTicks({
             axisOrientation={axisOrientation}
             label={label}
             hideTicks={hideTicks}
-            tickLabelProps={tickLabelProps}
+            labelProps={tickLabelProps}
             tickLength={tickLength}
-            tickLabelPadding={tickLabelPadding}
+            labelPadding={tickLabelPadding}
             labelStyles={labelStyles}
-            tickLabelAngle={tickLabelAngle}
+            labelAngle={tickLabelAngle}
           />
         </animated.g>
       ))}
