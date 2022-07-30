@@ -1,4 +1,4 @@
-import { SVGProps } from 'react';
+import type { SVGProps } from 'react';
 import { animated, SpringConfig, useSpring } from 'react-spring';
 
 import { createAxisDomainPath } from './createAxisDomainPath';

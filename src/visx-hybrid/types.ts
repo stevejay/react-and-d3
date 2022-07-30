@@ -1,6 +1,7 @@
 import type { CSSProperties, FocusEvent, PointerEvent, ReactNode, Ref, SVGAttributes, SVGProps } from 'react';
 import type { SpringConfig } from 'react-spring';
 import type { D3Scale, ScaleInput } from '@visx/scale';
+import type { Series, SeriesPoint } from 'd3-shape';
 
 export type { ScaleInput } from '@visx/scale';
 
@@ -16,6 +17,8 @@ export type AxisScale<Output extends AxisScaleOutput = AxisScaleOutput> = D3Scal
 /** A catch-all type for scales that returns number */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type PositionScale = D3Scale<number, any, any>;
+
+export type Anchor = 'start' | 'middle' | 'end';
 
 export interface Margin {
   top: number;
@@ -160,9 +163,9 @@ export interface XYChartTheme {
     className?: string;
   } & Pick<SVGProps<SVGRectElement>, 'fill'>;
   /** Styles to applied to big SVG labels (axis label, annotation title, etc.). */
-  svgLabelBig?: ThemeLabelStyles;
+  bigLabels?: ThemeLabelStyles;
   /** Styles to applied to small SVG labels (tick label, annotation subtitle, etc.). */
-  svgLabelSmall?: ThemeLabelStyles;
+  smallLabels?: ThemeLabelStyles;
   axis?: {
     top?: AxisStyles;
     bottom?: AxisStyles;
@@ -171,47 +174,51 @@ export interface XYChartTheme {
   };
 }
 
-export interface FontProperties {
-  /**
-   * A list of one or more font family names.
-   */
-  fontFamily: string;
+// export interface FontProperties {
+//   /**
+//    * A list of one or more font family names.
+//    */
+//   fontFamily: string;
 
-  /**
-   * Set the size of the font.
-   */
-  fontSize: number;
+//   /**
+//    * Set the size of the font.
+//    */
+//   fontSize: number;
 
-  /**
-   * Select a normal, condensed, or expanded face from the font.
-   * Only has an effect if the font includes the given variation.
-   * This property in itself does not cause the browser to stretch a font.
-   */
-  fontStretch?: string;
+//   /**
+//    * Select a normal, condensed, or expanded face from the font.
+//    * Only has an effect if the font includes the given variation.
+//    * This property in itself does not cause the browser to stretch a font.
+//    */
+//   fontStretch?: string;
 
-  /**
-   * Select a normal, italic, or oblique face from the font.
-   */
-  fontStyle?: string;
+//   /**
+//    * Select a normal, italic, or oblique face from the font.
+//    */
+//   fontStyle?: string;
 
-  /**
-   * Select variants from the font.
-   */
-  fontVariant?: string;
+//   /**
+//    * Select variants from the font.
+//    */
+//   fontVariant?: string;
 
-  /**
-   * Set the weight of the font.
-   */
-  fontWeight?: number | string;
+//   /**
+//    * Set the weight of the font.
+//    */
+//   fontWeight?: number | string;
 
-  /**
-   * Define how tall a line of text should be.
-   */
-  lineHeight?: number;
-}
+//   /**
+//    * Define how tall a line of text should be.
+//    */
+//   lineHeight?: number;
+// }
 
-export interface TextMeasurementResult {
-  width: number;
+export type FontProperties = Pick<
+  CSSProperties,
+  'fontFamily' | 'fontSize' | 'fontStretch' | 'fontStyle' | 'fontVariant' | 'fontWeight' | 'lineHeight'
+>;
+
+export interface FontMetrics {
   height: number;
   heightFromBaseline: number;
 }
@@ -453,3 +460,15 @@ export interface Point {
   x: number;
   y: number;
 }
+
+// BarStack transforms its child series Datum into CombinedData<XScale, YScale>
+export type BarStackDatum<
+  XScale extends AxisScale,
+  YScale extends AxisScale,
+  Datum extends object
+> = SeriesPoint<CombinedStackData<XScale, YScale, Datum>>;
+
+export type BarStackData<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> = Series<
+  CombinedStackData<XScale, YScale, Datum>,
+  string
+>[];

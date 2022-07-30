@@ -8,7 +8,6 @@ import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGFancyBarSeriesRenderer } from '@/visx-hybrid/SVGFancyBarSeriesRenderer';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
-// import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
@@ -61,8 +60,8 @@ export function BarChart({ data }: BarChartProps) {
       role="graphics-document"
       aria-roledescription="Bar chart"
       aria-label="Some Important Results"
-      dependentRangePadding={30}
-      independentRangePadding={20}
+      dependentRangePadding={50}
+      independentRangePadding={50}
       className="select-none"
       theme={darkTheme}
       // horizontal
@@ -91,44 +90,55 @@ export function BarChart({ data }: BarChartProps) {
       <SVGAxis
         variableType="independent"
         position="end"
-        label="Foobar Top"
+        label="Foobar Topy"
+        // hideAxisLine
         // hideTicks
         // tickLength={20}
         // tickLabelPadding={20}
         // tickLabelAngle="angled"
-        // labelPadding={0}
+        // autoMarginLabelPadding={0}
+        // labelAngle="vertical"
       />
       <SVGAxis
         variableType="independent"
         position="start"
-        label="Foobar Bottom"
+        label="Foobar Bottomy"
+        // hideAxisLine
+        // outerTickLength={20}
         // hideTicks
         // tickLength={20}
         // tickLabelPadding={10}
         // tickLabelAngle="angled"
-        // labelPadding={0}
+        // autoMarginLabelPadding={0}
+        // labelAngle="vertical"
       />
       <SVGAxis
         variableType="dependent"
         position="start"
-        label="Foobar Left"
+        label="Foobar Lefty"
         tickCount={5}
         hideZero
+        // hideAxisLine
+
         // tickLength={20}
         // tickLabelPadding={10}
         // tickLabelAngle="angled"
-        // labelPadding={0}
+        // autoMarginLabelPadding={0}
+        // labelAngle="horizontal"
       />
       <SVGAxis
         variableType="dependent"
         position="end"
-        label="Foobar Right"
+        label="Foobar Righty"
         tickCount={5}
         hideZero
+        // hideAxisLine
+
         // tickLength={20}
         // tickLabelPadding={10}
         // tickLabelAngle="angled"
-        // labelPadding={0}
+        // autoMarginLabelPadding={0}
+        // labelAngle="horizontal"
       />
       <PopperTooltip<CategoryValueDatum<string, number>>
         snapTooltipToDatumX

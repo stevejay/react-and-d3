@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
 
 import { Svg } from '@/components/Svg';
 import { SvgAxis } from '@/components/SvgAxis';

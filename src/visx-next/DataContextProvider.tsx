@@ -1,5 +1,5 @@
 import { ReactNode, useMemo } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
 import { AxisScaleOutput } from '@visx/axis';
 import { ScaleConfig, ScaleConfigToD3Scale, scaleOrdinal } from '@visx/scale';
 import { schemeCategory10 } from 'd3-scale-chromatic';

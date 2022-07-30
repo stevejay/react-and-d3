@@ -1,4 +1,4 @@
-import { SVGProps } from 'react';
+import type { SVGProps } from 'react';
 import { animated, SpringConfig, useTransition } from 'react-spring';
 import type { ScaleConfig } from '@visx/scale';
 import { isNil } from 'lodash-es';
@@ -17,7 +17,7 @@ import { EventEmitterProvider } from './EventEmitterProvider';
 import { getDataEntriesFromChildren } from './getDataEntriesFromChildren';
 import { ParentSize } from './ParentSize';
 import { TooltipProvider } from './TooltipProvider';
-import { AxisScaleOutput, Margin, XYChartTheme } from './types';
+import type { AxisScaleOutput, Margin, XYChartTheme } from './types';
 import { useEventEmitters } from './useEventEmitters';
 
 // TODO:

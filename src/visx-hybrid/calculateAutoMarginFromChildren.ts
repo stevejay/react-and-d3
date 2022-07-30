@@ -4,9 +4,9 @@ import { calculateAxisOrientation } from './calculateAxisOrientation';
 import { calculateMarginForAxis } from './calculateMarginForAxis';
 import { combineMargins } from './combineMargins';
 import {
+  defaultAutoMarginLabelPadding,
   defaultHideTicks,
   defaultHideZero,
-  defaultLabelPadding,
   defaultLabelTextProps,
   defaultTickLabelAngle,
   defaultTickLabelPadding,
@@ -64,8 +64,8 @@ export function calculateAutoMarginFromChildren(
         axisOrientation,
         scale,
         rangePadding,
-        bigFont: theme?.svgLabelBig?.font ?? defaultLabelTextProps,
-        smallFont: theme?.svgLabelSmall?.font ?? defaultTickLabelTextProps,
+        bigFont: theme?.bigLabels?.font ?? defaultLabelTextProps,
+        smallFont: theme?.smallLabels?.font ?? defaultTickLabelTextProps,
         hideZero: element.props.hideZero ?? defaultHideZero,
         hideTicks: element.props.hideTicks ?? defaultHideTicks,
         label: element.props.label,
@@ -74,7 +74,7 @@ export function calculateAutoMarginFromChildren(
         tickValues: element.props.tickValues,
         tickLength: element.props.tickLength ?? defaultTickLength,
         tickLabelPadding: element.props.tickLabelPadding ?? defaultTickLabelPadding,
-        labelPadding: element.props.labelPadding ?? defaultLabelPadding,
+        labelPadding: element.props.autoMarginLabelPadding ?? defaultAutoMarginLabelPadding,
         tickLabelAngle: element.props.tickLabelAngle ?? defaultTickLabelAngle,
         labelAngle: element.props.labelAngle ?? getDefaultAxisLabelAngle(axisOrientation)
       });

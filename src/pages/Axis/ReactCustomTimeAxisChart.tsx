@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
 import { max, min } from 'd3-array';
 
 import { Svg } from '@/components/Svg';

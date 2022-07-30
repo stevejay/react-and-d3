@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
 import { schemeSet3 } from 'd3-scale-chromatic';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';

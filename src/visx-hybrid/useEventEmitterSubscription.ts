@@ -1,8 +1,7 @@
 import { useContext, useRef } from 'react';
 
-import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
-
 import { EventEmitterContext, EventType, HandlerParams } from './EventEmitterProvider';
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 export type Handler = (params?: HandlerParams) => void;
 

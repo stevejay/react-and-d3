@@ -1,5 +1,5 @@
 import { CSSProperties, FocusEvent, PointerEvent, ReactNode, Ref, SVGAttributes, SVGProps } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
 import { AxisScale } from '@visx/axis';
 import { D3Scale, NumberLike, ScaleInput, ScaleTypeToD3Scale } from '@visx/scale';
 import { Series, SeriesPoint } from 'd3-shape';

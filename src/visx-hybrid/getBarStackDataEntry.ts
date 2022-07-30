@@ -1,14 +1,9 @@
-import { JSXElementConstructor, ReactElement } from 'react';
-import { AxisScale } from '@visx/axis';
+import type { JSXElementConstructor, ReactElement } from 'react';
 // import { extent } from 'd3-array';
 import { identity } from 'lodash-es';
 
-import { getFirstItem, getSecondItem } from '@/visx-next/getItem';
-import { BarStackData, BarStackDatum } from '@/visx-next/types';
-
-// import { BarSeriesProps } from './BarSeries';
-// import { getFirstItem, getSecondItem } from './getItem';
-import { DataEntry } from './types';
+import { getFirstItem, getSecondItem } from './getItem';
+import type { AxisScale, BarStackData, BarStackDatum, DataEntry } from './types';
 
 const getStack = <IndependentScale extends AxisScale, DependentScale extends AxisScale, Datum extends object>(
   bar: BarStackDatum<IndependentScale, DependentScale, Datum>

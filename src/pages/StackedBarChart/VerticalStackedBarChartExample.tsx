@@ -1,4 +1,4 @@
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
 import { useId } from '@uifabric/react-hooks';
 import { schemeSet3 } from 'd3-scale-chromatic';
 

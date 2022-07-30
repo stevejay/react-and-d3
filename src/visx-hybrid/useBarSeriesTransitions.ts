@@ -1,10 +1,7 @@
 import { SpringConfig, useTransition } from 'react-spring';
 
-// import { createBarSeriesPositioning } from '@/visx-next/positioning';
-import { ScaleInput } from '@/visx-next/scale';
-import { PositionScale } from '@/visx-next/types';
-
 import { createBarSeriesPolygonPositioning } from './barSeriesPolygonPositioning';
+import type { PositionScale, ScaleInput } from './types';
 
 // export function useBarSeriesTransitions<Datum extends object>(
 //   data: readonly Datum[],

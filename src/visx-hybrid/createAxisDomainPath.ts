@@ -1,4 +1,4 @@
-import { AxisOrientation, AxisScaleOutput, Point } from './types';
+import type { AxisOrientation, AxisScaleOutput, Point } from './types';
 
 /**
  * Calculates a path that draws the domain line and the outer ticks for an axis.

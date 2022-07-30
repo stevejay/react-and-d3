@@ -104,7 +104,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         label="Foobar Top"
         hideTicks
         tickLabelPadding={6}
-        labelPadding={10}
+        autoMarginLabelPadding={10}
       />
       <SVGAxis
         variableType="independent"
@@ -112,7 +112,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         label="Foobar Bottom"
         hideTicks
         tickLabelPadding={6}
-        labelPadding={10}
+        autoMarginLabelPadding={10}
       />
       <SVGAxis
         variableType="dependent"
@@ -121,7 +121,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         tickCount={5}
         hideZero
         tickLabelPadding={6}
-        labelPadding={36} // Does not take tick labels into account.
+        autoMarginLabelPadding={36} // Does not take tick labels into account.
       />
       <SVGAxis
         variableType="dependent"
@@ -130,7 +130,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         tickCount={5}
         hideZero
         tickLabelPadding={6}
-        labelPadding={36} // Does not take tick labels into account.
+        autoMarginLabelPadding={36} // Does not take tick labels into account.
       />
       {/* {false && (
         <Tooltip<CategoryValueListDatum<string, number>>

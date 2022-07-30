@@ -108,13 +108,11 @@ function SVGAxisTicks<Scale extends AxisScale>({
 export type SvgAxisRendererProps<Scale extends AxisScale> = {
   orientation: Orientation;
   scale: Scale;
-  //   axisConfig: AxisConfig;
   ticks: TickDatum[];
   rangePadding: number;
   springConfig: SpringConfig;
   animate: boolean;
   renderingOffset: number;
-
   /**  If true, will hide the axis line. */
   hideAxisLine?: boolean;
   /** If true, will hide the ticks (but not the tick labels). */
@@ -303,9 +301,6 @@ export function SVGAxis<Scale extends AxisScale>({
       ? (width ?? 0) - (margin?.right ?? 0)
       : 0;
 
-  //   const isVertical = orientation === 'left' || orientation === 'right';
-  //   const fallbackRangePadding = isVertical ? yRangePadding : xRangePadding;
-
   const axisTicks = getTicksData(scale, axisConfig);
 
   return (
@@ -316,9 +311,6 @@ export function SVGAxis<Scale extends AxisScale>({
       left={left}
     >
       {SvgAxisRenderer({
-        // ...restProps,
-        // hideZero,
-        // tickCount,
         orientation,
         scale,
         ticks: axisTicks,
@@ -327,7 +319,6 @@ export function SVGAxis<Scale extends AxisScale>({
         rangePadding,
         renderingOffset,
         ...axisConfig
-        // tickFormat: tickFormat ?? getTickFormatter(scale),
       })}
     </Group>
   );

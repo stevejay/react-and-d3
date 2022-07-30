@@ -1,5 +1,5 @@
 import { PointerEvent, ReactNode, SVGProps, useContext } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
 import { AxisScaleOutput } from '@visx/axis';
 import { isNil } from 'lodash-es';
 

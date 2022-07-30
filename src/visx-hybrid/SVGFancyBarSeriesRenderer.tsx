@@ -1,9 +1,8 @@
 import { SVGProps } from 'react';
 import { animated } from 'react-spring';
 
-import { PositionScale } from '@/visx-next/types';
-
 import { BarSeriesRendererProps } from './SVGBarSeries';
+import type { PositionScale } from './types';
 import { useBarSeriesTransitions } from './useBarSeriesTransitions';
 
 type PolygonProps = Omit<SVGProps<SVGPolygonElement>, 'points' | 'ref'>;

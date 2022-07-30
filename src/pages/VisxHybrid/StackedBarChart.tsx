@@ -108,7 +108,7 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
         }}
         tickLineProps={{ shapeRendering: 'crispEdges' }}
         domainPathProps={{ shapeRendering: 'crispEdges' }}
-        labelPadding={10}
+        autoMarginLabelPadding={10}
       />
       <SvgXYChartAxis
         orientation="bottom"
@@ -129,7 +129,7 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
         }}
         tickLineProps={{ shapeRendering: 'crispEdges' }}
         domainPathProps={{ shapeRendering: 'crispEdges' }}
-        labelPadding={10}
+        autoMarginLabelPadding={10}
       />
       <SvgXYChartAxis
         orientation="left"
@@ -151,7 +151,7 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
         }}
         tickLineProps={{ shapeRendering: 'crispEdges' }}
         domainPathProps={{ shapeRendering: 'crispEdges' }}
-        labelPadding={36} // Does not take tick labels into account.
+        autoMarginLabelPadding={36} // Does not take tick labels into account.
       />
       <SvgXYChartAxis
         orientation="right"
@@ -173,7 +173,7 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
         }}
         tickLineProps={{ shapeRendering: 'crispEdges' }}
         domainPathProps={{ shapeRendering: 'crispEdges' }}
-        labelPadding={36} // Does not take tick labels into account.
+        autoMarginLabelPadding={36} // Does not take tick labels into account.
         // hideTicks
         // tickLength={0}
       />

@@ -1,5 +1,4 @@
-import { maxBy } from 'lodash-es';
-
+import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { getTicksData } from './getTicksData';
 import { measureTextWithCache } from './measureTextWithCache';
 import type {
@@ -57,14 +56,14 @@ function getTickLabelsMargin(
   ticks: TickDatum[],
   tickLabelPadding: number,
   tickLabelAngle: TickLabelAngle,
-  tickLabelTextProps: FontProperties | string
+  font: FontProperties | string
 ): Margin {
   // Calculate the dimensions of each tick label:
-  const tickLabelsMeasurements = ticks.map((tick) => measureTextWithCache(tick.label, tickLabelTextProps));
+  const widths = ticks.map((tick) => measureTextWithCache(tick.label, font));
   // Get the width of the longest tick label:
-  const maxTickLabelWidth = maxBy(tickLabelsMeasurements, (x) => x.width)?.width ?? 0;
-  // Use first tick label to get the height of a tick label:
-  const tickLabelHeight = tickLabelsMeasurements.length ? tickLabelsMeasurements[0].height : 0;
+  const maxTickLabelWidth = Math.max(0, ...widths);
+  // Get the height of the tallest tick label:
+  const tickLabelHeight = getFontMetricsWithCache(font).height;
 
   if (axisOrientation === 'left' || axisOrientation === 'right') {
     if (tickLabelAngle === 'horizontal') {
@@ -170,9 +169,8 @@ function getLabelMargin(
   if (!label) {
     return { left: 0, right: 0, top: 0, bottom: 0 };
   }
-  const labelMeasurements = measureTextWithCache(label, font);
-  const width = labelMeasurements.width + labelPadding;
-  const height = labelMeasurements.height + labelPadding;
+  const width = measureTextWithCache(label, font) + labelPadding;
+  const height = getFontMetricsWithCache(font).height + labelPadding;
 
   switch (axisOrientation) {
     case 'left':

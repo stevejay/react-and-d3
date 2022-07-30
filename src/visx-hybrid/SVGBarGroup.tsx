@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { ReactNode } from 'react';
+import type { SpringConfig } from 'react-spring';
 
 // import { ScaleInput } from '@/visx-next/scale';
 // import { PositionScale } from '@/visx-next/types';

@@ -1,5 +1,5 @@
 import { memo, ReactElement, RefObject } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
 
 import { SvgAxis } from '@/components/SvgAxis';
 import { SvgCategoryInteraction } from '@/components/SvgCategoryInteraction';

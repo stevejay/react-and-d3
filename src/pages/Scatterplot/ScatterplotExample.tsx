@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
 
 import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { Margin, PointDatum } from '@/types';

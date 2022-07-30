@@ -1,23 +1,34 @@
-import { getFontProperties, measureText, normalizeString } from './measureText';
-import type { FontProperties, TextMeasurementResult } from './types';
+import { isNil } from 'lodash-es';
 
-const textMetricsCache = new Map<string, TextMeasurementResult>();
+import { mapFontPropertiesToFontString } from './mapFontPropertiesToFontString';
+import { measureText } from './measureText';
+import type { FontProperties } from './types';
 
 // TODO: Think about making this an LRU cache (https://yomguithereal.github.io/mnemonist/lru-cache).
+const cache = new Map<string, number>();
 
-export function measureTextWithCache(text: string, font: FontProperties | string): TextMeasurementResult {
-  const normalizedText = normalizeString(text);
+const normalizeStringRegExp = new RegExp(/\r?\n|\r/gm);
 
-  const resolvedFont = typeof font === 'string' ? font : getFontProperties(font);
-  if (!resolvedFont) {
+/**
+ * Remove line breaks from a string and trims it.
+ */
+function normalizeString(string: string) {
+  return string.replace(normalizeStringRegExp, '').trim();
+}
+
+export function measureTextWithCache(text: string, font: FontProperties | string): number {
+  const resolvedFont = typeof font === 'string' ? font : mapFontPropertiesToFontString(font);
+  if (isNil(resolvedFont)) {
     throw new Error('Could not resolve font.');
   }
 
-  const key = `${normalizedText}-${resolvedFont}`;
-  let textMetrics = textMetricsCache.get(key);
-  if (!textMetrics) {
-    textMetrics = measureText(normalizedText, resolvedFont);
-    textMetricsCache.set(key, textMetrics);
+  const key = `${text}-${resolvedFont}`;
+  let width = cache.get(key);
+  if (isNil(width)) {
+    const normalizedText = normalizeString(text);
+    width = measureText(normalizedText, resolvedFont);
+    cache.set(key, width);
   }
-  return textMetrics;
+
+  return width;
 }

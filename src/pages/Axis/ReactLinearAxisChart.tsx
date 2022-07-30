@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
 import { identity } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';

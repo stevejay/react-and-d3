@@ -198,7 +198,7 @@ export function RespondentsByLanguage() {
                   hideTicks={false}
                   hideAxisLine
                   tickLabelPadding={6}
-                  labelPadding={0}
+                  autoMarginLabelPadding={0}
                 />
                 <SVGAxis
                   variableType="independent"

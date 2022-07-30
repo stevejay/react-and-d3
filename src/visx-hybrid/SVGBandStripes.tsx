@@ -1,4 +1,4 @@
-import { SVGProps } from 'react';
+import type { SVGProps } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 
 import { getTicksData } from './getTicksData';

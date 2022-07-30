@@ -1,13 +1,10 @@
-import { ReactNode, SVGProps } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { ReactNode, SVGProps } from 'react';
+import type { SpringConfig } from 'react-spring';
 import { Group } from '@visx/group';
 
-import { BARSERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from '@/visx-next/eventSources';
-// import { isNil } from 'lodash-es';
-import { ScaleInput } from '@/visx-next/scale';
-import { AxisScale } from '@/visx-next/types';
-
+import { BARSERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
 import { InferDataContext } from './DataContext';
+import type { AxisScale, ScaleInput } from './types';
 import { useDataContext } from './useDataContext';
 import { useSeriesEvents } from './useSeriesEvents';
 

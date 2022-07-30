@@ -1,6 +1,6 @@
 import { coerceNumber } from './coerceNumber';
 import { isValidNumber } from './isValidNumber';
-import { AxisScale } from './types';
+import type { AxisScale } from './types';
 
 /**
  * Returns the output value of a scale's baseline value, which is either zero

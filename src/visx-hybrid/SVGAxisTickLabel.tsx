@@ -1,8 +1,13 @@
 import { Text } from '@visx/text';
 
-import { AxisOrientation } from '@/types';
-
-import type { TextAnchor, TextProps, ThemeLabelStyles, TickLabelAngle, VerticalTextAnchor } from './types';
+import { TextProps } from './SVGSimpleText';
+import type {
+  AxisOrientation,
+  TextAnchor,
+  ThemeLabelStyles,
+  TickLabelAngle,
+  VerticalTextAnchor
+} from './types';
 
 function getTextAnchor(orientation: AxisOrientation, tickLabelAngle: TickLabelAngle): TextAnchor {
   let textAnchor: TextAnchor = 'middle';
@@ -93,7 +98,7 @@ export interface SVGAxisTickLabelProps {
   /** Padding between the tick lines and the tick labels. */
   tickLabelPadding: number;
   /** The props to apply to the tick labels. */
-  tickLabelProps?: Partial<Omit<TextProps, 'verticalAnchor' | 'textAnchor'>>;
+  tickLabelProps?: Partial<TextProps>;
   /** The length of the tick lines. */
   tickLength: number;
 }
@@ -114,8 +119,8 @@ export function SVGAxisTickLabel({
 
   const {
     style: labelPropsStyle,
-    className: labelPropsClassname = '',
-    ...restTickLabelProps
+    className: labelPropsClassname = ''
+    // ...restTickLabelProps
   } = tickLabelProps;
   const style =
     typeof labelStyles?.font === 'string' ? { font: labelStyles?.font, ...labelPropsStyle } : labelPropsStyle;
@@ -163,7 +168,7 @@ export function SVGAxisTickLabel({
       style={style}
       className={`${labelStyles?.className ?? ''} ${labelPropsClassname}`}
       {...{ [tickLineAxis]: tickSign * ((hideTicks ? 0 : tickLength) + tickLabelPadding) }}
-      {...restTickLabelProps}
+      // {...restTickLabelProps}
       dx={delta.dx}
       dy={delta.dy}
     >

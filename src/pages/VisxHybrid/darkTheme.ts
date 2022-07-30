@@ -8,15 +8,13 @@ export const darkTheme: XYChartTheme = {
   bandStripes: {
     className: 'text-slate-600'
   },
-  svgLabelBig: {
+  bigLabels: {
     // font-style, font-variant and font-weight
     font: 'normal normal normal 16px/1 "Readex Pro"',
-    fill: 'green',
     className: 'text-slate-400'
   },
-  svgLabelSmall: {
+  smallLabels: {
     font: 'normal normal normal 14px/1 "Readex Pro"',
-    fill: 'pink',
     className: 'text-slate-200'
   }
 };

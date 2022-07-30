@@ -1,4 +1,4 @@
-import { ReactNode, SVGProps } from 'react';
+import type { ReactNode, SVGProps } from 'react';
 import { animated, SpringConfig, useSpring } from 'react-spring';
 
 export type SVGAnimatedGroupProps = {

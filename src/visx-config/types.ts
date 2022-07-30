@@ -1,5 +1,5 @@
 import { SVGProps } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
 
 import { AnyD3Scale, ScaleConfig, ScaleConfigToD3Scale, ScaleInput } from '@/visx-next/scale';
 import { AxisScale, AxisScaleOutput, LineProps, Margin, TextProps, TickFormatter } from '@/visx-next/types';

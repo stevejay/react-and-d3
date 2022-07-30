@@ -1,8 +1,6 @@
-import { AxisScale } from '@visx/axis';
-import type { ScaleInput } from '@visx/scale';
 import { toString } from '@visx/scale';
 
-import { TickFormatter } from './types';
+import type { AxisScale, ScaleInput, TickFormatter } from './types';
 
 /**
  * Returns a tick position for the given tick value

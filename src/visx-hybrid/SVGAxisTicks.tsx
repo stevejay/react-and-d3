@@ -1,4 +1,5 @@
-import { animated } from 'react-spring';
+import type { SVGProps } from 'react';
+import { animated, SpringConfig } from 'react-spring';
 
 import {
   defaultHideTicks,
@@ -6,28 +7,44 @@ import {
   defaultTickLabelPadding,
   defaultTickLength
 } from './constants';
-import { AxisRendererProps } from './SVGAxis';
 import { SVGAxisTickLabel } from './SVGAxisTickLabel';
 import { SVGAxisTickLine } from './SVGAxisTickLine';
-import type { ThemeLabelStyles, TickDatum } from './types';
+import { TextProps } from './SVGSimpleText';
+import type {
+  AxisOrientation,
+  AxisScale,
+  LineProps,
+  Margin,
+  ThemeLabelStyles,
+  TickDatum,
+  TickLabelAngle
+} from './types';
 import { useAxisTransitions } from './useAxisTransitions';
 
-export type SVGAxisTicksProps = Pick<
-  AxisRendererProps,
-  | 'hideTicks'
-  | 'orientation'
-  | 'scale'
-  | 'margin'
-  | 'tickLineProps'
-  | 'springConfig'
-  | 'animate'
-  | 'renderingOffset'
-  | 'tickLength'
-  | 'tickLabelPadding'
-  | 'tickGroupProps'
-  | 'tickLabelProps'
-  | 'tickLabelAngle'
-> & { ticks: TickDatum[]; labelStyles?: ThemeLabelStyles };
+export interface SVGAxisTicksProps {
+  orientation: AxisOrientation;
+  scale: AxisScale;
+  margin: Margin;
+  springConfig?: SpringConfig;
+  animate?: boolean;
+  renderingOffset?: number;
+  /** If true, will hide the ticks (but not the tick labels). */
+  hideTicks?: boolean;
+  /** Props to apply to the <g> element that wraps each tick line and label. */
+  tickGroupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'style'>; // TODO think about removing style.
+  /** The angle that the tick label will be rendered at. */
+  tickLabelAngle?: TickLabelAngle;
+  /** Padding between the tick lines and the tick labels. */
+  tickLabelPadding?: number;
+  /** The props to apply to the tick labels. */
+  tickLabelProps?: Partial<TextProps>;
+  /** The length of the tick lines. */
+  tickLength?: number;
+  /** Props to be applied to individual tick lines. */
+  tickLineProps?: LineProps;
+  ticks: TickDatum[];
+  labelStyles?: ThemeLabelStyles;
+}
 
 export function SVGAxisTicks({
   scale,

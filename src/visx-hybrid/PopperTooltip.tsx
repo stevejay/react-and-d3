@@ -14,13 +14,12 @@ import type { Options as PopperOptions, VirtualElement } from '@popperjs/core';
 import type { PickD3Scale } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 
-import { Portal } from '@/components/Portal';
-import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
-
 import { DataContext } from './DataContext';
 import { isValidNumber } from './isValidNumber';
+import { Portal } from './Portal';
 import { TooltipContext } from './TooltipContext';
 import type { TooltipContextType, TooltipProps as BaseTooltipProps } from './types';
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 export type RenderTooltipParams<Datum extends object> = TooltipContextType<Datum> & {
   colorScale?: PickD3Scale<'ordinal', string, string>;

@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { ReactNode } from 'react';
+import type { SpringConfig } from 'react-spring';
 
-import { STACK_OFFSETS } from '@/visx-next/stackOffset';
-import { STACK_ORDERS } from '@/visx-next/stackOrder';
+import { STACK_OFFSETS } from './stackOffset';
+import { STACK_ORDERS } from './stackOrder';
 
 // import { ScaleInput } from '@/visx-next/scale';
 // import { PositionScale } from '@/visx-next/types';
