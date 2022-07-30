@@ -6,7 +6,6 @@ import { CategoryValueListDatum, Margin } from '@/types';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarGroup } from '@/visx-hybrid/SVGBarGroup';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
-import { SVGBarSeriesRenderer } from '@/visx-hybrid/SVGBarSeriesRenderer';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 // import { SvgXYChartAxis } from '@/visx-next/Axis';
 // import { XYChartBarGroup } from '@/visx-next/BarGroup';
@@ -73,7 +72,6 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
       <SVGBarGroup padding={0}>
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
-            renderer={SVGBarSeriesRenderer<CategoryValueListDatum<string, number>>}
             key={dataKey}
             dataKey={dataKey}
             data={data}

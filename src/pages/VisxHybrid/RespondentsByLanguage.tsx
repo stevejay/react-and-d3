@@ -15,8 +15,6 @@ import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBandStripes } from '@/visx-hybrid/SVGBandStripes';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
-// import { SVGBarSeriesRenderer } from '@/visx-hybrid/SVGBarSeriesRenderer';
-import { SVGFancyBarSeriesRenderer } from '@/visx-hybrid/SVGFancyBarSeriesRenderer';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 import { BandScaleConfig, LinearScaleConfig } from '@/visx-next/scale';
@@ -165,14 +163,13 @@ export function RespondentsByLanguage() {
                 <SVGBandStripes variable="independent" even={false} ignoreRangePadding={false} />
                 <SVGGrid variable="dependent" tickCount={5} />
                 <SVGBarSeries
-                  renderer={SVGFancyBarSeriesRenderer<EntityBucket>}
                   dataKey="data-a"
                   data={sortedEntityBuckets}
                   keyAccessor={independentAccessor}
                   independentAccessor={independentAccessor}
                   dependentAccessor={dependentAccessor}
                   colorAccessor={colorAccessor}
-                  barProps={(datum: EntityBucket) => ({
+                  barProps={(datum) => ({
                     role: 'graphics-symbol',
                     'aria-roledescription': '',
                     'aria-label': `Category ${independentAccessor(datum)}: ${dependentAccessor(datum)}`

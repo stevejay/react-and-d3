@@ -14,6 +14,7 @@ import {
   defaultTickLength
 } from './constants';
 import { getDefaultAxisLabelAngle } from './getDefaultAxisLabelAngle';
+import { SVGAxisProps } from './SVGAxis';
 import type { AxisScale, Margin, XYChartTheme } from './types';
 
 // const extraPaddingPx = 1;
@@ -52,31 +53,27 @@ export function calculateAutoMarginFromChildren(
         )
       );
     } else if (typeof element.type !== 'string' && element.type.name.endsWith('Axis')) {
-      const axisOrientation = calculateAxisOrientation(
-        horizontal,
-        element.props.variable,
-        element.props.position
-      );
-      const scale = element.props.variable === 'independent' ? independentScale : dependentScale;
-      const rangePadding =
-        element.props.variable === 'independent' ? independentRangePadding : dependentRangePadding;
+      const props = element.props as SVGAxisProps;
+      const axisOrientation = calculateAxisOrientation(horizontal, props.variable, props.position);
+      const scale = props.variable === 'independent' ? independentScale : dependentScale;
+      const rangePadding = props.variable === 'independent' ? independentRangePadding : dependentRangePadding;
       const autoMargin = calculateMarginForAxis({
         axisOrientation,
         scale,
         rangePadding,
         bigFont: theme?.bigLabels?.font ?? defaultBigLabelsTextStyle.font,
         smallFont: theme?.smallLabels?.font ?? defaultSmallLabelsTextStyle.font,
-        hideZero: element.props.hideZero ?? defaultHideZero,
-        hideTicks: element.props.hideTicks ?? defaultHideTicks,
-        label: element.props.label,
-        tickFormat: element.props.tickFormat,
-        tickCount: element.props.tickCount,
-        tickValues: element.props.tickValues,
-        tickLength: element.props.tickLength ?? defaultTickLength,
-        tickLabelPadding: element.props.tickLabelPadding ?? defaultTickLabelPadding,
-        labelPadding: element.props.autoMarginLabelPadding ?? defaultAutoMarginLabelPadding,
-        tickLabelAngle: element.props.tickLabelAngle ?? defaultTickLabelAngle,
-        labelAngle: element.props.labelAngle ?? getDefaultAxisLabelAngle(axisOrientation)
+        hideZero: props.hideZero ?? defaultHideZero,
+        hideTicks: props.hideTicks ?? defaultHideTicks,
+        label: props.label,
+        tickFormat: props.tickFormat,
+        tickCount: props.tickCount,
+        tickValues: props.tickValues,
+        tickLength: props.tickLength ?? defaultTickLength,
+        tickLabelPadding: props.tickLabelPadding ?? defaultTickLabelPadding,
+        labelPadding: props.autoMarginLabelPadding ?? defaultAutoMarginLabelPadding,
+        tickLabelAngle: props.tickLabelAngle ?? defaultTickLabelAngle,
+        labelAngle: props.labelAngle ?? getDefaultAxisLabelAngle(axisOrientation)
       });
       marginList.push(autoMargin);
     }

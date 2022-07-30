@@ -4,7 +4,6 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { CategoryValueListDatum, Margin } from '@/types';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
-import { SVGBarSeriesRenderer } from '@/visx-hybrid/SVGBarSeriesRenderer';
 import { SVGBarStack } from '@/visx-hybrid/SVGBarStack';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 // import { SvgXYChartAxis } from '@/visx-next/Axis';
@@ -65,7 +64,6 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
       <SVGBarStack stackOffset="none" stackOrder="ascending" animate={true}>
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
-            renderer={SVGBarSeriesRenderer<CategoryValueListDatum<string, number>>}
             key={dataKey}
             dataKey={dataKey}
             data={data}

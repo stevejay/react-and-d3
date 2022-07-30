@@ -6,7 +6,6 @@ import { CategoryValueDatum, Margin } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
-import { SVGFancyBarSeriesRenderer } from '@/visx-hybrid/SVGFancyBarSeriesRenderer';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
@@ -69,15 +68,13 @@ export function BarChart({ data }: BarChartProps) {
       <SVGGrid tickCount={5} variable="dependent" />
       {/* <SVGGrid className="text-red-600" tickCount={5} renderer={SVGGridRenderer} variable="dependent" /> */}
       <SVGBarSeries
-        renderer={SVGFancyBarSeriesRenderer<CategoryValueDatum<string, number>>}
         dataKey="data-a"
         data={data}
         keyAccessor={keyAccessor}
         independentAccessor={independentAccessor}
         dependentAccessor={dependentAccessor}
         colorAccessor={colorAccessor}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        barProps={(datum: CategoryValueDatum<string, number>) => ({
+        barProps={(datum) => ({
           role: 'graphics-symbol',
           'aria-roledescription': '',
           'aria-label': `Category ${independentAccessor(datum)}: ${dependentAccessor(datum)}`
