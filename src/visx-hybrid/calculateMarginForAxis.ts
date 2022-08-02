@@ -48,17 +48,37 @@ function getTickLabelsMargin(
       const width = maxTickLabelWidth + tickLabelPadding;
       const halfHeight = Math.ceil(tickLabelHeight * 0.5);
       if (axisOrientation === 'left') {
-        return { left: width, right: 0, top: halfHeight - rangePadding, bottom: halfHeight - rangePadding };
+        return {
+          left: width,
+          right: 0,
+          top: halfHeight - rangePadding,
+          bottom: halfHeight - rangePadding
+        };
       } else {
-        return { left: 0, right: width, top: halfHeight - rangePadding, bottom: halfHeight - rangePadding };
+        return {
+          left: 0,
+          right: width,
+          top: halfHeight - rangePadding,
+          bottom: halfHeight - rangePadding
+        };
       }
     } else if (tickLabelAngle === 'vertical') {
       const width = tickLabelHeight + tickLabelPadding;
       const halfHeight = Math.ceil(maxTickLabelWidth * 0.5);
       if (axisOrientation === 'left') {
-        return { left: width, right: 0, top: halfHeight - rangePadding, bottom: halfHeight - rangePadding };
+        return {
+          left: width,
+          right: 0,
+          top: halfHeight - rangePadding,
+          bottom: halfHeight - rangePadding
+        };
       } else {
-        return { left: 0, right: width, top: halfHeight - rangePadding, bottom: halfHeight - rangePadding };
+        return {
+          left: 0,
+          right: width,
+          top: halfHeight - rangePadding,
+          bottom: halfHeight - rangePadding
+        };
       }
     } else {
       // Angled.
@@ -94,17 +114,37 @@ function getTickLabelsMargin(
       const halfWidth = Math.ceil(maxTickLabelWidth * 0.5);
       const height = tickLabelHeight + tickLabelPadding;
       if (axisOrientation === 'top') {
-        return { left: halfWidth - rangePadding, right: halfWidth - rangePadding, top: height, bottom: 0 };
+        return {
+          left: halfWidth - rangePadding,
+          right: halfWidth - rangePadding,
+          top: height,
+          bottom: 0
+        };
       } else {
-        return { left: halfWidth - rangePadding, right: halfWidth - rangePadding, top: 0, bottom: height };
+        return {
+          left: halfWidth - rangePadding,
+          right: halfWidth - rangePadding,
+          top: 0,
+          bottom: height
+        };
       }
     } else if (tickLabelAngle === 'vertical') {
       const halfWidth = Math.ceil(tickLabelHeight * 0.5);
       const height = maxTickLabelWidth + tickLabelPadding;
       if (axisOrientation === 'top') {
-        return { left: halfWidth - rangePadding, right: halfWidth - rangePadding, top: height, bottom: 0 };
+        return {
+          left: halfWidth - rangePadding,
+          right: halfWidth - rangePadding,
+          top: height,
+          bottom: 0
+        };
       } else {
-        return { left: halfWidth - rangePadding, right: halfWidth - rangePadding, top: 0, bottom: height };
+        return {
+          left: halfWidth - rangePadding,
+          right: halfWidth - rangePadding,
+          top: 0,
+          bottom: height
+        };
       }
     } else {
       // Angled.

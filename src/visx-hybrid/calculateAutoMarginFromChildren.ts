@@ -17,8 +17,6 @@ import { mergeMargins } from './mergeMargins';
 import { SVGAxisProps } from './SVGAxis';
 import type { AxisScale, Margin, XYChartTheme } from './types';
 
-// const extraPaddingPx = 1;
-
 /**
  * Looks for children of the SVGXYChart that have component names that end in 'Axis'.
  * For each of these, it calculates its margin values, before then combining all
@@ -79,12 +77,4 @@ export function calculateAutoMarginFromChildren(args: {
   });
 
   return mergeMargins(marginList);
-
-  // const combinedMargin = mergeMargins(marginList);
-  // return {
-  //   left: combinedMargin.left + extraPaddingPx,
-  //   right: combinedMargin.right + extraPaddingPx,
-  //   top: combinedMargin.top + extraPaddingPx,
-  //   bottom: combinedMargin.bottom + extraPaddingPx
-  // };
 }

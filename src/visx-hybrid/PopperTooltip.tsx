@@ -98,7 +98,7 @@ PopperTooltipProps<Datum>) {
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
   const nearestDatum = tooltipContext?.tooltipData?.nearestDatum;
   // const nearestDatumKey = nearestDatum?.key ?? '';
-  const showTooltip = tooltipContext?.tooltipOpen; // && tooltipContent != null;
+  const showTooltip = tooltipContext?.tooltipOpen; // && !isNil(tooltipContent);
   let tooltipLeft = tooltipContext?.tooltipLeft;
   let tooltipTop = tooltipContext?.tooltipTop;
 

@@ -1,4 +1,3 @@
-// import { ScaleTypeToD3Scale } from '@visx/scale';
 import type { ScaleBand } from 'd3-scale';
 
 import { coerceNumber } from './coerceNumber';
@@ -12,7 +11,7 @@ import { NearestDatumArgs, NearestDatumReturnType } from './types';
  */
 export function findNearestGroupDatum<Datum extends object>(
   nearestDatumArgs: NearestDatumArgs<Datum>,
-  groupScale: ScaleBand<string>, // ScaleTypeToD3Scale<string, string>['band'],
+  groupScale: ScaleBand<string>,
   horizontal?: boolean
 ): NearestDatumReturnType<Datum> {
   const { dataKey, independentAccessor, dependentAccessor, independentScale, dependentScale, point } =

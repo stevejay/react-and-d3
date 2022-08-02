@@ -19,8 +19,6 @@ export function combineBarStackData<
 
   stackDataEntries.forEach((dataEntry) => {
     const { dataKey, data, independentAccessor, dependentAccessor } = dataEntry;
-
-    // this should exist but double check
     if (!independentAccessor || !dependentAccessor) {
       return;
     }

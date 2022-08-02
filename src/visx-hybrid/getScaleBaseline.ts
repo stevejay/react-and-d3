@@ -1,3 +1,5 @@
+import { isNil } from 'lodash-es';
+
 import { coerceNumber } from './coerceNumber';
 import { isValidNumber } from './isValidNumber';
 import type { AxisScale } from './types';
@@ -8,7 +10,7 @@ import type { AxisScale } from './types';
  */
 export function getScaleBaseline<Scale extends AxisScale>(scale: Scale) {
   const [a, b] = scale.range().map((rangeBoundary) => coerceNumber(rangeBoundary) ?? 0);
-  const isDescending = a != null && b != null && b < a;
+  const isDescending = !isNil(a) && !isNil(b) && b < a;
   const maybeScaleZero = scale(0);
   const [minOutput, maxOutput] = isDescending ? [b, a] : [a, b];
 

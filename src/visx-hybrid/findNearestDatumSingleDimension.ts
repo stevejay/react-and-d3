@@ -59,7 +59,7 @@ export function findNearestDatumSingleDimension<Scale extends AxisScale, Datum e
     nearestDatum = data[index];
     nearestDatumIndex = index;
   } else {
-    console.warn('[visx/xychart/findNearestDatum] encountered incompatible scale type, bailing');
+    console.warn('[findNearestDatumSingleDimension] encountered incompatible scale type, bailing');
     return null;
   }
 
