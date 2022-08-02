@@ -3,6 +3,7 @@ import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { CategoryValueListDatum, Margin } from '@/types';
+import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarStack } from '@/visx-hybrid/SVGBarStack';
@@ -10,12 +11,6 @@ import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
-// import { SvgXYChartAxis } from '@/visx-next/Axis';
-// import { XYChartBarSeries } from '@/visx-next/BarSeries';
-// import { SvgXYChartBarStack } from '@/visx-next/BarStack';
-// import { PopperTooltip } from '@/visx-next/PopperTooltip';
-// import { XYChartRowGrid } from '@/visx-next/RowGrid';
-// import { SvgXYChart } from '@/visx-next/SvgXYChart';
 
 export interface StackedBarChartProps {
   data: readonly CategoryValueListDatum<string, number>[];
@@ -51,8 +46,6 @@ function keyAccessor(d: CategoryValueListDatum<string, number>) {
 
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
-// TODO default theme is broken - something about the auto margins doesn't use it.
-
 export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
   return (
     <SVGXYChart
@@ -65,10 +58,7 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
       theme={darkTheme}
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      {/* <XYChartColumnGrid className="text-slate-600" /> */}
-      {/* <XYChartRowGrid className="text-red-600" tickCount={5} shapeRendering="crispEdges" /> */}
-      {/* TODO Use refs within barSeries for the accessors? */}
-      <SVGBarStack stackOrder="none" animate={true}>
+      <SVGBarStack stackOrder="none">
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
             key={dataKey}
@@ -94,60 +84,11 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
           />
         ))}
       </SVGBarStack>
-      <SVGAxis
-        variable="independent"
-        position="end"
-        label="Foobar Topy"
-        // hideAxisPath
-        // hideTicks
-        // tickLength={20}
-        // tickLabelPadding={20}
-        // tickLabelAngle="angled"
-        // autoMarginLabelPadding={0}
-        // labelAngle="vertical"
-      />
-      <SVGAxis
-        variable="independent"
-        position="start"
-        label="Foobar Bottomy"
-        // hideAxisPath
-        // outerTickLength={20}
-        // hideTicks
-        // tickLength={20}
-        // tickLabelPadding={10}
-        // tickLabelAngle="angled"
-        // autoMarginLabelPadding={0}
-        // labelAngle="vertical"
-      />
-      <SVGAxis
-        variable="dependent"
-        position="start"
-        label="Foobar Lefty"
-        tickCount={5}
-        hideZero
-        // hideAxisPath
-
-        // tickLength={20}
-        // tickLabelPadding={10}
-        // tickLabelAngle="angled"
-        // autoMarginLabelPadding={0}
-        // labelAngle="horizontal"
-      />
-      <SVGAxis
-        variable="dependent"
-        position="end"
-        label="Foobar Righty"
-        tickCount={5}
-        hideZero
-        // hideAxisPath
-
-        // tickLength={20}
-        // tickLabelPadding={10}
-        // tickLabelAngle="angled"
-        // autoMarginLabelPadding={0}
-        // labelAngle="horizontal"
-      />
-      {/*<PopperTooltip<CategoryValueListDatum<string, number>>
+      <SVGAxis variable="independent" position="end" label="Foobar Topy" />
+      <SVGAxis variable="independent" position="start" label="Foobar Bottomy" />
+      <SVGAxis variable="dependent" position="start" label="Foobar Lefty" tickCount={5} hideZero />
+      <SVGAxis variable="dependent" position="end" label="Foobar Righty" tickCount={5} hideZero />
+      <PopperTooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}
@@ -169,7 +110,7 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
             </div>
           );
         }}
-      /> */}
+      />
     </SVGXYChart>
   );
 }

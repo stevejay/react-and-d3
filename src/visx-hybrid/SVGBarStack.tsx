@@ -58,7 +58,14 @@ export function SVGBarStack<Datum extends object>(
   //   Datum extends object
   // >
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  { children, enableEvents, animate = true, springConfig, colorAccessor, component }: SVGBarStackProps<Datum>
+  {
+    children,
+    enableEvents = true,
+    animate = true,
+    springConfig,
+    colorAccessor,
+    component
+  }: SVGBarStackProps<Datum>
 ) {
   const {
     horizontal,

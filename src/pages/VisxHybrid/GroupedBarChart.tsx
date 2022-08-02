@@ -3,6 +3,7 @@ import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { CategoryValueListDatum } from '@/types';
+import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarGroup } from '@/visx-hybrid/SVGBarGroup';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
@@ -11,13 +12,6 @@ import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
-// import { SvgXYChartAxis } from '@/visx-next/Axis';
-// import { XYChartBarGroup } from '@/visx-next/BarGroup';
-// import { XYChartBarSeries } from '@/visx-next/BarSeries';
-// import { PopperTooltip } from '@/visx-next/PopperTooltip';
-// import { XYChartRowGrid } from '@/visx-next/RowGrid';
-// import { SvgXYChart } from '@/visx-next/SvgXYChart';
-// import Tooltip from '@/visx-next/Tooltip';
 
 export interface GroupedBarChartProps {
   data: readonly CategoryValueListDatum<string, number>[];
@@ -130,28 +124,6 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
         tickLabelPadding={6}
         // autoMarginLabelPadding={10}
       />
-      {/* {false && (
-        <Tooltip<CategoryValueListDatum<string, number>>
-          snapTooltipToDatumX //={false}
-          snapTooltipToDatumY={false}
-          showVerticalCrosshair //={false}
-          showSeriesGlyphs={false}
-          renderTooltip={({ tooltipData }) => {
-            const datum = tooltipData?.nearestDatum;
-            if (!datum) {
-              return null;
-            }
-            return (
-              <div>
-                <span style={{ color: colorAccessor(datum.datum, datum.key) }}>{datum.key}</span>{' '}
-                {datum.datum.category}
-                {': '}
-                {datum.datum.values[datum.key]}
-              </div>
-            );
-          }}
-        />
-      )}
       <PopperTooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
@@ -164,14 +136,13 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
           }
           return (
             <div>
-              <span style={{ color: colorAccessor(datum.datum, datum.key) }}>{datum.key}</span>{' '}
-              {datum.datum.category}
+              <span style={{ color: colorAccessor(datum.datum, datum.key) }}>{datum.key}</span>
               {': '}
               {datum.datum.values[datum.key]}
             </div>
           );
         }}
-      />  */}
+      />
     </SVGXYChart>
   );
 }

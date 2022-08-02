@@ -11,11 +11,12 @@ export type SeriesEventsParams<
   Datum extends object
 > = Pick<
   SeriesProps<IndependentScale, DependentScale, Datum>,
-  'enableEvents' | 'onBlur' | 'onFocus' | 'onPointerMove' | 'onPointerOut' | 'onPointerUp'
+  'onBlur' | 'onFocus' | 'onPointerMove' | 'onPointerOut' | 'onPointerUp'
 > &
   Pick<PointerEventHandlerParams<Datum>, 'dataKey' | 'allowedSources' | 'findNearestDatum'> & {
     /** The source of emitted events. */
     source: string;
+    enableEvents: boolean;
   };
 
 /** This hook simplifies the logic for initializing Series event emitters + handlers. */

@@ -53,7 +53,6 @@ const springConfig = { duration: 350, easing: easeCubicInOut };
 export function BarChart({ data }: BarChartProps) {
   return (
     <SVGXYChart
-      // margin={margin}
       independentScale={independentScale}
       dependentScale={dependentScale}
       springConfig={springConfig}
