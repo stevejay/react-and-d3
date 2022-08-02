@@ -16,10 +16,10 @@ export const defaultTickLabelAngle: TickLabelAngle = 'horizontal';
 export const defaultShapeRendering = 'crispEdges';
 
 // font-style, font-variant, font-weight, font-size, line-height, font-family
-export const defaultBigLabelsFont = 'normal normal normal 14px/1 inherit';
+export const defaultBigLabelsFont = 'normal normal normal 14px/1 sans-serif';
 
 // font-style, font-variant, font-weight, font-size, line-height, font-family
-export const defaultSmallLabelsFont = 'normal normal normal 12px/1 inherit';
+export const defaultSmallLabelsFont = 'normal normal normal 12px/1 sans-serif';
 
 export const defaultBigLabelsTextStyle = {
   // font-style, font-variant, font-weight, font-size, line-height, font-family

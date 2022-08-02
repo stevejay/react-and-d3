@@ -6,6 +6,7 @@ import { CategoryValueListDatum } from '@/types';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarGroup } from '@/visx-hybrid/SVGBarGroup';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
+import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
@@ -67,7 +68,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
       theme={darkTheme}
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      <SVGBarGroup padding={0}>
+      <SVGBarGroup padding={0} component={SVGBarWithLine}>
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
             key={dataKey}
@@ -77,6 +78,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
             independentAccessor={(datum) => datum.category}
             dependentAccessor={(datum) => datum.values[dataKey]}
             colorAccessor={colorAccessor}
+
             // barProps={{ shapeRendering: 'crispEdges' }}
             // barProps={(datum) => ({
             //   shapeRendering: 'crispEdges',
