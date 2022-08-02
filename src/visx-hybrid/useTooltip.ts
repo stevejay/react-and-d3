@@ -2,8 +2,10 @@ import { useCallback, useState } from 'react';
 
 import type { ShowTooltipArgs, UseTooltipParams, UseTooltipState } from './types';
 
+/**
+ * @param initialTooltipState  Optional initial `TooltipState`.
+ */
 export function useTooltip<TooltipData = object>(
-  /** Optional initial TooltipState. */
   initialTooltipState?: Partial<UseTooltipParams<TooltipData>>
 ): UseTooltipParams<TooltipData> {
   const [tooltipState, setTooltipState] = useState<UseTooltipState<TooltipData>>({
@@ -27,11 +29,7 @@ export function useTooltip<TooltipData = object>(
   );
 
   const hideTooltip = useCallback(
-    () =>
-      setTooltipState((state) => ({
-        ...state,
-        tooltipOpen: false
-      })),
+    () => setTooltipState((state) => ({ ...state, tooltipOpen: false })),
     [setTooltipState]
   );
 

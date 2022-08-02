@@ -55,7 +55,7 @@ export function findNearestDatumSingleDimension<Scale extends AxisScale, Datum e
     // y-axis scales may have reverse ranges, correct for this
     const sortedDomain = range[0] < range[1] ? domain : domain.reverse();
     const domainValue = sortedDomain[domainIndex - 1];
-    const index = data.findIndex((d) => String(accessor(d)) === String(domainValue));
+    const index = data.findIndex((datum) => String(accessor(datum)) === String(domainValue));
     nearestDatum = data[index];
     nearestDatumIndex = index;
   } else {

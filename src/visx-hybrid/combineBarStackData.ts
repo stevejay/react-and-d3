@@ -27,12 +27,12 @@ export function combineBarStackData<
       ? [dependentAccessor, independentAccessor]
       : [independentAccessor, dependentAccessor];
 
-    data.forEach((d) => {
-      const stack = stackAccessor(d);
-      const numericValue = valueAccessor(d);
+    data.forEach((datum) => {
+      const stack = stackAccessor(datum);
+      const numericValue = valueAccessor(datum);
       const stackKey = String(stack);
       if (!dataByStackValue[stackKey]) {
-        dataByStackValue[stackKey] = { stack, positiveSum: 0, negativeSum: 0, __datum__: d };
+        dataByStackValue[stackKey] = { stack, positiveSum: 0, negativeSum: 0, __datum__: datum };
       }
       dataByStackValue[stackKey][dataKey] = numericValue;
       dataByStackValue[stackKey][numericValue >= 0 ? 'positiveSum' : 'negativeSum'] += numericValue;

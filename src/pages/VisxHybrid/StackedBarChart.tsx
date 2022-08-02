@@ -74,8 +74,8 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
             dataKey={dataKey}
             data={data}
             keyAccessor={keyAccessor}
-            independentAccessor={(d) => d.category}
-            dependentAccessor={(d) => d.values[dataKey]}
+            independentAccessor={(datum) => datum.category}
+            dependentAccessor={(datum) => datum.values[dataKey]}
             colorAccessor={colorAccessor}
           />
         ))}

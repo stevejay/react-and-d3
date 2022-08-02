@@ -54,7 +54,7 @@ export function getDataEntriesFromChildren<
         horizontal
       );
       // automatically set offset to diverging if it's undefined and negative values are present
-      const hasSomeNegativeValues = stackOffset ? false : combinedData.some((d) => d.negativeSum < 0);
+      const hasSomeNegativeValues = stackOffset ? false : combinedData.some((datum) => datum.negativeSum < 0);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const stack = d3stack<StackDataWithSums<IndependentScale, DependentScale, any>, string>();

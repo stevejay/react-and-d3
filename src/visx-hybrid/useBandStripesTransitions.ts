@@ -32,17 +32,17 @@ function createStripesPositioning({
   const bandwidth = getScaleBandwidth(scale);
   const stripeOffset = (step - bandwidth) * 0.5;
 
-  return (d) => {
+  return (datum) => {
     if (gridType === 'row') {
       return {
         x: margin.left + rangePadding,
-        y: (coerceNumber(scale(d.value)) ?? 0) - stripeOffset + renderingOffset,
+        y: (coerceNumber(scale(datum.value)) ?? 0) - stripeOffset + renderingOffset,
         width: innerWidth - rangePadding * 2,
         height: step
       };
     } else {
       return {
-        x: (coerceNumber(scale(d.value)) ?? 0) - stripeOffset,
+        x: (coerceNumber(scale(datum.value)) ?? 0) - stripeOffset,
         y: margin.top + rangePadding + renderingOffset,
         width: step,
         height: innerHeight - rangePadding * 2

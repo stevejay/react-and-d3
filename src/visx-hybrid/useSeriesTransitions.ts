@@ -13,7 +13,7 @@ export function useSeriesTransitions<IndependentScale extends AxisScale, Depende
     enter: { opacity: 1 },
     leave: { opacity: 0 },
     config: springConfig,
-    keys: (d) => d.dataKey,
+    keys: (datum) => datum.dataKey,
     immediate: !animate
   });
 }

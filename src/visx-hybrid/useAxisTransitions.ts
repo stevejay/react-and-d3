@@ -17,7 +17,7 @@ function createTickPositioning(scale: AxisScale, offset: number): (d: TickDatum)
   if ('round' in scale) {
     scaleOffset = Math.round(scaleOffset);
   }
-  return (d) => (coerceNumber(scaleCopy(d.value)) ?? 0) + scaleOffset;
+  return (datum) => (coerceNumber(scaleCopy(datum.value)) ?? 0) + scaleOffset;
 }
 
 export function useAxisTransitions(
@@ -34,7 +34,7 @@ export function useAxisTransitions(
     previousPositionRef.current = position;
   });
 
-  // Position animations do not look so good for non-update animations; only use
+  // Position animations do not look so good for non-update animations; so only use
   // them for update animations.
   const scaleIsBandScale = isBandScale(scale);
 

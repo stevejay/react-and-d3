@@ -29,9 +29,11 @@ export function createBarStackSeriesPolygonPositioning<
   const dependentScaleCopy = dependentScale.copy();
 
   return createPolygonPositionCallback({
-    getIndependentCoord: (d: StackDatumType) => coerceNumber(independentScaleCopy(getStackValue(d.data))),
-    getFirstDependentCoord: (d: StackDatumType) => coerceNumber(dependentScaleCopy(getFirstItem(d))),
-    getSecondDependentCoord: (d: StackDatumType) => coerceNumber(dependentScaleCopy(getSecondItem(d))),
+    getIndependentCoord: (datum: StackDatumType) =>
+      coerceNumber(independentScaleCopy(getStackValue(datum.data))),
+    getFirstDependentCoord: (datum: StackDatumType) => coerceNumber(dependentScaleCopy(getFirstItem(datum))),
+    getSecondDependentCoord: (datum: StackDatumType) =>
+      coerceNumber(dependentScaleCopy(getSecondItem(datum))),
     horizontal,
     bandwidth: getScaleBandwidth(independentScaleCopy),
     renderingOffset
@@ -69,10 +71,10 @@ export function createBarGroupSeriesPolygonPositioning<
   const dependentZeroCoord = getScaleBaseline(dependentScaleCopy);
 
   return createPolygonPositionCallback({
-    getIndependentCoord: (d: Datum) =>
-      (coerceNumber(independentScaleCopy(independentAccessor(d))) ?? 0) + withinGroupPosition,
+    getIndependentCoord: (datum: Datum) =>
+      (coerceNumber(independentScaleCopy(independentAccessor(datum))) ?? 0) + withinGroupPosition,
     getFirstDependentCoord: () => dependentZeroCoord,
-    getSecondDependentCoord: (d: Datum) => coerceNumber(dependentScaleCopy(dependentAccessor(d))),
+    getSecondDependentCoord: (datum: Datum) => coerceNumber(dependentScaleCopy(dependentAccessor(datum))),
     horizontal,
     bandwidth: getScaleBandwidth(groupScaleCopy),
     renderingOffset
@@ -106,9 +108,9 @@ export function createBarSeriesPolygonPositioning<
   const dependentZeroCoord = getScaleBaseline(dependentScaleCopy);
 
   return createPolygonPositionCallback({
-    getIndependentCoord: (d: Datum) => coerceNumber(independentScaleCopy(independentAccessor(d))),
+    getIndependentCoord: (datum: Datum) => coerceNumber(independentScaleCopy(independentAccessor(datum))),
     getFirstDependentCoord: () => dependentZeroCoord,
-    getSecondDependentCoord: (d: Datum) => coerceNumber(dependentScaleCopy(dependentAccessor(d))),
+    getSecondDependentCoord: (datum: Datum) => coerceNumber(dependentScaleCopy(dependentAccessor(datum))),
     horizontal,
     bandwidth: getScaleBandwidth(independentScaleCopy),
     renderingOffset
