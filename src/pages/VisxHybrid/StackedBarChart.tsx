@@ -2,7 +2,7 @@ import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
-import { CategoryValueListDatum, Margin } from '@/types';
+import { CategoryValueListDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
@@ -15,7 +15,6 @@ import { darkTheme } from './darkTheme';
 export interface StackedBarChartProps {
   data: readonly CategoryValueListDatum<string, number>[];
   dataKeys: readonly string[];
-  margin: Margin;
 }
 
 const xScale: BandScaleConfig<string> = {
@@ -58,7 +57,17 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
       theme={darkTheme}
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      <SVGBarStack stackOrder="none">
+      <SVGBarStack<CategoryValueListDatum<string, number>>
+        stackOrder="none"
+        categoryA11yProps={(category: string, data: readonly CategoryValueListDatum<string, number>[]) => {
+          return {
+            'aria-label': `Category ${category}: ${dataKeys
+              .map((dataKey, index) => `${dataKey} is ${data[index].values[dataKey]}`)
+              .join(', ')}`,
+            'aria-roledescription': `Category ${category}`
+          };
+        }}
+      >
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
             key={dataKey}
@@ -68,19 +77,6 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
             independentAccessor={(d) => d.category}
             dependentAccessor={(d) => d.values[dataKey]}
             colorAccessor={colorAccessor}
-            // barProps={(datum) => ({
-            //   shapeRendering: 'crispEdges',
-            //   role: 'graphics-symbol',
-            //   'aria-roledescription': '',
-            //   'aria-label': `Category ${(datum as CategoryValueListDatum<string, number>).category}: ${
-            //     (datum as CategoryValueListDatum<string, number>).values[dataKey]
-            //   }`
-            // })}
-            // groupProps={{
-            //   role: 'graphics-object',
-            //   'aria-roledescription': 'series',
-            //   'aria-label': `${dataKey}`
-            // }}
           />
         ))}
       </SVGBarStack>

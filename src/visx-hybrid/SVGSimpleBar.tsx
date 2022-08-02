@@ -31,6 +31,8 @@ export function SVGSimpleBar<Datum extends object>({
       fill={colorAccessor?.(datum, dataKey) ?? fill ?? colorScale(dataKey) ?? '#666'}
       style={{ ...barStyle, opacity }}
       shapeRendering={defaultShapeRendering}
+      role="presentation"
+      aria-hidden
       {...restBarProps}
       // {...eventEmitters}
     />

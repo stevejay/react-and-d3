@@ -2,6 +2,7 @@ import type { SVGProps } from 'react';
 import type { SpringConfig } from 'react-spring';
 
 import { BARSERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
+import { SVGAccessibleBarSeries, SVGAccessibleBarSeriesProps } from './SVGAccessibleBarSeries';
 import { SVGSimpleBar } from './SVGSimpleBar';
 import type { AxisScale, ScaleInput, SVGBarProps } from './types';
 import { useBarSeriesTransitions } from './useBarSeriesTransitions';
@@ -25,6 +26,11 @@ export type SVGBarSeriesProps<Datum extends object> = {
   // lineProps?: LineProps | ((datum: Datum, index: number, dataKey: string) => LineProps);
   enableEvents?: boolean;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
+  categoryA11yProps?: SVGAccessibleBarSeriesProps<
+    ScaleInput<AxisScale>,
+    ScaleInput<AxisScale>,
+    Datum
+  >['categoryA11yProps'];
 };
 
 export function SVGBarSeries<Datum extends object>({
@@ -33,7 +39,8 @@ export function SVGBarSeries<Datum extends object>({
   animate = true,
   dataKey,
   enableEvents = true,
-  component: BarComponent = SVGSimpleBar
+  component: BarComponent = SVGSimpleBar,
+  categoryA11yProps
 }: SVGBarSeriesProps<Datum>) {
   const {
     horizontal,
@@ -43,7 +50,10 @@ export function SVGBarSeries<Datum extends object>({
     renderingOffset,
     springConfig: contextSpringConfig,
     animate: contextAnimate,
-    dataEntries
+    dataEntries,
+    margin,
+    innerWidth,
+    innerHeight
   } = useDataContext();
   const dataEntry = dataEntries.find((dataEntry) => dataEntry.dataKey === dataKey);
   if (!dataEntry) {
@@ -76,18 +86,32 @@ export function SVGBarSeries<Datum extends object>({
     renderingOffset
   });
   return (
-    <g data-testid={`bar-series-${dataKey}`} {...groupProps}>
-      {transitions((springValues, datum, _, index) => (
-        <BarComponent
-          springValues={springValues}
-          datum={datum}
-          index={index}
-          dataKey={dataKey}
+    <>
+      <g data-testid={`bar-series-${dataKey}`} {...groupProps}>
+        {transitions((springValues, datum, _, index) => (
+          <BarComponent
+            springValues={springValues}
+            datum={datum}
+            index={index}
+            dataKey={dataKey}
+            horizontal={horizontal}
+            colorScale={colorScale}
+            colorAccessor={colorAccessor}
+          />
+        ))}
+      </g>
+      {categoryA11yProps && (
+        <SVGAccessibleBarSeries
+          independentScale={independentScale}
           horizontal={horizontal}
-          colorScale={colorScale}
-          colorAccessor={colorAccessor}
+          margin={margin}
+          innerWidth={innerWidth}
+          innerHeight={innerHeight}
+          dataKeys={[dataKey]}
+          dataEntries={dataEntries}
+          categoryA11yProps={categoryA11yProps}
         />
-      ))}
-    </g>
+      )}
+    </>
   );
 }

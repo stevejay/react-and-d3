@@ -56,13 +56,29 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
       dependentScale={dependentScale}
       springConfig={springConfig}
       role="graphics-document"
+      aria-roledescription="Grouped bar chart"
       aria-label="Some title"
       dependentRangePadding={30}
       className="select-none"
       theme={darkTheme}
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      <SVGBarGroup padding={0} component={SVGBarWithLine}>
+      <SVGBarGroup
+        padding={0}
+        component={SVGBarWithLine}
+        categoryA11yProps={(category: string, data: readonly CategoryValueListDatum<string, number>[]) => {
+          const datum = data[0];
+          if (!datum) {
+            return {};
+          }
+          return {
+            'aria-label': `Category ${datum.category}: ${dataKeys
+              .map((dataKey) => `${dataKey} is ${datum.values[dataKey]}`)
+              .join(', ')}`,
+            'aria-roledescription': `Category ${category}`
+          };
+        }}
+      >
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
             key={dataKey}
@@ -72,21 +88,6 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
             independentAccessor={(datum) => datum.category}
             dependentAccessor={(datum) => datum.values[dataKey]}
             colorAccessor={colorAccessor}
-
-            // barProps={{ shapeRendering: 'crispEdges' }}
-            // barProps={(datum) => ({
-            //   shapeRendering: 'crispEdges',
-            //   role: 'graphics-symbol',
-            //   'aria-roledescription': '',
-            //   'aria-label': `Category ${(datum as CategoryValueListDatum<string, number>).category}: ${
-            //     (datum as CategoryValueListDatum<string, number>).values[dataKey]
-            //   }`
-            // })}
-            // groupProps={{
-            //   role: 'graphics-object',
-            //   'aria-roledescription': 'series',
-            //   'aria-label': `${dataKey}`
-            // }}
           />
         ))}
       </SVGBarGroup>

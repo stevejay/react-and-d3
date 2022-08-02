@@ -2,7 +2,7 @@ import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
-import { CategoryValueDatum, Margin } from '@/types';
+import { CategoryValueDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
@@ -14,12 +14,11 @@ import { darkTheme } from './darkTheme';
 
 export interface BarChartProps {
   data: CategoryValueDatum<string, number>[];
-  margin: Margin;
 }
 
 const independentScale: BandScaleConfig<string> = {
   type: 'band',
-  paddingInner: 0.9,
+  paddingInner: 0.3,
   paddingOuter: 0.2,
   round: true
 } as const;
@@ -66,7 +65,6 @@ export function BarChart({ data }: BarChartProps) {
       // horizontal
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      {/* <SVGGrid className="text-red-600" tickCount={5} renderer={SVGGridRenderer} variable="dependent" /> */}
       <SVGBarSeries
         dataKey="data-a"
         data={data}
@@ -74,78 +72,19 @@ export function BarChart({ data }: BarChartProps) {
         independentAccessor={independentAccessor}
         dependentAccessor={dependentAccessor}
         colorAccessor={colorAccessor}
-        component={
-          SVGBarWithLine
-          // {...props}
-          // barProps={(datum) => ({
-          //   role: 'graphics-symbol',
-          //   'aria-roledescription': '',
-          //   'aria-label': `Category ${independentAccessor(datum)}: ${dependentAccessor(datum)}`
-          // })}
-        }
-        // barProps={(datum) => ({
-        //   role: 'graphics-symbol',
-        //   'aria-roledescription': '',
-        //   'aria-label': `Category ${independentAccessor(datum)}: ${dependentAccessor(datum)}`
-        // })}
-        // lineProps={{
-        //   stroke: 'white',
-        //   strokeWidth: 2
-        // }}
+        component={SVGBarWithLine}
+        categoryA11yProps={(category: string, data: readonly CategoryValueDatum<string, number>[]) => {
+          const datum = data[0];
+          return {
+            'aria-label': `Category ${datum.category}: ${datum.value}`,
+            'aria-roledescription': `Category ${category}`
+          };
+        }}
       />
-      <SVGAxis
-        variable="independent"
-        position="end"
-        label="Foobar Topy"
-        // hideAxisPath
-        // hideTicks
-        // tickLength={20}
-        // tickLabelPadding={20}
-        // tickLabelAngle="angled"
-        // autoMarginLabelPadding={0}
-        // labelAngle="vertical"
-      />
-      <SVGAxis
-        variable="independent"
-        position="start"
-        label="Foobar Bottomy"
-        // hideAxisPath
-        // outerTickLength={20}
-        // hideTicks
-        // tickLength={20}
-        // tickLabelPadding={10}
-        // tickLabelAngle="angled"
-        // autoMarginLabelPadding={0}
-        // labelAngle="vertical"
-      />
-      <SVGAxis
-        variable="dependent"
-        position="start"
-        label="Foobar Lefty"
-        tickCount={5}
-        hideZero
-        // hideAxisPath
-
-        // tickLength={20}
-        // tickLabelPadding={10}
-        // tickLabelAngle="angled"
-        // autoMarginLabelPadding={0}
-        // labelAngle="horizontal"
-      />
-      <SVGAxis
-        variable="dependent"
-        position="end"
-        label="Foobar Righty"
-        tickCount={5}
-        hideZero
-        // hideAxisPath
-
-        // tickLength={20}
-        // tickLabelPadding={10}
-        // tickLabelAngle="angled"
-        // autoMarginLabelPadding={0}
-        // labelAngle="horizontal"
-      />
+      <SVGAxis variable="independent" position="end" label="Foobar Topy" />
+      <SVGAxis variable="independent" position="start" label="Foobar Bottomy" />
+      <SVGAxis variable="dependent" position="start" label="Foobar Lefty" tickCount={5} hideZero />
+      <SVGAxis variable="dependent" position="end" label="Foobar Righty" tickCount={5} hideZero />
       <PopperTooltip<CategoryValueDatum<string, number>>
         snapTooltipToDatumX
         showVerticalCrosshair

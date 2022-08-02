@@ -41,6 +41,8 @@ export function SVGBarWithLine<Datum extends object>(props: SVGBarWithLineProps<
         stroke="currenColor"
         strokeWidth={1}
         strokeLinecap="butt"
+        role="presentation"
+        aria-hidden
         {...restLineProps}
       />
     </>

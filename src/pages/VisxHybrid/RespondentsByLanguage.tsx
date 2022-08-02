@@ -1,10 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { easeCubicInOut } from 'd3-ease';
 import { format } from 'd3-format';
-// import { format } from 'd3-format';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 import langmap from 'langmap';
-// import langmap from 'langmap';
 import { sortBy } from 'lodash-es';
 
 import { EntityBucket, useLocaleQuery } from '@/api/stateofjs/generated';
@@ -40,8 +38,6 @@ const dependentScale: LinearScaleConfig<number> = {
 } as const;
 
 const springConfig = { duration: 350, easing: easeCubicInOut };
-
-// const margin: Margin = { left: 120, right: 32, top: 32, bottom: 64 };
 
 function independentAccessor(d: EntityBucket) {
   return d.id ?? '';
@@ -109,41 +105,13 @@ export function RespondentsByLanguage() {
   const dependentAccessor = useCallback((d: EntityBucket) => d[statistic] ?? 0, [statistic]);
   const dependentAxisTickFormatter = useMemo(() => getDependentAxisTickFormatter(statistic), [statistic]);
 
-  // const independentAxis: AxisConfig = {
-  //   position: 'start',
-  //   tickFormat: yAxisTickFormatter,
-  //   tickLabelProps: { angle: -45 }
-  // };
-  // const dependentAxis: AxisConfig = useMemo<AxisConfig>(
-  //   () => ({
-  //     position: 'start',
-  //     animate: true,
-  //     tickFormat: getXAxisTickFormatter(statistic)
-  //   }),
-  //   [statistic]
-  // );
-  // const dependentGrid: GridConfig = {
-  //   tickLineProps: {
-  //     strokeDasharray: '1,3',
-  //     className: 'text-slate-500'
-  //   },
-  //   tickCount: 5
-  // };
-
   return (
     <div>
       <SectionHeading>Respondents by language</SectionHeading>
       <div className="space-y-8">
         <LocationStatisticSelect value={statistic} onChange={setStatistic} />
-        {/* <WorldMapLegend colorScale={colorScale} statistic={statistic} className="w-64" /> */}
         <div className="space-y-2">
           <h3 className="mb-2 text-base text-slate-300">SVG implementation</h3>
-          {/* <SVGWorldMapWithTooltip data={mapData} colorScale={colorScale} statistic={statistic} /> */}
-          {/* </div>
-        <div>
-          <h3 className="mb-2 text-base text-slate-300">Canvas implementation (Mercator)</h3>
-          <CanvasWorldMapWithTooltip data={mapData} colorScale={colorScale} statistic={statistic} />
-        </div> */}
           <div className="relative w-full h-[720px] bg-slate-700">
             <InView>
               <SVGXYChart
@@ -152,9 +120,7 @@ export function RespondentsByLanguage() {
                 horizontal
                 animate
                 springConfig={springConfig}
-                // margin={margin}
                 independentRangePadding={10}
-                // dependentRangePadding={10}
                 role="graphics-document"
                 aria-roledescription="Bar chart"
                 aria-label="Some Important Results"
@@ -171,15 +137,12 @@ export function RespondentsByLanguage() {
                   dependentAccessor={dependentAccessor}
                   colorAccessor={colorAccessor}
                   component={SVGBarWithLine}
-                  // barProps={(datum) => ({
-                  //   role: 'graphics-symbol',
-                  //   'aria-roledescription': '',
-                  //   'aria-label': `Category ${independentAccessor(datum)}: ${dependentAccessor(datum)}`
-                  // })}
-                  // lineProps={{
-                  //   stroke: 'white',
-                  //   strokeWidth: 2
-                  // }}
+                  categoryA11yProps={(category: string, data: readonly EntityBucket[]) => ({
+                    'aria-label': `${independentAxisTickFormatter(category)}: ${dependentAxisTickFormatter(
+                      dependentAccessor(data[0])
+                    )}`,
+                    'aria-roledescription': 'Language'
+                  })}
                 />
                 <SVGAxis
                   variable="dependent"

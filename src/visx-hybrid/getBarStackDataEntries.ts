@@ -32,8 +32,12 @@ export function getBarStackDataEntries<
   return stackedData
     .map((data) => {
       const matchingChild = barSeriesChildren.find((child) => child.props.dataKey === data.key);
-      const colorAccessor = matchingChild?.props?.colorAccessor;
-      const keyAccessor = matchingChild?.props?.keyAccessor ?? identity; // TODO bad fallback.
+      const {
+        colorAccessor,
+        keyAccessor = identity
+        // independentAccessor: originalIndependentAccessor,
+        // dependentAccessor: originalDependentAccessor
+      } = matchingChild?.props ?? {};
       return {
         dataKey: data.key,
         data,

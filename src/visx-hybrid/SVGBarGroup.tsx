@@ -5,9 +5,10 @@ import { isNil } from 'lodash-es';
 
 import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchildrenWithProps';
 import { getScaleBandwidth } from './getScaleBandwidth';
+import { SVGAccessibleBarSeries, SVGAccessibleBarSeriesProps } from './SVGAccessibleBarSeries';
 import { SVGBarGroupSeries } from './SVGBarGroupSeries';
 import { SVGBarSeriesProps } from './SVGBarSeries';
-import type { AxisScale, DataEntry, SVGBarProps } from './types';
+import type { AxisScale, DataEntry, ScaleInput, SVGBarProps } from './types';
 import { useDataContext } from './useDataContext';
 import { useSeriesTransitions } from './useSeriesTransitions';
 
@@ -22,6 +23,11 @@ type SVGBarGroupProps<Datum extends object> = {
   /** Optional color accessor that overrides any color accessor on the group's children. */
   colorAccessor?: (d: Datum, dataKey: string) => string;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
+  categoryA11yProps?: SVGAccessibleBarSeriesProps<
+    ScaleInput<AxisScale>,
+    ScaleInput<AxisScale>,
+    Datum
+  >['categoryA11yProps'];
 };
 
 export function SVGBarGroup<Datum extends object>({
@@ -35,7 +41,8 @@ export function SVGBarGroup<Datum extends object>({
   // groupScale,
   sortBars,
   colorAccessor,
-  component
+  component,
+  categoryA11yProps
 }: // lineProps
 SVGBarGroupProps<Datum>) {
   const {
@@ -46,7 +53,10 @@ SVGBarGroupProps<Datum>) {
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     dataEntries,
-    colorScale
+    colorScale,
+    margin,
+    innerWidth,
+    innerHeight
   } = useDataContext();
 
   const barSeriesChildren = useMemo(
@@ -113,6 +123,18 @@ SVGBarGroupProps<Datum>) {
           </animated.g>
         );
       })}
+      {categoryA11yProps && (
+        <SVGAccessibleBarSeries
+          independentScale={independentScale}
+          horizontal={horizontal}
+          margin={margin}
+          innerWidth={innerWidth}
+          innerHeight={innerHeight}
+          dataKeys={groupScale.domain()}
+          dataEntries={dataEntries}
+          categoryA11yProps={categoryA11yProps}
+        />
+      )}
     </>
   );
 }

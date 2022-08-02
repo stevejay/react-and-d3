@@ -5,8 +5,10 @@ import { isNil } from 'lodash-es';
 import { BARSTACK_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
 import findNearestStackDatum from './findNearestStackDatum';
 import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchildrenWithProps';
+import { getStackOriginalDatum } from './getStackOriginalDatum';
 import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
+import { SVGAccessibleBarSeries, SVGAccessibleBarSeriesProps } from './SVGAccessibleBarSeries';
 import { SVGBarSeriesProps } from './SVGBarSeries';
 import { SVGBarStackSeries } from './SVGBarStackSeries';
 import type {
@@ -14,6 +16,7 @@ import type {
   DataEntry,
   NearestDatumArgs,
   NearestDatumReturnType,
+  ScaleInput,
   StackDatum,
   SVGBarProps
 } from './types';
@@ -49,6 +52,11 @@ export interface SVGBarStackProps<Datum extends object> {
   children?: ReactNode;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
   colorAccessor?: (d: StackDatum<AxisScale, AxisScale, Datum>, key: string) => string;
+  categoryA11yProps?: SVGAccessibleBarSeriesProps<
+    ScaleInput<AxisScale>,
+    ScaleInput<AxisScale>,
+    Datum
+  >['categoryA11yProps'];
 }
 
 export function SVGBarStack<Datum extends object>(
@@ -64,7 +72,8 @@ export function SVGBarStack<Datum extends object>(
     animate = true,
     springConfig,
     colorAccessor,
-    component
+    component,
+    categoryA11yProps
   }: SVGBarStackProps<Datum>
 ) {
   const {
@@ -75,7 +84,10 @@ export function SVGBarStack<Datum extends object>(
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     dataEntries,
-    colorScale
+    colorScale,
+    margin,
+    innerWidth,
+    innerHeight
   } = useDataContext();
 
   const seriesChildren = useMemo(
@@ -163,47 +175,22 @@ export function SVGBarStack<Datum extends object>(
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               component={component as any} // TODO fix this
             />
-            {/* <BarStackSeries
-              dataKey={datum.key}
-              dataKeys={dataKeys}
-              data={datum.data}
-              xScale={xScale}
-              yScale={yScale}
-              keyAccessor={datum.keyAccessor}
-              xAccessor={datum.xAccessor}
-              yAccessor={datum.yAccessor}
-              horizontal={horizontal ?? false}
-              renderingOffset={renderingOffset}
-              animate={animate}
-              springConfig={springConfig}
-              colorAccessor={datum.colorAccessor}
-              colorScale={colorScale}
-              barProps={barProps}
-              barClassName={barClassName}
-              {...events}
-            /> */}
           </animated.g>
         );
       })}
+      {categoryA11yProps && (
+        <SVGAccessibleBarSeries
+          independentScale={independentScale}
+          horizontal={horizontal}
+          margin={margin}
+          innerWidth={innerWidth}
+          innerHeight={innerHeight}
+          dataKeys={dataKeys}
+          dataEntries={dataEntries}
+          categoryA11yProps={categoryA11yProps}
+          datumAccessor={getStackOriginalDatum}
+        />
+      )}
     </>
   );
-
-  // return (
-  //   <XYChartBarStackSeries
-  //     dataKeys={dataKeys}
-  //     dataRegistry={dataRegistry}
-  //     seriesChildren={seriesChildren}
-  //     xScale={xScale}
-  //     yScale={yScale}
-  //     colorScale={colorScale}
-  //     horizontal={horizontal}
-  //     springConfig={springConfig ?? fallbackSpringConfig}
-  //     animate={animate}
-  //     {...eventEmitters}
-  //     // Feels better to only animate the chart if the stack keys are the same.
-  //     // animate={
-  //     //   (isEmpty(previousGroupKeys.current) || isEqual(previousGroupKeys.current, groupKeys)) && animate
-  //     // }
-  //   />
-  // );
 }
