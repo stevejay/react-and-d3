@@ -1,12 +1,4 @@
-import type {
-  CSSProperties,
-  FocusEvent,
-  PointerEvent,
-  ReactNode,
-  // Ref,
-  SVGAttributes,
-  SVGProps
-} from 'react';
+import type { CSSProperties, FocusEvent, PointerEvent, ReactNode, SVGAttributes, SVGProps } from 'react';
 import type { SpringConfig, SpringValues } from 'react-spring';
 import type { D3Scale, ScaleInput, ScaleTypeToD3Scale } from '@visx/scale';
 import type { Series, SeriesPoint } from 'd3-shape';
@@ -62,12 +54,7 @@ export interface DataEntry<
   // legendShape?: LegendShape;
 }
 
-export interface DataContextType<
-  IndependentScale extends AxisScale,
-  DependentScale extends AxisScale
-  // Datum extends object,
-  // OriginalDatum extends object
-> {
+export interface DataContextType<IndependentScale extends AxisScale, DependentScale extends AxisScale> {
   independentScale: IndependentScale;
   dependentScale: DependentScale;
   independentRangePadding: number;
@@ -80,33 +67,21 @@ export interface DataContextType<
   margin: Margin;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataEntries: readonly DataEntry<IndependentScale, DependentScale, any, any>[];
-  // dataRegistry: Omit<DataRegistry<XScale, YScale, Datum, OriginalDatum>, 'registry' | 'registryKeys'>;
-  // registerData: (
-  //   data:
-  //     | DataRegistryEntry<XScale, YScale, Datum, OriginalDatum>
-  //     | DataRegistryEntry<XScale, YScale, Datum, OriginalDatum>[]
-  // ) => void;
-  // unregisterData: (keyOrKeys: string | string[]) => void;
-  // setDimensions: (dims: { width: number; height: number; margin: Margin }) => void;
   horizontal: boolean;
   animate: boolean;
-  /* A react-spring configuration object */
   springConfig: SpringConfig;
   renderingOffset: number;
   theme: XYChartTheme;
 }
 
 export interface TickDatum {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any; // FIXME  ?? ScaleInput<Scale> where <Scale extends GridScale> ???
+  value: ScaleInput<AxisScale>;
   index: number;
   label: string;
 }
 
 export type GridType = 'row' | 'column';
-
 export type Variable = 'independent' | 'dependent';
-
 export type LabelAngle = 'horizontal' | 'vertical';
 export type TickLabelAngle = 'horizontal' | 'angled' | 'vertical';
 
@@ -151,12 +126,8 @@ export interface TextStyles {
 }
 
 export interface AxisStyles {
-  // /** Axis label styles. */
-  // axisLabel?: SVGTextProps;
   /** Axis line styles. */
   axisPath?: PathStyles;
-  // /** Tick label styles. */
-  // tickLabel?: SVGTextProps;
   /** Tick line styles. */
   tickLine?: LineStyles;
   /** Length of axis tick lines. */
@@ -376,12 +347,9 @@ export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale,
   enableEvents?: boolean;
 }
 
-// type SVGTSpanProps = SVGAttributes<SVGTSpanElement>;
 export type SVGTextProps = SVGAttributes<SVGTextElement>;
-
 export type LineProps = Omit<SVGProps<SVGLineElement>, 'to' | 'from' | 'ref'>;
 export type RectProps = Omit<SVGProps<SVGRectElement>, 'ref'>;
-// export type TextProps = OwnTextProps & Omit<SVGTextProps, keyof OwnTextProps>;
 
 export type TooltipProps = {
   /** Tooltip content. */
@@ -418,27 +386,6 @@ export interface Point {
   y: number;
 }
 
-export type BarSpringValues = SpringValues<{
-  points: string;
-  opacity: number;
-  x1: number;
-  x2: number;
-  y1: number;
-  y2: number;
-  height: number;
-  width: number;
-}>;
-
-export interface SVGBarProps<Datum extends object> {
-  springValues: BarSpringValues;
-  datum: Datum;
-  index: number;
-  dataKey: string;
-  horizontal: boolean;
-  colorScale: (dataKey: string) => string;
-  colorAccessor?: (d: Datum, dataKey: string) => string;
-}
-
 export interface PolygonTransitionsProps {
   points: string;
   x1: number;
@@ -448,4 +395,14 @@ export interface PolygonTransitionsProps {
   width: number;
   height: number;
   opacity: number;
+}
+
+export interface SVGBarProps<Datum extends object> {
+  springValues: SpringValues<PolygonTransitionsProps>;
+  datum: Datum;
+  index: number;
+  dataKey: string;
+  horizontal: boolean;
+  colorScale: (dataKey: string) => string;
+  colorAccessor?: (d: Datum, dataKey: string) => string;
 }
