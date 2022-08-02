@@ -28,7 +28,7 @@ export interface SVGAxisTicksProps {
   margin: Margin;
   springConfig?: SpringConfig;
   animate?: boolean;
-  renderingOffset?: number;
+  renderingOffset: number;
   /** If true, will hide the ticks (but not the tick labels). */
   hideTicks?: boolean;
   /** Props to apply to the <g> element that wraps each tick line and label. */

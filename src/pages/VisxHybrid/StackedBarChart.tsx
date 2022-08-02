@@ -3,9 +3,13 @@ import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { CategoryValueListDatum, Margin } from '@/types';
+import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarStack } from '@/visx-hybrid/SVGBarStack';
+import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
+
+import { darkTheme } from './darkTheme';
 // import { SvgXYChartAxis } from '@/visx-next/Axis';
 // import { XYChartBarSeries } from '@/visx-next/BarSeries';
 // import { SvgXYChartBarStack } from '@/visx-next/BarStack';
@@ -47,21 +51,24 @@ function keyAccessor(d: CategoryValueListDatum<string, number>) {
 
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
-export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps) {
+// TODO default theme is broken - something about the auto margins doesn't use it.
+
+export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
   return (
     <SVGXYChart
-      margin={margin}
       independentScale={xScale}
       dependentScale={yScale}
       springConfig={springConfig}
       role="graphics-document"
       aria-label="Some title"
       dependentRangePadding={30}
+      theme={darkTheme}
     >
+      <SVGGrid tickCount={5} variable="dependent" />
       {/* <XYChartColumnGrid className="text-slate-600" /> */}
       {/* <XYChartRowGrid className="text-red-600" tickCount={5} shapeRendering="crispEdges" /> */}
       {/* TODO Use refs within barSeries for the accessors? */}
-      <SVGBarStack stackOffset="none" stackOrder="ascending" animate={true}>
+      <SVGBarStack stackOrder="none" animate={true}>
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
             key={dataKey}
@@ -87,95 +94,60 @@ export function StackedBarChart({ data, dataKeys, margin }: StackedBarChartProps
           />
         ))}
       </SVGBarStack>
-      {/* <SvgXYChartAxis
-        orientation="top"
-        label="Foobar Top"
-        hideTicks
-        tickLabelPadding={6}
-        tickLabelProps={{
-          className: 'fill-slate-400 font-sans',
-          fontSize: 12,
-          textAnchor: 'middle',
-          verticalAnchor: 'end',
-          angle: 0
-        }}
-        labelProps={{
-          className: 'fill-slate-400 font-sans',
-          textAnchor: 'middle',
-          fontSize: 14
-        }}
-        tickLineProps={{ shapeRendering: 'crispEdges' }}
-        domainPathProps={{ shapeRendering: 'crispEdges' }}
-        autoMarginLabelPadding={10}
-      />
-      <SvgXYChartAxis
-        orientation="bottom"
-        label="Foobar Bottom"
-        hideTicks
-        tickLabelPadding={6}
-        tickLabelProps={{
-          className: 'fill-slate-400 font-sans',
-          fontSize: 12,
-          textAnchor: 'middle',
-          verticalAnchor: 'start',
-          angle: 0
-        }}
-        labelProps={{
-          className: 'fill-slate-400 font-sans',
-          textAnchor: 'middle',
-          fontSize: 14
-        }}
-        tickLineProps={{ shapeRendering: 'crispEdges' }}
-        domainPathProps={{ shapeRendering: 'crispEdges' }}
-        autoMarginLabelPadding={10}
-      />
-      <SvgXYChartAxis
-        orientation="left"
-        label="Foobar Left"
-        tickCount={5}
-        hideZero
-        tickLabelPadding={6}
-        tickLabelProps={{
-          className: 'fill-slate-400 font-sans',
-          fontSize: 12,
-          textAnchor: 'end',
-          verticalAnchor: 'middle',
-          angle: -45
-        }}
-        labelProps={{
-          className: 'fill-slate-400 font-sans',
-          textAnchor: 'middle',
-          fontSize: 14
-        }}
-        tickLineProps={{ shapeRendering: 'crispEdges' }}
-        domainPathProps={{ shapeRendering: 'crispEdges' }}
-        autoMarginLabelPadding={36} // Does not take tick labels into account.
-      />
-      <SvgXYChartAxis
-        orientation="right"
-        label="Foobar Right"
-        tickCount={5}
-        hideZero
-        tickLabelPadding={6}
-        tickLabelProps={{
-          className: 'fill-slate-400 font-sans',
-          fontSize: 12,
-          textAnchor: 'start',
-          verticalAnchor: 'middle',
-          angle: -45
-        }}
-        labelProps={{
-          className: 'fill-slate-400 font-sans',
-          textAnchor: 'middle',
-          fontSize: 14
-        }}
-        tickLineProps={{ shapeRendering: 'crispEdges' }}
-        domainPathProps={{ shapeRendering: 'crispEdges' }}
-        autoMarginLabelPadding={36} // Does not take tick labels into account.
+      <SVGAxis
+        variable="independent"
+        position="end"
+        label="Foobar Topy"
+        // hideAxisPath
         // hideTicks
-        // tickLength={0}
+        // tickLength={20}
+        // tickLabelPadding={20}
+        // tickLabelAngle="angled"
+        // autoMarginLabelPadding={0}
+        // labelAngle="vertical"
       />
-      <PopperTooltip<CategoryValueListDatum<string, number>>
+      <SVGAxis
+        variable="independent"
+        position="start"
+        label="Foobar Bottomy"
+        // hideAxisPath
+        // outerTickLength={20}
+        // hideTicks
+        // tickLength={20}
+        // tickLabelPadding={10}
+        // tickLabelAngle="angled"
+        // autoMarginLabelPadding={0}
+        // labelAngle="vertical"
+      />
+      <SVGAxis
+        variable="dependent"
+        position="start"
+        label="Foobar Lefty"
+        tickCount={5}
+        hideZero
+        // hideAxisPath
+
+        // tickLength={20}
+        // tickLabelPadding={10}
+        // tickLabelAngle="angled"
+        // autoMarginLabelPadding={0}
+        // labelAngle="horizontal"
+      />
+      <SVGAxis
+        variable="dependent"
+        position="end"
+        label="Foobar Righty"
+        tickCount={5}
+        hideZero
+        // hideAxisPath
+
+        // tickLength={20}
+        // tickLabelPadding={10}
+        // tickLabelAngle="angled"
+        // autoMarginLabelPadding={0}
+        // labelAngle="horizontal"
+      />
+      {/*<PopperTooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}

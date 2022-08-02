@@ -2,7 +2,6 @@ import { Children, Fragment, isValidElement, ReactNode } from 'react';
 
 import { calculateAxisOrientation } from './calculateAxisOrientation';
 import { calculateMarginForAxis } from './calculateMarginForAxis';
-import { combineMargins } from './combineMargins';
 import {
   defaultAutoMarginLabelPadding,
   defaultBigLabelsTextStyle,
@@ -14,6 +13,7 @@ import {
   defaultTickLength
 } from './constants';
 import { getDefaultAxisLabelAngle } from './getDefaultAxisLabelAngle';
+import { mergeMargins } from './mergeMargins';
 import { SVGAxisProps } from './SVGAxis';
 import type { AxisScale, Margin, XYChartTheme } from './types';
 
@@ -24,15 +24,24 @@ import type { AxisScale, Margin, XYChartTheme } from './types';
  * For each of these, it calculates its margin values, before then combining all
  * of the created margins and returning that single margin result.
  */
-export function calculateAutoMarginFromChildren(
-  children: ReactNode,
-  horizontal: boolean,
-  independentScale: AxisScale,
-  dependentScale: AxisScale,
-  independentRangePadding: number,
-  dependentRangePadding: number,
-  theme: XYChartTheme
-): Margin {
+export function calculateAutoMarginFromChildren(args: {
+  children: ReactNode;
+  horizontal: boolean;
+  independentScale: AxisScale;
+  dependentScale: AxisScale;
+  independentRangePadding: number;
+  dependentRangePadding: number;
+  theme: XYChartTheme;
+}): Margin {
+  const {
+    children,
+    horizontal,
+    independentScale,
+    dependentScale,
+    independentRangePadding,
+    dependentRangePadding,
+    theme
+  } = args;
   // For accumulating the margins. They get collapsed into a single margin result.
   const marginList: Margin[] = [];
 
@@ -41,17 +50,7 @@ export function calculateAutoMarginFromChildren(
       return;
     } else if (element.type === Fragment) {
       // Transparently support React.Fragment and its children.
-      marginList.push(
-        calculateAutoMarginFromChildren(
-          element.props.children,
-          horizontal,
-          independentScale,
-          dependentScale,
-          independentRangePadding,
-          dependentRangePadding,
-          theme
-        )
-      );
+      marginList.push(calculateAutoMarginFromChildren(args));
     } else if (typeof element.type !== 'string' && element.type.name.endsWith('Axis')) {
       const props = element.props as SVGAxisProps;
       const axisOrientation = calculateAxisOrientation(horizontal, props.variable, props.position);
@@ -79,9 +78,9 @@ export function calculateAutoMarginFromChildren(
     }
   });
 
-  return combineMargins(marginList);
+  return mergeMargins(marginList);
 
-  // const combinedMargin = combineMargins(marginList);
+  // const combinedMargin = mergeMargins(marginList);
   // return {
   //   left: combinedMargin.left + extraPaddingPx,
   //   right: combinedMargin.right + extraPaddingPx,

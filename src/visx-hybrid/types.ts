@@ -7,11 +7,11 @@ import type {
   SVGAttributes,
   SVGProps
 } from 'react';
-import type { SpringConfig } from 'react-spring';
-import type { D3Scale, ScaleInput } from '@visx/scale';
+import type { SpringConfig, SpringValues } from 'react-spring';
+import type { D3Scale, ScaleInput, ScaleTypeToD3Scale } from '@visx/scale';
 import type { Series, SeriesPoint } from 'd3-shape';
 
-export type { ScaleInput } from '@visx/scale';
+export type { ScaleConfig, ScaleConfigToD3Scale, ScaleInput } from '@visx/scale';
 
 /** A value that has .valueOf() function */
 export type NumberLike = { valueOf(): number };
@@ -72,7 +72,7 @@ export interface DataContextType<
   dependentScale: DependentScale;
   independentRangePadding: number;
   dependentRangePadding: number;
-  // colorScale: ScaleTypeToD3Scale<string, string>['ordinal'];
+  colorScale: ScaleTypeToD3Scale<string, string>['ordinal'];
   width: number;
   height: number;
   innerWidth: number;
@@ -174,6 +174,8 @@ export interface SVGStyles {
 }
 
 export interface XYChartTheme {
+  /** Ordinal colors to be used for default coloring by series `key`s. */
+  colors: readonly string[];
   svg?: SVGStyles;
   grid?: {
     independent?: LineStyles;
@@ -191,45 +193,6 @@ export interface XYChartTheme {
     right?: AxisStyles;
   };
 }
-
-// export interface FontProperties {
-//   /**
-//    * A list of one or more font family names.
-//    */
-//   fontFamily: string;
-
-//   /**
-//    * Set the size of the font.
-//    */
-//   fontSize: number;
-
-//   /**
-//    * Select a normal, condensed, or expanded face from the font.
-//    * Only has an effect if the font includes the given variation.
-//    * This property in itself does not cause the browser to stretch a font.
-//    */
-//   fontStretch?: string;
-
-//   /**
-//    * Select a normal, italic, or oblique face from the font.
-//    */
-//   fontStyle?: string;
-
-//   /**
-//    * Select variants from the font.
-//    */
-//   fontVariant?: string;
-
-//   /**
-//    * Set the weight of the font.
-//    */
-//   fontWeight?: number | string;
-
-//   /**
-//    * Define how tall a line of text should be.
-//    */
-//   lineHeight?: number;
-// }
 
 export type FontProperties = Pick<
   CSSProperties,
@@ -251,14 +214,31 @@ export type TickFormatter<T> = (
   values: { value: T; index: number }[]
 ) => FormattedValue;
 
-export type CombinedStackData<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> = {
-  [dataKey: string]: ScaleInput<XScale> | ScaleInput<YScale>;
+// TODO think about a better name for this type.
+export type StackDataWithSums<
+  IndependentScale extends AxisScale,
+  DependentScale extends AxisScale,
+  Datum extends object
+> = {
+  [dataKey: string]: ScaleInput<IndependentScale> | ScaleInput<DependentScale>;
 } & {
-  stack: ScaleInput<XScale> | ScaleInput<YScale>;
+  stack: ScaleInput<IndependentScale> | ScaleInput<DependentScale>;
   positiveSum: number;
   negativeSum: number;
   __datum__: Datum;
 };
+
+export type StackDatum<
+  IndependentScale extends AxisScale,
+  DependentScale extends AxisScale,
+  Datum extends object
+> = SeriesPoint<StackDataWithSums<IndependentScale, DependentScale, Datum>>;
+
+export type StackedData<
+  IndependentScale extends AxisScale,
+  DependentScale extends AxisScale,
+  Datum extends object
+> = Series<StackDataWithSums<IndependentScale, DependentScale, Datum>, string>[];
 
 /** Call signature of PointerEvent callback. */
 export interface EventHandlerParams<Datum> {
@@ -399,47 +379,6 @@ export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale,
 // type SVGTSpanProps = SVGAttributes<SVGTSpanElement>;
 export type SVGTextProps = SVGAttributes<SVGTextElement>;
 
-// type OwnTextProps = {
-//   /** className to apply to the SVGText element. */
-//   className?: string;
-//   /** Whether to scale the fontSize to accommodate the specified width.  */
-//   scaleToFit?: boolean | 'shrink-only';
-//   /** Rotational angle of the text. */
-//   angle?: number;
-//   /** Horizontal text anchor. */
-//   textAnchor?: 'start' | 'middle' | 'end' | 'inherit';
-//   /** Vertical text anchor. */
-//   verticalAnchor?: 'start' | 'middle' | 'end';
-//   /** Styles to be applied to the text (and used in computation of its size). */
-//   style?: CSSProperties;
-//   /** Ref passed to the Text SVG element. */
-//   innerRef?: Ref<SVGSVGElement>;
-//   /** Ref passed to the Text text element */
-//   innerTextRef?: Ref<SVGTextElement>;
-//   /** x position of the text. */
-//   x?: string | number;
-//   /** y position of the text. */
-//   y?: string | number;
-//   /** dx offset of the text. */
-//   dx?: string | number;
-//   /** dy offset of the text. */
-//   dy?: string | number;
-//   /** Desired "line height" of the text, implemented as y offsets. */
-//   lineHeight?: SVGTSpanProps['dy'];
-//   /** Cap height of the text. */
-//   capHeight?: SVGTSpanProps['capHeight'];
-//   /** Font size of text. */
-//   fontSize?: string | number;
-//   /** Font family of text. */
-//   fontFamily?: string;
-//   /** Fill color of text. */
-//   fill?: string;
-//   /** Maximum width to occupy (approximate as words are not split). */
-//   width?: number;
-//   /** String (or number coercible to one) to be styled and positioned. */
-//   children?: string | number;
-// };
-
 export type LineProps = Omit<SVGProps<SVGLineElement>, 'to' | 'from' | 'ref'>;
 export type RectProps = Omit<SVGProps<SVGRectElement>, 'ref'>;
 // export type TextProps = OwnTextProps & Omit<SVGTextProps, keyof OwnTextProps>;
@@ -479,14 +418,34 @@ export interface Point {
   y: number;
 }
 
-// BarStack transforms its child series Datum into CombinedData<XScale, YScale>
-export type BarStackDatum<
-  XScale extends AxisScale,
-  YScale extends AxisScale,
-  Datum extends object
-> = SeriesPoint<CombinedStackData<XScale, YScale, Datum>>;
+export type BarSpringValues = SpringValues<{
+  points: string;
+  opacity: number;
+  x1: number;
+  x2: number;
+  y1: number;
+  y2: number;
+  height: number;
+  width: number;
+}>;
 
-export type BarStackData<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> = Series<
-  CombinedStackData<XScale, YScale, Datum>,
-  string
->[];
+export interface SVGBarProps<Datum extends object> {
+  springValues: BarSpringValues;
+  datum: Datum;
+  index: number;
+  dataKey: string;
+  horizontal: boolean;
+  colorScale: (dataKey: string) => string;
+  colorAccessor?: (d: Datum, dataKey: string) => string;
+}
+
+export interface PolygonTransitionsProps {
+  points: string;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  width: number;
+  height: number;
+  opacity: number;
+}

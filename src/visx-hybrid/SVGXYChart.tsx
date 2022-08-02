@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react';
 import { animated, SpringConfig, useTransition } from 'react-spring';
-import type { ScaleConfig } from '@visx/scale';
+import { createScale } from '@visx/scale';
 import { isNil } from 'lodash-es';
 
 import { calculateAutoMarginFromChildren } from './calculateAutoMarginFromChildren';
@@ -17,7 +17,7 @@ import { EventEmitterProvider } from './EventEmitterProvider';
 import { getDataEntriesFromChildren } from './getDataEntriesFromChildren';
 import { ParentSize } from './ParentSize';
 import { TooltipProvider } from './TooltipProvider';
-import type { AxisScaleOutput, Margin, XYChartTheme } from './types';
+import type { AxisScaleOutput, Margin, ScaleConfig, XYChartTheme } from './types';
 import { useEventEmitters } from './useEventEmitters';
 
 // TODO:
@@ -129,18 +129,27 @@ function InnerChart<
   children,
   ...svgProps
 }: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig>) {
+  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // type IndependentScale = ScaleConfigToD3Scale<IndependentScaleConfig, AxisScaleOutput, any, any>;
+  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // type DependentScale = ScaleConfigToD3Scale<DependentScaleConfig, AxisScaleOutput, any, any>;
+
   // Gather all the series data from the chart's child components:
-  const dataEntries = getDataEntriesFromChildren(children, horizontal);
+  const { dataEntries, independentDomainValues, dependentDomainValues } = getDataEntriesFromChildren(
+    children,
+    horizontal
+  );
 
   // Create the scales, each with a composite domain derived from all the series data.
-  const independentScale = createScaleFromScaleConfig(
-    dataEntries.map((entry) => ({ accessor: entry.independentAccessor, data: entry.data })),
-    independentScaleConfig
-  );
-  const dependentScale = createScaleFromScaleConfig(
-    dataEntries.map((entry) => ({ accessor: entry.dependentAccessor, data: entry.data })),
-    dependentScaleConfig
-  );
+  const independentScale = createScaleFromScaleConfig(independentDomainValues, independentScaleConfig);
+  const dependentScale = createScaleFromScaleConfig(dependentDomainValues, dependentScaleConfig);
+
+  // Create a fallback color scale for coloring each series:
+  const colorScale = createScale({
+    type: 'ordinal',
+    domain: dataEntries.map((entry) => entry.dataKey),
+    range: theme.colors as string[]
+  });
 
   // Returns event handlers to be applied to the <rect> that is for capturing events.
   // Each handler just emits the event.
@@ -158,7 +167,7 @@ function InnerChart<
     // Use the given margin object or calculate it automatically:
     const margin =
       userMargin ??
-      calculateAutoMarginFromChildren(
+      calculateAutoMarginFromChildren({
         children,
         horizontal,
         independentScale,
@@ -166,12 +175,14 @@ function InnerChart<
         independentRangePadding,
         dependentRangePadding,
         theme
-      );
+      });
 
     // Now that we know the margin to use, calculate the range for each scale:
+
     const independentRange: [number, number] = horizontal
       ? [Math.max(0, height - margin.bottom - independentRangePadding), margin.top + independentRangePadding]
       : [margin.left + independentRangePadding, Math.max(0, width - margin.right - independentRangePadding)];
+
     const dependentRange: [number, number] = horizontal
       ? [margin.left + dependentRangePadding, Math.max(0, width - margin.right - dependentRangePadding)]
       : [Math.max(0, height - margin.bottom - dependentRangePadding), margin.top + dependentRangePadding];
@@ -187,6 +198,7 @@ function InnerChart<
     dataContextValue = {
       independentScale,
       dependentScale,
+      colorScale,
       independentRangePadding,
       dependentRangePadding,
       width,

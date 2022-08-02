@@ -1,5 +1,5 @@
 export const canUseDOM = !!(
-  typeof window !== 'undefined' &&
-  window.document &&
-  window.document.createElement
+  typeof globalThis.window !== 'undefined' &&
+  globalThis.window.document &&
+  globalThis.window.document.createElement
 );

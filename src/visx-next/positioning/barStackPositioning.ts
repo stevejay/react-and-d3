@@ -1,9 +1,9 @@
-import { SeriesPoint } from 'd3-shape';
+import type { SeriesPoint } from 'd3-shape';
 
 import { getStackValue } from '../combineBarStackData';
 import { getFirstItem, getSecondItem } from '../getItem';
 import { getScaleBandwidth } from '../scale';
-import { CombinedStackData, PositionScale } from '../types';
+import { PositionScale, StackDataWithSums } from '../types';
 import { isValidNumber } from '../types/typeguards/isValidNumber';
 
 export function createBarStackPositioning<
@@ -11,7 +11,7 @@ export function createBarStackPositioning<
   YScale extends PositionScale,
   Datum extends object
 >(xScale: XScale, yScale: YScale, horizontal: boolean, _renderingOffset = 0) {
-  type StackBar = SeriesPoint<CombinedStackData<XScale, YScale, Datum>>;
+  type StackBar = SeriesPoint<StackDataWithSums<XScale, YScale, Datum>>;
 
   const xScaleCopy = xScale.copy();
   const yScaleCopy = yScale.copy();
@@ -42,7 +42,7 @@ export function createBarStackPositioning<
     getY = (bar) => yScaleCopy(getSecondItem(bar));
   }
 
-  return (value: SeriesPoint<CombinedStackData<XScale, YScale, Datum>>, _dataKey: string) => {
+  return (value: SeriesPoint<StackDataWithSums<XScale, YScale, Datum>>, _dataKey: string) => {
     const barX = getX(value);
     if (!isValidNumber(barX)) {
       return null;

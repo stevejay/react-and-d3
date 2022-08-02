@@ -1,18 +1,9 @@
-import type { AxisScale, CombinedStackData, DataEntry } from './types';
-
-/** Returns the value which forms a stack group. */
-export const getStackValue = <
-  IndependentScale extends AxisScale,
-  DependentScale extends AxisScale,
-  Datum extends object
->(
-  d: Pick<CombinedStackData<IndependentScale, DependentScale, Datum>, 'stack'>
-) => d.stack;
+import type { AxisScale, DataEntry, StackDataWithSums } from './types';
 
 /**
  * Merges `seriesChildren` `props.data` by their `stack` value which
  * forms the stack grouping (`x` if vertical, `y` if horizontal)
- * and returns `CombinedStackData[]`.
+ * and returns `StackDataWithSums[]`.
  */
 export function combineBarStackData<
   IndependentScale extends AxisScale,
@@ -21,9 +12,9 @@ export function combineBarStackData<
 >(
   stackDataEntries: DataEntry<IndependentScale, DependentScale, Datum>[],
   horizontal?: boolean
-): CombinedStackData<IndependentScale, DependentScale, Datum>[] {
+): StackDataWithSums<IndependentScale, DependentScale, Datum>[] {
   const dataByStackValue: {
-    [stackValue: string]: CombinedStackData<IndependentScale, DependentScale, Datum>;
+    [stackValue: string]: StackDataWithSums<IndependentScale, DependentScale, Datum>;
   } = {};
 
   stackDataEntries.forEach((dataEntry) => {
@@ -34,13 +25,13 @@ export function combineBarStackData<
       return;
     }
 
-    const [stackFn, valueFn] = horizontal
+    const [stackAccessor, valueAccessor] = horizontal
       ? [dependentAccessor, independentAccessor]
       : [independentAccessor, dependentAccessor];
 
     data.forEach((d) => {
-      const stack = stackFn(d);
-      const numericValue = valueFn(d);
+      const stack = stackAccessor(d);
+      const numericValue = valueAccessor(d);
       const stackKey = String(stack);
       if (!dataByStackValue[stackKey]) {
         dataByStackValue[stackKey] = { stack, positiveSum: 0, negativeSum: 0, __datum__: d };

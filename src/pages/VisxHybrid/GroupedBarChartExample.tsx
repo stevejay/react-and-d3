@@ -1,7 +1,6 @@
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { InView } from '@/components/InView';
 import { useSeriesDataSets } from '@/hooks/useDataSets';
-import { Margin } from '@/types';
 
 import { GroupedBarChart } from './GroupedBarChart';
 
@@ -15,10 +14,20 @@ const dataSets: {
   {
     seriesKeys: ['one', 'two', 'three'],
     data: [
-      { category: 'A', values: { one: 20, two: 0, three: 0 } },
+      { category: 'A', values: { one: -20, two: 0, three: 0 } },
       { category: 'B', values: { one: 83.56, two: 20, three: 40 } },
-      { category: 'C', values: { one: 81.32, two: 50, three: 60 } },
+      { category: 'C', values: { one: -81.32, two: 50, three: 60 } },
       { category: 'D', values: { one: 102.974, two: 10, three: 20 } },
+      { category: 'E', values: { one: -87.247, two: 0, three: 40 } }
+    ]
+  },
+  {
+    seriesKeys: ['one', 'two', 'three'],
+    data: [
+      { category: 'A', values: { one: 20, two: 0, three: 0 } },
+      { category: 'B', values: { one: -83.56, two: 20, three: 40 } },
+      { category: 'C', values: { one: 81.32, two: 50, three: 60 } },
+      { category: 'D', values: { one: -102.974, two: 10, three: 20 } },
       { category: 'E', values: { one: 87.247, two: 0, three: 40 } }
     ]
   },
@@ -26,7 +35,7 @@ const dataSets: {
     seriesKeys: ['two'],
     data: [
       { category: 'B', values: { two: 150 } },
-      { category: 'C', values: { two: 20 } },
+      { category: 'C', values: { two: -20 } },
       { category: 'D', values: { two: 63.9 } }
     ]
   },
@@ -47,6 +56,10 @@ const dataSets: {
       { category: 'D', values: { one: 63, two: 28, three: 4 } },
       { category: 'E', values: { one: 24, two: 16, three: 110 } }
     ]
+  },
+  {
+    seriesKeys: [],
+    data: []
   }
 ];
 
@@ -83,7 +96,7 @@ const dataSets: {
 //   }
 // ];
 
-const margin: Margin = { left: 72, right: 72, top: 64, bottom: 64 };
+// const margin: Margin = { left: 72, right: 72, top: 64, bottom: 64 };
 
 // function isCompact(width: number) {
 //   return Boolean(width) && width < 500;
@@ -109,7 +122,7 @@ export function GroupedBarChartExample() {
     <div className="my-8">
       <div className="relative w-full h-[384px] bg-slate-700">
         <InView>
-          <GroupedBarChart data={data.data} dataKeys={data.seriesKeys} margin={margin} />
+          <GroupedBarChart data={data.data} dataKeys={data.seriesKeys} />
         </InView>
       </div>
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>

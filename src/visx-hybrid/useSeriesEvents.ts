@@ -6,11 +6,11 @@ import { useEventEmitters } from './useEventEmitters';
 import { PointerEventHandlerParams, useEventHandlers } from './useEventHandlers';
 
 export type SeriesEventsParams<
-  XScale extends AxisScale,
-  YScale extends AxisScale,
+  IndependentScale extends AxisScale,
+  DependentScale extends AxisScale,
   Datum extends object
 > = Pick<
-  SeriesProps<XScale, YScale, Datum>,
+  SeriesProps<IndependentScale, DependentScale, Datum>,
   'enableEvents' | 'onBlur' | 'onFocus' | 'onPointerMove' | 'onPointerOut' | 'onPointerUp'
 > &
   Pick<PointerEventHandlerParams<Datum>, 'dataKey' | 'allowedSources' | 'findNearestDatum'> & {
@@ -19,7 +19,11 @@ export type SeriesEventsParams<
   };
 
 /** This hook simplifies the logic for initializing Series event emitters + handlers. */
-export function useSeriesEvents<XScale extends AxisScale, YScale extends AxisScale, Datum extends object>({
+export function useSeriesEvents<
+  IndependentScale extends AxisScale,
+  DependentScale extends AxisScale,
+  Datum extends object
+>({
   dataKey,
   enableEvents,
   findNearestDatum,
@@ -30,7 +34,7 @@ export function useSeriesEvents<XScale extends AxisScale, YScale extends AxisSca
   onPointerUp: onPointerUpProps,
   source,
   allowedSources
-}: SeriesEventsParams<XScale, YScale, Datum>) {
+}: SeriesEventsParams<IndependentScale, DependentScale, Datum>) {
   const { showTooltip, hideTooltip } = (useContext(TooltipContext) ?? {}) as TooltipContextType<Datum>;
 
   const onPointerMove = useCallback(

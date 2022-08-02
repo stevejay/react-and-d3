@@ -2,11 +2,14 @@ import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
-import { CategoryValueListDatum, Margin } from '@/types';
+import { CategoryValueListDatum } from '@/types';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarGroup } from '@/visx-hybrid/SVGBarGroup';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
+import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
+
+import { darkTheme } from './darkTheme';
 // import { SvgXYChartAxis } from '@/visx-next/Axis';
 // import { XYChartBarGroup } from '@/visx-next/BarGroup';
 // import { XYChartBarSeries } from '@/visx-next/BarSeries';
@@ -18,7 +21,6 @@ import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 export interface GroupedBarChartProps {
   data: readonly CategoryValueListDatum<string, number>[];
   dataKeys: readonly string[];
-  margin: Margin;
 }
 
 const independentScale: BandScaleConfig<string> = {
@@ -52,23 +54,19 @@ const dependentScale: LinearScaleConfig<number> = {
 
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
-// TODO I really think the scales and accessors should be labelled
-// independent and dependent.
-export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps) {
+export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
   return (
     <SVGXYChart
-      margin={margin}
       independentScale={independentScale}
       dependentScale={dependentScale}
       springConfig={springConfig}
       role="graphics-document"
       aria-label="Some title"
       dependentRangePadding={30}
-      // hideTooltipDebounceMs={0}
+      className="select-none"
+      theme={darkTheme}
     >
-      {/* <XYChartColumnGrid className="text-slate-600" /> */}
-      {/* <XYChartRowGrid className="text-red-600" tickCount={5} shapeRendering="crispEdges" /> */}
-      {/* TODO Use refs within barSeries for the accessors? */}
+      <SVGGrid tickCount={5} variable="dependent" />
       <SVGBarGroup padding={0}>
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
@@ -102,7 +100,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         label="Foobar Top"
         hideTicks
         tickLabelPadding={6}
-        autoMarginLabelPadding={10}
+        // autoMarginLabelPadding={10}
       />
       <SVGAxis
         variable="independent"
@@ -110,7 +108,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         label="Foobar Bottom"
         hideTicks
         tickLabelPadding={6}
-        autoMarginLabelPadding={10}
+        // autoMarginLabelPadding={10}
       />
       <SVGAxis
         variable="dependent"
@@ -119,7 +117,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         tickCount={5}
         hideZero
         tickLabelPadding={6}
-        autoMarginLabelPadding={36} // Does not take tick labels into account.
+        // autoMarginLabelPadding={10}
       />
       <SVGAxis
         variable="dependent"
@@ -128,7 +126,7 @@ export function GroupedBarChart({ data, dataKeys, margin }: GroupedBarChartProps
         tickCount={5}
         hideZero
         tickLabelPadding={6}
-        autoMarginLabelPadding={36} // Does not take tick labels into account.
+        // autoMarginLabelPadding={10}
       />
       {/* {false && (
         <Tooltip<CategoryValueListDatum<string, number>>

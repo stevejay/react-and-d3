@@ -1,6 +1,9 @@
+import { schemeCategory10 } from 'd3-scale-chromatic';
+
 import { XYChartTheme } from '@/visx-hybrid/types';
 
 export const darkTheme: XYChartTheme = {
+  colors: schemeCategory10,
   grid: {
     independent: {
       className: 'text-slate-500',

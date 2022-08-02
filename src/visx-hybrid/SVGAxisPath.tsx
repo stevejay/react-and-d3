@@ -32,13 +32,13 @@ export function SVGAxisPath({
   ...pathProps
 }: SVGAxisPathProps) {
   const tickSign = axisOrientation === 'left' || axisOrientation === 'top' ? -1 : 1;
-  const points = getCoordinatesForAxisLine(
+  const points = getCoordinatesForAxisLine({
     axisOrientation,
     outerTickLength,
     range,
     tickSign,
     renderingOffset
-  );
+  });
   const animations = useSpring<{ d: string }>({
     to: {
       d: `M ${points[0].x},${points[0].y} L ${points[1].x},${points[1].y} L ${points[2].x},${points[2].y} L ${points[3].x},${points[3].y}`

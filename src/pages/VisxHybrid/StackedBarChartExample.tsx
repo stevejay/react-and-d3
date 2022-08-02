@@ -60,6 +60,16 @@ const dataSets: {
     ]
   },
   {
+    seriesKeys: ['one', 'two', 'three'],
+    data: [
+      { category: 'A', values: { one: 30, two: 70, three: 40 } },
+      { category: 'B', values: { one: 3.56, two: 120, three: 80 } },
+      { category: 'C', values: { one: 81.32, two: 50, three: 60 } },
+      { category: 'D', values: { one: 102.974, two: 10, three: 20 } },
+      { category: 'E', values: { one: 87.247, two: 40, three: 40 } }
+    ]
+  },
+  {
     seriesKeys: ['one'],
     data: [
       { category: 'B', values: { one: 150 } },

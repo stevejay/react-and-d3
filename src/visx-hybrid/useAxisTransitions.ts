@@ -14,12 +14,9 @@ function keyAccessor(tickValue: TickDatum) {
 function createTickPositioning(scale: AxisScale, offset: number): (d: TickDatum) => number {
   const scaleCopy = scale.copy();
   let scaleOffset = Math.max(0, getScaleBandwidth(scaleCopy) - offset * 2) / 2;
-
   if ('round' in scale) {
     scaleOffset = Math.round(scaleOffset);
   }
-
-  // offset + getScaleBandwidth(scaleCopy) / 2;
   return (d) => (coerceNumber(scaleCopy(d.value)) ?? 0) + scaleOffset;
 }
 
@@ -28,9 +25,9 @@ export function useAxisTransitions(
   ticks: TickDatum[],
   springConfig: SpringConfig | undefined,
   animate: boolean,
-  offset = 0
+  renderingOffset: number
 ) {
-  const position = createTickPositioning(scale, offset);
+  const position = createTickPositioning(scale, renderingOffset);
 
   const previousPositionRef = useRef<typeof position | null>(null);
   useEffect(() => {
@@ -42,24 +39,26 @@ export function useAxisTransitions(
   const scaleIsBandScale = isBandScale(scale);
 
   return useTransition<TickDatum, { opacity: number; translate: number }>(ticks, {
-    initial: (tickValue) => ({ opacity: 1, translate: position(tickValue) + offset }),
+    initial: (tickValue) => ({ opacity: 1, translate: position(tickValue) + renderingOffset }),
     from: (tickValue) => {
       if (scaleIsBandScale) {
-        return { opacity: 0, translate: position(tickValue) + offset };
+        return { opacity: 0, translate: position(tickValue) + renderingOffset };
       }
       const initialPosition = previousPositionRef.current ? previousPositionRef.current(tickValue) : null;
       return !isNil(initialPosition) && isFinite(initialPosition)
-        ? { opacity: 0, translate: initialPosition + offset }
-        : { opacity: 0, translate: position(tickValue) + offset };
+        ? { opacity: 0, translate: initialPosition + renderingOffset }
+        : { opacity: 0, translate: position(tickValue) + renderingOffset };
     },
-    enter: (tickValue) => ({ opacity: 1, translate: position(tickValue) + offset }),
-    update: (tickValue) => ({ opacity: 1, translate: position(tickValue) + offset }),
+    enter: (tickValue) => ({ opacity: 1, translate: position(tickValue) + renderingOffset }),
+    update: (tickValue) => ({ opacity: 1, translate: position(tickValue) + renderingOffset }),
     leave: (tickValue) => {
       if (scaleIsBandScale) {
         return { opacity: 0 };
       }
       const exitPosition = position(tickValue);
-      return isFinite(exitPosition) ? { opacity: 0, translate: exitPosition + offset } : { opacity: 0 };
+      return isFinite(exitPosition)
+        ? { opacity: 0, translate: exitPosition + renderingOffset }
+        : { opacity: 0 };
     },
     config: springConfig,
     keys: keyAccessor,

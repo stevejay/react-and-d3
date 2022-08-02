@@ -1,24 +1,24 @@
 import { ReactElement } from 'react';
 import { AxisScale } from '@visx/axis';
 
-import { CombinedStackData, SeriesProps } from './types';
+import { SeriesProps, StackDataWithSums } from './types';
 
 /** Returns the value which forms a stack group. */
 export const getStackValue = <XScale extends AxisScale, YScale extends AxisScale, Datum extends object>(
-  d: Pick<CombinedStackData<XScale, YScale, Datum>, 'stack'>
+  d: Pick<StackDataWithSums<XScale, YScale, Datum>, 'stack'>
 ) => d.stack;
 
 /**
  * Merges `seriesChildren` `props.data` by their `stack` value which
  * forms the stack grouping (`x` if vertical, `y` if horizontal)
- * and returns `CombinedStackData[]`.
+ * and returns `StackDataWithSums[]`.
  */
 export function combineBarStackData<XScale extends AxisScale, YScale extends AxisScale, Datum extends object>(
   seriesChildren: ReactElement<SeriesProps<XScale, YScale, Datum>>[],
   horizontal?: boolean
-): CombinedStackData<XScale, YScale, Datum>[] {
+): StackDataWithSums<XScale, YScale, Datum>[] {
   const dataByStackValue: {
-    [stackValue: string]: CombinedStackData<XScale, YScale, Datum>;
+    [stackValue: string]: StackDataWithSums<XScale, YScale, Datum>;
   } = {};
 
   seriesChildren.forEach((child) => {

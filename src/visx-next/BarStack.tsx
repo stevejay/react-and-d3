@@ -12,12 +12,12 @@ import findNearestStackDatum from './findNearestStackDatum';
 import { ScaleInput } from './scale';
 import {
   BarStackDatum,
-  CombinedStackData,
   DataContextType,
   NearestDatumArgs,
   NearestDatumReturnType,
   PositionScale,
   SeriesProps,
+  StackDataWithSums,
   StackPathConfig
 } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
@@ -25,13 +25,13 @@ import { useStackedData } from './useStackedData';
 
 type BarStackSeriesProps<XScale extends PositionScale, YScale extends PositionScale, Datum extends object> = {
   dataKey: string;
-  data: readonly SeriesPoint<CombinedStackData<XScale, YScale, Datum>>[];
+  data: readonly SeriesPoint<StackDataWithSums<XScale, YScale, Datum>>[];
   dataKeys: readonly string[];
   xScale: XScale;
   yScale: YScale;
   keyAccessor: (d: Datum) => string; // TODO should be like colorAccessor
-  xAccessor: (d: SeriesPoint<CombinedStackData<XScale, YScale, Datum>>) => ScaleInput<XScale>;
-  yAccessor: (d: SeriesPoint<CombinedStackData<XScale, YScale, Datum>>) => ScaleInput<YScale>;
+  xAccessor: (d: SeriesPoint<StackDataWithSums<XScale, YScale, Datum>>) => ScaleInput<XScale>;
+  yAccessor: (d: SeriesPoint<StackDataWithSums<XScale, YScale, Datum>>) => ScaleInput<YScale>;
   horizontal: boolean;
   renderingOffset?: number;
   animate?: boolean;
@@ -113,7 +113,7 @@ type XYChartBarStackSeriesProps<
 > = {
   dataKeys: readonly string[];
   dataRegistry: Omit<
-    DataRegistry<XScale, YScale, SeriesPoint<CombinedStackData<XScale, YScale, Datum>>, Datum>,
+    DataRegistry<XScale, YScale, SeriesPoint<StackDataWithSums<XScale, YScale, Datum>>, Datum>,
     'registry' | 'registryKeys'
   >;
   xScale: XScale;

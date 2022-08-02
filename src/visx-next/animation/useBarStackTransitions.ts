@@ -3,21 +3,21 @@ import { SeriesPoint } from 'd3-shape';
 
 import { createBarStackPositioning } from '../positioning';
 import { ScaleInput } from '../scale';
-import { CombinedStackData, PositionScale } from '../types';
+import { PositionScale, StackDataWithSums } from '../types';
 
 export function useBarStackTransitions<
   XScale extends PositionScale,
   YScale extends PositionScale,
   Datum extends object
 >(
-  data: readonly SeriesPoint<CombinedStackData<XScale, YScale, Datum>>[],
+  data: readonly SeriesPoint<StackDataWithSums<XScale, YScale, Datum>>[],
   dataKeys: readonly string[],
   xScale: XScale,
   yScale: YScale,
   dataKey: string,
   keyAccessor: (d: Datum) => string,
-  xAccessor: (d: SeriesPoint<CombinedStackData<XScale, YScale, Datum>>) => ScaleInput<XScale>,
-  yAccessor: (d: SeriesPoint<CombinedStackData<XScale, YScale, Datum>>) => ScaleInput<YScale>,
+  xAccessor: (d: SeriesPoint<StackDataWithSums<XScale, YScale, Datum>>) => ScaleInput<XScale>,
+  yAccessor: (d: SeriesPoint<StackDataWithSums<XScale, YScale, Datum>>) => ScaleInput<YScale>,
   horizontal: boolean,
   springConfig?: Partial<SpringConfig>,
   animate?: boolean,
@@ -26,7 +26,7 @@ export function useBarStackTransitions<
   const position = createBarStackPositioning(xScale, yScale, horizontal, renderingOffset);
 
   return useTransition<
-    SeriesPoint<CombinedStackData<XScale, YScale, Datum>>,
+    SeriesPoint<StackDataWithSums<XScale, YScale, Datum>>,
     { x: number; y: number; width: number; height: number; opacity: number }
   >(data, {
     initial: (datum) => ({ opacity: 1, ...position(datum, dataKey) }),

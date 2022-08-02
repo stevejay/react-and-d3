@@ -450,7 +450,7 @@ export type StackPathConfig<Datum, Key> = {
   value?: number | ((d: Datum, key: Key) => number);
 };
 
-export type CombinedStackData<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> = {
+export type StackDataWithSums<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> = {
   [dataKey: string]: ScaleInput<XScale> | ScaleInput<YScale>;
 } & {
   stack: ScaleInput<XScale> | ScaleInput<YScale>;
@@ -464,10 +464,10 @@ export type BarStackDatum<
   XScale extends AxisScale,
   YScale extends AxisScale,
   Datum extends object
-> = SeriesPoint<CombinedStackData<XScale, YScale, Datum>>;
+> = SeriesPoint<StackDataWithSums<XScale, YScale, Datum>>;
 
 export type BarStackData<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> = Series<
-  CombinedStackData<XScale, YScale, Datum>,
+  StackDataWithSums<XScale, YScale, Datum>,
   string
 >[];
 

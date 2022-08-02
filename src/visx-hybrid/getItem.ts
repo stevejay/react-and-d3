@@ -1,9 +1,17 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getFirstItem(d: any[]) {
-  return d?.[0];
+import type { AxisScale, StackDatum } from './types';
+
+export function getFirstItem<
+  IndependentScale extends AxisScale,
+  DependentScale extends AxisScale,
+  Datum extends object
+>(stackDatum: StackDatum<IndependentScale, DependentScale, Datum>): number {
+  return stackDatum[0];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getSecondItem(d: any[]) {
-  return d?.[1];
+export function getSecondItem<
+  IndependentScale extends AxisScale,
+  DependentScale extends AxisScale,
+  Datum extends object
+>(stackDatum: StackDatum<IndependentScale, DependentScale, Datum>): number {
+  return stackDatum[1];
 }

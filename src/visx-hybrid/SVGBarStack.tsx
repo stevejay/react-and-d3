@@ -1,13 +1,30 @@
-import type { ReactNode } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { ReactNode, useCallback, useMemo } from 'react';
+import { animated, SpringConfig } from 'react-spring';
+import { isNil } from 'lodash-es';
 
+import { BARSTACK_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
+import findNearestStackDatum from './findNearestStackDatum';
+import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchildrenWithProps';
 import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
+import { SVGBarSeriesProps } from './SVGBarSeries';
+import { SVGBarStackSeries } from './SVGBarStackSeries';
+import type {
+  AxisScale,
+  DataEntry,
+  NearestDatumArgs,
+  NearestDatumReturnType,
+  StackDatum,
+  SVGBarProps
+} from './types';
+import { useDataContext } from './useDataContext';
+import { useSeriesEvents } from './useSeriesEvents';
+import { useSeriesTransitions } from './useSeriesTransitions';
 
 // import { ScaleInput } from '@/visx-next/scale';
 // import { PositionScale } from '@/visx-next/types';
 
-export interface SVGBarStackProps {
+export interface SVGBarStackProps<Datum extends object> {
   // <
   //   IndependentScale extends PositionScale,
   //   DependentScale extends PositionScale,
@@ -28,17 +45,158 @@ export interface SVGBarStackProps {
   //   independentAccessor: (d: Datum) => ScaleInput<IndependentScale>;
   //   dependentAccessor: (d: Datum) => ScaleInput<DependentScale>;
   //   colorAccessor?: (d: Datum, dataKey: string) => string;
+  enableEvents?: boolean;
   children?: ReactNode;
+  component?: (props: SVGBarProps<Datum>) => JSX.Element;
+  colorAccessor?: (d: StackDatum<AxisScale, AxisScale, Datum>, key: string) => string;
 }
 
-export function SVGBarStack(
+export function SVGBarStack<Datum extends object>(
   // <
   //   IndependentScale extends PositionScale,
   //   DependentScale extends PositionScale,
   //   Datum extends object
   // >
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  { children, animate = true }: SVGBarStackProps
+  { children, enableEvents, animate = true, springConfig, colorAccessor, component }: SVGBarStackProps<Datum>
 ) {
-  return <>{children}</>;
+  const {
+    horizontal,
+    independentScale,
+    dependentScale,
+    renderingOffset,
+    springConfig: contextSpringConfig,
+    animate: contextAnimate,
+    dataEntries,
+    colorScale
+  } = useDataContext();
+
+  const seriesChildren = useMemo(
+    () => getChildrenAndGrandchildrenWithProps<SVGBarSeriesProps<Datum>>(children),
+    [children]
+  );
+
+  const dataKeys = seriesChildren.map((child) => child.props.dataKey).filter((key) => key);
+
+  // custom logic to find the nearest AreaStackDatum (context) and return the original Datum (props)
+  const findNearestDatum = useCallback(
+    (params: NearestDatumArgs<StackDatum<AxisScale, AxisScale, Datum>>): NearestDatumReturnType<Datum> => {
+      // const childProps = seriesChildren.find((child) => child.props.dataKey === params.dataKey)?.props;
+      // if (!childProps) {
+      //   return null;
+      // }
+      // const { data: childData, xAccessor, yAccessor } = childProps;
+      // const datum = findNearestStackDatum(params, childData, horizontal);
+      // return datum ? ({ ...datum, xAccessor, yAccessor } as any) : null;
+
+      const childData = seriesChildren.find((child) => child.props.dataKey === params.dataKey)?.props?.data;
+      return childData ? findNearestStackDatum(params, childData, horizontal) : null;
+    },
+    [seriesChildren, horizontal]
+  );
+
+  const ownEventSourceKey = `${BARSTACK_EVENT_SOURCE}-${dataKeys.join('-')}`;
+
+  // TODO fix the any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  /* const eventEmitters = */ useSeriesEvents<AxisScale, AxisScale, any>({
+    dataKey: dataKeys,
+    enableEvents,
+    findNearestDatum,
+    // onBlur,
+    // onFocus,
+    // onPointerMove,
+    // onPointerOut,
+    // onPointerUp,
+    source: ownEventSourceKey,
+    allowedSources: [XYCHART_EVENT_SOURCE, ownEventSourceKey]
+  });
+
+  const transitions = useSeriesTransitions(
+    dataKeys
+      .map(
+        (dataKey) =>
+          dataEntries.find((dataEntry) => dataEntry.dataKey === dataKey) as DataEntry<AxisScale, AxisScale> // TODO find alternative to this cast.
+      )
+      .filter((dataEntry) => !isNil(dataEntry)),
+    springConfig ?? contextSpringConfig,
+    animate && contextAnimate
+  );
+
+  return (
+    <>
+      {transitions((styles, datum) => {
+        const child = seriesChildren.find((child) => child.props.dataKey === datum.dataKey);
+        const { groupProps } = child?.props ?? {};
+        const { style, ...restGroupProps } = groupProps ?? {};
+        return (
+          <animated.g
+            data-testid={`bar-stack-series-${datum.dataKey}`}
+            style={{ ...style, ...styles }}
+            {...restGroupProps}
+          >
+            <SVGBarStackSeries
+              dataKey={datum.dataKey}
+              data={datum.data}
+              dataKeys={dataKeys}
+              independentScale={independentScale}
+              dependentScale={dependentScale}
+              keyAccessor={datum.keyAccessor}
+              independentAccessor={datum.independentAccessor}
+              dependentAccessor={datum.dependentAccessor}
+              horizontal={horizontal}
+              renderingOffset={renderingOffset}
+              animate={animate && contextAnimate}
+              springConfig={springConfig ?? contextSpringConfig}
+              colorAccessor={colorAccessor ?? datum.colorAccessor}
+              colorScale={colorScale}
+              // barProps={barProps}
+              // barClassName={barClassName}
+              // {...events}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              component={component as any} // TODO fix this
+            />
+            {/* <BarStackSeries
+              dataKey={datum.key}
+              dataKeys={dataKeys}
+              data={datum.data}
+              xScale={xScale}
+              yScale={yScale}
+              keyAccessor={datum.keyAccessor}
+              xAccessor={datum.xAccessor}
+              yAccessor={datum.yAccessor}
+              horizontal={horizontal ?? false}
+              renderingOffset={renderingOffset}
+              animate={animate}
+              springConfig={springConfig}
+              colorAccessor={datum.colorAccessor}
+              colorScale={colorScale}
+              barProps={barProps}
+              barClassName={barClassName}
+              {...events}
+            /> */}
+          </animated.g>
+        );
+      })}
+    </>
+  );
+
+  // return (
+  //   <XYChartBarStackSeries
+  //     dataKeys={dataKeys}
+  //     dataRegistry={dataRegistry}
+  //     seriesChildren={seriesChildren}
+  //     xScale={xScale}
+  //     yScale={yScale}
+  //     colorScale={colorScale}
+  //     horizontal={horizontal}
+  //     springConfig={springConfig ?? fallbackSpringConfig}
+  //     animate={animate}
+  //     {...eventEmitters}
+  //     // Feels better to only animate the chart if the stack keys are the same.
+  //     // animate={
+  //     //   (isEmpty(previousGroupKeys.current) || isEqual(previousGroupKeys.current, groupKeys)) && animate
+  //     // }
+  //   />
+  // );
 }

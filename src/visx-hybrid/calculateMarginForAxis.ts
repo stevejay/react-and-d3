@@ -14,28 +14,6 @@ import type {
   TickLabelAngle
 } from './types';
 
-export interface MarginCalculationInput {
-  axisOrientation: AxisOrientation;
-  scale: AxisScale<AxisScaleOutput>;
-  rangePadding: number;
-
-  tickFormat?: TickFormatter<ScaleInput<AxisScale>>;
-  tickCount?: number;
-  tickValues?: ScaleInput<AxisScale>[];
-  tickLength: number;
-  hideTicks: boolean;
-  hideZero: boolean;
-
-  tickLabelPadding: number;
-  tickLabelAngle: TickLabelAngle;
-  smallFont: FontProperties | string;
-
-  label?: string;
-  labelPadding: number;
-  labelAngle: LabelAngle;
-  bigFont: FontProperties | string;
-}
-
 function getTickLineMargin(axisOrientation: AxisOrientation, tickLength: number, hideTicks: boolean): Margin {
   const tickDimension = hideTicks ? 0 : tickLength;
   switch (axisOrientation) {
@@ -184,6 +162,28 @@ function getLabelMargin(
   }
 }
 
+export interface MarginCalculationInput {
+  axisOrientation: AxisOrientation;
+  scale: AxisScale<AxisScaleOutput>;
+  rangePadding: number;
+
+  tickFormat?: TickFormatter<ScaleInput<AxisScale>>;
+  tickCount?: number;
+  tickValues?: ScaleInput<AxisScale>[];
+  tickLength: number;
+  hideTicks: boolean;
+  hideZero: boolean;
+
+  tickLabelPadding: number;
+  tickLabelAngle: TickLabelAngle;
+  smallFont: FontProperties | string;
+
+  label?: string;
+  labelPadding: number;
+  labelAngle: LabelAngle;
+  bigFont: FontProperties | string;
+}
+
 // Returns the required adjustments for the given axis data.
 export function calculateMarginForAxis({
   axisOrientation,
@@ -221,56 +221,4 @@ export function calculateMarginForAxis({
     top: tickLineMargin.top + tickLabelsMargin.top + labelMargin.top,
     bottom: tickLineMargin.bottom + tickLabelsMargin.bottom + labelMargin.bottom
   };
-
-  // Calculate the space taken up by the axis label and its offset (padding) value:
-  // const labelDimension = label && labelMeasurements ? labelMeasurements.height + (labelPadding ?? 0) : 0;
-  // Calculate the space taken up by a tick and its padding:
-  // const tickDimension = hideTicks ? 0 : (tickLength ?? 0) + (tickLabelPadding ?? 0);
-
-  // Calculate the dimensions of each tick label:
-  // const tickLabelsMeasurements = ticks.map((tick) => measureTextWithCache(tick.label, tickLabelTextProps));
-  // Get the width of the longest tick label:
-  // const maxTickLabelWidth = maxBy(tickLabelsMeasurements, (x) => x.width)?.width ?? 0;
-  // Use first label to get the height of a tick label:
-  // const tickLabelHeight = tickLabelsMeasurements.length ? tickLabelsMeasurements[0].height : 0;
-
-  // if (axisOrientation === 'left' || axisOrientation === 'right') {
-  //   // Allow for a tick label being right at the top or bottom of this vertical axis.
-  //   // const halfTickLabelHeight = Math.ceil(tickLabelHeight * 0.5);
-
-  //   if (axisOrientation === 'left') {
-  //     return {
-  //       left: tickLineDimensions.width + tickLabelsMargin.left + labelDimensions.width,
-  //       right: 0,
-  //       top: tickLineDimensions.height + tickLabelsMargin.top + labelDimensions.height,
-  //       bottom: halfTickLabelHeight
-  //     };
-  //   } else {
-  //     return {
-  //       left: 0,
-  //       right: Math.ceil(tickDimension + maxTickLabelWidth + labelDimension),
-  //       top: halfTickLabelHeight,
-  //       bottom: halfTickLabelHeight
-  //     };
-  //   }
-  // } else {
-  //   // Allow for a tick label being right at the left or right of this horizontal axis.
-  //   // const halfTickLabelWidth = Math.ceil(maxTickLabelWidth * 0.5);
-
-  //   if (axisOrientation === 'top') {
-  //     return {
-  //       left: halfTickLabelWidth,
-  //       right: halfTickLabelWidth,
-  //       top: Math.ceil(tickDimension + tickLabelHeight + labelDimension),
-  //       bottom: 0
-  //     };
-  //   } else {
-  //     return {
-  //       left: halfTickLabelWidth,
-  //       right: halfTickLabelWidth,
-  //       top: 0,
-  //       bottom: Math.ceil(tickDimension + tickLabelHeight + labelDimension)
-  //     };
-  //   }
-  // }
 }

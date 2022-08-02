@@ -1,4 +1,5 @@
 import { easeCubicInOut } from 'd3-ease';
+import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import type { TickLabelAngle, XYChartTheme } from './types';
 
@@ -31,6 +32,7 @@ export const defaultSmallLabelsTextStyle = {
 };
 
 export const defaultTheme: XYChartTheme = {
+  colors: schemeCategory10,
   grid: {
     independent: {
       className: 'text-slate-500',

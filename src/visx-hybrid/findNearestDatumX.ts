@@ -10,7 +10,9 @@ export function findNearestDatumX<Datum extends object>({
   point,
   data
 }: NearestDatumArgs<Datum>): NearestDatumReturnType<Datum> {
-  if (!point) return null;
+  if (!point) {
+    return null;
+  }
 
   const nearestDatum = findNearestDatumSingleDimension<AxisScale, Datum>({
     scale,

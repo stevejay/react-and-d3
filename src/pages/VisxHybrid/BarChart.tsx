@@ -6,6 +6,7 @@ import { CategoryValueDatum, Margin } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
+import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
@@ -74,15 +75,24 @@ export function BarChart({ data }: BarChartProps) {
         independentAccessor={independentAccessor}
         dependentAccessor={dependentAccessor}
         colorAccessor={colorAccessor}
-        barProps={(datum) => ({
-          role: 'graphics-symbol',
-          'aria-roledescription': '',
-          'aria-label': `Category ${independentAccessor(datum)}: ${dependentAccessor(datum)}`
-        })}
-        lineProps={{
-          stroke: 'white',
-          strokeWidth: 2
-        }}
+        component={
+          SVGBarWithLine
+          // {...props}
+          // barProps={(datum) => ({
+          //   role: 'graphics-symbol',
+          //   'aria-roledescription': '',
+          //   'aria-label': `Category ${independentAccessor(datum)}: ${dependentAccessor(datum)}`
+          // })}
+        }
+        // barProps={(datum) => ({
+        //   role: 'graphics-symbol',
+        //   'aria-roledescription': '',
+        //   'aria-label': `Category ${independentAccessor(datum)}: ${dependentAccessor(datum)}`
+        // })}
+        // lineProps={{
+        //   stroke: 'white',
+        //   strokeWidth: 2
+        // }}
       />
       <SVGAxis
         variable="independent"

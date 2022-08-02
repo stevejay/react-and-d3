@@ -3,13 +3,19 @@ import type { AxisOrientation, AxisScaleOutput, Point } from './types';
 /**
  * Calculates a path that draws the domain line and the outer ticks for an axis.
  */
-export function getCoordinatesForAxisLine(
-  axisOrientation: AxisOrientation,
-  outerTickLength: number,
-  range: AxisScaleOutput[],
-  tickSign: number,
-  renderingOffset: number
-): Point[] {
+export function getCoordinatesForAxisLine({
+  axisOrientation,
+  outerTickLength,
+  range,
+  tickSign,
+  renderingOffset
+}: {
+  axisOrientation: AxisOrientation;
+  outerTickLength: number;
+  range: AxisScaleOutput[];
+  tickSign: number;
+  renderingOffset: number;
+}): Point[] {
   // The pixel position to start drawing the axis domain line at.
   const range0 = Number(range[0]) + renderingOffset;
 

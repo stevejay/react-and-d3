@@ -13,7 +13,7 @@ import { DataContext } from './DataContext';
 import { getBarStackRegistryData } from './getBarStackRegistryData';
 import getStackOffset from './stackOffset';
 import getStackOrder from './stackOrder';
-import { CombinedStackData, DataContextType } from './types';
+import { DataContextType, StackDataWithSums } from './types';
 
 // interface JSXElement extends ReactElement<any, any> {}
 
@@ -28,11 +28,11 @@ export function useStackedData<
   Datum extends object
   // ChildrenProps extends SeriesProps<XScale, YScale, Datum>
 >({ children, stackOrder, stackOffset }: UseStackedData<Datum>) {
-  type StackDatum = SeriesPoint<CombinedStackData<XScale, YScale, Datum>>;
+  type StackDatum = SeriesPoint<StackDataWithSums<XScale, YScale, Datum>>;
 
   const [groupKeys, setGroupKeys] = useState<string[]>([]);
   const [stackedData, setStackedData] =
-    useState<Series<CombinedStackData<XScale, YScale, Datum>, string>[]>();
+    useState<Series<StackDataWithSums<XScale, YScale, Datum>, string>[]>();
 
   const { horizontal, registerData, unregisterData } = useContext(DataContext) as unknown as DataContextType<
     XScale,
@@ -77,7 +77,7 @@ export function useStackedData<
   //   // automatically set offset to diverging if it's undefined and negative values are present
   //   const hasSomeNegativeValues = stackOffset ? null : combinedData.some((d) => d.negativeSum < 0);
 
-  //   const stack = d3stack<CombinedStackData<XScale, YScale>, string>();
+  //   const stack = d3stack<StackDataWithSums<XScale, YScale>, string>();
   //   stack.keys(dataKeys);
   //   if (stackOrder) {
   //     stack.order(getStackOrder(stackOrder));
@@ -112,7 +112,7 @@ export function useStackedData<
     // automatically set offset to diverging if it's undefined and negative values are present
     const hasSomeNegativeValues = stackOffset ? false : combinedData.some((d) => d.negativeSum < 0);
 
-    const stack = d3stack<CombinedStackData<XScale, YScale, Datum>, string>();
+    const stack = d3stack<StackDataWithSums<XScale, YScale, Datum>, string>();
     stack.keys(dataKeys);
 
     if (stackOrder) {
