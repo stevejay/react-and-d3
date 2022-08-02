@@ -23,7 +23,7 @@ export type SVGBarStackSeriesProps<
   animate: boolean;
   /* A react-spring configuration object */
   springConfig: SpringConfig;
-  colorAccessor?: (d: StackDatum<AxisScale, AxisScale, Datum>, key: string) => string;
+  colorAccessor?: (datum: StackDatum<AxisScale, AxisScale, Datum>, key: string) => string;
   colorScale: ScaleOrdinal<string, string, never>;
   // barClassName?: string;
   enableEvents?: boolean;

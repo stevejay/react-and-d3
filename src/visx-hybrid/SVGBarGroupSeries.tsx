@@ -35,7 +35,7 @@ export type SVGBarGroupSeriesProps<
   animate: boolean;
   /* A react-spring configuration object */
   springConfig: SpringConfig;
-  colorAccessor?: (d: Datum, key: string) => string;
+  colorAccessor?: (datum: Datum, key: string) => string;
   colorScale: ScaleOrdinal<string, string, never>;
   // barClassName?: string;
   enableEvents?: boolean;

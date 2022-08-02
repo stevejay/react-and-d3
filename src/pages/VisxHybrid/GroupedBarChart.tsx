@@ -36,8 +36,8 @@ function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) 
   }
 }
 
-function keyAccessor(d: CategoryValueListDatum<string, number>) {
-  return `${d.category}`;
+function keyAccessor(datum: CategoryValueListDatum<string, number>) {
+  return `${datum.category}`;
 }
 
 const dependentScale: LinearScaleConfig<number> = {

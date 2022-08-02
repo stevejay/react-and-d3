@@ -31,20 +31,20 @@ const dependentScale: LinearScaleConfig<number> = {
   zero: true
 } as const;
 
-function independentAccessor(d: CategoryValueDatum<string, number>) {
-  return d.category;
+function independentAccessor(datum: CategoryValueDatum<string, number>) {
+  return datum.category;
 }
 
-function dependentAccessor(d: CategoryValueDatum<string, number>) {
-  return d.value;
+function dependentAccessor(datum: CategoryValueDatum<string, number>) {
+  return datum.value;
 }
 
 function colorAccessor() {
   return schemeCategory10[8];
 }
 
-function keyAccessor(d: CategoryValueDatum<string, number>) {
-  return d.category;
+function keyAccessor(datum: CategoryValueDatum<string, number>) {
+  return datum.category;
 }
 
 const springConfig = { duration: 350, easing: easeCubicInOut };

@@ -39,8 +39,8 @@ const dependentScale: LinearScaleConfig<number> = {
 
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
-function independentAccessor(d: EntityBucket) {
-  return d.id ?? '';
+function independentAccessor(datum: EntityBucket) {
+  return datum.id ?? '';
 }
 
 function colorAccessor() {
@@ -102,7 +102,7 @@ export function RespondentsByLanguage() {
       ),
     [data, statistic]
   );
-  const dependentAccessor = useCallback((d: EntityBucket) => d[statistic] ?? 0, [statistic]);
+  const dependentAccessor = useCallback((datum: EntityBucket) => datum[statistic] ?? 0, [statistic]);
   const dependentAxisTickFormatter = useMemo(() => getDependentAxisTickFormatter(statistic), [statistic]);
 
   return (

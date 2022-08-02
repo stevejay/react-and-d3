@@ -27,7 +27,7 @@ function createStripesPositioning({
   innerWidth,
   innerHeight,
   renderingOffset
-}: StripePositioningArgs): (d: TickDatum) => { x: number; y: number; width: number; height: number } {
+}: StripePositioningArgs): (datum: TickDatum) => { x: number; y: number; width: number; height: number } {
   const step = getScaleStep(scale);
   const bandwidth = getScaleBandwidth(scale);
   const stripeOffset = (step - bandwidth) * 0.5;

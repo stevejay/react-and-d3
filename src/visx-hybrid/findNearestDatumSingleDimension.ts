@@ -11,7 +11,7 @@ export function findNearestDatumSingleDimension<Scale extends AxisScale, Datum e
   data
 }: {
   scale: Scale;
-  accessor: (d: Datum) => ScaleInput<Scale>;
+  accessor: (datum: Datum) => ScaleInput<Scale>;
   scaledValue: number;
   data: readonly Datum[];
 }) {

@@ -44,11 +44,11 @@ export interface DataEntry<
   dataKey: string;
   data: readonly Datum[];
   /** function that returns the key value of a datum. Defaults to xAccessor or yAccessor, depending on the orientation of the chart. */
-  keyAccessor: (d: OriginalDatum, dataKey?: string) => string;
-  independentAccessor: (d: Datum) => ScaleInput<IndependentScale>;
-  dependentAccessor: (d: Datum) => ScaleInput<DependentScale>;
+  keyAccessor: (datum: OriginalDatum, dataKey?: string) => string;
+  independentAccessor: (datum: Datum) => ScaleInput<IndependentScale>;
+  dependentAccessor: (datum: Datum) => ScaleInput<DependentScale>;
   /** function that returns the color value of a datum. */
-  colorAccessor?: (d: OriginalDatum, dataKey: string) => string;
+  colorAccessor?: (datum: OriginalDatum, dataKey: string) => string;
 
   /** Legend shape for the data key. */
   // legendShape?: LegendShape;
@@ -89,8 +89,8 @@ export type TickLabelAngle = 'horizontal' | 'angled' | 'vertical';
 export type NearestDatumArgs<Datum extends object> = {
   dataKey: string;
   point: { x: number; y: number } | null;
-  independentAccessor: (d: Datum) => ScaleInput<AxisScale>;
-  dependentAccessor: (d: Datum) => ScaleInput<AxisScale>;
+  independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   data: readonly Datum[];
   width: number;
   height: number;
@@ -283,13 +283,13 @@ export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale,
   /** Data for the Series. */
   data: readonly Datum[];
 
-  keyAccessor: (d: Datum, dataKey?: string) => string;
+  keyAccessor: (datum: Datum, dataKey?: string) => string;
   /** Given a Datum, returns the x-scale value. */
-  xAccessor: (d: Datum) => ScaleInput<XScale>;
+  xAccessor: (datum: Datum) => ScaleInput<XScale>;
   /** Given a Datum, returns the y-scale value. */
-  yAccessor: (d: Datum) => ScaleInput<YScale>;
+  yAccessor: (datum: Datum) => ScaleInput<YScale>;
 
-  colorAccessor?: (d: Datum, dataKey: string) => string;
+  colorAccessor?: (datum: Datum, dataKey: string) => string;
   /**
    * Callback invoked for onPointerMove events for the nearest Datum to the PointerEvent.
    * By default XYChart will capture and emit PointerEvents, invoking this function for
@@ -404,5 +404,5 @@ export interface SVGBarProps<Datum extends object> {
   dataKey: string;
   horizontal: boolean;
   colorScale: (dataKey: string) => string;
-  colorAccessor?: (d: Datum, dataKey: string) => string;
+  colorAccessor?: (datum: Datum, dataKey: string) => string;
 }

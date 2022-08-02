@@ -51,7 +51,7 @@ export interface SVGBarStackProps<Datum extends object> {
   enableEvents?: boolean;
   children?: ReactNode;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
-  colorAccessor?: (d: StackDatum<AxisScale, AxisScale, Datum>, key: string) => string;
+  colorAccessor?: (datum: StackDatum<AxisScale, AxisScale, Datum>, key: string) => string;
   categoryA11yProps?: SVGAccessibleBarSeriesProps<
     ScaleInput<AxisScale>,
     ScaleInput<AxisScale>,

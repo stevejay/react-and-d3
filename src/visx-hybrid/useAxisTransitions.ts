@@ -11,7 +11,7 @@ function keyAccessor(tickValue: TickDatum) {
   return tickValue.value.toString(); // Should this be tickValue.label ?
 }
 
-function createTickPositioning(scale: AxisScale, offset: number): (d: TickDatum) => number {
+function createTickPositioning(scale: AxisScale, offset: number): (datum: TickDatum) => number {
   const scaleCopy = scale.copy();
   let scaleOffset = Math.max(0, getScaleBandwidth(scaleCopy) - offset * 2) / 2;
   if ('round' in scale) {

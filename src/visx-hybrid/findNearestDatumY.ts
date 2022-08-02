@@ -1,12 +1,13 @@
+import { coerceNumber } from './coerceNumber';
 import { findNearestDatumSingleDimension } from './findNearestDatumSingleDimension';
 import { getScaleBandwidth } from './getScaleBandwidth';
 import type { AxisScale, NearestDatumArgs, NearestDatumReturnType } from './types';
 
 export function findNearestDatumY<Datum extends object>({
-  independentScale: scale,
-  independentAccessor: accessor,
-  dependentScale: xScale,
-  dependentAccessor: xAccessor,
+  independentScale,
+  independentAccessor,
+  dependentScale,
+  dependentAccessor,
   point,
   data
 }: NearestDatumArgs<Datum>): NearestDatumReturnType<Datum> {
@@ -15,23 +16,28 @@ export function findNearestDatumY<Datum extends object>({
   }
 
   const nearestDatum = findNearestDatumSingleDimension<AxisScale, Datum>({
-    scale,
-    accessor,
+    scale: independentScale,
+    accessor: independentAccessor,
     scaledValue: point.y,
     data
   });
 
-  const xScaleBandwidth = xScale ? getScaleBandwidth(xScale) : 0;
-  const yScaleBandwidth = scale ? getScaleBandwidth(scale) : 0;
+  const independentBandwidth = getScaleBandwidth(independentScale);
+  const dependentBandwidth = getScaleBandwidth(dependentScale);
 
-  return nearestDatum
-    ? {
-        datum: nearestDatum.datum,
-        index: nearestDatum.index,
-        distanceY: nearestDatum.distance,
-        distanceX: Math.abs(Number(xScale(xAccessor(nearestDatum.datum))) - point.x),
-        snapLeft: Number(xScale(xAccessor(nearestDatum.datum))) + xScaleBandwidth / 2 ?? 0,
-        snapTop: Number(scale(accessor(nearestDatum.datum))) + yScaleBandwidth / 2 ?? 0
-      }
-    : null;
+  if (!nearestDatum) {
+    return null;
+  }
+
+  const x = coerceNumber(dependentScale(dependentAccessor(nearestDatum.datum)) ?? 0);
+  const y = coerceNumber(independentScale(independentAccessor(nearestDatum.datum)) ?? 0);
+
+  return {
+    datum: nearestDatum.datum,
+    index: nearestDatum.index,
+    distanceY: nearestDatum.distance,
+    distanceX: Math.abs(x - point.x),
+    snapLeft: x + dependentBandwidth * 0.5 ?? 0,
+    snapTop: y + independentBandwidth * 0.5 ?? 0
+  };
 }

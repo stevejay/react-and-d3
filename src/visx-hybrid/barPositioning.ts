@@ -125,9 +125,9 @@ function createPolygonPositionCallback<Datum extends object>({
   bandwidth,
   renderingOffset
 }: {
-  getIndependentCoord: (d: Datum) => number | undefined;
-  getFirstDependentCoord: (d: Datum) => number | undefined;
-  getSecondDependentCoord: (d: Datum) => number | undefined;
+  getIndependentCoord: (datum: Datum) => number | undefined;
+  getFirstDependentCoord: (datum: Datum) => number | undefined;
+  getSecondDependentCoord: (datum: Datum) => number | undefined;
   horizontal: boolean;
   bandwidth: number;
   renderingOffset: number;

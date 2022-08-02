@@ -17,10 +17,10 @@ export type SVGBarSeriesProps<Datum extends object> = {
   animate?: boolean;
   dataKey: string;
   data: readonly Datum[];
-  keyAccessor: (d: Datum, dataKey?: string) => string;
-  independentAccessor: (d: Datum) => ScaleInput<AxisScale>;
-  dependentAccessor: (d: Datum) => ScaleInput<AxisScale>;
-  colorAccessor?: (d: Datum, dataKey: string) => string;
+  keyAccessor: (datum: Datum, dataKey?: string) => string;
+  independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  colorAccessor?: (datum: Datum, dataKey: string) => string;
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
   // barProps?: PolygonProps | ((datum: Datum, index: number, dataKey: string) => PolygonProps);
   // lineProps?: LineProps | ((datum: Datum, index: number, dataKey: string) => LineProps);
