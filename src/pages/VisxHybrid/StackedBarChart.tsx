@@ -89,20 +89,18 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}
         renderTooltip={({ tooltipData }) => {
-          const datum = tooltipData?.nearestDatum;
-          if (!datum) {
+          const datumByKey = tooltipData?.datumByKey;
+          if (!datumByKey) {
             return null;
           }
           return (
             <div className="flex flex-col space-y-1 p-1">
-              {Object.keys(datum.datum.values).map((key) => {
-                return (
-                  <p key={key}>
-                    <span style={{ color: colorAccessor(datum.datum, key) }}>{key}</span>:{' '}
-                    {datum.datum.values[key]}
-                  </p>
-                );
-              })}
+              {dataKeys.map((dataKey) => (
+                <p key={dataKey}>
+                  <span style={{ color: colorAccessor(datumByKey[dataKey].datum, dataKey) }}>{dataKey}</span>:{' '}
+                  {datumByKey[dataKey].datum.values[dataKey]}
+                </p>
+              ))}
             </div>
           );
         }}

@@ -1,4 +1,5 @@
 import { bisectLeft, bisector, range as d3Range } from 'd3-array';
+import { isNil } from 'lodash-es';
 
 import type { AxisScale, ScaleInput } from './types';
 
@@ -15,15 +16,13 @@ export function findNearestDatumSingleDimension<Scale extends AxisScale, Datum e
   scaledValue: number;
   data: readonly Datum[];
 }) {
-  const coercedScale = scale as AxisScale; // broaden type before type guards below
-
   let nearestDatum: Datum;
   let nearestDatumIndex: number;
   // if scale has .invert(), convert svg coord to nearest data value
-  if ('invert' in coercedScale && typeof coercedScale.invert === 'function') {
+  if ('invert' in scale && typeof scale.invert === 'function') {
     const bisect = bisector(accessor).left;
     // find closest data value, then map that to closest datum
-    const dataValue = Number(coercedScale.invert(scaledValue));
+    const dataValue = Number(scale.invert(scaledValue));
     const index = bisect(data, dataValue);
     // take the two datum nearest this index, and compute which is closer
     const nearestDatum0 = data[index - 1];
@@ -34,7 +33,7 @@ export function findNearestDatumSingleDimension<Scale extends AxisScale, Datum e
         ? nearestDatum1
         : nearestDatum0;
     nearestDatumIndex = nearestDatum === nearestDatum0 ? index - 1 : index;
-  } else if ('bandwidth' in coercedScale && typeof coercedScale.bandwidth !== 'undefined') {
+  } else if ('bandwidth' in scale && typeof scale.bandwidth !== 'undefined') {
     // band and point scales don't have an invert function but they do have discrete domains
     // so we manually invert. We detect this scale type by looking for the bandwidth() method.
     const domain = scale.domain();
@@ -44,13 +43,11 @@ export function findNearestDatumSingleDimension<Scale extends AxisScale, Datum e
     // band scale has inner padding and outer padding; point scale has only outer padding
     // (accessed as padding()).
     const rangeStart =
-      'paddingInner' in coercedScale && typeof coercedScale.paddingInner !== 'undefined'
-        ? sortedRange[0] +
-          coercedScale.step() * coercedScale.paddingOuter() -
-          coercedScale.step() * coercedScale.paddingInner() * 0.5
-        : sortedRange[0] + coercedScale.step() * coercedScale.padding();
+      'paddingInner' in scale && typeof scale.paddingInner !== 'undefined'
+        ? sortedRange[0] + scale.step() * scale.paddingOuter() - scale.step() * scale.paddingInner() * 0.5
+        : sortedRange[0] + scale.step() * scale.padding();
 
-    const rangePoints = d3Range(rangeStart, sortedRange[1], coercedScale.step());
+    const rangePoints = d3Range(rangeStart, sortedRange[1], scale.step());
     const domainIndex = bisectLeft(rangePoints, scaledValue);
     // y-axis scales may have reverse ranges, correct for this
     const sortedDomain = range[0] < range[1] ? domain : domain.reverse();
@@ -63,11 +60,11 @@ export function findNearestDatumSingleDimension<Scale extends AxisScale, Datum e
     return null;
   }
 
-  if (nearestDatum == null || nearestDatumIndex == null) {
+  if (isNil(nearestDatum) || isNil(nearestDatumIndex)) {
     return null;
   }
 
-  const distance = Math.abs(Number(coercedScale(accessor(nearestDatum))) - scaledValue);
+  const distance = Math.abs(Number(scale(accessor(nearestDatum))) - scaledValue);
 
   return { datum: nearestDatum, index: nearestDatumIndex, distance };
 }

@@ -33,18 +33,13 @@ type SVGBarGroupProps<Datum extends object> = {
 export function SVGBarGroup<Datum extends object>({
   children,
   padding = 0.1,
-  // groupProps,
   springConfig,
   animate = true,
-  // dataKey,
-  // barProps,
-  // groupScale,
   sortBars,
   colorAccessor,
   component,
   categoryA11yProps
-}: // lineProps
-SVGBarGroupProps<Datum>) {
+}: SVGBarGroupProps<Datum>) {
   const {
     horizontal,
     independentScale,
@@ -115,8 +110,6 @@ SVGBarGroupProps<Datum>) {
               springConfig={springConfig ?? contextSpringConfig}
               colorAccessor={colorAccessor ?? datum.colorAccessor}
               colorScale={colorScale}
-              // barProps={barProps}
-              // barClassName={barClassName}
               // {...events}
               component={component}
             />
@@ -130,7 +123,7 @@ SVGBarGroupProps<Datum>) {
           margin={margin}
           innerWidth={innerWidth}
           innerHeight={innerHeight}
-          dataKeys={groupScale.domain()}
+          dataKeyOrKeys={groupScale.domain()}
           dataEntries={dataEntries}
           categoryA11yProps={categoryA11yProps}
         />

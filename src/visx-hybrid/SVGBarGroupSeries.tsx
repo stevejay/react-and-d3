@@ -84,7 +84,7 @@ export function SVGBarGroupSeries<
   const ownEventSourceKey = `${BARGROUP_EVENT_SOURCE}-${dataKeys.join('-')}}`;
 
   /* const eventEmitters =  */ useSeriesEvents<IndependentScale, DependentScale, Datum>({
-    dataKey: dataKeys,
+    dataKeyOrKeys: dataKeys,
     enableEvents,
     findNearestDatum,
     // onBlur,

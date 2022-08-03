@@ -119,7 +119,7 @@ export function SVGBarStack<Datum extends object>(
   // TODO fix the any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   /* const eventEmitters = */ useSeriesEvents<AxisScale, AxisScale, any>({
-    dataKey: dataKeys,
+    dataKeyOrKeys: dataKeys,
     enableEvents,
     findNearestDatum,
     // onBlur,
@@ -185,7 +185,7 @@ export function SVGBarStack<Datum extends object>(
           margin={margin}
           innerWidth={innerWidth}
           innerHeight={innerHeight}
-          dataKeys={dataKeys}
+          dataKeyOrKeys={dataKeys}
           dataEntries={dataEntries}
           categoryA11yProps={categoryA11yProps}
           datumAccessor={getStackOriginalDatum}

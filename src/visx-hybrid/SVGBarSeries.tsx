@@ -63,7 +63,7 @@ export function SVGBarSeries<Datum extends object>({
   const ownEventSourceKey = `${BARSERIES_EVENT_SOURCE}-${dataKey}`;
   // const eventEmitters =
   useSeriesEvents<AxisScale, AxisScale, Datum>({
-    dataKey,
+    dataKeyOrKeys: dataKey,
     enableEvents,
     // onBlur,
     // onFocus,
@@ -107,7 +107,7 @@ export function SVGBarSeries<Datum extends object>({
           margin={margin}
           innerWidth={innerWidth}
           innerHeight={innerHeight}
-          dataKeys={[dataKey]}
+          dataKeyOrKeys={dataKey}
           dataEntries={dataEntries}
           categoryA11yProps={categoryA11yProps}
         />

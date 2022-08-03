@@ -1,4 +1,3 @@
-import { coerceNumber } from './coerceNumber';
 import { findNearestDatumSingleDimension } from './findNearestDatumSingleDimension';
 import { getScaleBandwidth } from './getScaleBandwidth';
 import type { AxisScale, NearestDatumArgs, NearestDatumReturnType } from './types';
@@ -22,15 +21,14 @@ export function findNearestDatumX<Datum extends object>({
     data
   });
 
-  const independentBandwidth = getScaleBandwidth(independentScale);
-  const dependentBandwidth = getScaleBandwidth(dependentScale);
-
   if (!nearestDatum) {
     return null;
   }
 
-  const x = coerceNumber(independentScale(independentAccessor(nearestDatum.datum)) ?? 0);
-  const y = coerceNumber(dependentScale(dependentAccessor(nearestDatum.datum)) ?? 0);
+  const x = Number(independentScale(independentAccessor(nearestDatum.datum)));
+  const y = Number(dependentScale(dependentAccessor(nearestDatum.datum)));
+  const independentBandwidth = getScaleBandwidth(independentScale);
+  const dependentBandwidth = getScaleBandwidth(dependentScale);
 
   return {
     datum: nearestDatum.datum,
