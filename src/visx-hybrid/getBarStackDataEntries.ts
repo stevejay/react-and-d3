@@ -1,7 +1,7 @@
 import type { JSXElementConstructor, ReactElement } from 'react';
-import { identity } from 'lodash-es';
 
 import { getFirstItem, getSecondItem } from './getItem';
+import { getStackOriginalDatum } from './getStackOriginalDatum';
 import type { AxisScale, DataEntry, StackDatum, StackedData } from './types';
 
 const getStack = <IndependentScale extends AxisScale, DependentScale extends AxisScale, Datum extends object>(
@@ -28,23 +28,27 @@ export function getBarStackDataEntries<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   barSeriesChildren: ReactElement<any, string | JSXElementConstructor<any>>[]
 ): DataEntry<IndependentScale, DependentScale>[] {
-  const [independentAccessor, dependentAccessor] = [getStack, getNumericValue];
   return stackedData
-    .map((data) => {
-      const matchingChild = barSeriesChildren.find((child) => child.props.dataKey === data.key);
+    .map((seriesData) => {
+      const matchingChild = barSeriesChildren.find((child) => child.props.dataKey === seriesData.key);
       const {
         colorAccessor,
-        keyAccessor = identity
-        // independentAccessor: originalIndependentAccessor,
-        // dependentAccessor: originalDependentAccessor
+        keyAccessor,
+        independentAccessor: underlyingIndependentAccessor,
+        dependentAccessor: underlyingDependentAccessor
       } = matchingChild?.props ?? {};
       return {
-        dataKey: data.key,
-        data,
-        keyAccessor,
-        independentAccessor,
-        dependentAccessor,
-        colorAccessor
+        dataKey: seriesData.key,
+        data: seriesData,
+        independentAccessor: getStack,
+        dependentAccessor: getNumericValue,
+        underlyingDatumAccessor: getStackOriginalDatum<IndependentScale, DependentScale, Datum>,
+        underlying: {
+          keyAccessor: keyAccessor ?? underlyingIndependentAccessor,
+          independentAccessor: underlyingIndependentAccessor,
+          dependentAccessor: underlyingDependentAccessor,
+          colorAccessor
+        }
       };
     })
     .filter((entry) => entry) as DataEntry<IndependentScale, DependentScale>[];

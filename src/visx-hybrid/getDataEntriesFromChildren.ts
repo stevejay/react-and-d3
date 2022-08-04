@@ -90,14 +90,19 @@ export function getDataEntriesFromChildren<
         }, [])
       ) as [number, number];
       dependentDomainValues.push(comprehensiveDomain[0], comprehensiveDomain[1]);
-    } else if (element.props.dataKey) {
+    } else if (element.props.dataKey && element.props.data) {
       const dataEntry: DataEntry<IndependentScale, DependentScale> = {
         dataKey: element.props.dataKey,
         data: element.props.data,
-        keyAccessor: element.props.keyAccessor ?? identity,
         independentAccessor: element.props.independentAccessor,
         dependentAccessor: element.props.dependentAccessor,
-        colorAccessor: element.props.colorAccessor
+        underlyingDatumAccessor: identity,
+        underlying: {
+          keyAccessor: element.props.keyAccessor ?? element.props.independentAccessor,
+          independentAccessor: element.props.independentAccessor,
+          dependentAccessor: element.props.dependentAccessor,
+          colorAccessor: element.props.colorAccessor
+        }
       };
       dataEntries.push(dataEntry);
       dataEntry.data.forEach((datum) => {

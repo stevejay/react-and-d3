@@ -104,7 +104,6 @@ export function createBarSeriesPolygonPositioning<
 }) {
   const independentScaleCopy = independentScale.copy();
   const dependentScaleCopy = dependentScale.copy();
-
   const dependentZeroCoord = getScaleBaseline(dependentScaleCopy);
 
   return createPolygonPositionCallback({
@@ -180,6 +179,16 @@ function createPolygonPositionCallback<Datum extends object>({
       }
     }
 
-    return { x1, y1, x2, y2, width, height, points: `${x1},${y1} ${x2},${y1} ${x2},${y2} ${x1},${y2}` };
+    return {
+      x1,
+      y1,
+      x2,
+      y2,
+      cx: x1 + width * 0.5,
+      cy: y1 + height * 0.5,
+      width,
+      height,
+      points: `${x1},${y1} ${x2},${y1} ${x2},${y2} ${x1},${y2}`
+    };
   };
 }

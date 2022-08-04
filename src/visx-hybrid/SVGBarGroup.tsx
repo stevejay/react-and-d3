@@ -5,10 +5,9 @@ import { isNil } from 'lodash-es';
 
 import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchildrenWithProps';
 import { getScaleBandwidth } from './getScaleBandwidth';
-import { SVGAccessibleBarSeries, SVGAccessibleBarSeriesProps } from './SVGAccessibleBarSeries';
 import { SVGBarGroupSeries } from './SVGBarGroupSeries';
 import { SVGBarSeriesProps } from './SVGBarSeries';
-import type { AxisScale, DataEntry, ScaleInput, SVGBarProps } from './types';
+import type { AxisScale, DataEntry, SVGBarProps } from './types';
 import { useDataContext } from './useDataContext';
 import { useSeriesTransitions } from './useSeriesTransitions';
 
@@ -23,11 +22,6 @@ type SVGBarGroupProps<Datum extends object> = {
   /** Optional color accessor that overrides any color accessor on the group's children. */
   colorAccessor?: (datum: Datum, dataKey: string) => string;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
-  categoryA11yProps?: SVGAccessibleBarSeriesProps<
-    ScaleInput<AxisScale>,
-    ScaleInput<AxisScale>,
-    Datum
-  >['categoryA11yProps'];
 };
 
 export function SVGBarGroup<Datum extends object>({
@@ -37,8 +31,7 @@ export function SVGBarGroup<Datum extends object>({
   animate = true,
   sortBars,
   colorAccessor,
-  component,
-  categoryA11yProps
+  component
 }: SVGBarGroupProps<Datum>) {
   const {
     horizontal,
@@ -48,10 +41,7 @@ export function SVGBarGroup<Datum extends object>({
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     dataEntries,
-    colorScale,
-    margin,
-    innerWidth,
-    innerHeight
+    colorScale
   } = useDataContext();
 
   const barSeriesChildren = useMemo(
@@ -101,14 +91,14 @@ export function SVGBarGroup<Datum extends object>({
               independentScale={independentScale}
               dependentScale={dependentScale}
               groupScale={groupScale}
-              keyAccessor={datum.keyAccessor}
+              keyAccessor={datum.underlying.keyAccessor}
               independentAccessor={datum.independentAccessor}
               dependentAccessor={datum.dependentAccessor}
               horizontal={horizontal}
               renderingOffset={renderingOffset}
               animate={animate && contextAnimate}
               springConfig={springConfig ?? contextSpringConfig}
-              colorAccessor={colorAccessor ?? datum.colorAccessor}
+              colorAccessor={colorAccessor ?? datum.underlying.colorAccessor}
               colorScale={colorScale}
               // {...events}
               component={component}
@@ -116,7 +106,7 @@ export function SVGBarGroup<Datum extends object>({
           </animated.g>
         );
       })}
-      {categoryA11yProps && (
+      {/* {categoryA11yProps && (
         <SVGAccessibleBarSeries
           independentScale={independentScale}
           horizontal={horizontal}
@@ -127,7 +117,7 @@ export function SVGBarGroup<Datum extends object>({
           dataEntries={dataEntries}
           categoryA11yProps={categoryA11yProps}
         />
-      )}
+      )} */}
     </>
   );
 }

@@ -10,6 +10,7 @@ import { InView } from '@/components/InView';
 import { SectionHeading } from '@/components/SectionHeading';
 import { isDefined } from '@/types/typeguards/isDefined';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
+import { SVGA11yBarSeries } from '@/visx-hybrid/SVGA11yBarSeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBandStripes } from '@/visx-hybrid/SVGBandStripes';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
@@ -132,12 +133,14 @@ export function RespondentsByLanguage() {
                 <SVGBarSeries
                   dataKey="data-a"
                   data={sortedEntityBuckets}
-                  keyAccessor={independentAccessor}
                   independentAccessor={independentAccessor}
                   dependentAccessor={dependentAccessor}
                   colorAccessor={colorAccessor}
                   component={SVGBarWithLine}
-                  categoryA11yProps={(category: string, data: readonly EntityBucket[]) => ({
+                />
+                <SVGA11yBarSeries<EntityBucket>
+                  dataKeyOrKeys="data-a"
+                  categoryA11yProps={(category, data) => ({
                     'aria-label': `${independentAxisTickFormatter(category)}: ${dependentAxisTickFormatter(
                       dependentAccessor(data[0])
                     )}`,

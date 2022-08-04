@@ -16,8 +16,9 @@ export function useBarStackTransitions<
   springConfig: Partial<SpringConfig>;
   animate: boolean;
   renderingOffset: number;
+  underlyingDatumAccessor: (datum: StackDatum<IndependentScale, DependentScale, Datum>) => Datum;
 }) {
-  const { data, keyAccessor, springConfig, animate } = args;
+  const { data, keyAccessor, springConfig, animate, underlyingDatumAccessor } = args;
   const position = createBarStackSeriesPolygonPositioning(args);
   return useTransition<StackDatum<IndependentScale, DependentScale, Datum>, PolygonTransitionsProps>(data, {
     initial: (datum) => ({ opacity: 1, ...position(datum) }),
@@ -26,7 +27,7 @@ export function useBarStackTransitions<
     update: (datum) => ({ opacity: 1, ...position(datum) }),
     leave: () => ({ opacity: 0 }),
     config: springConfig,
-    keys: (datum) => keyAccessor(datum.data.__datum__),
+    keys: (datum) => keyAccessor(underlyingDatumAccessor(datum)),
     immediate: !animate
   });
 }

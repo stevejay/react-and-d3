@@ -5,18 +5,16 @@ import { isNil } from 'lodash-es';
 import { BARSTACK_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
 import findNearestStackDatum from './findNearestStackDatum';
 import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchildrenWithProps';
-import { getStackOriginalDatum } from './getStackOriginalDatum';
 import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
-import { SVGAccessibleBarSeries, SVGAccessibleBarSeriesProps } from './SVGAccessibleBarSeries';
 import { SVGBarSeriesProps } from './SVGBarSeries';
+import { SVGBarStackLabels } from './SVGBarStackLabels';
 import { SVGBarStackSeries } from './SVGBarStackSeries';
 import type {
   AxisScale,
   DataEntry,
   NearestDatumArgs,
   NearestDatumReturnType,
-  ScaleInput,
   StackDatum,
   SVGBarProps
 } from './types';
@@ -51,12 +49,7 @@ export interface SVGBarStackProps<Datum extends object> {
   enableEvents?: boolean;
   children?: ReactNode;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
-  colorAccessor?: (datum: StackDatum<AxisScale, AxisScale, Datum>, key: string) => string;
-  categoryA11yProps?: SVGAccessibleBarSeriesProps<
-    ScaleInput<AxisScale>,
-    ScaleInput<AxisScale>,
-    Datum
-  >['categoryA11yProps'];
+  colorAccessor?: (datum: Datum, key: string) => string;
 }
 
 export function SVGBarStack<Datum extends object>(
@@ -72,8 +65,7 @@ export function SVGBarStack<Datum extends object>(
     animate = true,
     springConfig,
     colorAccessor,
-    component,
-    categoryA11yProps
+    component
   }: SVGBarStackProps<Datum>
 ) {
   const {
@@ -84,10 +76,7 @@ export function SVGBarStack<Datum extends object>(
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     dataEntries,
-    colorScale,
-    margin,
-    innerWidth,
-    innerHeight
+    colorScale
   } = useDataContext();
 
   const seriesChildren = useMemo(
@@ -100,14 +89,6 @@ export function SVGBarStack<Datum extends object>(
   // custom logic to find the nearest AreaStackDatum (context) and return the original Datum (props)
   const findNearestDatum = useCallback(
     (params: NearestDatumArgs<StackDatum<AxisScale, AxisScale, Datum>>): NearestDatumReturnType<Datum> => {
-      // const childProps = seriesChildren.find((child) => child.props.dataKey === params.dataKey)?.props;
-      // if (!childProps) {
-      //   return null;
-      // }
-      // const { data: childData, xAccessor, yAccessor } = childProps;
-      // const datum = findNearestStackDatum(params, childData, horizontal);
-      // return datum ? ({ ...datum, xAccessor, yAccessor } as any) : null;
-
       const childData = seriesChildren.find((child) => child.props.dataKey === params.dataKey)?.props?.data;
       return childData ? findNearestStackDatum(params, childData, horizontal) : null;
     },
@@ -157,20 +138,18 @@ export function SVGBarStack<Datum extends object>(
             <SVGBarStackSeries
               dataKey={datum.dataKey}
               data={datum.data}
-              dataKeys={dataKeys}
+              keyAccessor={datum.underlying.keyAccessor}
               independentScale={independentScale}
               dependentScale={dependentScale}
-              keyAccessor={datum.keyAccessor}
               independentAccessor={datum.independentAccessor}
               dependentAccessor={datum.dependentAccessor}
               horizontal={horizontal}
               renderingOffset={renderingOffset}
               animate={animate && contextAnimate}
               springConfig={springConfig ?? contextSpringConfig}
-              colorAccessor={colorAccessor ?? datum.colorAccessor}
+              colorAccessor={colorAccessor ?? datum.underlying.colorAccessor}
               colorScale={colorScale}
-              // barProps={barProps}
-              // barClassName={barClassName}
+              underlyingDatumAccessor={datum.underlyingDatumAccessor}
               // {...events}
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               component={component as any} // TODO fix this
@@ -178,19 +157,31 @@ export function SVGBarStack<Datum extends object>(
           </animated.g>
         );
       })}
-      {categoryA11yProps && (
-        <SVGAccessibleBarSeries
-          independentScale={independentScale}
-          horizontal={horizontal}
-          margin={margin}
-          innerWidth={innerWidth}
-          innerHeight={innerHeight}
-          dataKeyOrKeys={dataKeys}
-          dataEntries={dataEntries}
-          categoryA11yProps={categoryA11yProps}
-          datumAccessor={getStackOriginalDatum}
-        />
-      )}
+      {transitions((styles, datum) => {
+        const child = seriesChildren.find((child) => child.props.dataKey === datum.dataKey);
+        const { dependentAccessor } = child?.props ?? {};
+        if (!dependentAccessor) {
+          return null;
+        }
+        // const { style, ...restGroupProps } = groupProps ?? {};
+        return (
+          <animated.g data-testid={`bar-stack-series-labels-${datum.dataKey}`} style={styles}>
+            <SVGBarStackLabels
+              dataKey={datum.dataKey}
+              data={datum.data}
+              independentScale={independentScale}
+              dependentScale={dependentScale}
+              keyAccessor={datum.underlying.keyAccessor}
+              horizontal={horizontal}
+              renderingOffset={renderingOffset}
+              animate={animate && contextAnimate}
+              springConfig={springConfig ?? contextSpringConfig}
+              dependentAccessor={dependentAccessor}
+              underlyingDatumAccessor={datum.underlyingDatumAccessor}
+            />
+          </animated.g>
+        );
+      })}
     </>
   );
 }

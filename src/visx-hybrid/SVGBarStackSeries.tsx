@@ -1,4 +1,4 @@
-import type { SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 import type { ScaleOrdinal } from 'd3-scale';
 
 import { SVGSimpleBar } from './SVGSimpleBar';
@@ -12,10 +12,10 @@ export type SVGBarStackSeriesProps<
 > = {
   dataKey: string;
   data: readonly StackDatum<IndependentScale, DependentScale, Datum>[];
-  dataKeys: readonly string[];
   independentScale: IndependentScale;
   dependentScale: DependentScale;
   keyAccessor: (datum: Datum) => string;
+  underlyingDatumAccessor: (datum: StackDatum<IndependentScale, DependentScale, Datum>) => Datum;
   independentAccessor: (datum: Datum) => ScaleInput<IndependentScale>;
   dependentAccessor: (datum: Datum) => ScaleInput<DependentScale>;
   horizontal: boolean;
@@ -23,12 +23,10 @@ export type SVGBarStackSeriesProps<
   animate: boolean;
   /* A react-spring configuration object */
   springConfig: SpringConfig;
-  colorAccessor?: (datum: StackDatum<AxisScale, AxisScale, Datum>, key: string) => string;
+  colorAccessor?: (datum: Datum, key: string) => string;
   colorScale: ScaleOrdinal<string, string, never>;
-  // barClassName?: string;
   enableEvents?: boolean;
-  // barProps?: PolygonProps | ((datum: Datum, index: number, dataKey: string) => PolygonProps);
-  component?: (props: SVGBarProps<StackDatum<IndependentScale, DependentScale, Datum>>) => JSX.Element;
+  component?: (props: SVGBarProps<Datum>) => JSX.Element;
 } & Pick<
   SeriesProps<IndependentScale, DependentScale, Datum>,
   'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
@@ -43,6 +41,7 @@ export function SVGBarStackSeries<
   data,
   independentScale,
   dependentScale,
+  underlyingDatumAccessor,
   keyAccessor,
   horizontal,
   renderingOffset,
@@ -67,14 +66,15 @@ export function SVGBarStackSeries<
     horizontal,
     springConfig,
     animate,
-    renderingOffset
+    renderingOffset,
+    underlyingDatumAccessor
   });
   return (
     <>
       {transitions((springValues, datum, _, index) => (
         <BarComponent
           springValues={springValues}
-          datum={datum}
+          datum={underlyingDatumAccessor(datum)}
           index={index}
           dataKey={dataKey}
           horizontal={horizontal}
@@ -82,6 +82,18 @@ export function SVGBarStackSeries<
           colorAccessor={colorAccessor}
         />
       ))}
+      {/* {transitions(({ cx, cy, x1, y1, opacity }, datum, _, index) => (
+        <animated.text
+          x={horizontal ? x1 : cx}
+          y={horizontal ? cy : y1}
+          fill="white"
+          style={{ opacity }}
+          textAnchor={horizontal ? 'start' : 'middle'}
+          dy={20}
+        >
+          Hello t
+        </animated.text>
+      ))} */}
     </>
   );
 }

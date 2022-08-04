@@ -4,6 +4,7 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { CategoryValueListDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
+import { SVGA11yBarSeries } from '@/visx-hybrid/SVGA11yBarSeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarGroup } from '@/visx-hybrid/SVGBarGroup';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
@@ -36,10 +37,6 @@ function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) 
   }
 }
 
-function keyAccessor(datum: CategoryValueListDatum<string, number>) {
-  return `${datum.category}`;
-}
-
 const dependentScale: LinearScaleConfig<number> = {
   type: 'linear',
   nice: true,
@@ -63,34 +60,27 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
       theme={darkTheme}
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      <SVGBarGroup
-        padding={0}
-        component={SVGBarWithLine}
-        categoryA11yProps={(category: string, data: readonly CategoryValueListDatum<string, number>[]) => {
-          const datum = data[0];
-          if (!datum) {
-            return {};
-          }
-          return {
-            'aria-label': `Category ${datum.category}: ${dataKeys
-              .map((dataKey) => `${dataKey} is ${datum.values[dataKey]}`)
-              .join(', ')}`,
-            'aria-roledescription': `Category ${category}`
-          };
-        }}
-      >
+      <SVGBarGroup padding={0} component={SVGBarWithLine}>
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
             key={dataKey}
             dataKey={dataKey}
             data={data}
-            keyAccessor={keyAccessor}
             independentAccessor={(datum) => datum.category}
             dependentAccessor={(datum) => datum.values[dataKey]}
             colorAccessor={colorAccessor}
           />
         ))}
       </SVGBarGroup>
+      <SVGA11yBarSeries<CategoryValueListDatum<string, number>>
+        dataKeyOrKeys={dataKeys}
+        categoryA11yProps={(category, data) => ({
+          'aria-label': `Category ${data[0]?.category}: ${dataKeys
+            .map((dataKey) => `${dataKey} is ${data[0]?.values[dataKey]}`)
+            .join(', ')}`,
+          'aria-roledescription': `Category ${category}`
+        })}
+      />
       <SVGAxis
         variable="independent"
         position="end"

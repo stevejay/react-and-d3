@@ -4,6 +4,8 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { CategoryValueListDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
+import { SVGA11yBarSeries } from '@/visx-hybrid/SVGA11yBarSeries';
+import { SVGAnnotation } from '@/visx-hybrid/SVGAnnotation';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarStack } from '@/visx-hybrid/SVGBarStack';
@@ -39,10 +41,6 @@ function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) 
   }
 }
 
-function keyAccessor(datum: CategoryValueListDatum<string, number>) {
-  return `${datum.category}`;
-}
-
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
 export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
@@ -57,33 +55,38 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
       theme={darkTheme}
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      <SVGBarStack<CategoryValueListDatum<string, number>>
-        stackOrder="none"
-        categoryA11yProps={(category: string, data: readonly CategoryValueListDatum<string, number>[]) => {
-          return {
-            'aria-label': `Category ${category}: ${dataKeys
-              .map((dataKey, index) => `${dataKey} is ${data[index].values[dataKey]}`)
-              .join(', ')}`,
-            'aria-roledescription': `Category ${category}`
-          };
-        }}
-      >
+      <SVGBarStack<CategoryValueListDatum<string, number>> stackOrder="none">
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
             key={dataKey}
             dataKey={dataKey}
             data={data}
-            keyAccessor={keyAccessor}
             independentAccessor={(datum) => datum.category}
             dependentAccessor={(datum) => datum.values[dataKey]}
             colorAccessor={colorAccessor}
           />
         ))}
       </SVGBarStack>
+      <SVGA11yBarSeries<CategoryValueListDatum<string, number>>
+        dataKeyOrKeys={dataKeys}
+        categoryA11yProps={(category, data) => ({
+          'aria-label': `Category ${category}: ${dataKeys
+            .map((dataKey, index) => `${dataKey} is ${data[index].values[dataKey]}`)
+            .join(', ')}`,
+          'aria-roledescription': `Category ${category}`
+        })}
+      />
       <SVGAxis variable="independent" position="end" label="Foobar Topy" />
       <SVGAxis variable="independent" position="start" label="Foobar Bottomy" />
       <SVGAxis variable="dependent" position="start" label="Foobar Lefty" tickCount={5} hideZero />
       <SVGAxis variable="dependent" position="end" label="Foobar Righty" tickCount={5} hideZero />
+      <SVGAnnotation
+        datum={data[2]}
+        dataKey={dataKeys[2]}
+        // keyAccessor={keyAccessor}
+        // independentAccessor={(datum) => datum.category}
+        // dependentAccessor={(datum) => datum.values[dataKeys[1]]}
+      />
       <PopperTooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}

@@ -1,9 +1,12 @@
 import type { SVGProps } from 'react';
-import type { SpringConfig } from 'react-spring';
+import { animated, SpringConfig } from 'react-spring';
 
+// import { coerceNumber } from './coerceNumber';
 import { BARSERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
-import { SVGAccessibleBarSeries, SVGAccessibleBarSeriesProps } from './SVGAccessibleBarSeries';
+// import { getFontMetricsWithCache } from './getFontMetricsWithCache';
+// import { getScaleBandwidth } from './getScaleBandwidth';
 import { SVGSimpleBar } from './SVGSimpleBar';
+// import { SVGSimpleText } from './SVGSimpleText';
 import type { AxisScale, ScaleInput, SVGBarProps } from './types';
 import { useBarSeriesTransitions } from './useBarSeriesTransitions';
 import { useDataContext } from './useDataContext';
@@ -17,7 +20,7 @@ export type SVGBarSeriesProps<Datum extends object> = {
   animate?: boolean;
   dataKey: string;
   data: readonly Datum[];
-  keyAccessor: (datum: Datum, dataKey?: string) => string;
+  keyAccessor?: (datum: Datum, dataKey?: string) => string;
   independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   colorAccessor?: (datum: Datum, dataKey: string) => string;
@@ -26,11 +29,6 @@ export type SVGBarSeriesProps<Datum extends object> = {
   // lineProps?: LineProps | ((datum: Datum, index: number, dataKey: string) => LineProps);
   enableEvents?: boolean;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
-  categoryA11yProps?: SVGAccessibleBarSeriesProps<
-    ScaleInput<AxisScale>,
-    ScaleInput<AxisScale>,
-    Datum
-  >['categoryA11yProps'];
 };
 
 export function SVGBarSeries<Datum extends object>({
@@ -39,8 +37,7 @@ export function SVGBarSeries<Datum extends object>({
   animate = true,
   dataKey,
   enableEvents = true,
-  component: BarComponent = SVGSimpleBar,
-  categoryA11yProps
+  component: BarComponent = SVGSimpleBar
 }: SVGBarSeriesProps<Datum>) {
   const {
     horizontal,
@@ -50,16 +47,18 @@ export function SVGBarSeries<Datum extends object>({
     renderingOffset,
     springConfig: contextSpringConfig,
     animate: contextAnimate,
-    dataEntries,
-    margin,
-    innerWidth,
-    innerHeight
+    dataEntries
   } = useDataContext();
   const dataEntry = dataEntries.find((dataEntry) => dataEntry.dataKey === dataKey);
   if (!dataEntry) {
     throw new Error(`Could not find data for dataKey '${dataKey}'`);
   }
-  const { independentAccessor, dependentAccessor, data, keyAccessor, colorAccessor } = dataEntry;
+  const {
+    independentAccessor,
+    dependentAccessor,
+    data,
+    underlying: { keyAccessor, colorAccessor }
+  } = dataEntry;
   const ownEventSourceKey = `${BARSERIES_EVENT_SOURCE}-${dataKey}`;
   // const eventEmitters =
   useSeriesEvents<AxisScale, AxisScale, Datum>({
@@ -99,19 +98,55 @@ export function SVGBarSeries<Datum extends object>({
             colorAccessor={colorAccessor}
           />
         ))}
+        {transitions(({ cx, cy, x1, y1, opacity }, _datum, _, _index) => (
+          <animated.text
+            x={horizontal ? x1 : cx}
+            y={horizontal ? cy : y1}
+            fill="white"
+            style={{ opacity }}
+            textAnchor={horizontal ? 'start' : 'middle'}
+            dy={-6}
+          >
+            Hello t
+          </animated.text>
+        ))}
+        {/* 
+        {data.map((datum) => {
+          const dependentValue = dependentAccessor(datum);
+          const dependentValueIsPositive = dependentValue >= 0;
+          const fontMetrics = getFontMetricsWithCache(
+            theme?.smallLabels?.font ?? defaultSmallLabelsTextStyle.font
+          );
+          const independentCoord =
+            (coerceNumber(independentScale(independentAccessor(datum))) ?? 0) +
+            getScaleBandwidth(independentScale) * 0.5;
+          const padding = horizontal
+            ? dependentValueIsPositive
+              ? 8
+              : -8
+            : dependentValueIsPositive
+            ? -4
+            : 4;
+          const dependentCoord = (coerceNumber(dependentScale(dependentValue)) ?? 0) + padding;
+          return (
+            <SVGSimpleText
+              key={keyAccessor(datum)}
+              textStyles={theme?.smallLabels ?? defaultSmallLabelsTextStyle}
+              textAnchor={horizontal ? (dependentValueIsPositive ? 'start' : 'end') : 'middle'}
+              verticalAnchor={horizontal ? 'middle' : dependentValueIsPositive ? 'end' : 'start'}
+              x={horizontal ? dependentCoord : independentCoord}
+              y={horizontal ? independentCoord : dependentCoord}
+              role="presentation"
+              aria-hidden
+              fill="white"
+              fontHeight={fontMetrics.height}
+              fontHeightFromBaseline={fontMetrics.heightFromBaseline}
+            >
+              {dependentValue}
+            </SVGSimpleText>
+          );
+        })} */}
       </g>
-      {categoryA11yProps && (
-        <SVGAccessibleBarSeries
-          independentScale={independentScale}
-          horizontal={horizontal}
-          margin={margin}
-          innerWidth={innerWidth}
-          innerHeight={innerHeight}
-          dataKeyOrKeys={dataKey}
-          dataEntries={dataEntries}
-          categoryA11yProps={categoryA11yProps}
-        />
-      )}
     </>
   );
 }

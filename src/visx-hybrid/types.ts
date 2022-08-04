@@ -43,15 +43,22 @@ export interface DataEntry<
 > {
   dataKey: string;
   data: readonly Datum[];
-  /** function that returns the key value of a datum. Defaults to xAccessor or yAccessor, depending on the orientation of the chart. */
-  keyAccessor: (datum: OriginalDatum, dataKey?: string) => string;
   independentAccessor: (datum: Datum) => ScaleInput<IndependentScale>;
   dependentAccessor: (datum: Datum) => ScaleInput<DependentScale>;
-  /** function that returns the color value of a datum. */
-  colorAccessor?: (datum: OriginalDatum, dataKey: string) => string;
 
   /** Legend shape for the data key. */
   // legendShape?: LegendShape;
+
+  underlyingDatumAccessor: (datum: Datum) => OriginalDatum;
+
+  underlying: {
+    /** function that returns the key value of a datum. */
+    keyAccessor: (datum: OriginalDatum, dataKey?: string) => string;
+    independentAccessor: (datum: OriginalDatum) => ScaleInput<IndependentScale>;
+    dependentAccessor: (datum: OriginalDatum) => ScaleInput<DependentScale>;
+    /** function that returns the color value of a datum. */
+    colorAccessor?: (datum: OriginalDatum, dataKey: string) => string;
+  };
 }
 
 export interface DataContextType<IndependentScale extends AxisScale, DependentScale extends AxisScale> {
@@ -392,6 +399,8 @@ export interface PolygonTransitionsProps {
   y1: number;
   x2: number;
   y2: number;
+  cx: number;
+  cy: number;
   width: number;
   height: number;
   opacity: number;

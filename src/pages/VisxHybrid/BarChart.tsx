@@ -4,6 +4,7 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { CategoryValueDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
+import { SVGA11yBarSeries } from '@/visx-hybrid/SVGA11yBarSeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
@@ -43,10 +44,6 @@ function colorAccessor() {
   return schemeCategory10[8];
 }
 
-function keyAccessor(datum: CategoryValueDatum<string, number>) {
-  return datum.category;
-}
-
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
 export function BarChart({ data }: BarChartProps) {
@@ -68,18 +65,17 @@ export function BarChart({ data }: BarChartProps) {
       <SVGBarSeries
         dataKey="data-a"
         data={data}
-        keyAccessor={keyAccessor}
         independentAccessor={independentAccessor}
         dependentAccessor={dependentAccessor}
         colorAccessor={colorAccessor}
         component={SVGBarWithLine}
-        categoryA11yProps={(category: string, data: readonly CategoryValueDatum<string, number>[]) => {
-          const datum = data[0];
-          return {
-            'aria-label': `Category ${datum.category}: ${datum.value}`,
-            'aria-roledescription': `Category ${category}`
-          };
-        }}
+      />
+      <SVGA11yBarSeries<CategoryValueDatum<string, number>>
+        dataKeyOrKeys="data-a"
+        categoryA11yProps={(category, data) => ({
+          'aria-label': `Category ${data[0].category}: ${data[0].value}`,
+          'aria-roledescription': `Category ${category}`
+        })}
       />
       <SVGAxis variable="independent" position="end" label="Foobar Topy" />
       <SVGAxis variable="independent" position="start" label="Foobar Bottomy" />

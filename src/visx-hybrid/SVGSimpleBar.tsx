@@ -25,16 +25,21 @@ export function SVGSimpleBar<Datum extends object>({
     ...restBarProps
   } = (typeof barProps === 'function' ? barProps(datum, index, dataKey) : barProps) ?? {};
   return (
-    <animated.polygon
-      data-testid="bar"
-      points={points}
-      fill={colorAccessor?.(datum, dataKey) ?? fill ?? colorScale(dataKey) ?? '#666'}
-      style={{ ...barStyle, opacity }}
-      shapeRendering={defaultShapeRendering}
-      role="presentation"
-      aria-hidden
-      {...restBarProps}
-      // {...eventEmitters}
-    />
+    <>
+      <animated.polygon
+        data-testid="bar"
+        points={points}
+        fill={colorAccessor?.(datum, dataKey) ?? fill ?? colorScale(dataKey) ?? '#666'}
+        style={{ ...barStyle, opacity }}
+        shapeRendering={defaultShapeRendering}
+        role="presentation"
+        aria-hidden
+        {...restBarProps}
+        // {...eventEmitters}
+      />
+      {/* <animated.text x={cx} y={y1} fill="white" style={{ opacity }}>
+        Hello
+      </animated.text> */}
+    </>
   );
 }
