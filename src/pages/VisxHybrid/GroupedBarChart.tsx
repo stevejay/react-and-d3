@@ -10,6 +10,7 @@ import { SVGBarGroup } from '@/visx-hybrid/SVGBarGroup';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
+import { SVGGroupAnnotation } from '@/visx-hybrid/SVGGroupAnnotation';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
@@ -58,6 +59,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
       dependentRangePadding={30}
       className="select-none"
       theme={darkTheme}
+      // horizontal
     >
       <SVGGrid tickCount={5} variable="dependent" />
       <SVGBarGroup padding={0} component={SVGBarWithLine}>
@@ -81,6 +83,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
           'aria-roledescription': `Category ${category}`
         })}
       />
+      <SVGGroupAnnotation datum={data[2]} dataKey="three" dataKeys={dataKeys} />
       <SVGAxis
         variable="independent"
         position="end"

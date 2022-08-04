@@ -6385,6 +6385,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@visx/annotation@npm:^2.12.2":
+  version: 2.12.2
+  resolution: "@visx/annotation@npm:2.12.2"
+  dependencies:
+    "@types/react": "*"
+    "@visx/drag": 2.10.0
+    "@visx/group": 2.10.0
+    "@visx/point": 2.6.0
+    "@visx/shape": 2.12.2
+    "@visx/text": 2.12.2
+    classnames: ^2.3.1
+    prop-types: ^15.5.10
+    react-use-measure: ^2.0.4
+  peerDependencies:
+    react: ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
+  checksum: a7771ea4495e879a6fdd3b73df8681f0b38c6b3b3b90013169a9375debecbde80368dcf531de1174427a576b6e1b3c2cab9f5475d3507ad397e00d5ed1034bb7
+  languageName: node
+  linkType: hard
+
 "@visx/axis@npm:2.10.0":
   version: 2.10.0
   resolution: "@visx/axis@npm:2.10.0"
@@ -6729,6 +6748,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@visx/shape@npm:2.12.2":
+  version: 2.12.2
+  resolution: "@visx/shape@npm:2.12.2"
+  dependencies:
+    "@types/d3-path": ^1.0.8
+    "@types/d3-shape": ^1.3.1
+    "@types/lodash": ^4.14.172
+    "@types/react": "*"
+    "@visx/curve": 2.1.0
+    "@visx/group": 2.10.0
+    "@visx/scale": 2.2.2
+    classnames: ^2.3.1
+    d3-path: ^1.0.5
+    d3-shape: ^1.2.0
+    lodash: ^4.17.21
+    prop-types: ^15.5.10
+  peerDependencies:
+    react: ^16.3.0-0 || ^17.0.0-0 || ^18.0.0-0
+  checksum: 62943394c63a273332de17f1341cdad403090a89328e6649824f9723946ff92f6932f2b6bc4fbe64090231218489a639b18bc3f28e170bcb55ecf880016ff56f
+  languageName: node
+  linkType: hard
+
 "@visx/text@npm:2.10.0":
   version: 2.10.0
   resolution: "@visx/text@npm:2.10.0"
@@ -6742,6 +6783,22 @@ __metadata:
   peerDependencies:
     react: ^16.3.0-0 || ^17.0.0-0 || ^18.0.0-0
   checksum: 040efd571bb6cc77e68c8fd04635d2b216a744caf7ca6947f589c5bbfb7b9db0b49fa7a8394279a03379f952c57dfba550a6cd3f2acc3017c0850b3215b958df
+  languageName: node
+  linkType: hard
+
+"@visx/text@npm:2.12.2":
+  version: 2.12.2
+  resolution: "@visx/text@npm:2.12.2"
+  dependencies:
+    "@types/lodash": ^4.14.172
+    "@types/react": "*"
+    classnames: ^2.3.1
+    lodash: ^4.17.21
+    prop-types: ^15.7.2
+    reduce-css-calc: ^1.3.0
+  peerDependencies:
+    react: ^16.3.0-0 || ^17.0.0-0 || ^18.0.0-0
+  checksum: bcd25f067f6d4b8dce2228e2becf563506d0365f350a14750de4c3c4e93d0f16e12d863e656a8674310dd99fe4ff5f5111a7c01ec661b416b86a381dd92120cc
   languageName: node
   linkType: hard
 
@@ -18917,6 +18974,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.30.5
     "@uifabric/react-hooks": ^7.14.2
     "@use-gesture/react": ^10.2.15
+    "@visx/annotation": ^2.12.2
     "@visx/scale": ^2.2.2
     "@visx/visx": ^2.10.1
     "@vitejs/plugin-react": ^1.3.2

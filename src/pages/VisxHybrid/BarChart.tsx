@@ -5,6 +5,7 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 import { CategoryValueDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGA11yBarSeries } from '@/visx-hybrid/SVGA11yBarSeries';
+import { SVGAnnotation } from '@/visx-hybrid/SVGAnnotation';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
@@ -81,6 +82,7 @@ export function BarChart({ data }: BarChartProps) {
       <SVGAxis variable="independent" position="start" label="Foobar Bottomy" />
       <SVGAxis variable="dependent" position="start" label="Foobar Lefty" tickCount={5} hideZero />
       <SVGAxis variable="dependent" position="end" label="Foobar Righty" tickCount={5} hideZero />
+      <SVGAnnotation datum={data[2]} dataKey={'data-a'} />
       <PopperTooltip<CategoryValueDatum<string, number>>
         snapTooltipToDatumX
         showVerticalCrosshair

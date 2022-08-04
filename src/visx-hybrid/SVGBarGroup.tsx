@@ -15,7 +15,7 @@ type SVGBarGroupProps<Datum extends object> = {
   springConfig?: SpringConfig;
   animate?: boolean;
   /** Comparator function to sort `dataKeys` within a bar group. By default the DOM rendering order of `BarGroup`s `children` is used. Must be a stable function. */
-  sortBars?: (dataKeyA: string, dataKeyB: string) => number;
+  sort?: (dataKeyA: string, dataKeyB: string) => number;
   children?: ReactNode;
   /** Group band scale padding, [0, 1] where 0 = no padding, 1 = no bar. */
   padding?: number;
@@ -29,7 +29,7 @@ export function SVGBarGroup<Datum extends object>({
   padding = 0.1,
   springConfig,
   animate = true,
-  sortBars,
+  sort,
   colorAccessor,
   component
 }: SVGBarGroupProps<Datum>) {
@@ -50,15 +50,14 @@ export function SVGBarGroup<Datum extends object>({
   );
   const dataKeys = barSeriesChildren.map((child) => child.props.dataKey).filter((key) => key);
 
-  // create group scale
   const groupScale = useMemo(
     () =>
       scaleBand<string>({
-        domain: sortBars ? [...dataKeys].sort(sortBars) : dataKeys,
+        domain: sort ? [...dataKeys].sort(sort) : dataKeys,
         range: [0, getScaleBandwidth(independentScale)],
         padding
       }),
-    [sortBars, dataKeys, independentScale, padding]
+    [sort, dataKeys, independentScale, padding]
   );
 
   const transitions = useSeriesTransitions(
@@ -106,18 +105,6 @@ export function SVGBarGroup<Datum extends object>({
           </animated.g>
         );
       })}
-      {/* {categoryA11yProps && (
-        <SVGAccessibleBarSeries
-          independentScale={independentScale}
-          horizontal={horizontal}
-          margin={margin}
-          innerWidth={innerWidth}
-          innerHeight={innerHeight}
-          dataKeyOrKeys={groupScale.domain()}
-          dataEntries={dataEntries}
-          categoryA11yProps={categoryA11yProps}
-        />
-      )} */}
     </>
   );
 }

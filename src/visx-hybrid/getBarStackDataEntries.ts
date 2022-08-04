@@ -43,6 +43,7 @@ export function getBarStackDataEntries<
         independentAccessor: getStack,
         dependentAccessor: getNumericValue,
         underlyingDatumAccessor: getStackOriginalDatum<IndependentScale, DependentScale, Datum>,
+        transformation: 'stacked',
         underlying: {
           keyAccessor: keyAccessor ?? underlyingIndependentAccessor,
           independentAccessor: underlyingIndependentAccessor,

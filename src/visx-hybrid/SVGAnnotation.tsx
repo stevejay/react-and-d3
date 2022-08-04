@@ -1,50 +1,29 @@
-import { isNil } from 'lodash-es';
+import { Annotation, CircleSubject, Connector, Label } from '@visx/annotation';
 
-import { coerceNumber } from './coerceNumber';
-import { getScaleBandwidth } from './getScaleBandwidth';
-// import type { AxisScale, ScaleInput } from './types';
-import { useDataContext } from './useDataContext';
+import { useAnnotation } from './useAnnotation';
 
-export interface SVGAnnotationProps<
-  // IndependentScale extends AxisScale,
-  // DependentScale extends AxisScale,
-  Datum extends object
-> {
+export interface SVGAnnotationProps<Datum extends object> {
   dataKey: string;
   datum: Datum;
-  // keyAccessor: (datum: Datum, dataKey?: string) => string;
 }
 
-export function SVGAnnotation<
-  // IndependentScale extends AxisScale,
-  // DependentScale extends AxisScale,
-  Datum extends object
->({
-  dataKey,
-  datum
-}: // keyAccessor,
-SVGAnnotationProps<Datum>) {
-  const { horizontal, independentScale, dependentScale, dataEntries } = useDataContext();
-  const dataEntry = dataEntries.find((entry) => entry.dataKey === dataKey);
-  if (isNil(dataEntry)) {
+export function SVGAnnotation<Datum extends object>({ dataKey, datum }: SVGAnnotationProps<Datum>) {
+  const origin = useAnnotation(dataKey, datum);
+  if (!origin) {
     return null;
   }
-  const { independentAccessor, dependentAccessor, data } = dataEntry;
-  const stackDatum = data.find((d) => d.data.__datum__ === datum);
-  if (isNil(stackDatum)) {
-    return null;
-  }
-
-  const independentCoord = coerceNumber(independentScale(independentAccessor(stackDatum)));
-  const dependentCoord = coerceNumber(dependentScale(dependentAccessor(stackDatum)));
-  if (isNil(independentCoord) || isNil(dependentCoord)) {
-    return null;
-  }
-
-  const halfBandwidth = getScaleBandwidth(independentScale) * 0.5;
-  const [x, y] = horizontal
-    ? [dependentCoord, independentCoord + halfBandwidth]
-    : [independentCoord + halfBandwidth, dependentCoord];
-
-  return <circle fill="white" cx={x} cy={y} r={7} role="presentation" aria-hidden />;
+  return (
+    <Annotation x={origin.x} y={origin.y} dx={-40} dy={-50}>
+      <Connector stroke="white" pathProps={{ strokeWidth: 2 }} />
+      <CircleSubject radius={7} stroke="white" strokeWidth={2} role="presentation" aria-hidden />
+      <Label
+        title="Context about this point"
+        titleFontSize={16}
+        titleFontWeight={400}
+        titleProps={{ fontFamily: '"Readex Pro"', lineHeight: '1.2em' }}
+        showAnchorLine={false}
+        backgroundFill="white"
+      />
+    </Annotation>
+  );
 }

@@ -1,19 +1,12 @@
 import type { SVGProps } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 
-// import { coerceNumber } from './coerceNumber';
 import { BARSERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
-// import { getFontMetricsWithCache } from './getFontMetricsWithCache';
-// import { getScaleBandwidth } from './getScaleBandwidth';
 import { SVGSimpleBar } from './SVGSimpleBar';
-// import { SVGSimpleText } from './SVGSimpleText';
 import type { AxisScale, ScaleInput, SVGBarProps } from './types';
 import { useBarSeriesTransitions } from './useBarSeriesTransitions';
 import { useDataContext } from './useDataContext';
 import { useSeriesEvents } from './useSeriesEvents';
-
-// type PolygonProps = Omit<SVGProps<SVGPolygonElement>, 'points' | 'ref'>;
-// type LineProps = Omit<SVGProps<SVGLineElement>, 'x1' | 'y1' | 'x2' | 'y2' | 'ref'>;
 
 export type SVGBarSeriesProps<Datum extends object> = {
   springConfig?: SpringConfig;
@@ -25,8 +18,6 @@ export type SVGBarSeriesProps<Datum extends object> = {
   dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   colorAccessor?: (datum: Datum, dataKey: string) => string;
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
-  // barProps?: PolygonProps | ((datum: Datum, index: number, dataKey: string) => PolygonProps);
-  // lineProps?: LineProps | ((datum: Datum, index: number, dataKey: string) => LineProps);
   enableEvents?: boolean;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
 };

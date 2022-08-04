@@ -37,7 +37,10 @@ export function getDataEntriesFromChildren<
         element.props.children,
         horizontal
       );
-      result.dataEntries.forEach((dataEntry) => dataEntries.push(dataEntry));
+      result.dataEntries.forEach((dataEntry) => {
+        dataEntry.transformation = 'grouped';
+        dataEntries.push(dataEntry);
+      });
       result.independentDomainValues.forEach((value) => independentDomainValues.push(value));
       result.dependentDomainValues.forEach((value) => dependentDomainValues.push(value));
     } else if (typeof element.type !== 'string' && element.type.name.endsWith('Stack')) {
@@ -97,6 +100,7 @@ export function getDataEntriesFromChildren<
         independentAccessor: element.props.independentAccessor,
         dependentAccessor: element.props.dependentAccessor,
         underlyingDatumAccessor: identity,
+        transformation: 'none',
         underlying: {
           keyAccessor: element.props.keyAccessor ?? element.props.independentAccessor,
           independentAccessor: element.props.independentAccessor,

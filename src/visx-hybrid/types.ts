@@ -49,8 +49,8 @@ export interface DataEntry<
   /** Legend shape for the data key. */
   // legendShape?: LegendShape;
 
+  transformation: 'none' | 'stacked' | 'grouped';
   underlyingDatumAccessor: (datum: Datum) => OriginalDatum;
-
   underlying: {
     /** function that returns the key value of a datum. */
     keyAccessor: (datum: OriginalDatum, dataKey?: string) => string;

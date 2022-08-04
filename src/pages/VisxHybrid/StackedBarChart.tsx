@@ -1,6 +1,7 @@
 import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
+import { capitalize } from 'lodash-es';
 
 import { CategoryValueListDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
@@ -80,13 +81,7 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
       <SVGAxis variable="independent" position="start" label="Foobar Bottomy" />
       <SVGAxis variable="dependent" position="start" label="Foobar Lefty" tickCount={5} hideZero />
       <SVGAxis variable="dependent" position="end" label="Foobar Righty" tickCount={5} hideZero />
-      <SVGAnnotation
-        datum={data[2]}
-        dataKey={dataKeys[2]}
-        // keyAccessor={keyAccessor}
-        // independentAccessor={(datum) => datum.category}
-        // dependentAccessor={(datum) => datum.values[dataKeys[1]]}
-      />
+      <SVGAnnotation datum={data[1]} dataKey={dataKeys[2]} />
       <PopperTooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
@@ -100,8 +95,10 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
             <div className="flex flex-col space-y-1 p-1">
               {dataKeys.map((dataKey) => (
                 <p key={dataKey}>
-                  <span style={{ color: colorAccessor(datumByKey[dataKey].datum, dataKey) }}>{dataKey}</span>:{' '}
-                  {datumByKey[dataKey].datum.values[dataKey]}
+                  <span style={{ color: colorAccessor(datumByKey[dataKey].datum, dataKey) }}>
+                    {capitalize(dataKey)}
+                  </span>
+                  : {datumByKey[dataKey].datum.values[dataKey]}
                 </p>
               ))}
             </div>
