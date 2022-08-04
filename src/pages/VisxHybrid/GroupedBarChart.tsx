@@ -1,16 +1,16 @@
-import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
+import type { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
-import { CategoryValueListDatum } from '@/types';
+import type { CategoryValueListDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGA11yBarSeries } from '@/visx-hybrid/SVGA11yBarSeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarGroup } from '@/visx-hybrid/SVGBarGroup';
+import { SVGBarGroupAnnotation } from '@/visx-hybrid/SVGBarGroupAnnotation';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
-import { SVGGroupAnnotation } from '@/visx-hybrid/SVGGroupAnnotation';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
@@ -83,7 +83,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
           'aria-roledescription': `Category ${category}`
         })}
       />
-      <SVGGroupAnnotation datum={data[2]} dataKey="three" dataKeys={dataKeys} />
+      <SVGBarGroupAnnotation datum={data[2]} dataKey="three" dataKeys={dataKeys} />
       <SVGAxis
         variable="independent"
         position="end"

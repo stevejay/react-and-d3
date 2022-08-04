@@ -1,13 +1,13 @@
-import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
+import type { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 import { capitalize } from 'lodash-es';
 
-import { CategoryValueListDatum } from '@/types';
+import type { CategoryValueListDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGA11yBarSeries } from '@/visx-hybrid/SVGA11yBarSeries';
-import { SVGAnnotation } from '@/visx-hybrid/SVGAnnotation';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
+import { SVGBarAnnotation } from '@/visx-hybrid/SVGBarAnnotation';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarStack } from '@/visx-hybrid/SVGBarStack';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
@@ -81,7 +81,7 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
       <SVGAxis variable="independent" position="start" label="Foobar Bottomy" />
       <SVGAxis variable="dependent" position="start" label="Foobar Lefty" tickCount={5} hideZero />
       <SVGAxis variable="dependent" position="end" label="Foobar Righty" tickCount={5} hideZero />
-      <SVGAnnotation datum={data[1]} dataKey={dataKeys[2]} />
+      <SVGBarAnnotation datum={data[1]} dataKey={dataKeys[2]} />
       <PopperTooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
