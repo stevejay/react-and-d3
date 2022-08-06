@@ -1,9 +1,12 @@
 import type { SVGProps } from 'react';
-import { animated, SpringConfig } from 'react-spring';
+import { SpringConfig } from 'react-spring';
 
-import { BARSERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
+import { BARSERIES_EVENT_SOURCE, defaultSmallLabelsFont, XYCHART_EVENT_SOURCE } from './constants';
+import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { SVGSimpleBar } from './SVGSimpleBar';
-import type { AxisScale, ScaleInput, SVGBarProps } from './types';
+import { SVGAnimatedSimpleText } from './SVGSimpleText';
+import type { AxisScale, BarLabelPosition, ScaleInput, SVGBarProps } from './types';
+import { useBarLabelTransitions } from './useBarLabelTransitions';
 import { useBarSeriesTransitions } from './useBarSeriesTransitions';
 import { useDataContext } from './useDataContext';
 import { useSeriesEvents } from './useSeriesEvents';
@@ -20,15 +23,22 @@ export type SVGBarSeriesProps<Datum extends object> = {
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
   enableEvents?: boolean;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
+  /** Must be a stable function. */
+  labelFormatter?: (value: ScaleInput<AxisScale>) => string;
+  labelPosition?: BarLabelPosition;
+  positionLabelOutsideOnOverflow?: boolean;
 };
 
 export function SVGBarSeries<Datum extends object>({
   groupProps,
-  springConfig,
-  animate = true,
+  springConfig: springConfigProp,
+  animate: animateProp = true,
   dataKey,
   enableEvents = true,
-  component: BarComponent = SVGSimpleBar
+  component: BarComponent = SVGSimpleBar,
+  labelFormatter,
+  labelPosition = 'inside',
+  positionLabelOutsideOnOverflow = true
 }: SVGBarSeriesProps<Datum>) {
   const {
     horizontal,
@@ -38,7 +48,8 @@ export function SVGBarSeries<Datum extends object>({
     renderingOffset,
     springConfig: contextSpringConfig,
     animate: contextAnimate,
-    dataEntries
+    dataEntries,
+    theme
   } = useDataContext();
   const dataEntry = dataEntries.find((dataEntry) => dataEntry.dataKey === dataKey);
   if (!dataEntry) {
@@ -51,6 +62,8 @@ export function SVGBarSeries<Datum extends object>({
     underlying: { keyAccessor, colorAccessor }
   } = dataEntry;
   const ownEventSourceKey = `${BARSERIES_EVENT_SOURCE}-${dataKey}`;
+  const springConfig = springConfigProp ?? contextSpringConfig;
+  const animate = animateProp && contextAnimate;
   // const eventEmitters =
   useSeriesEvents<AxisScale, AxisScale, Datum>({
     dataKeyOrKeys: dataKey,
@@ -71,9 +84,27 @@ export function SVGBarSeries<Datum extends object>({
     independentAccessor,
     dependentAccessor,
     horizontal,
-    springConfig: springConfig ?? contextSpringConfig,
-    animate: animate && contextAnimate,
+    springConfig,
+    animate,
     renderingOffset
+  });
+  const labelStyles = theme.smallLabels;
+  const fontMetrics = getFontMetricsWithCache(labelStyles?.font ?? defaultSmallLabelsFont);
+  const labelTransitions = useBarLabelTransitions({
+    data,
+    independentScale,
+    dependentScale,
+    keyAccessor,
+    independentAccessor,
+    dependentAccessor,
+    horizontal,
+    springConfig,
+    animate,
+    renderingOffset,
+    labelFormatter,
+    labelStyles,
+    position: labelPosition,
+    positionOutsideOnOverflow: positionLabelOutsideOnOverflow
   });
   return (
     <>
@@ -89,17 +120,31 @@ export function SVGBarSeries<Datum extends object>({
             colorAccessor={colorAccessor}
           />
         ))}
-        {transitions(({ cx, cy, x1, y1, opacity }, _datum, _, _index) => (
-          <animated.text
-            x={horizontal ? x1 : cx}
-            y={horizontal ? cy : y1}
+        {labelTransitions((styles, datum) => (
+          <SVGAnimatedSimpleText
+            springValues={styles}
+            textAnchor="middle"
+            verticalAnchor="middle"
+            fontHeight={fontMetrics.height}
+            fontHeightFromBaseline={fontMetrics.heightFromBaseline}
             fill="white"
-            style={{ opacity }}
-            textAnchor={horizontal ? 'start' : 'middle'}
-            dy={-6}
           >
-            Hello t
-          </animated.text>
+            {datum.label}
+          </SVGAnimatedSimpleText>
+          // <animated.text
+          //   // x={horizontal ? x1 : cx}
+          //   // y={horizontal ? cy : y1}
+          //   x={x}
+          //   y={y}
+          //   fill="white"
+          //   style={{ opacity }}
+          //   // textAnchor={horizontal ? 'start' : 'middle'}
+          //   textAnchor="middle"
+          //   verticalAnchor="middle"
+          //   dy={-6}
+          // >
+          //   {datum.label}
+          // </animated.text>
         ))}
         {/* 
         {data.map((datum) => {

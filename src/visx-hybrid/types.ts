@@ -50,7 +50,7 @@ export interface DataEntry<
   // legendShape?: LegendShape;
 
   transformation: 'none' | 'stacked' | 'grouped';
-  underlyingDatumAccessor: (datum: Datum) => OriginalDatum;
+  underlyingDatumAccessor: (datum: Datum) => OriginalDatum; // change to underlying.datumAccessor + transformation?
   underlying: {
     /** function that returns the key value of a datum. */
     keyAccessor: (datum: OriginalDatum, dataKey?: string) => string;
@@ -415,3 +415,5 @@ export interface SVGBarProps<Datum extends object> {
   colorScale: (dataKey: string) => string;
   colorAccessor?: (datum: Datum, dataKey: string) => string;
 }
+
+export type BarLabelPosition = 'outside' | 'inside' | 'inside-centered';

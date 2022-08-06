@@ -1,5 +1,6 @@
 import type { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
+import { format } from 'd3-format';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import type { CategoryValueDatum } from '@/types';
@@ -45,6 +46,8 @@ function colorAccessor() {
   return schemeCategory10[8];
 }
 
+const dependentAxisTickLabelFormatter = format(',.1~f');
+
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
 export function BarChart({ data }: BarChartProps) {
@@ -70,6 +73,7 @@ export function BarChart({ data }: BarChartProps) {
         dependentAccessor={dependentAccessor}
         colorAccessor={colorAccessor}
         component={SVGBarWithLine}
+        labelFormatter={dependentAxisTickLabelFormatter}
       />
       <SVGA11yBarSeries<CategoryValueDatum<string, number>>
         dataKeyOrKeys="data-a"
@@ -80,8 +84,22 @@ export function BarChart({ data }: BarChartProps) {
       />
       <SVGAxis variable="independent" position="end" label="Foobar Topy" />
       <SVGAxis variable="independent" position="start" label="Foobar Bottomy" />
-      <SVGAxis variable="dependent" position="start" label="Foobar Lefty" tickCount={5} hideZero />
-      <SVGAxis variable="dependent" position="end" label="Foobar Righty" tickCount={5} hideZero />
+      <SVGAxis
+        variable="dependent"
+        position="start"
+        label="Foobar Lefty"
+        tickCount={5}
+        hideZero
+        tickFormat={dependentAxisTickLabelFormatter}
+      />
+      <SVGAxis
+        variable="dependent"
+        position="end"
+        label="Foobar Righty"
+        tickCount={5}
+        hideZero
+        tickFormat={dependentAxisTickLabelFormatter}
+      />
       <SVGBarAnnotation datum={data[2]} dataKey={'data-a'} />
       <PopperTooltip<CategoryValueDatum<string, number>>
         snapTooltipToDatumX

@@ -104,7 +104,10 @@ export function RespondentsByLanguage() {
     [data, statistic]
   );
   const dependentAccessor = useCallback((datum: EntityBucket) => datum[statistic] ?? 0, [statistic]);
-  const dependentAxisTickFormatter = useMemo(() => getDependentAxisTickFormatter(statistic), [statistic]);
+  const dependentAxisTickLabelFormatter = useMemo(
+    () => getDependentAxisTickFormatter(statistic),
+    [statistic]
+  );
 
   return (
     <div>
@@ -137,20 +140,21 @@ export function RespondentsByLanguage() {
                   dependentAccessor={dependentAccessor}
                   colorAccessor={colorAccessor}
                   component={SVGBarWithLine}
+                  labelFormatter={dependentAxisTickLabelFormatter}
                 />
                 <SVGA11yBarSeries<EntityBucket>
                   dataKeyOrKeys="data-a"
                   categoryA11yProps={(category, data) => ({
-                    'aria-label': `${independentAxisTickFormatter(category)}: ${dependentAxisTickFormatter(
-                      dependentAccessor(data[0])
-                    )}`,
+                    'aria-label': `${independentAxisTickFormatter(
+                      category
+                    )}: ${dependentAxisTickLabelFormatter(dependentAccessor(data[0]))}`,
                     'aria-roledescription': 'Language'
                   })}
                 />
                 <SVGAxis
                   variable="dependent"
                   position="end"
-                  tickFormat={dependentAxisTickFormatter}
+                  tickFormat={dependentAxisTickLabelFormatter}
                   hideTicks={false}
                   hideAxisPath
                   tickLabelPadding={6}
@@ -159,7 +163,7 @@ export function RespondentsByLanguage() {
                   variable="dependent"
                   position="start"
                   label={getDependentAxisLabel(statistic)}
-                  tickFormat={dependentAxisTickFormatter}
+                  tickFormat={dependentAxisTickLabelFormatter}
                   hideTicks={false}
                   hideAxisPath
                   tickLabelPadding={6}

@@ -7,7 +7,7 @@ import { BarChart } from './BarChart';
 const dataSets = [
   [
     { category: 'A', value: 89.34 },
-    { category: 'B', value: -83.56 },
+    { category: 'B', value: -8.56 },
     { category: 'C', value: 81.32 },
     { category: 'D', value: -102.974 },
     { category: 'E', value: 87.247 }
