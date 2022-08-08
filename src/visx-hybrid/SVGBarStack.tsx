@@ -8,13 +8,13 @@ import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchild
 import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
 import { SVGBarSeriesProps } from './SVGBarSeries';
-import { SVGBarStackLabels } from './SVGBarStackLabels';
 import { SVGBarStackSeries } from './SVGBarStackSeries';
 import type {
   AxisScale,
   DataEntry,
   NearestDatumArgs,
   NearestDatumReturnType,
+  ScaleInput,
   StackDatum,
   SVGBarProps
 } from './types';
@@ -50,6 +50,8 @@ export interface SVGBarStackProps<Datum extends object> {
   children?: ReactNode;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
   colorAccessor?: (datum: Datum, key: string) => string;
+  /** Must be a stable function. */
+  labelFormatter?: (value: ScaleInput<AxisScale>) => string;
 }
 
 export function SVGBarStack<Datum extends object>(
@@ -65,7 +67,8 @@ export function SVGBarStack<Datum extends object>(
     animate = true,
     springConfig,
     colorAccessor,
-    component
+    component,
+    labelFormatter
   }: SVGBarStackProps<Datum>
 ) {
   const {
@@ -76,7 +79,8 @@ export function SVGBarStack<Datum extends object>(
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     dataEntries,
-    colorScale
+    colorScale,
+    theme
   } = useDataContext();
 
   const seriesChildren = useMemo(
@@ -150,14 +154,17 @@ export function SVGBarStack<Datum extends object>(
               colorAccessor={colorAccessor ?? datum.underlying.colorAccessor}
               colorScale={colorScale}
               underlyingDatumAccessor={datum.underlyingDatumAccessor}
+              underlyingDependentAccessor={datum.underlying.dependentAccessor}
               // {...events}
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               component={component as any} // TODO fix this
+              labelFormatter={labelFormatter}
+              theme={theme}
             />
           </animated.g>
         );
       })}
-      {transitions((styles, datum) => {
+      {/* {transitions((styles, datum) => {
         const child = seriesChildren.find((child) => child.props.dataKey === datum.dataKey);
         const { dependentAccessor } = child?.props ?? {};
         if (!dependentAccessor) {
@@ -181,7 +188,7 @@ export function SVGBarStack<Datum extends object>(
             />
           </animated.g>
         );
-      })}
+      })} */}
     </>
   );
 }

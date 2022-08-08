@@ -1,5 +1,6 @@
 import type { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
+import { format } from 'd3-format';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 import { capitalize } from 'lodash-es';
 
@@ -44,6 +45,8 @@ function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) 
 
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
+const dependentAxisTickLabelFormatter = format(',.1~f');
+
 export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
   return (
     <SVGXYChart
@@ -56,7 +59,10 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
       theme={darkTheme}
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      <SVGBarStack<CategoryValueListDatum<string, number>> stackOrder="none">
+      <SVGBarStack<CategoryValueListDatum<string, number>>
+        stackOrder="none"
+        labelFormatter={dependentAxisTickLabelFormatter}
+      >
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
             key={dataKey}

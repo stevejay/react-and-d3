@@ -43,7 +43,7 @@ function dependentAccessor(datum: CategoryValueDatum<string, number>) {
 }
 
 function colorAccessor() {
-  return schemeCategory10[8];
+  return schemeCategory10[4];
 }
 
 const dependentAxisTickLabelFormatter = format(',.1~f');

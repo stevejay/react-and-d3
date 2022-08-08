@@ -1,8 +1,12 @@
 import { SpringConfig } from 'react-spring';
 import type { ScaleOrdinal } from 'd3-scale';
 
+import { defaultSmallLabelsFont } from './constants';
+import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { SVGSimpleBar } from './SVGSimpleBar';
-import type { AxisScale, ScaleInput, SeriesProps, StackDatum, SVGBarProps } from './types';
+import { SVGAnimatedSimpleText } from './SVGSimpleText';
+import type { AxisScale, ScaleInput, SeriesProps, StackDatum, SVGBarProps, XYChartTheme } from './types';
+import { useBarLabelTransitions } from './useBarLabelTransitions';
 import { useBarStackTransitions } from './useBarStackTransitions';
 
 export type SVGBarStackSeriesProps<
@@ -16,6 +20,7 @@ export type SVGBarStackSeriesProps<
   dependentScale: DependentScale;
   keyAccessor: (datum: Datum) => string;
   underlyingDatumAccessor: (datum: StackDatum<IndependentScale, DependentScale, Datum>) => Datum;
+  underlyingDependentAccessor: (datum: Datum) => ScaleInput<IndependentScale>;
   independentAccessor: (datum: Datum) => ScaleInput<IndependentScale>;
   dependentAccessor: (datum: Datum) => ScaleInput<DependentScale>;
   horizontal: boolean;
@@ -27,6 +32,9 @@ export type SVGBarStackSeriesProps<
   colorScale: ScaleOrdinal<string, string, never>;
   enableEvents?: boolean;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
+  /** Must be a stable function. */
+  labelFormatter?: (value: ScaleInput<AxisScale>) => string;
+  theme: XYChartTheme;
 } & Pick<
   SeriesProps<IndependentScale, DependentScale, Datum>,
   'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
@@ -42,7 +50,10 @@ export function SVGBarStackSeries<
   independentScale,
   dependentScale,
   underlyingDatumAccessor,
+  underlyingDependentAccessor,
   keyAccessor,
+  independentAccessor,
+  dependentAccessor,
   horizontal,
   renderingOffset,
   springConfig,
@@ -56,7 +67,9 @@ export function SVGBarStackSeries<
   //   onPointerOut,
   //   onPointerUp,
   // enableEvents = true,
-  component: BarComponent = SVGSimpleBar
+  component: BarComponent = SVGSimpleBar,
+  theme,
+  labelFormatter
 }: SVGBarStackSeriesProps<IndependentScale, DependentScale, Datum>) {
   const transitions = useBarStackTransitions({
     data,
@@ -69,6 +82,37 @@ export function SVGBarStackSeries<
     renderingOffset,
     underlyingDatumAccessor
   });
+
+  const labelStyles = theme.datumLabels ?? theme.smallLabels;
+  const labelFont = labelStyles?.font ?? defaultSmallLabelsFont;
+  const fontMetrics = getFontMetricsWithCache(labelStyles?.font ?? defaultSmallLabelsFont);
+  const labelTransitions = useBarLabelTransitions<
+    IndependentScale,
+    DependentScale,
+    StackDatum<IndependentScale, DependentScale, Datum>,
+    Datum
+  >({
+    data,
+    independentScale,
+    dependentScale,
+    keyAccessor,
+    independentAccessor,
+    dependentAccessor,
+    underlyingDatumAccessor,
+    underlyingDependentAccessor,
+    dataKey,
+    horizontal,
+    springConfig,
+    animate,
+    renderingOffset,
+    labelFormatter,
+    font: labelFont,
+    position: 'stacked',
+    positionOutsideOnOverflow: false,
+    hideOnOverflow: false
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any); // TODO fix any.
+
   return (
     <>
       {transitions((springValues, datum, _, index) => (
@@ -82,18 +126,19 @@ export function SVGBarStackSeries<
           colorAccessor={colorAccessor}
         />
       ))}
-      {/* {transitions(({ cx, cy, x1, y1, opacity }, datum, _, index) => (
-        <animated.text
-          x={horizontal ? x1 : cx}
-          y={horizontal ? cy : y1}
+      {labelTransitions((styles, datum) => (
+        <SVGAnimatedSimpleText
+          springValues={styles}
+          textAnchor="middle"
+          verticalAnchor="middle"
+          fontHeight={fontMetrics.height}
+          fontHeightFromBaseline={fontMetrics.heightFromBaseline}
+          textStyles={labelStyles}
           fill="white"
-          style={{ opacity }}
-          textAnchor={horizontal ? 'start' : 'middle'}
-          dy={20}
         >
-          Hello t
-        </animated.text>
-      ))} */}
+          {datum.label}
+        </SVGAnimatedSimpleText>
+      ))}
     </>
   );
 }

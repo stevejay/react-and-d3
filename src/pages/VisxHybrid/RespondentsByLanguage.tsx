@@ -45,7 +45,7 @@ function independentAccessor(datum: EntityBucket) {
 }
 
 function colorAccessor() {
-  return schemeCategory10[8];
+  return schemeCategory10[4];
 }
 
 function getDependentAxisTickFormatter(statistic: Statistic) {

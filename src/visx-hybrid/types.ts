@@ -164,6 +164,9 @@ export interface XYChartTheme {
   bigLabels?: TextStyles;
   /** Styles to applied to small SVG labels (tick label, annotation subtitle, etc.). */
   smallLabels?: TextStyles;
+
+  datumLabels?: TextStyles;
+
   axis?: {
     top?: AxisStyles;
     bottom?: AxisStyles;
@@ -417,3 +420,4 @@ export interface SVGBarProps<Datum extends object> {
 }
 
 export type BarLabelPosition = 'outside' | 'inside' | 'inside-centered';
+export type InternalBarLabelPosition = 'outside' | 'inside' | 'inside-centered' | 'stacked';

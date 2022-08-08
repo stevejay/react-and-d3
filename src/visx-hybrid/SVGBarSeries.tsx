@@ -25,8 +25,10 @@ export type SVGBarSeriesProps<Datum extends object> = {
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
   /** Must be a stable function. */
   labelFormatter?: (value: ScaleInput<AxisScale>) => string;
+  /** Optional; defaults to `'inside'`. Ignored if `labelFormatter` prop is not given. */
   labelPosition?: BarLabelPosition;
-  positionLabelOutsideOnOverflow?: boolean;
+  /** Optional; defaults to `true`. Ignored if `labelFormatter` prop is not given. */
+  outsideOnLabelOverflow?: boolean;
 };
 
 export function SVGBarSeries<Datum extends object>({
@@ -38,7 +40,7 @@ export function SVGBarSeries<Datum extends object>({
   component: BarComponent = SVGSimpleBar,
   labelFormatter,
   labelPosition = 'inside',
-  positionLabelOutsideOnOverflow = true
+  outsideOnLabelOverflow = true
 }: SVGBarSeriesProps<Datum>) {
   const {
     horizontal,
@@ -88,7 +90,8 @@ export function SVGBarSeries<Datum extends object>({
     animate,
     renderingOffset
   });
-  const labelStyles = theme.smallLabels;
+  const labelStyles = theme.datumLabels ?? theme.smallLabels;
+  const labelFont = labelStyles?.font ?? defaultSmallLabelsFont;
   const fontMetrics = getFontMetricsWithCache(labelStyles?.font ?? defaultSmallLabelsFont);
   const labelTransitions = useBarLabelTransitions({
     data,
@@ -97,14 +100,18 @@ export function SVGBarSeries<Datum extends object>({
     keyAccessor,
     independentAccessor,
     dependentAccessor,
+    underlyingDatumAccessor: dataEntry.underlyingDatumAccessor,
+    underlyingDependentAccessor: dataEntry.underlying.dependentAccessor,
+    dataKey,
     horizontal,
     springConfig,
     animate,
     renderingOffset,
     labelFormatter,
-    labelStyles,
+    font: labelFont,
     position: labelPosition,
-    positionOutsideOnOverflow: positionLabelOutsideOnOverflow
+    positionOutsideOnOverflow: outsideOnLabelOverflow,
+    hideOnOverflow: true
   });
   return (
     <>
@@ -127,61 +134,12 @@ export function SVGBarSeries<Datum extends object>({
             verticalAnchor="middle"
             fontHeight={fontMetrics.height}
             fontHeightFromBaseline={fontMetrics.heightFromBaseline}
+            textStyles={labelStyles}
             fill="white"
           >
             {datum.label}
           </SVGAnimatedSimpleText>
-          // <animated.text
-          //   // x={horizontal ? x1 : cx}
-          //   // y={horizontal ? cy : y1}
-          //   x={x}
-          //   y={y}
-          //   fill="white"
-          //   style={{ opacity }}
-          //   // textAnchor={horizontal ? 'start' : 'middle'}
-          //   textAnchor="middle"
-          //   verticalAnchor="middle"
-          //   dy={-6}
-          // >
-          //   {datum.label}
-          // </animated.text>
         ))}
-        {/* 
-        {data.map((datum) => {
-          const dependentValue = dependentAccessor(datum);
-          const dependentValueIsPositive = dependentValue >= 0;
-          const fontMetrics = getFontMetricsWithCache(
-            theme?.smallLabels?.font ?? defaultSmallLabelsTextStyle.font
-          );
-          const independentCoord =
-            (coerceNumber(independentScale(independentAccessor(datum))) ?? 0) +
-            getScaleBandwidth(independentScale) * 0.5;
-          const padding = horizontal
-            ? dependentValueIsPositive
-              ? 8
-              : -8
-            : dependentValueIsPositive
-            ? -4
-            : 4;
-          const dependentCoord = (coerceNumber(dependentScale(dependentValue)) ?? 0) + padding;
-          return (
-            <SVGSimpleText
-              key={keyAccessor(datum)}
-              textStyles={theme?.smallLabels ?? defaultSmallLabelsTextStyle}
-              textAnchor={horizontal ? (dependentValueIsPositive ? 'start' : 'end') : 'middle'}
-              verticalAnchor={horizontal ? 'middle' : dependentValueIsPositive ? 'end' : 'start'}
-              x={horizontal ? dependentCoord : independentCoord}
-              y={horizontal ? independentCoord : dependentCoord}
-              role="presentation"
-              aria-hidden
-              fill="white"
-              fontHeight={fontMetrics.height}
-              fontHeightFromBaseline={fontMetrics.heightFromBaseline}
-            >
-              {dependentValue}
-            </SVGSimpleText>
-          );
-        })} */}
       </g>
     </>
   );

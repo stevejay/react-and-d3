@@ -1,5 +1,6 @@
 import type { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
+import { format } from 'd3-format';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import type { CategoryValueListDatum } from '@/types';
@@ -47,6 +48,8 @@ const dependentScale: LinearScaleConfig<number> = {
 
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
+const dependentAxisTickLabelFormatter = format(',.1~f');
+
 export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
   return (
     <SVGXYChart
@@ -62,7 +65,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
       // horizontal
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      <SVGBarGroup padding={0} component={SVGBarWithLine}>
+      <SVGBarGroup padding={0} component={SVGBarWithLine} labelFormatter={dependentAxisTickLabelFormatter}>
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
             key={dataKey}
