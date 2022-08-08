@@ -48,8 +48,22 @@ export const defaultTheme: XYChartTheme = {
     className: 'text-slate-600'
   },
   bigLabels: defaultBigLabelsTextStyle,
-  smallLabels: defaultSmallLabelsTextStyle
+  smallLabels: defaultSmallLabelsTextStyle,
+  tooltip: {
+    container: {
+      style: {
+        pointerEvents: 'none',
+        maxWidth: 280,
+        padding: '4px 8px 4px 8px',
+        backgroundColor: 'white',
+        color: 'black',
+        border: '1px solid black'
+      }
+    }
+  }
 };
+
+// className={`text-slate-900 bg-slate-100 pointer-events-none px-2 py-1 shadow-md max-w-[280px] text-sm leading-none rounded-sm`}
 
 export const AREASERIES_EVENT_SOURCE = 'AREASERIES_EVENT_SOURCE';
 export const AREASTACK_EVENT_SOURCE = 'AREASTACK_EVENT_SOURCE';

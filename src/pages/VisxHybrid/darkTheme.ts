@@ -25,5 +25,11 @@ export const darkTheme: XYChartTheme = {
   smallLabels: {
     font: 'normal normal normal 14px/1 "Readex Pro"',
     className: 'text-slate-200'
+  },
+  tooltip: {
+    container: {
+      className:
+        'text-slate-900 bg-slate-100 pointer-events-none px-2 py-1 shadow-md max-w-[280px] text-sm leading-none rounded-sm'
+    }
   }
 };

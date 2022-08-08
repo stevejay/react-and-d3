@@ -14,11 +14,12 @@ import type { Options as PopperOptions, VirtualElement } from '@popperjs/core';
 import type { PickD3Scale } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 
-import { DataContext } from './DataContext';
+import { defaultTheme } from './constants';
 import { isValidNumber } from './isValidNumber';
 import { Portal } from './Portal';
 import { TooltipContext } from './TooltipContext';
 import type { TooltipContextType, TooltipProps as BaseTooltipProps } from './types';
+import { useDataContext } from './useDataContext';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 export type RenderTooltipParams<Datum extends object> = TooltipContextType<Datum> & {
@@ -91,7 +92,7 @@ export function PopperTooltip<Datum extends object>({
 }: // verticalCrosshairStyle,
 // ...tooltipProps
 PopperTooltipProps<Datum>) {
-  const { /*colorScale, */ innerHeight, innerWidth, margin } = useContext(DataContext) || {};
+  const { /*colorScale, */ innerHeight, innerWidth, margin, theme } = useDataContext();
   const tooltipContext = useContext(TooltipContext) as TooltipContextType<Datum>;
   const referenceElement = useRef<HTMLElement | null>(null); // TODO should this be state?
   const updateRef = useRef<ReturnType<typeof usePopper>['update']>();
@@ -150,8 +151,8 @@ PopperTooltipProps<Datum>) {
   const glyphProps: GlyphProps[] = [];
 
   if (showDatumGlyph) {
-    const radius = 4; // Number(glyphStyle?.radius ?? 4);
-    const strokeWidth = 1.5; // Number(glyphStyle?.strokeWidth ?? 1.5);
+    const radius = Number(theme?.tooltip?.glyph?.radius ?? 4);
+    const strokeWidth = Number(theme?.tooltip?.glyph?.strokeWidth ?? 0);
 
     if (nearestDatum) {
       const { snapLeft: left, snapTop: top } = nearestDatum;
@@ -161,7 +162,6 @@ PopperTooltipProps<Datum>) {
         glyphProps.push({
           left: left - radius - strokeWidth,
           top: top - radius - strokeWidth,
-          fill: 'red',
           radius,
           strokeWidth
         });
@@ -176,6 +176,12 @@ PopperTooltipProps<Datum>) {
     config: { duration: 200, easing: easeCubicInOut }
   });
 
+  const { style: crosshairsStyle, ...restCrosshairsStyles } = theme?.tooltip?.crosshairs ?? {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { strokeWidth: _strokeWidth, radius: _radius, ...restGlyphStyles } = theme?.tooltip?.glyph ?? {};
+  const { style: containerStyle, ...restContainerStyles } =
+    theme?.tooltip?.container ?? defaultTheme.tooltip?.container ?? {};
+
   return (
     <>
       <svg ref={setContainerRef} style={INVISIBLE_STYLES} />
@@ -189,9 +195,10 @@ PopperTooltipProps<Datum>) {
                   x2={tooltipLeft}
                   y1={margin?.top ?? 0}
                   y2={(margin?.top ?? 0) + (innerHeight ?? 0)}
-                  strokeWidth={1.5}
-                  stroke="#aaa"
-                  style={{ ...springStyles }}
+                  strokeWidth={1}
+                  stroke="currentColor"
+                  style={{ ...crosshairsStyle, ...springStyles }}
+                  {...restCrosshairsStyles}
                   // {...verticalCrosshairStyle}
                 />
               )}
@@ -201,34 +208,36 @@ PopperTooltipProps<Datum>) {
                   x2={(margin?.left ?? 0) + (innerWidth ?? 0)}
                   y1={tooltipTop}
                   y2={tooltipTop}
-                  strokeWidth={1.5}
-                  stroke="#aaa"
-                  style={{ ...springStyles }}
+                  strokeWidth={1}
+                  stroke="currentColor"
+                  style={{ ...crosshairsStyle, ...springStyles }}
+                  {...restCrosshairsStyles}
                 />
               )}
-              {glyphProps.map(({ left, top, fill, stroke, strokeWidth, radius }, i) =>
+              {glyphProps.map(({ left, top, strokeWidth, radius }, i) =>
                 top == null || left == null ? null : (
                   <animated.circle
                     key={i}
                     cx={left + radius + strokeWidth}
                     cy={top + radius + strokeWidth}
                     r={radius}
-                    fill={fill}
-                    stroke={stroke}
                     strokeWidth={strokeWidth}
+                    stroke="currentColor"
+                    fill="currentColor"
                     paintOrder="fill"
                     style={{ ...springStyles }}
-                    // {...glyphStyle}
+                    {...restGlyphStyles}
                   />
                 )
               )}
               <Portal node={document && document.getElementById('portal-tooltip')}>
                 <animated.div
                   ref={setPopperElement}
-                  style={{ ...springStyles, ...popperStyles.popper }}
-                  className={`text-slate-900 bg-slate-100 pointer-events-none px-2 py-1 shadow-md max-w-[280px] text-sm leading-none rounded-sm`}
+                  style={{ ...containerStyle, ...springStyles, ...popperStyles.popper }}
                   {...attributes.popper}
+                  role="presentation"
                   aria-hidden
+                  {...restContainerStyles}
                 >
                   {renderTooltip({ ...tooltipContext /*, colorScale */ })}
                 </animated.div>

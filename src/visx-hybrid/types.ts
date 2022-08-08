@@ -151,6 +151,16 @@ export interface SVGStyles {
   className?: string;
 }
 
+export interface DivStyles {
+  style?: CSSProperties;
+  className?: string;
+}
+
+export type GlyphStyles = {
+  radius?: number;
+  className?: string;
+} & Pick<SVGProps<SVGCircleElement>, 'stroke' | 'strokeWidth' | 'strokeLinecap' | 'strokeDasharray' | 'fill'>;
+
 export interface XYChartTheme {
   /** Ordinal colors to be used for default coloring by series `key`s. */
   colors: readonly string[];
@@ -172,6 +182,12 @@ export interface XYChartTheme {
     bottom?: AxisStyles;
     left?: AxisStyles;
     right?: AxisStyles;
+  };
+
+  tooltip?: {
+    glyph?: GlyphStyles;
+    crosshairs?: LineStyles;
+    container?: DivStyles;
   };
 }
 
