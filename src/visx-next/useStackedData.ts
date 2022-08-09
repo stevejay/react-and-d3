@@ -9,11 +9,11 @@ import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 import { getChildrenAndGrandchildrenWithProps } from './types/typeguards/isChildWithProps';
 import { BarSeriesProps } from './BarSeries';
 import { combineBarStackData } from './combineBarStackData';
-import { DataContext } from './DataContext';
 import { getBarStackRegistryData } from './getBarStackRegistryData';
 import getStackOffset from './stackOffset';
 import getStackOrder from './stackOrder';
 import { DataContextType, StackDataWithSums } from './types';
+import { XYChartContext } from './XYChartContext';
 
 // interface JSXElement extends ReactElement<any, any> {}
 
@@ -34,12 +34,9 @@ export function useStackedData<
   const [stackedData, setStackedData] =
     useState<Series<StackDataWithSums<XScale, YScale, Datum>, string>[]>();
 
-  const { horizontal, registerData, unregisterData } = useContext(DataContext) as unknown as DataContextType<
-    XScale,
-    YScale,
-    StackDatum,
-    Datum
-  >;
+  const { horizontal, registerData, unregisterData } = useContext(
+    XYChartContext
+  ) as unknown as DataContextType<XScale, YScale, StackDatum, Datum>;
 
   const barSeriesChildren = useMemo(
     () => getChildrenAndGrandchildrenWithProps<BarSeriesProps<XScale, YScale, Datum>>(children),

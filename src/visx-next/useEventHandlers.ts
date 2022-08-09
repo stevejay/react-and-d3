@@ -3,12 +3,12 @@ import { AxisScale } from '@visx/axis';
 import { isNil } from 'lodash-es';
 
 import { isPointerEvent } from './types/typeguards/isPointerEvent';
-import { DataContext } from './DataContext';
 import { HandlerParams } from './EventEmitterProvider';
 import { findNearestDatumX } from './findNearestDatumX';
 import { findNearestDatumY } from './findNearestDatumY';
 import { DataContextType, EventHandlerParams, NearestDatumArgs, NearestDatumReturnType } from './types';
 import { useEventEmitterSubscription } from './useEventEmitterSubscription';
+import { XYChartContext } from './XYChartContext';
 
 export const POINTER_EVENTS_ALL = '__POINTER_EVENTS_ALL';
 export const POINTER_EVENTS_NEAREST = '__POINTER_EVENTS_NEAREST';
@@ -51,7 +51,7 @@ export function useEventHandlers<XScale extends AxisScale, YScale extends AxisSc
   allowedSources
 }: PointerEventHandlerParams<XScale, YScale, Datum>) {
   const { width, height, horizontal, dataRegistry, xScale, yScale } = useContext(
-    DataContext
+    XYChartContext
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) as unknown as DataContextType<XScale, YScale, any, Datum>; // Not sure about this use of any.
 

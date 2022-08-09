@@ -1,6 +1,6 @@
 import { isNil } from 'lodash-es';
 
-import type { PolygonTransitionsProps } from './types';
+import type { PolygonTransition } from './types';
 
 export function createPolygonTransition(
   args: {
@@ -9,7 +9,7 @@ export function createPolygonTransition(
     datumX: number;
     datumY: number;
   } | null
-): Omit<PolygonTransitionsProps, 'opacity'> | null {
+): Omit<PolygonTransition, 'opacity'> | null {
   if (isNil(args)) {
     return null;
   }

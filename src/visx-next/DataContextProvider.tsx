@@ -5,10 +5,10 @@ import { ScaleConfig, ScaleConfigToD3Scale, scaleOrdinal } from '@visx/scale';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { defaultSpringConfig } from './constants';
-import { DataContext } from './DataContext';
 import { useDataRegistry } from './useDataRegistry';
 import { Dimensions, useDimensions } from './useDimensions';
 import { useScales } from './useScales';
+import { XYChartContext } from './XYChartContext';
 
 /** Props that can be passed to initialize/update the provider config. */
 export interface DataContextProviderProps<
@@ -119,5 +119,5 @@ export function DataContextProvider<
     ]
   );
 
-  return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
+  return <XYChartContext.Provider value={value}>{children}</XYChartContext.Provider>;
 }

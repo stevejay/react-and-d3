@@ -19,9 +19,9 @@ import { Portal } from '@/components/Portal';
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { isValidNumber } from './types/typeguards/isValidNumber';
-import { DataContext } from './DataContext';
 import { TooltipContext } from './TooltipContext';
 import { TooltipContextType } from './types';
+import { XYChartContext } from './XYChartContext';
 
 export type RenderTooltipParams<Datum extends object> = TooltipContextType<Datum> & {
   colorScale?: PickD3Scale<'ordinal', string, string>;
@@ -93,7 +93,7 @@ export function PopperTooltip<Datum extends object>({
 }: // verticalCrosshairStyle,
 // ...tooltipProps
 PopperTooltipProps<Datum>) {
-  const { colorScale, innerHeight, innerWidth, margin } = useContext(DataContext) || {};
+  const { colorScale, innerHeight, innerWidth, margin } = useContext(XYChartContext) || {};
   const tooltipContext = useContext(TooltipContext) as TooltipContextType<Datum>;
   const referenceElement = useRef<HTMLElement | null>(null); // TODO should this be state?
   const updateRef = useRef<ReturnType<typeof usePopper>['update']>();

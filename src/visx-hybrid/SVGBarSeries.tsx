@@ -33,7 +33,6 @@ export function SVGBarSeries<Datum extends object>({
   const {
     scales,
     horizontal,
-    colorScale,
     renderingOffset,
     springConfig: contextSpringConfig,
     animate: contextAnimate,
@@ -70,7 +69,7 @@ export function SVGBarSeries<Datum extends object>({
           index={index}
           dataKey={dataKey}
           horizontal={horizontal}
-          colorScale={colorScale}
+          colorScale={scales.color}
           colorAccessor={dataEntry.colorAccessor}
         />
       ))}

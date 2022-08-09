@@ -4,6 +4,7 @@ import { animated, SpringConfig } from 'react-spring';
 import { BARSTACK_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
 import findNearestStackDatum from './findNearestStackDatum';
 import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchildrenWithProps';
+import { isDefined } from './isDefined';
 import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
 import { SVGBarSeriesProps } from './SVGBarSeries';
@@ -41,7 +42,6 @@ export function SVGBarStack<Datum extends object>({
     renderingOffset,
     springConfig: contextSpringConfig,
     animate: contextAnimate,
-    colorScale,
     dataEntryStore
   } = useXYChartContext();
 
@@ -50,7 +50,7 @@ export function SVGBarStack<Datum extends object>({
     [children]
   );
 
-  const dataKeys = seriesChildren.map((child) => child.props.dataKey).filter((key) => key);
+  const dataKeys = seriesChildren.map((child) => child.props.dataKey).filter(isDefined);
 
   // custom logic to find the nearest AreaStackDatum (context) and return the original Datum (props)
   const findNearestDatum = useCallback(
@@ -105,7 +105,7 @@ export function SVGBarStack<Datum extends object>({
               animate={animate && contextAnimate}
               springConfig={springConfig ?? contextSpringConfig}
               colorAccessor={colorAccessor ?? datum.colorAccessor}
-              colorScale={colorScale}
+              colorScale={scales.color}
               // {...events}
               component={component}
             />

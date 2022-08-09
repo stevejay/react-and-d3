@@ -1,7 +1,7 @@
 import { SpringConfig, useTransition } from 'react-spring';
 
 import { createPolygonTransition } from './createPolygonTransition';
-import type { IDatumEntry, PolygonTransitionsProps, ScaleSet } from './types';
+import type { IDatumEntry, PolygonTransition, ScaleSet } from './types';
 
 export function useBarTransitions<Datum extends object>({
   dataEntry,
@@ -22,7 +22,7 @@ export function useBarTransitions<Datum extends object>({
   seriesIsLeaving?: boolean;
 }) {
   const position = dataEntry.createDatumPositioner({ scales, horizontal, renderingOffset });
-  return useTransition<Datum, PolygonTransitionsProps>(dataEntry.data, {
+  return useTransition<Datum, PolygonTransition>(dataEntry.data, {
     initial: (datum) => ({ opacity: 1, ...createPolygonTransition(position(datum)) }),
     from: (datum) => ({ opacity: 0, ...createPolygonTransition(position(datum)) }),
     enter: (datum) => ({ opacity: 1, ...createPolygonTransition(position(datum)) }),

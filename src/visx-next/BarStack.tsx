@@ -5,7 +5,6 @@ import { SeriesPoint } from 'd3-shape';
 
 import { useBarStackTransitions, useSeriesTransitions } from './animation';
 import { BarSeriesProps } from './BarSeries';
-import { DataContext } from './DataContext';
 import { DataRegistry } from './DataRegistry';
 import { BARSTACK_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './eventSources';
 import findNearestStackDatum from './findNearestStackDatum';
@@ -22,6 +21,7 @@ import {
 } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useStackedData } from './useStackedData';
+import { XYChartContext } from './XYChartContext';
 
 type BarStackSeriesProps<XScale extends PositionScale, YScale extends PositionScale, Datum extends object> = {
   dataKey: string;
@@ -234,7 +234,7 @@ export function SvgXYChartBarStack<
     xScale,
     yScale,
     springConfig: fallbackSpringConfig
-  } = useContext(DataContext) as unknown as DataContextType<
+  } = useContext(XYChartContext) as unknown as DataContextType<
     XScale,
     YScale,
     BarStackDatum<XScale, YScale, Datum>,

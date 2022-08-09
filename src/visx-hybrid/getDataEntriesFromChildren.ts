@@ -1,18 +1,15 @@
 import { Children, Fragment, isValidElement, JSXElementConstructor, ReactElement, ReactNode } from 'react';
 import { scaleBand } from '@visx/scale';
-import { extent } from 'd3-array';
 import type { ScaleBand } from 'd3-scale';
 import { stack as d3stack } from 'd3-shape';
-import { identity } from 'lodash-es';
 
 import { combineBarStackData } from './combineBarStackData';
 import { defaultGroupPadding } from './constants';
 import { GroupDatumEntry, SimpleDatumEntry, StackDatumEntry } from './DatumEntry';
-import { getBarStackDataEntries } from './getBarStackDataEntries';
 import { isDefined } from './isDefined';
 import { getStackOffset } from './stackOffset';
 import { getStackOrder } from './stackOrder';
-import type { AxisScale, DataEntry, IDatumEntry, ScaleInput, StackDataWithSums } from './types';
+import type { AxisScale, IDatumEntry, StackDataWithSums } from './types';
 
 export function getDataEntriesFromChildren<
   IndependentScale extends AxisScale,
@@ -22,17 +19,10 @@ export function getDataEntriesFromChildren<
   horizontal: boolean,
   isInsideGroup = false
 ): {
-  dataEntries: DataEntry<IndependentScale, DependentScale>[];
-  independentDomainValues: ScaleInput<IndependentScale>[];
-  dependentDomainValues: ScaleInput<DependentScale>[];
-  newDataEntries: readonly IDatumEntry[];
+  dataEntries: readonly IDatumEntry[];
   groupScales: readonly ScaleBand<string>[];
 } {
-  const dataEntries: DataEntry<IndependentScale, DependentScale>[] = [];
-  const independentDomainValues: ScaleInput<IndependentScale>[] = [];
-  const dependentDomainValues: ScaleInput<DependentScale>[] = [];
-
-  const newDataEntries: IDatumEntry[] = [];
+  const dataEntries: IDatumEntry[] = [];
   const groupScales: ScaleBand<string>[] = [];
 
   Children.forEach(children, (element) => {
@@ -48,25 +38,19 @@ export function getDataEntriesFromChildren<
       const { sort, padding = defaultGroupPadding, children } = element.props;
 
       const result = getDataEntriesFromChildren<IndependentScale, DependentScale>(children, horizontal, true);
-      const dataKeys = result.newDataEntries.map((dataEntry) => dataEntry.dataKey);
+      const dataKeys = result.dataEntries.map((dataEntry) => dataEntry.dataKey);
 
       const groupScale = scaleBand<string>({ domain: sort ? [...dataKeys].sort(sort) : dataKeys, padding });
       groupScales.push(groupScale);
 
-      result.newDataEntries.forEach((dataEntry) => newDataEntries.push(dataEntry));
-      result.dataEntries.forEach((dataEntry) => {
-        dataEntry.transformation = 'grouped';
-        dataEntries.push(dataEntry);
-      });
-      result.independentDomainValues.forEach((value) => independentDomainValues.push(value));
-      result.dependentDomainValues.forEach((value) => dependentDomainValues.push(value));
+      result.dataEntries.forEach((dataEntry) => dataEntries.push(dataEntry));
     } else if (typeof element.type !== 'string' && element.type.name.endsWith('Stack')) {
       const { stackOrder, stackOffset } = element.props;
       const result = getDataEntriesFromChildren<IndependentScale, DependentScale>(
         element.props.children,
         horizontal
       );
-      const dataKeys = result.dataEntries.map((entry) => entry.dataKey).filter((dataKey) => Boolean(dataKey));
+      const dataKeys = result.dataEntries.map((dataEntry) => dataEntry.dataKey).filter(isDefined);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const combinedData = combineBarStackData<IndependentScale, DependentScale, any>(
@@ -90,7 +74,7 @@ export function getDataEntriesFromChildren<
 
       const stackedData = stack(combinedData);
 
-      const newStackDataEntries = stackedData
+      const stackDataEntries = stackedData
         .map((seriesData) => {
           const matchingChild = element.props.children.find(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -109,30 +93,9 @@ export function getDataEntriesFromChildren<
             : null;
         })
         .filter(isDefined);
-      newStackDataEntries.forEach((dataEntry) => newDataEntries.push(dataEntry));
-
-      const stackDataEntries = getBarStackDataEntries(stackedData, element.props.children);
-      stackDataEntries.forEach((dataEntry) => {
-        dataEntries.push(dataEntry);
-        dataEntry.data.forEach((datum) => {
-          independentDomainValues.push(dataEntry.independentAccessor(datum));
-          // TODO See if this works:
-          // dependentDomainValues.push(getFirstItem(datum), getSecondItem(datum));
-        });
-      });
-
-      const comprehensiveDomain = extent(
-        stackedData.reduce((allDatum: number[], stack) => {
-          stack.forEach(([min, max]) => {
-            allDatum.push(min);
-            allDatum.push(max);
-          });
-          return allDatum;
-        }, [])
-      ) as [number, number];
-      dependentDomainValues.push(comprehensiveDomain[0], comprehensiveDomain[1]);
+      stackDataEntries.forEach((dataEntry) => dataEntries.push(dataEntry));
     } else if (element.props.dataKey && element.props.data) {
-      const newDatumEntry = new (isInsideGroup ? GroupDatumEntry : SimpleDatumEntry)(
+      const dataEntry = new (isInsideGroup ? GroupDatumEntry : SimpleDatumEntry)(
         element.props.dataKey,
         element.props.data,
         element.props.independentAccessor,
@@ -140,35 +103,9 @@ export function getDataEntriesFromChildren<
         element.props.colorAccessor,
         element.props.keyAccessor
       );
-      newDataEntries.push(newDatumEntry);
-
-      const dataEntry: DataEntry<IndependentScale, DependentScale> = {
-        dataKey: element.props.dataKey,
-        data: element.props.data,
-        independentAccessor: element.props.independentAccessor,
-        dependentAccessor: element.props.dependentAccessor,
-        underlyingDatumAccessor: identity,
-        transformation: 'none',
-        underlying: {
-          keyAccessor: element.props.keyAccessor ?? element.props.independentAccessor,
-          independentAccessor: element.props.independentAccessor,
-          dependentAccessor: element.props.dependentAccessor,
-          colorAccessor: element.props.colorAccessor
-        }
-      };
       dataEntries.push(dataEntry);
-      dataEntry.data.forEach((datum) => {
-        independentDomainValues.push(dataEntry.independentAccessor(datum));
-        dependentDomainValues.push(dataEntry.dependentAccessor(datum));
-      });
     }
   });
 
-  return {
-    dataEntries,
-    independentDomainValues,
-    dependentDomainValues,
-    newDataEntries,
-    groupScales
-  };
+  return { dataEntries, groupScales };
 }

@@ -18,7 +18,6 @@ import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 import { getChildrenAndGrandchildrenWithProps } from './types/typeguards/isChildWithProps';
 import { useBarGroupTransitions, useSeriesTransitions } from './animation';
 import { BarSeriesProps } from './BarSeries';
-import { DataContext } from './DataContext';
 import { DataRegistry } from './DataRegistry';
 import { BARGROUP_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './eventSources';
 import { findNearestGroupDatum } from './findNearestGroupDatum';
@@ -31,6 +30,7 @@ import {
   SeriesProps
 } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
+import { XYChartContext } from './XYChartContext';
 
 export declare enum TransitionPhase {
   /** This transition is being mounted */
@@ -280,7 +280,7 @@ export function XYChartBarGroup<
     yScale,
     colorScale,
     springConfig: fallbackSpringConfig
-  } = useContext(DataContext) as unknown as DataContextType<XScale, YScale, Datum, Datum>;
+  } = useContext(XYChartContext) as unknown as DataContextType<XScale, YScale, Datum, Datum>;
 
   const barSeriesChildren = useMemo(
     () => getChildrenAndGrandchildrenWithProps<BarSeriesProps<XScale, YScale, Datum>>(children),

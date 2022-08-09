@@ -3,8 +3,8 @@ import { AxisScale } from '@visx/axis';
 
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
-import { DataContext } from './DataContext';
 import { DataContextType, SeriesProps } from './types';
+import { XYChartContext } from './XYChartContext';
 
 export type WithRegisteredDataProps<
   XScale extends AxisScale,
@@ -38,7 +38,7 @@ export function withRegisteredData<
   ) {
     const { dataKey, data, keyAccessor, xAccessor, yAccessor, colorAccessor } = props;
     const { xScale, yScale, dataRegistry, springConfig } = useContext(
-      DataContext
+      XYChartContext
     ) as unknown as DataContextType<XScale, YScale, Datum, Datum>;
 
     useIsomorphicLayoutEffect(() => {

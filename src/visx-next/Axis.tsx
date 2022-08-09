@@ -6,10 +6,10 @@ import { Text } from '@visx/text';
 
 import { useAxisTransitions } from './animation';
 import { AxisDomainPath } from './AxisDomainPath';
-import { DataContext } from './DataContext';
 import { getLabelTransform } from './getLabelTransform';
 import { getTicksData } from './getTicksData';
 import { AxisScale, CommonAxisProps, SvgAxisRendererProps, TextProps, TicksRendererProps } from './types';
+import { XYChartContext } from './XYChartContext';
 
 type SvgAxisTickLineProps = Omit<SVGProps<SVGLineElement>, 'ref'>;
 
@@ -252,7 +252,7 @@ export function SvgXYChartAxis<Scale extends AxisScale>({
     springConfig: fallbackSpringConfig,
     xRangePadding,
     yRangePadding
-  } = useContext(DataContext);
+  } = useContext(XYChartContext);
 
   const top =
     orientation === 'bottom'

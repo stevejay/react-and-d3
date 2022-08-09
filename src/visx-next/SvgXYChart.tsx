@@ -7,7 +7,6 @@ import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { ParentSize } from '../visx-hybrid/ParentSize';
 
-import { DataContext } from './DataContext';
 import { DataContextProvider, DataContextProviderProps } from './DataContextProvider';
 import { EventEmitterContext, EventEmitterProvider } from './EventEmitterProvider';
 import { XYCHART_EVENT_SOURCE } from './eventSources';
@@ -17,6 +16,7 @@ import { TooltipProvider } from './TooltipProvider';
 import { EventHandlerParams, Margin } from './types';
 import { useEventEmitters } from './useEventEmitters';
 import { POINTER_EVENTS_ALL, POINTER_EVENTS_NEAREST, useEventHandlers } from './useEventHandlers';
+import { XYChartContext } from './XYChartContext';
 
 // TODO what about predetermined domain ranges?
 
@@ -47,15 +47,15 @@ export type SvgXYChartProps<
   height?: number;
   /** Margin to apply around the chart. */
   margin?: Margin;
-  /** If DataContext is not available, XYChart will wrap itself in a DataContextProvider and set this as the xScale config. */
+  /** If XYChartContext is not available, XYChart will wrap itself in a DataContextProvider and set this as the xScale config. */
   xScale?: DataContextProviderProps<XScaleConfig, YScaleConfig>['xScale'];
-  /** If DataContext is not available, XYChart will wrap itself in a DataContextProvider and set this as the yScale config. */
+  /** If XYChartContext is not available, XYChart will wrap itself in a DataContextProvider and set this as the yScale config. */
   yScale?: DataContextProviderProps<XScaleConfig, YScaleConfig>['yScale'];
-  /** If DataContext is not available, XYChart will wrap itself in a DataContextProvider and set this as horizontal. */
+  /** If XYChartContext is not available, XYChart will wrap itself in a DataContextProvider and set this as horizontal. */
   horizontal?: boolean;
   /**
    * A react-spring configuration object.
-   * If DataContext is not available, XYChart will wrap itself in a DataContextProvider and set this as springConfig.
+   * If XYChartContext is not available, XYChart will wrap itself in a DataContextProvider and set this as springConfig.
    * If provided, must be a stable object.
    */
   springConfig?: SpringConfig;
@@ -107,7 +107,7 @@ export function SvgXYChart<
   } = props;
 
   const tooltipContext = useContext(TooltipContext);
-  const { setDimensions } = useContext(DataContext);
+  const { setDimensions } = useContext(XYChartContext);
   const emitter = useContext(EventEmitterContext);
 
   useIsomorphicLayoutEffect(() => {
@@ -130,7 +130,7 @@ export function SvgXYChart<
     allowedSources: allowedEventSources
   });
 
-  // if DataContext is not available, wrap self in that provider.
+  // if XYChartContext is not available, wrap self in that provider.
   if (!setDimensions) {
     if (!xScale || !yScale) {
       console.warn(

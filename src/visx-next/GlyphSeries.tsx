@@ -4,11 +4,11 @@ import { AxisScale } from '@visx/axis';
 import { Group } from '@visx/group';
 
 import { useGlyphSeriesTransitions } from './animation';
-import { DataContext } from './DataContext';
 import { GLYPHSERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './eventSources';
 import { PositionScale, SeriesProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { withRegisteredData, WithRegisteredDataProps } from './withRegisteredData';
+import { XYChartContext } from './XYChartContext';
 
 export type GlyphSeriesProps<
   XScale extends AxisScale,
@@ -118,7 +118,7 @@ const MemoizedXYChartGlyphSeriesInner = memo(
     ...rest
   }: Omit<GlyphSeriesProps<XScale, YScale, Datum>, 'horizontal'> &
     WithRegisteredDataProps<XScale, YScale, Datum>) {
-    const { springConfig: fallbackSpringConfig, horizontal, colorScale } = useContext(DataContext);
+    const { springConfig: fallbackSpringConfig, horizontal, colorScale } = useContext(XYChartContext);
     const fallbackColorAccessor = useCallback(() => colorScale?.(dataKey) ?? '', [colorScale, dataKey]);
     return (
       <GlyphSeries

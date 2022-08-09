@@ -36,4 +36,4 @@ export type InferDataContext<C extends AnyDataContext = AnyDataContext> = DataCo
   InferOriginalDatum<C>
 >;
 
-export const DataContext = createContext<Partial<InferDataContext>>({});
+export const XYChartContext = createContext<Partial<InferDataContext>>({});

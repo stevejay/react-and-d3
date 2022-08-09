@@ -4,11 +4,11 @@ import { AxisScale } from '@visx/axis';
 import { Group } from '@visx/group';
 
 import { useBarSeriesTransitions } from './animation';
-import { DataContext } from './DataContext';
 import { BARSERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './eventSources';
 import { PositionScale, SeriesProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { withRegisteredData, WithRegisteredDataProps } from './withRegisteredData';
+import { XYChartContext } from './XYChartContext';
 
 export type BarSeriesProps<
   XScale extends AxisScale,
@@ -124,7 +124,7 @@ const MemoizedXYChartBarSeriesInner = memo(
       SeriesProps<XScale, YScale, Datum>,
       'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
     >) {
-    const { springConfig: fallbackSpringConfig, horizontal, colorScale } = useContext(DataContext);
+    const { springConfig: fallbackSpringConfig, horizontal, colorScale } = useContext(XYChartContext);
     const fallbackColorAccessor = useCallback(() => colorScale?.(dataKey) ?? '', [colorScale, dataKey]);
     return (
       <BarSeries

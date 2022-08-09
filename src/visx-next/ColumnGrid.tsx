@@ -6,8 +6,8 @@ import { isNil } from 'lodash-es';
 
 import { useAxisTransitions } from './animation';
 import { defaultSpringConfig } from './constants';
-import { DataContext } from './DataContext';
 import { CommonGridProps, GridScale } from './types';
+import { XYChartContext } from './XYChartContext';
 
 export type ColumnGridProps<Scale extends GridScale> = CommonGridProps<Scale> & {
   top: number;
@@ -62,7 +62,7 @@ export function XYChartColumnGrid<Scale extends GridScale>({
   springConfig,
   ...rest
 }: XYChartColumnGridProps<Scale>) {
-  const { xScale, margin, innerHeight, springConfig: fallbackSpringConfig } = useContext(DataContext);
+  const { xScale, margin, innerHeight, springConfig: fallbackSpringConfig } = useContext(XYChartContext);
   if (!xScale || isNil(innerHeight)) {
     return null;
   }

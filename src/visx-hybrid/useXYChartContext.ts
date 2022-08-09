@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 import { isNil } from 'lodash-es';
 
-import { DataContext } from './DataContext';
+import { XYChartContext } from './XYChartContext';
 
 export function useXYChartContext() {
-  const value = useContext(DataContext);
+  const value = useContext(XYChartContext);
   if (isNil(value)) {
-    throw new Error('No context value found for DataContext.');
+    throw new Error('No context value found for XYChartContext.');
   }
   return value;
 }

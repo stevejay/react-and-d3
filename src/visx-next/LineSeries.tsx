@@ -8,12 +8,12 @@ import { isNil } from 'lodash-es';
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { useLineSeriesTransitions } from './animation';
-import { DataContext } from './DataContext';
 import { LINESERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './eventSources';
 import { createLineSeriesPositioning } from './positioning';
 import { PositionScale, SeriesProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { withRegisteredData, WithRegisteredDataProps } from './withRegisteredData';
+import { XYChartContext } from './XYChartContext';
 
 export type LineSeriesProps<
   XScale extends AxisScale,
@@ -221,7 +221,7 @@ const MemoizedXYChartLineSeriesInner = memo(
     ...rest
   }: Omit<LineSeriesProps<XScale, YScale, Datum>, 'horizontal' | 'colorAccessor'> &
     WithRegisteredDataProps<XScale, YScale, Datum> & { animationType?: 'morph' | 'dashoffset' }) {
-    const { springConfig: fallbackSpringConfig, horizontal, colorScale } = useContext(DataContext);
+    const { springConfig: fallbackSpringConfig, horizontal, colorScale } = useContext(XYChartContext);
     const colorAccessor = useCallback(() => colorScale?.(dataKey) ?? '', [colorScale, dataKey]);
     const Component = animationType === 'morph' ? LineSeries : CurtainLineSeries;
     return (

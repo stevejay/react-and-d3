@@ -65,8 +65,6 @@ export const defaultTheme: XYChartTheme = {
   }
 };
 
-// className={`text-slate-900 bg-slate-100 pointer-events-none px-2 py-1 shadow-md max-w-[280px] text-sm leading-none rounded-sm`}
-
 export const AREASERIES_EVENT_SOURCE = 'AREASERIES_EVENT_SOURCE';
 export const AREASTACK_EVENT_SOURCE = 'AREASTACK_EVENT_SOURCE';
 export const BARGROUP_EVENT_SOURCE = 'BARGROUP_EVENT_SOURCE';

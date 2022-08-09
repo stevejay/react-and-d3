@@ -1,4 +1,4 @@
-import type { AxisScale, DataEntry, StackDataWithSums } from './types';
+import type { AxisScale, IDatumEntry, StackDataWithSums } from './types';
 
 /**
  * Merges `seriesChildren` `props.data` by their `stack` value which
@@ -10,7 +10,7 @@ export function combineBarStackData<
   DependentScale extends AxisScale,
   Datum extends object
 >(
-  stackDataEntries: DataEntry<IndependentScale, DependentScale, Datum>[],
+  stackDataEntries: readonly IDatumEntry[],
   horizontal?: boolean
 ): StackDataWithSums<IndependentScale, DependentScale, Datum>[] {
   const dataByStackValue: {
@@ -19,6 +19,7 @@ export function combineBarStackData<
 
   stackDataEntries.forEach((dataEntry) => {
     const { dataKey, data, independentAccessor, dependentAccessor } = dataEntry;
+
     if (!independentAccessor || !dependentAccessor) {
       return;
     }

@@ -35,8 +35,7 @@ export function SVGBarGroup<Datum extends object>({
     renderingOffset,
     springConfig: contextSpringConfig,
     animate: contextAnimate,
-    dataEntryStore,
-    colorScale
+    dataEntryStore
   } = useXYChartContext();
 
   const barSeriesChildren = useMemo(
@@ -73,7 +72,7 @@ export function SVGBarGroup<Datum extends object>({
               animate={animate && contextAnimate}
               springConfig={springConfig ?? contextSpringConfig}
               colorAccessor={colorAccessor ?? datum.colorAccessor}
-              colorScale={colorScale}
+              colorScale={scales.color}
               // {...events}
               component={component}
             />

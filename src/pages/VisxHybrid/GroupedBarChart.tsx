@@ -98,22 +98,8 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
         })}
       />
       <SVGBarAnnotation datum={data[2]} dataKeyRef="three" />
-      <SVGAxis
-        variable="independent"
-        position="end"
-        label="Foobar Top"
-        hideTicks
-        tickLabelPadding={6}
-        // autoMarginLabelPadding={10}
-      />
-      <SVGAxis
-        variable="independent"
-        position="start"
-        label="Foobar Bottom"
-        hideTicks
-        tickLabelPadding={6}
-        // autoMarginLabelPadding={10}
-      />
+      <SVGAxis variable="independent" position="end" label="Foobar Top" hideTicks tickLabelPadding={6} />
+      <SVGAxis variable="independent" position="start" label="Foobar Bottom" hideTicks tickLabelPadding={6} />
       <SVGAxis
         variable="dependent"
         position="start"
@@ -121,7 +107,6 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
         tickCount={5}
         hideZero
         tickLabelPadding={6}
-        // autoMarginLabelPadding={10}
       />
       <SVGAxis
         variable="dependent"
@@ -130,7 +115,6 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
         tickCount={5}
         hideZero
         tickLabelPadding={6}
-        // autoMarginLabelPadding={10}
       />
       <PopperTooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}

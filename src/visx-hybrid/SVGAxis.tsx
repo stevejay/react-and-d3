@@ -104,8 +104,6 @@ export function SVGAxis(props: SVGAxisProps) {
   } = props;
 
   const {
-    // independentScale,
-    // dependentScale,
     scales,
     independentRangePadding,
     dependentRangePadding,

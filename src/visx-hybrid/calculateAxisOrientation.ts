@@ -5,19 +5,11 @@ export function calculateAxisOrientation(
   variable: Variable,
   position: 'start' | 'end'
 ): AxisOrientation {
-  return horizontal && variable === 'independent'
+  return (horizontal && variable === 'independent') || (!horizontal && variable === 'dependent')
     ? position === 'start'
       ? 'left'
       : 'right'
-    : horizontal && variable === 'dependent'
-    ? position === 'start'
-      ? 'bottom'
-      : 'top'
-    : !horizontal && variable == 'independent'
-    ? position === 'start'
-      ? 'bottom'
-      : 'top'
     : position === 'start'
-    ? 'left'
-    : 'right'; // !horizontal && variable === 'dependent'
+    ? 'bottom'
+    : 'top';
 }

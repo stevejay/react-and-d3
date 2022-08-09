@@ -7,9 +7,9 @@ import { TooltipProps as BaseTooltipProps } from '@visx/tooltip/lib/tooltips/Too
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
 import { isValidNumber } from './types/typeguards/isValidNumber';
-import { DataContext } from './DataContext';
 import { TooltipContext } from './TooltipContext';
 import { TooltipContextType } from './types';
+import { XYChartContext } from './XYChartContext';
 
 /** fontSize + lineHeight from default styles break precise location of crosshair, etc. */
 const TOOLTIP_NO_STYLE: CSSProperties = {
@@ -100,7 +100,7 @@ export default function Tooltip<Datum extends object>({
     innerWidth,
     margin
     // , xScale, yScale, dataRegistry
-  } = useContext(DataContext) || {};
+  } = useContext(XYChartContext) || {};
   const tooltipContext = useContext(TooltipContext) as TooltipContextType<Datum>;
   const { containerRef, TooltipInPortal, forceRefreshBounds } = useTooltipInPortal({
     debounce,

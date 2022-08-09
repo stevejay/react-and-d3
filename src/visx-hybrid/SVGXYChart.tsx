@@ -12,15 +12,15 @@ import {
   XYCHART_EVENT_SOURCE
 } from './constants';
 import { createScaleFromScaleConfig } from './createScaleFromScaleConfig';
-import { DataContext, InferDataContext } from './DataContext';
 import { DataEntryStore } from './DataEntryStore';
 import { EventEmitterProvider } from './EventEmitterProvider';
 import { getDataEntriesFromChildren } from './getDataEntriesFromChildren';
 import { getScaleBandwidth } from './getScaleBandwidth';
 import { ParentSize } from './ParentSize';
 import { TooltipProvider } from './TooltipProvider';
-import type { AxisScaleOutput, Margin, ScaleConfig, XYChartTheme } from './types';
+import type { AxisScaleOutput, Margin, ScaleConfig, XYChartContextType, XYChartTheme } from './types';
 import { useEventEmitters } from './useEventEmitters';
+import { XYChartContext } from './XYChartContext';
 
 // TODO:
 // - Support two dependent axes?
@@ -127,29 +127,22 @@ function InnerChart<
   children,
   ...svgProps
 }: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig>) {
-  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // type IndependentScale = ScaleConfigToD3Scale<IndependentScaleConfig, AxisScaleOutput, any, any>;
-  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // type DependentScale = ScaleConfigToD3Scale<DependentScaleConfig, AxisScaleOutput, any, any>;
-
   // Gather all the series data from the chart's child components:
-  const { dataEntries, newDataEntries, groupScales } = getDataEntriesFromChildren(children, horizontal);
+  const { dataEntries, groupScales } = getDataEntriesFromChildren(children, horizontal);
 
-  const newIndependentDomainValues = newDataEntries
+  const independentDomainValues = dataEntries
     .map((dataEntry) => dataEntry.getIndependentDomainValues())
     .flat();
-  const newDependentDomainValues = newDataEntries
-    .map((dataEntry) => dataEntry.getDependentDomainValues())
-    .flat();
+  const dependentDomainValues = dataEntries.map((dataEntry) => dataEntry.getDependentDomainValues()).flat();
 
   // Create the scales, each with a composite domain derived from all the series data.
-  const independentScale = createScaleFromScaleConfig(newIndependentDomainValues, independentScaleConfig);
-  const dependentScale = createScaleFromScaleConfig(newDependentDomainValues, dependentScaleConfig);
+  const independentScale = createScaleFromScaleConfig(independentDomainValues, independentScaleConfig);
+  const dependentScale = createScaleFromScaleConfig(dependentDomainValues, dependentScaleConfig);
 
   // Create a fallback color scale for coloring each series:
   const colorScale = createScale({
     type: 'ordinal',
-    domain: newDataEntries.map((entry) => entry.dataKey),
+    domain: dataEntries.map((entry) => entry.dataKey),
     range: theme.colors as string[]
   });
 
@@ -157,12 +150,7 @@ function InnerChart<
   // Each handler just emits the event.
   const eventEmitters = useEventEmitters({ source: XYCHART_EVENT_SOURCE });
 
-  // A scale will be undefined if the combined domain for a scale is empty.
-  // if (isNil(independentScale) || isNil(dependentScale)) {
-  //   return null;
-  // }
-
-  let dataContextValue: InferDataContext | null = null;
+  let dataContextValue: XYChartContextType | null = null;
   const hasValidContent = !isNil(independentScale) && !isNil(dependentScale) && width > 0 && height > 0;
 
   if (hasValidContent) {
@@ -205,10 +193,6 @@ function InnerChart<
         group: groupScales,
         color: colorScale
       },
-      independentScale,
-      dependentScale,
-      groupScales,
-      colorScale,
       independentRangePadding,
       dependentRangePadding,
       width,
@@ -216,8 +200,7 @@ function InnerChart<
       innerWidth,
       innerHeight,
       margin,
-      dataEntries,
-      dataEntryStore: new DataEntryStore(newDataEntries),
+      dataEntryStore: new DataEntryStore(dataEntries),
       horizontal,
       animate,
       springConfig,
@@ -251,7 +234,7 @@ function InnerChart<
             className={`${className} ${theme?.svg?.className ?? ''}`}
             {...restSvgProps}
           >
-            <DataContext.Provider value={value}>{children}</DataContext.Provider>
+            <XYChartContext.Provider value={value}>{children}</XYChartContext.Provider>
             {captureEvents && (
               <rect
                 x={value.margin.left}
@@ -269,33 +252,4 @@ function InnerChart<
       )}
     </>
   );
-
-  // return (
-  //   <svg
-  //     xmlns="http://www.w3.org/2000/svg"
-  //     width={width}
-  //     height={height}
-  //     style={{ ...theme?.svg?.styles, ...style }}
-  //     className={`${className} ${theme?.svg?.className ?? ''}`}
-  //     {...restSvgProps}
-  //   >
-  //     {hasValidContent && dataContextValue && (
-  //       <>
-  //         <DataContext.Provider value={dataContextValue}>{children}</DataContext.Provider>
-  //         {captureEvents && (
-  //           <rect
-  //             x={dataContextValue.margin.left}
-  //             y={dataContextValue.margin.top}
-  //             width={width - dataContextValue.margin.left - dataContextValue.margin.right}
-  //             height={height - dataContextValue.margin.top - dataContextValue.margin.bottom}
-  //             fill="transparent"
-  //             role="presentation"
-  //             aria-hidden
-  //             {...eventEmitters}
-  //           />
-  //         )}
-  //       </>
-  //     )}
-  //   </svg>
-  // );
 }

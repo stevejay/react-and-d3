@@ -46,7 +46,7 @@ export function useEventHandlers<Datum extends object>({
   onPointerUp,
   allowedSources
 }: PointerEventHandlerParams<Datum>) {
-  const { width, height, horizontal, dataEntries, independentScale, dependentScale } = useXYChartContext();
+  const { width, height, horizontal, dataEntryStore, scales } = useXYChartContext();
 
   const findNearestDatum = userFindNearestDatum || (horizontal ? findNearestDatumY : findNearestDatumX);
 
@@ -66,21 +66,21 @@ export function useEventHandlers<Datum extends object>({
         svgPoint &&
         width &&
         height &&
-        !isNil(independentScale) &&
-        !isNil(dependentScale)
+        !isNil(scales.independent) &&
+        !isNil(scales.dependent)
       ) {
         const considerAllKeys =
           dataKeyOrKeysRef === POINTER_EVENTS_NEAREST || dataKeyOrKeysRef === POINTER_EVENTS_ALL;
 
         const dataKeys = considerAllKeys
-          ? dataEntries.map((entry) => entry.dataKey)
+          ? dataEntryStore.getAllDataKeys()
           : Array.isArray(dataKeyOrKeysRef)
           ? dataKeyOrKeysRef
           : [dataKeyOrKeysRef];
 
         // find nearestDatum for relevant dataKey(s)
         dataKeys.forEach((dataKey) => {
-          const entry = dataEntries.find((entry) => entry.dataKey === dataKey);
+          const entry = dataEntryStore.tryGetByDataKey(dataKey);
           if (entry) {
             const nearestDatum = findNearestDatum({
               dataKey: dataKey,
@@ -88,10 +88,10 @@ export function useEventHandlers<Datum extends object>({
               height,
               point: svgPoint,
               width,
-              independentAccessor: entry.independentAccessor,
-              independentScale,
-              dependentAccessor: entry.dependentAccessor,
-              dependentScale
+              independentScale: scales.independent,
+              dependentScale: scales.dependent,
+              independentAccessor: entry.nearestDatumIndependentAccessor,
+              dependentAccessor: entry.nearestDatumDependentAccessor
             });
 
             if (nearestDatum) {
@@ -121,7 +121,7 @@ export function useEventHandlers<Datum extends object>({
       }
       return [];
     },
-    [dataKeyOrKeysRef, dataEntries, independentScale, dependentScale, width, height, findNearestDatum]
+    [dataKeyOrKeysRef, dataEntryStore, scales, width, height, findNearestDatum]
   );
 
   const handlePointerMove = useCallback(

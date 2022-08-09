@@ -37,9 +37,6 @@ export function SVGSimpleBar<Datum extends object>({
         {...restBarProps}
         // {...eventEmitters}
       />
-      {/* <animated.text x={cx} y={y1} fill="white" style={{ opacity }}>
-        Hello
-      </animated.text> */}
     </>
   );
 }

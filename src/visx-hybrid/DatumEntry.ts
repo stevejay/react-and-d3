@@ -18,8 +18,8 @@ import type {
 export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
   private _dataKey: string;
   private _data: readonly Datum[];
-  private independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
-  private dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  private _independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  private _dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   private _keyAccessor: (datum: Datum) => string | number;
   private _colorAccessor: (datum: Datum, dataKey: string) => string;
 
@@ -33,8 +33,8 @@ export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
   ) {
     this._dataKey = dataKey;
     this._data = data;
-    this.independentAccessor = independentAccessor;
-    this.dependentAccessor = dependentAccessor;
+    this._independentAccessor = independentAccessor;
+    this._dependentAccessor = dependentAccessor;
     this._keyAccessor = keyAccessor ?? independentAccessor;
     this._colorAccessor = colorAccessor;
   }
@@ -71,6 +71,22 @@ export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
 
   get colorAccessor() {
     return this._colorAccessor;
+  }
+
+  get independentAccessor() {
+    return this._independentAccessor;
+  }
+
+  get dependentAccessor() {
+    return this._dependentAccessor;
+  }
+
+  get nearestDatumIndependentAccessor() {
+    return this.independentAccessor;
+  }
+
+  get nearestDatumDependentAccessor() {
+    return this.dependentAccessor;
   }
 
   findDatumForPositioner(datum: Datum): Datum | null {
@@ -178,8 +194,8 @@ export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
 export class GroupDatumEntry<Datum extends object> implements IDatumEntry {
   private _dataKey: string;
   private _data: readonly Datum[];
-  private independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
-  private dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  private _independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  private _dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   private _keyAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   private _colorAccessor: (datum: Datum, dataKey: string) => string;
 
@@ -193,8 +209,8 @@ export class GroupDatumEntry<Datum extends object> implements IDatumEntry {
   ) {
     this._dataKey = dataKey;
     this._data = data;
-    this.independentAccessor = independentAccessor;
-    this.dependentAccessor = dependentAccessor;
+    this._independentAccessor = independentAccessor;
+    this._dependentAccessor = dependentAccessor;
     this._keyAccessor = keyAccessor ?? independentAccessor;
     this._colorAccessor = colorAccessor;
   }
@@ -231,6 +247,22 @@ export class GroupDatumEntry<Datum extends object> implements IDatumEntry {
 
   get colorAccessor() {
     return this._colorAccessor;
+  }
+
+  get independentAccessor() {
+    return this._independentAccessor;
+  }
+
+  get dependentAccessor() {
+    return this._dependentAccessor;
+  }
+
+  get nearestDatumIndependentAccessor() {
+    return this.independentAccessor;
+  }
+
+  get nearestDatumDependentAccessor() {
+    return this.dependentAccessor;
   }
 
   findDatumForPositioner(datum: Datum): Datum | null {
@@ -343,6 +375,16 @@ const getStack = <IndependentScale extends AxisScale, DependentScale extends Axi
   datum: StackDatum<IndependentScale, DependentScale, Datum>
 ) => datum?.data?.stack;
 
+// returns average of top + bottom of bar (the middle) as this enables more accurately
+// finding the nearest datum to a FocusEvent (which is based on the middle of the rect bounding box)
+const getNumericValue = <
+  IndependentScale extends AxisScale,
+  DependentScale extends AxisScale,
+  Datum extends object
+>(
+  bar: StackDatum<IndependentScale, DependentScale, Datum>
+) => (getFirstItem(bar) + getSecondItem(bar)) / 2;
+
 function getStackOriginalDatum<
   IndependentScale extends AxisScale,
   DependentScale extends AxisScale,
@@ -354,8 +396,8 @@ function getStackOriginalDatum<
 export class StackDatumEntry<Datum extends object> implements IDatumEntry {
   private _dataKey: string;
   private _data: readonly StackDatum<AxisScale, AxisScale, Datum>[];
-  private independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
-  private dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  private _independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  private _dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   private _keyAccessor: (datum: Datum) => string | number;
   private _colorAccessor: (datum: Datum, dataKey: string) => string;
 
@@ -369,8 +411,8 @@ export class StackDatumEntry<Datum extends object> implements IDatumEntry {
   ) {
     this._dataKey = dataKey;
     this._data = data;
-    this.independentAccessor = independentAccessor;
-    this.dependentAccessor = dependentAccessor;
+    this._independentAccessor = independentAccessor;
+    this._dependentAccessor = dependentAccessor;
     this._keyAccessor = keyAccessor ?? independentAccessor;
     this._colorAccessor = colorAccessor;
   }
@@ -381,6 +423,22 @@ export class StackDatumEntry<Datum extends object> implements IDatumEntry {
 
   get data(): readonly StackDatum<AxisScale, AxisScale, Datum>[] {
     return this._data;
+  }
+
+  get independentAccessor() {
+    return this._independentAccessor;
+  }
+
+  get dependentAccessor() {
+    return this._dependentAccessor;
+  }
+
+  get nearestDatumIndependentAccessor() {
+    return getStack;
+  }
+
+  get nearestDatumDependentAccessor() {
+    return getNumericValue;
   }
 
   getDataWithDatumLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
