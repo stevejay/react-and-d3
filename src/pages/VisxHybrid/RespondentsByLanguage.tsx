@@ -10,10 +10,11 @@ import { InView } from '@/components/InView';
 import { SectionHeading } from '@/components/SectionHeading';
 import { isDefined } from '@/types/typeguards/isDefined';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
-import { SVGA11yBarSeries } from '@/visx-hybrid/SVGA11yBarSeries';
+import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBandStripes } from '@/visx-hybrid/SVGBandStripes';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
+import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
@@ -140,10 +141,10 @@ export function RespondentsByLanguage() {
                   dependentAccessor={dependentAccessor}
                   colorAccessor={colorAccessor}
                   component={SVGBarWithLine}
-                  labelFormatter={dependentAxisTickLabelFormatter}
                 />
-                <SVGA11yBarSeries<EntityBucket>
-                  dataKeyOrKeys="data-a"
+                <SVGBarSeriesLabels dataKeyRef="data-a" formatter={dependentAxisTickLabelFormatter} />
+                <SVGA11ySeries<EntityBucket>
+                  dataKeyOrKeysRef="data-a"
                   categoryA11yProps={(category, data) => ({
                     'aria-label': `${independentAxisTickFormatter(
                       category

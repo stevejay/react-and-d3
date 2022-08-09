@@ -23,7 +23,7 @@ export interface SVGAccessibleBarSeriesProps<
   innerHeight: number;
   margin: Margin;
   groupA11yProps?: A11yProps;
-  dataKeyOrKeys: string | readonly string[];
+  dataKeyOrKeysRef: string | readonly string[];
   dataEntries: readonly DataEntry<IndependentScale, DependentScale, Datum, Datum>[];
   categoryA11yProps: (category: string, data: readonly Datum[]) => A11yProps;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,13 +42,13 @@ export function SVGAccessibleBarSeries<
   margin,
   groupA11yProps,
   categoryA11yProps,
-  dataKeyOrKeys,
+  dataKeyOrKeysRef,
   dataEntries,
   datumAccessor = identity
 }: SVGAccessibleBarSeriesProps<IndependentScale, DependentScale, Datum>) {
   const independentDomain = independentScale.domain();
 
-  const dataKeys = Array.isArray(dataKeyOrKeys) ? dataKeyOrKeys : [dataKeyOrKeys];
+  const dataKeys = Array.isArray(dataKeyOrKeysRef) ? dataKeyOrKeysRef : [dataKeyOrKeysRef];
   const filteredDataEntries = dataKeys
     .map((dataKey) => dataEntries.find((entry) => entry.dataKey === dataKey))
     .filter((dataEntry) => Boolean(dataEntry));

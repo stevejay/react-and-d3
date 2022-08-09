@@ -224,7 +224,7 @@ PopperTooltipProps<Datum>) {
                   />
                 )
               )}
-              <Portal node={document && document.getElementById('portal-tooltip')}>
+              <Portal node={document && document.getElementById('tooltip-portal')}>
                 <animated.div
                   ref={setPopperElement}
                   style={{ ...springStyles, ...popperStyles.popper }}

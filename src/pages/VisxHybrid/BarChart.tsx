@@ -5,10 +5,11 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import type { CategoryValueDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
-import { SVGA11yBarSeries } from '@/visx-hybrid/SVGA11yBarSeries';
+import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarAnnotation } from '@/visx-hybrid/SVGBarAnnotation';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
+import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
@@ -73,10 +74,10 @@ export function BarChart({ data }: BarChartProps) {
         dependentAccessor={dependentAccessor}
         colorAccessor={colorAccessor}
         component={SVGBarWithLine}
-        labelFormatter={dependentAxisTickLabelFormatter}
       />
-      <SVGA11yBarSeries<CategoryValueDatum<string, number>>
-        dataKeyOrKeys="data-a"
+      <SVGBarSeriesLabels dataKeyRef="data-a" formatter={dependentAxisTickLabelFormatter} />
+      <SVGA11ySeries<CategoryValueDatum<string, number>>
+        dataKeyOrKeysRef="data-a"
         categoryA11yProps={(category, data) => ({
           'aria-label': `Category ${data[0].category}: ${data[0].value}`,
           'aria-roledescription': `Category ${category}`
@@ -100,7 +101,7 @@ export function BarChart({ data }: BarChartProps) {
         hideZero
         tickFormat={dependentAxisTickLabelFormatter}
       />
-      <SVGBarAnnotation datum={data[2]} dataKey={'data-a'} />
+      <SVGBarAnnotation datum={data[2]} dataKeyRef="data-a" />
       <PopperTooltip<CategoryValueDatum<string, number>>
         snapTooltipToDatumX
         showVerticalCrosshair

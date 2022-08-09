@@ -3,7 +3,7 @@ import { isNil } from 'lodash-es';
 
 import { DataContext } from './DataContext';
 
-export function useDataContext() {
+export function useXYChartContext() {
   const value = useContext(DataContext);
   if (isNil(value)) {
     throw new Error('No context value found for DataContext.');

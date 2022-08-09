@@ -6,7 +6,7 @@ import { getScaleBandwidth } from './getScaleBandwidth';
 import { getScaleBaseline } from './getScaleBaseline';
 import { getStackValue } from './getStackValue';
 import { isValidNumber } from './isValidNumber';
-import type { AxisScale, PolygonTransitionsProps, ScaleInput, StackDatum } from './types';
+import type { AxisScale, IDatumEntry, PolygonTransitionsProps, ScaleInput, StackDatum } from './types';
 
 export function createBarStackSeriesPolygonPositioning<
   IndependentScale extends AxisScale,
@@ -97,6 +97,7 @@ export function createBarSeriesPolygonPositioning<
 }: {
   independentScale: IndependentScale;
   dependentScale: DependentScale;
+  dataEntry: IDatumEntry;
   independentAccessor: (datum: Datum) => ScaleInput<IndependentScale>;
   dependentAccessor: (datum: Datum) => ScaleInput<DependentScale>;
   horizontal: boolean;

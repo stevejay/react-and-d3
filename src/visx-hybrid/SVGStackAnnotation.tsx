@@ -2,7 +2,7 @@ import { isNil } from 'lodash-es';
 
 import { coerceNumber } from './coerceNumber';
 import { getScaleBandwidth } from './getScaleBandwidth';
-import { useDataContext } from './useDataContext';
+import { useXYChartContext } from './useXYChartContext';
 
 export interface SVGStackAnnotationProps<Datum extends object> {
   dataKey: string;
@@ -11,7 +11,7 @@ export interface SVGStackAnnotationProps<Datum extends object> {
 
 // TODO remove.
 export function SVGStackAnnotation<Datum extends object>({ dataKey, datum }: SVGStackAnnotationProps<Datum>) {
-  const { horizontal, independentScale, dependentScale, dataEntries } = useDataContext();
+  const { horizontal, independentScale, dependentScale, dataEntries } = useXYChartContext();
   const dataEntry = dataEntries.find((entry) => entry.dataKey === dataKey);
   if (isNil(dataEntry)) {
     return null;

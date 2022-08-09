@@ -6,13 +6,13 @@ import { isDefined } from './isDefined';
 import { useSeriesTransitions } from './useSeriesTransitions';
 import { useXYChartContext } from './useXYChartContext';
 
-type SVGBarStackLabelsProps = {
+type SVGBarGroupLabelsProps = {
   springConfig?: SpringConfig;
   animate?: boolean;
   children?: ReactNode;
 };
 
-export function SVGBarStackLabels({ children, springConfig, animate = true }: SVGBarStackLabelsProps) {
+export function SVGBarGroupLabels({ children, springConfig, animate = true }: SVGBarGroupLabelsProps) {
   const { springConfig: contextSpringConfig, animate: contextAnimate, dataEntryStore } = useXYChartContext();
   const barSeriesChildren = useMemo(
     () => getChildrenAndGrandchildrenWithProps<{ dataKeyRef: string }>(children),
@@ -32,7 +32,7 @@ export function SVGBarStackLabels({ children, springConfig, animate = true }: SV
           return null;
         }
         return (
-          <animated.g data-testid={`bar-stack-series-${datum.dataKey}-labels`} style={styles}>
+          <animated.g data-testid={`bar-group-series-${datum.dataKey}-labels`} style={styles}>
             {child}
           </animated.g>
         );

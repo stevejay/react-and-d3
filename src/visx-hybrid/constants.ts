@@ -15,6 +15,8 @@ export const defaultParentSizeDebounceMs = 300;
 export const defaultTickLabelAngle: TickLabelAngle = 'horizontal';
 export const defaultShapeRendering = 'crispEdges';
 export const defaultDatumLabelPadding = 8;
+export const defaultGroupPadding = 0.1;
+export const defaultTooltipGlyphRadius = 4;
 
 // font-style, font-variant, font-weight, font-size, line-height, font-family
 export const defaultBigLabelsFont = 'normal normal normal 14px/1 sans-serif';

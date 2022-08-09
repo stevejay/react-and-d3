@@ -4,8 +4,8 @@ import { animated, SpringConfig } from 'react-spring';
 import { defaultShapeRendering } from './constants';
 import { getTicksData } from './getTicksData';
 import type { AxisScale, GridType, ScaleInput, Variable } from './types';
-import { useDataContext } from './useDataContext';
 import { useGridTransitions } from './useGridTransitions';
+import { useXYChartContext } from './useXYChartContext';
 
 interface SVGGridOwnProps {
   /** Whether the stripes are for the independent or the dependent axis. */
@@ -42,8 +42,7 @@ export function SVGGrid({
   ...lineProps
 }: SVGGridProps) {
   const {
-    independentScale,
-    dependentScale,
+    scales,
     independentRangePadding,
     dependentRangePadding,
     horizontal,
@@ -54,12 +53,12 @@ export function SVGGrid({
     innerWidth,
     innerHeight,
     theme
-  } = useDataContext();
+  } = useXYChartContext();
 
   const gridType: GridType =
     variable === 'independent' ? (horizontal ? 'row' : 'column') : horizontal ? 'column' : 'row';
   const gridTheme = theme?.grid?.[variable];
-  const scale = variable === 'independent' ? independentScale : dependentScale;
+  const scale = variable === 'independent' ? scales.independent : scales.dependent;
   const rangePadding = variable === 'independent' ? dependentRangePadding : independentRangePadding;
   const ticks = getTicksData(scale, hideZero, undefined, tickCount, tickValues);
   const transitions = useGridTransitions({

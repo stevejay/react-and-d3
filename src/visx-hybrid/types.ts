@@ -1,6 +1,7 @@
 import type { CSSProperties, FocusEvent, PointerEvent, ReactNode, SVGAttributes, SVGProps } from 'react';
 import type { SpringConfig, SpringValues } from 'react-spring';
 import type { D3Scale, ScaleInput, ScaleTypeToD3Scale } from '@visx/scale';
+import type { ScaleBand } from 'd3-scale';
 import type { Series, SeriesPoint } from 'd3-shape';
 
 export type { ScaleConfig, ScaleConfigToD3Scale, ScaleInput } from '@visx/scale';
@@ -61,12 +62,19 @@ export interface DataEntry<
   };
 }
 
+export interface IDataEntryStore {
+  getByDataKey(dataKey: string): IDatumEntry;
+  tryGetByDataKey(dataKey: string): IDatumEntry | null;
+}
+
 export interface DataContextType<IndependentScale extends AxisScale, DependentScale extends AxisScale> {
+  scales: ScaleSet;
   independentScale: IndependentScale;
   dependentScale: DependentScale;
+  groupScales: readonly ScaleBand<string>[];
+  colorScale: ScaleTypeToD3Scale<string, string>['ordinal'];
   independentRangePadding: number;
   dependentRangePadding: number;
-  colorScale: ScaleTypeToD3Scale<string, string>['ordinal'];
   width: number;
   height: number;
   innerWidth: number;
@@ -74,6 +82,7 @@ export interface DataContextType<IndependentScale extends AxisScale, DependentSc
   margin: Margin;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataEntries: readonly DataEntry<IndependentScale, DependentScale, any, any>[];
+  dataEntryStore: IDataEntryStore;
   horizontal: boolean;
   animate: boolean;
   springConfig: SpringConfig;
@@ -418,10 +427,10 @@ export interface PolygonTransitionsProps {
   y1: number;
   x2: number;
   y2: number;
-  cx: number;
-  cy: number;
-  width: number;
-  height: number;
+  // cx: number;
+  // cy: number;
+  // width: number;
+  // height: number;
   opacity: number;
 }
 
@@ -437,3 +446,67 @@ export interface SVGBarProps<Datum extends object> {
 
 export type BarLabelPosition = 'outside' | 'inside' | 'inside-centered';
 export type InternalBarLabelPosition = 'outside' | 'inside' | 'inside-centered' | 'stacked';
+
+export interface ScaleSet {
+  independent: AxisScale;
+  dependent: AxisScale;
+  group: readonly ScaleBand<string>[];
+  color: ScaleTypeToD3Scale<string, string>['ordinal'];
+}
+
+export interface LabelTransition {
+  x: number;
+  y: number;
+  opacity: number;
+}
+
+export interface IDatumEntry {
+  get dataKey(): string;
+  // TODO fix any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get data(): readonly any[];
+  // TODO fix any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get keyAccessor(): (datum: any) => string | number;
+  // TODO fix any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get colorAccessor(): (datum: any, dataKey: string) => string;
+  getDataWithDatumLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
+    // TODO fix any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    datum: any;
+    label: string;
+  }[];
+  getIndependentDomainValues(): readonly ScaleInput<AxisScale>[];
+  getDependentDomainValues(): readonly ScaleInput<AxisScale>[];
+  createDatumPositioner(args: {
+    scales: ScaleSet;
+    horizontal: boolean;
+    renderingOffset: number;
+    // TODO fix any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }): (datum: any) => {
+    baselineX: number;
+    baselineY: number;
+    datumX: number;
+    datumY: number;
+  } | null;
+  createDatumLabelPositioner(args: {
+    scales: ScaleSet;
+    horizontal: boolean;
+    renderingOffset: number;
+    font: FontProperties | string;
+    position: InternalBarLabelPosition;
+    positionOutsideOnOverflow: boolean;
+    padding: number;
+    hideOnOverflow: boolean;
+    // TODO fix any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }): (datumWithLabel: { datum: any; label: string }) => LabelTransition | null;
+  // TODO fix any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getMatchingDataForA11ySeries(independentDomainValue: ScaleInput<AxisScale>): readonly any[];
+  // TODO fix any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  findDatumForPositioner(datum: any): any | null;
+}

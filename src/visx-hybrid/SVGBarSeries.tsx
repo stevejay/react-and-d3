@@ -1,15 +1,12 @@
 import type { SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
 
-import { BARSERIES_EVENT_SOURCE, defaultSmallLabelsFont, XYCHART_EVENT_SOURCE } from './constants';
-import { getFontMetricsWithCache } from './getFontMetricsWithCache';
+import { BARSERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
 import { SVGSimpleBar } from './SVGSimpleBar';
-import { SVGAnimatedSimpleText } from './SVGSimpleText';
-import type { AxisScale, BarLabelPosition, ScaleInput, SVGBarProps } from './types';
-import { useBarLabelTransitions } from './useBarLabelTransitions';
-import { useBarSeriesTransitions } from './useBarSeriesTransitions';
-import { useDataContext } from './useDataContext';
+import type { AxisScale, ScaleInput, SVGBarProps } from './types';
+import { useBarTransitions } from './useBarTransitions';
 import { useSeriesEvents } from './useSeriesEvents';
+import { useXYChartContext } from './useXYChartContext';
 
 export type SVGBarSeriesProps<Datum extends object> = {
   springConfig?: SpringConfig;
@@ -23,52 +20,30 @@ export type SVGBarSeriesProps<Datum extends object> = {
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
   enableEvents?: boolean;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
-  /** Must be a stable function. */
-  labelFormatter?: (value: ScaleInput<AxisScale>) => string;
-  /** Optional; defaults to `'inside'`. Ignored if `labelFormatter` prop is not given. */
-  labelPosition?: BarLabelPosition;
-  /** Optional; defaults to `true`. Ignored if `labelFormatter` prop is not given. */
-  outsideOnLabelOverflow?: boolean;
 };
 
 export function SVGBarSeries<Datum extends object>({
   groupProps,
-  springConfig: springConfigProp,
-  animate: animateProp = true,
+  springConfig,
+  animate = true,
   dataKey,
   enableEvents = true,
-  component: BarComponent = SVGSimpleBar,
-  labelFormatter,
-  labelPosition = 'inside',
-  outsideOnLabelOverflow = true
+  component: BarComponent = SVGSimpleBar
 }: SVGBarSeriesProps<Datum>) {
   const {
+    scales,
     horizontal,
-    independentScale,
-    dependentScale,
     colorScale,
     renderingOffset,
     springConfig: contextSpringConfig,
     animate: contextAnimate,
-    dataEntries,
-    theme
-  } = useDataContext();
-  const dataEntry = dataEntries.find((dataEntry) => dataEntry.dataKey === dataKey);
-  if (!dataEntry) {
-    throw new Error(`Could not find data for dataKey '${dataKey}'`);
-  }
-  const {
-    independentAccessor,
-    dependentAccessor,
-    data,
-    underlying: { keyAccessor, colorAccessor }
-  } = dataEntry;
+    dataEntryStore
+  } = useXYChartContext();
+  const dataEntry = dataEntryStore.getByDataKey(dataKey);
   const ownEventSourceKey = `${BARSERIES_EVENT_SOURCE}-${dataKey}`;
-  const springConfig = springConfigProp ?? contextSpringConfig;
-  const animate = animateProp && contextAnimate;
   // const eventEmitters =
   useSeriesEvents<AxisScale, AxisScale, Datum>({
-    dataKeyOrKeys: dataKey,
+    dataKeyOrKeysRef: dataKey,
     enableEvents,
     // onBlur,
     // onFocus,
@@ -78,69 +53,27 @@ export function SVGBarSeries<Datum extends object>({
     source: ownEventSourceKey,
     allowedSources: [XYCHART_EVENT_SOURCE]
   });
-  const transitions = useBarSeriesTransitions({
-    data,
-    independentScale,
-    dependentScale,
-    keyAccessor,
-    independentAccessor,
-    dependentAccessor,
+  const transitions = useBarTransitions<Datum>({
+    dataEntry,
+    scales,
     horizontal,
-    springConfig,
-    animate,
+    springConfig: springConfig ?? contextSpringConfig,
+    animate: animate && contextAnimate,
     renderingOffset
   });
-  const labelStyles = theme.datumLabels ?? theme.smallLabels;
-  const labelFont = labelStyles?.font ?? defaultSmallLabelsFont;
-  const fontMetrics = getFontMetricsWithCache(labelStyles?.font ?? defaultSmallLabelsFont);
-  const labelTransitions = useBarLabelTransitions({
-    data,
-    independentScale,
-    dependentScale,
-    keyAccessor,
-    independentAccessor,
-    dependentAccessor,
-    underlyingDatumAccessor: dataEntry.underlyingDatumAccessor,
-    underlyingDependentAccessor: dataEntry.underlying.dependentAccessor,
-    dataKey,
-    horizontal,
-    springConfig,
-    animate,
-    renderingOffset,
-    labelFormatter,
-    font: labelFont,
-    position: labelPosition,
-    positionOutsideOnOverflow: outsideOnLabelOverflow,
-    hideOnOverflow: true
-  });
   return (
-    <>
-      <g data-testid={`bar-series-${dataKey}`} {...groupProps}>
-        {transitions((springValues, datum, _, index) => (
-          <BarComponent
-            springValues={springValues}
-            datum={datum}
-            index={index}
-            dataKey={dataKey}
-            horizontal={horizontal}
-            colorScale={colorScale}
-            colorAccessor={colorAccessor}
-          />
-        ))}
-        {labelTransitions((styles, datum) => (
-          <SVGAnimatedSimpleText
-            springValues={styles}
-            textAnchor="middle"
-            verticalAnchor="middle"
-            fontHeight={fontMetrics.height}
-            fontHeightFromBaseline={fontMetrics.heightFromBaseline}
-            textStyles={labelStyles}
-            fill="white"
-          >
-            {datum.label}
-          </SVGAnimatedSimpleText>
-        ))}
-      </g>
-    </>
+    <g data-testid={`bar-series-${dataKey}`} {...groupProps}>
+      {transitions((springValues, datum, _, index) => (
+        <BarComponent
+          springValues={springValues}
+          datum={datum}
+          index={index}
+          dataKey={dataKey}
+          horizontal={horizontal}
+          colorScale={colorScale}
+          colorAccessor={dataEntry.colorAccessor}
+        />
+      ))}
+    </g>
   );
 }

@@ -26,7 +26,7 @@ import type {
   TickLabelAngle,
   Variable
 } from './types';
-import { useDataContext } from './useDataContext';
+import { useXYChartContext } from './useXYChartContext';
 
 export interface SVGAxisProps {
   /** Whether the axis is the independent or the dependent axis. */
@@ -104,8 +104,9 @@ export function SVGAxis(props: SVGAxisProps) {
   } = props;
 
   const {
-    independentScale,
-    dependentScale,
+    // independentScale,
+    // dependentScale,
+    scales,
     independentRangePadding,
     dependentRangePadding,
     horizontal,
@@ -118,9 +119,9 @@ export function SVGAxis(props: SVGAxisProps) {
     innerWidth,
     innerHeight,
     renderingOffset
-  } = useDataContext();
+  } = useXYChartContext();
 
-  const scale = variable === 'independent' ? independentScale : dependentScale;
+  const scale = variable === 'independent' ? scales.independent : scales.dependent;
   const axisOrientation = calculateAxisOrientation(horizontal, variable, position);
 
   const top =

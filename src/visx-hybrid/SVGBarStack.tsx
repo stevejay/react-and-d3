@@ -1,6 +1,5 @@
 import { ReactNode, useCallback, useMemo } from 'react';
 import { animated, SpringConfig } from 'react-spring';
-import { isNil } from 'lodash-es';
 
 import { BARSTACK_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
 import findNearestStackDatum from './findNearestStackDatum';
@@ -9,79 +8,42 @@ import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
 import { SVGBarSeriesProps } from './SVGBarSeries';
 import { SVGBarStackSeries } from './SVGBarStackSeries';
-import type {
-  AxisScale,
-  DataEntry,
-  NearestDatumArgs,
-  NearestDatumReturnType,
-  ScaleInput,
-  StackDatum,
-  SVGBarProps
-} from './types';
-import { useDataContext } from './useDataContext';
+import type { AxisScale, NearestDatumArgs, NearestDatumReturnType, StackDatum, SVGBarProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
-
-// import { ScaleInput } from '@/visx-next/scale';
-// import { PositionScale } from '@/visx-next/types';
+import { useXYChartContext } from './useXYChartContext';
 
 export interface SVGBarStackProps<Datum extends object> {
-  // <
-  //   IndependentScale extends PositionScale,
-  //   DependentScale extends PositionScale,
-  //   Datum extends object
-  // >
   /** Sets the stack offset to the pre-defined d3 offset, see https://github.com/d3/d3-shape#stack_offset. */
   stackOffset?: keyof typeof STACK_OFFSETS;
   /** Sets the stack order to the pre-defined d3 function, see https://github.com/d3/d3-shape#stack_order. */
   stackOrder?: keyof typeof STACK_ORDERS;
-
   animate?: boolean;
   /* A react-spring configuration object */
   springConfig?: SpringConfig;
-  /** Required data key for the Series. Must be unique across all series. */
-  //   dataKey: string;
-  //   data: readonly Datum[];
-  //   keyAccessor: (d: Datum, dataKey?: string) => string;
-  //   independentAccessor: (d: Datum) => ScaleInput<IndependentScale>;
-  //   dependentAccessor: (d: Datum) => ScaleInput<DependentScale>;
-  //   colorAccessor?: (d: Datum, dataKey: string) => string;
   enableEvents?: boolean;
   children?: ReactNode;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
   colorAccessor?: (datum: Datum, key: string) => string;
-  /** Must be a stable function. */
-  labelFormatter?: (value: ScaleInput<AxisScale>) => string;
 }
 
-export function SVGBarStack<Datum extends object>(
-  // <
-  //   IndependentScale extends PositionScale,
-  //   DependentScale extends PositionScale,
-  //   Datum extends object
-  // >
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  {
-    children,
-    enableEvents = true,
-    animate = true,
-    springConfig,
-    colorAccessor,
-    component,
-    labelFormatter
-  }: SVGBarStackProps<Datum>
-) {
+export function SVGBarStack<Datum extends object>({
+  children,
+  enableEvents = true,
+  animate = true,
+  springConfig,
+  colorAccessor,
+  component
+}: SVGBarStackProps<Datum>) {
   const {
     horizontal,
-    independentScale,
-    dependentScale,
+    scales,
     renderingOffset,
     springConfig: contextSpringConfig,
     animate: contextAnimate,
-    dataEntries,
     colorScale,
-    theme
-  } = useDataContext();
+    dataEntryStore
+  } = useXYChartContext();
 
   const seriesChildren = useMemo(
     () => getChildrenAndGrandchildrenWithProps<SVGBarSeriesProps<Datum>>(children),
@@ -104,7 +66,7 @@ export function SVGBarStack<Datum extends object>(
   // TODO fix the any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   /* const eventEmitters = */ useSeriesEvents<AxisScale, AxisScale, any>({
-    dataKeyOrKeys: dataKeys,
+    dataKeyOrKeysRef: dataKeys,
     enableEvents,
     findNearestDatum,
     // onBlur,
@@ -117,12 +79,7 @@ export function SVGBarStack<Datum extends object>(
   });
 
   const transitions = useSeriesTransitions(
-    dataKeys
-      .map(
-        (dataKey) =>
-          dataEntries.find((dataEntry) => dataEntry.dataKey === dataKey) as DataEntry<AxisScale, AxisScale> // TODO find alternative to this cast.
-      )
-      .filter((dataEntry) => !isNil(dataEntry)),
+    dataKeys.map((dataKey) => dataEntryStore.getByDataKey(dataKey)),
     springConfig ?? contextSpringConfig,
     animate && contextAnimate
   );
@@ -141,54 +98,20 @@ export function SVGBarStack<Datum extends object>(
           >
             <SVGBarStackSeries
               dataKey={datum.dataKey}
-              data={datum.data}
-              keyAccessor={datum.underlying.keyAccessor}
-              independentScale={independentScale}
-              dependentScale={dependentScale}
-              independentAccessor={datum.independentAccessor}
-              dependentAccessor={datum.dependentAccessor}
+              scales={scales}
+              dataEntry={datum}
               horizontal={horizontal}
               renderingOffset={renderingOffset}
               animate={animate && contextAnimate}
               springConfig={springConfig ?? contextSpringConfig}
-              colorAccessor={colorAccessor ?? datum.underlying.colorAccessor}
+              colorAccessor={colorAccessor ?? datum.colorAccessor}
               colorScale={colorScale}
-              underlyingDatumAccessor={datum.underlyingDatumAccessor}
-              underlyingDependentAccessor={datum.underlying.dependentAccessor}
               // {...events}
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              component={component as any} // TODO fix this
-              labelFormatter={labelFormatter}
-              theme={theme}
+              component={component}
             />
           </animated.g>
         );
       })}
-      {/* {transitions((styles, datum) => {
-        const child = seriesChildren.find((child) => child.props.dataKey === datum.dataKey);
-        const { dependentAccessor } = child?.props ?? {};
-        if (!dependentAccessor) {
-          return null;
-        }
-        // const { style, ...restGroupProps } = groupProps ?? {};
-        return (
-          <animated.g data-testid={`bar-stack-series-labels-${datum.dataKey}`} style={styles}>
-            <SVGBarStackLabels
-              dataKey={datum.dataKey}
-              data={datum.data}
-              independentScale={independentScale}
-              dependentScale={dependentScale}
-              keyAccessor={datum.underlying.keyAccessor}
-              horizontal={horizontal}
-              renderingOffset={renderingOffset}
-              animate={animate && contextAnimate}
-              springConfig={springConfig ?? contextSpringConfig}
-              dependentAccessor={dependentAccessor}
-              underlyingDatumAccessor={datum.underlyingDatumAccessor}
-            />
-          </animated.g>
-        );
-      })} */}
     </>
   );
 }

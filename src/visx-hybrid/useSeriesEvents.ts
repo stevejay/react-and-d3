@@ -13,7 +13,7 @@ export type SeriesEventsParams<
   SeriesProps<IndependentScale, DependentScale, Datum>,
   'onBlur' | 'onFocus' | 'onPointerMove' | 'onPointerOut' | 'onPointerUp'
 > &
-  Pick<PointerEventHandlerParams<Datum>, 'dataKeyOrKeys' | 'allowedSources' | 'findNearestDatum'> & {
+  Pick<PointerEventHandlerParams<Datum>, 'dataKeyOrKeysRef' | 'allowedSources' | 'findNearestDatum'> & {
     /** The source of emitted events. */
     source: string;
     enableEvents: boolean;
@@ -25,7 +25,7 @@ export function useSeriesEvents<
   DependentScale extends AxisScale,
   Datum extends object
 >({
-  dataKeyOrKeys,
+  dataKeyOrKeysRef,
   enableEvents,
   findNearestDatum,
   onBlur: onBlurProps,
@@ -79,7 +79,7 @@ export function useSeriesEvents<
   );
 
   useEventHandlers({
-    dataKeyOrKeys,
+    dataKeyOrKeysRef,
     findNearestDatum,
     onBlur: enableEvents ? onBlur : undefined,
     onFocus: enableEvents ? onFocus : undefined,

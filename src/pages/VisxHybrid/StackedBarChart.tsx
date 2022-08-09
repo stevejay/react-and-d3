@@ -6,11 +6,13 @@ import { capitalize } from 'lodash-es';
 
 import type { CategoryValueListDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
-import { SVGA11yBarSeries } from '@/visx-hybrid/SVGA11yBarSeries';
+import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarAnnotation } from '@/visx-hybrid/SVGBarAnnotation';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
+import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarStack } from '@/visx-hybrid/SVGBarStack';
+import { SVGBarStackLabels } from '@/visx-hybrid/SVGBarStackLabels';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
@@ -59,10 +61,7 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
       theme={darkTheme}
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      <SVGBarStack<CategoryValueListDatum<string, number>>
-        stackOrder="none"
-        labelFormatter={dependentAxisTickLabelFormatter}
-      >
+      <SVGBarStack<CategoryValueListDatum<string, number>> stackOrder="none">
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
             key={dataKey}
@@ -74,8 +73,20 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
           />
         ))}
       </SVGBarStack>
-      <SVGA11yBarSeries<CategoryValueListDatum<string, number>>
-        dataKeyOrKeys={dataKeys}
+      <SVGBarStackLabels>
+        {dataKeys.map((dataKey) => (
+          <SVGBarSeriesLabels
+            key={dataKey}
+            dataKeyRef={dataKey}
+            formatter={dependentAxisTickLabelFormatter}
+            position="inside-centered"
+            positionOutsideOnOverflow={false}
+            hideOnOverflow={false}
+          />
+        ))}
+      </SVGBarStackLabels>
+      <SVGA11ySeries<CategoryValueListDatum<string, number>>
+        dataKeyOrKeysRef={dataKeys}
         categoryA11yProps={(category, data) => ({
           'aria-label': `Category ${category}: ${dataKeys
             .map((dataKey, index) => `${dataKey} is ${data[index].values[dataKey]}`)
@@ -87,7 +98,7 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
       <SVGAxis variable="independent" position="start" label="Foobar Bottomy" />
       <SVGAxis variable="dependent" position="start" label="Foobar Lefty" tickCount={5} hideZero />
       <SVGAxis variable="dependent" position="end" label="Foobar Righty" tickCount={5} hideZero />
-      <SVGBarAnnotation datum={data[1]} dataKey={dataKeys[2]} />
+      <SVGBarAnnotation datum={data[1]} dataKeyRef={dataKeys[2]} />
       <PopperTooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}

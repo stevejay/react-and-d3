@@ -13,8 +13,10 @@ import {
 } from './constants';
 import { createScaleFromScaleConfig } from './createScaleFromScaleConfig';
 import { DataContext, InferDataContext } from './DataContext';
+import { DataEntryStore } from './DataEntryStore';
 import { EventEmitterProvider } from './EventEmitterProvider';
 import { getDataEntriesFromChildren } from './getDataEntriesFromChildren';
+import { getScaleBandwidth } from './getScaleBandwidth';
 import { ParentSize } from './ParentSize';
 import { TooltipProvider } from './TooltipProvider';
 import type { AxisScaleOutput, Margin, ScaleConfig, XYChartTheme } from './types';
@@ -91,6 +93,10 @@ export function SVGXYChart<
     );
   }
 
+  if (width === 0 || height === 0) {
+    return null;
+  }
+
   return (
     <TooltipProvider hideTooltipDebounceMs={hideTooltipDebounceMs}>
       <EventEmitterProvider>
@@ -98,14 +104,6 @@ export function SVGXYChart<
       </EventEmitterProvider>
     </TooltipProvider>
   );
-
-  // return width && width > 0 && height && height > 0 ? (
-  //   <TooltipProvider hideTooltipDebounceMs={hideTooltipDebounceMs}>
-  //     <EventEmitterProvider>
-  //       <InnerChart {...props} width={width} height={height} />
-  //     </EventEmitterProvider>
-  //   </TooltipProvider>
-  // ) : null;
 }
 
 function InnerChart<
@@ -135,19 +133,23 @@ function InnerChart<
   // type DependentScale = ScaleConfigToD3Scale<DependentScaleConfig, AxisScaleOutput, any, any>;
 
   // Gather all the series data from the chart's child components:
-  const { dataEntries, independentDomainValues, dependentDomainValues } = getDataEntriesFromChildren(
-    children,
-    horizontal
-  );
+  const { dataEntries, newDataEntries, groupScales } = getDataEntriesFromChildren(children, horizontal);
+
+  const newIndependentDomainValues = newDataEntries
+    .map((dataEntry) => dataEntry.getIndependentDomainValues())
+    .flat();
+  const newDependentDomainValues = newDataEntries
+    .map((dataEntry) => dataEntry.getDependentDomainValues())
+    .flat();
 
   // Create the scales, each with a composite domain derived from all the series data.
-  const independentScale = createScaleFromScaleConfig(independentDomainValues, independentScaleConfig);
-  const dependentScale = createScaleFromScaleConfig(dependentDomainValues, dependentScaleConfig);
+  const independentScale = createScaleFromScaleConfig(newIndependentDomainValues, independentScaleConfig);
+  const dependentScale = createScaleFromScaleConfig(newDependentDomainValues, dependentScaleConfig);
 
   // Create a fallback color scale for coloring each series:
   const colorScale = createScale({
     type: 'ordinal',
-    domain: dataEntries.map((entry) => entry.dataKey),
+    domain: newDataEntries.map((entry) => entry.dataKey),
     range: theme.colors as string[]
   });
 
@@ -190,14 +192,22 @@ function InnerChart<
     // Update the scales with those calculated ranges:
     independentScale.range(independentRange);
     dependentScale.range(dependentRange);
+    groupScales.forEach((groupScale) => groupScale.range([0, getScaleBandwidth(independentScale)]));
 
     // Calculate the size of the chart area:
     const innerWidth = Math.max(0, width - margin.left - margin.right);
     const innerHeight = Math.max(0, height - margin.top - margin.bottom);
 
     dataContextValue = {
+      scales: {
+        independent: independentScale,
+        dependent: dependentScale,
+        group: groupScales,
+        color: colorScale
+      },
       independentScale,
       dependentScale,
+      groupScales,
       colorScale,
       independentRangePadding,
       dependentRangePadding,
@@ -207,6 +217,7 @@ function InnerChart<
       innerHeight,
       margin,
       dataEntries,
+      dataEntryStore: new DataEntryStore(newDataEntries),
       horizontal,
       animate,
       springConfig,

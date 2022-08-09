@@ -5,11 +5,13 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import type { CategoryValueListDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
-import { SVGA11yBarSeries } from '@/visx-hybrid/SVGA11yBarSeries';
+import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
+import { SVGBarAnnotation } from '@/visx-hybrid/SVGBarAnnotation';
 import { SVGBarGroup } from '@/visx-hybrid/SVGBarGroup';
-import { SVGBarGroupAnnotation } from '@/visx-hybrid/SVGBarGroupAnnotation';
+import { SVGBarGroupLabels } from '@/visx-hybrid/SVGBarGroupLabels';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
+import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
@@ -65,7 +67,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
       // horizontal
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      <SVGBarGroup padding={0} component={SVGBarWithLine} labelFormatter={dependentAxisTickLabelFormatter}>
+      <SVGBarGroup padding={0} component={SVGBarWithLine}>
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
             key={dataKey}
@@ -77,8 +79,17 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
           />
         ))}
       </SVGBarGroup>
-      <SVGA11yBarSeries<CategoryValueListDatum<string, number>>
-        dataKeyOrKeys={dataKeys}
+      <SVGBarGroupLabels>
+        {dataKeys.map((dataKey) => (
+          <SVGBarSeriesLabels
+            key={dataKey}
+            dataKeyRef={dataKey}
+            formatter={dependentAxisTickLabelFormatter}
+          />
+        ))}
+      </SVGBarGroupLabels>
+      <SVGA11ySeries<CategoryValueListDatum<string, number>>
+        dataKeyOrKeysRef={dataKeys}
         categoryA11yProps={(category, data) => ({
           'aria-label': `Category ${data[0]?.category}: ${dataKeys
             .map((dataKey) => `${dataKey} is ${data[0]?.values[dataKey]}`)
@@ -86,7 +97,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
           'aria-roledescription': `Category ${category}`
         })}
       />
-      <SVGBarGroupAnnotation datum={data[2]} dataKey="three" dataKeys={dataKeys} />
+      <SVGBarAnnotation datum={data[2]} dataKeyRef="three" />
       <SVGAxis
         variable="independent"
         position="end"

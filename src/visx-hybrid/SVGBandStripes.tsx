@@ -6,7 +6,7 @@ import { getTicksData } from './getTicksData';
 import { isBandScale } from './isBandScale';
 import type { AxisScale, ScaleInput, Variable } from './types';
 import { useBandStripesTransitions } from './useBandStripesTransitions';
-import { useDataContext } from './useDataContext';
+import { useXYChartContext } from './useXYChartContext';
 
 interface SVGBandStripesOwnProps {
   /** Whether the stripes are for the independent or the dependent axis. */
@@ -43,8 +43,7 @@ export function SVGBandStripes({
   ...rectProps
 }: SVGBandStripesProps) {
   const {
-    independentScale,
-    dependentScale,
+    scales,
     independentRangePadding,
     dependentRangePadding,
     horizontal,
@@ -55,9 +54,9 @@ export function SVGBandStripes({
     innerWidth,
     innerHeight,
     theme
-  } = useDataContext();
+  } = useXYChartContext();
 
-  const scale = variable === 'independent' ? independentScale : dependentScale;
+  const scale = variable === 'independent' ? scales.independent : scales.dependent;
   if (!isBandScale(scale)) {
     throw new Error('The <SVGBandStripes> component can only be used with a band scale.');
   }

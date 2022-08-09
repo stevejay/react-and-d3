@@ -4,7 +4,7 @@ import { scaleBand } from '@visx/scale';
 
 import { getScaleBandwidth } from './getScaleBandwidth';
 import { useBarAnnotation } from './useBarAnnotation';
-import { useDataContext } from './useDataContext';
+import { useXYChartContext } from './useXYChartContext';
 
 export interface SVGBarGroupAnnotationProps<Datum extends object> {
   dataKey: string;
@@ -23,7 +23,7 @@ export function SVGBarGroupAnnotation<Datum extends object>({
   dataKeys,
   padding
 }: SVGBarGroupAnnotationProps<Datum>) {
-  const { independentScale } = useDataContext();
+  const { independentScale } = useXYChartContext();
 
   const groupScale = useMemo(
     () =>

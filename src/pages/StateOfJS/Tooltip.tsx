@@ -51,7 +51,7 @@ export function TooltipInPortal<Datum>({ tooltip, className = '', children }: To
       {transitions(
         (styles, item) =>
           item && (
-            <Portal node={document && document.getElementById('portal-tooltip')}>
+            <Portal node={document && document.getElementById('tooltip-portal')}>
               <animated.div
                 ref={tooltip.popperElement}
                 style={{ ...styles, ...tooltip.styles.popper }}

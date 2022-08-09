@@ -26,6 +26,10 @@ export const darkTheme: XYChartTheme = {
     font: 'normal normal normal 14px/1 "Readex Pro"',
     className: 'text-slate-200'
   },
+  datumLabels: {
+    font: 'normal normal normal 14px/1 "Readex Pro"',
+    className: 'text-slate-200'
+  },
   tooltip: {
     container: {
       className:

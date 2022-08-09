@@ -14,13 +14,13 @@ import type { Options as PopperOptions, VirtualElement } from '@popperjs/core';
 import type { PickD3Scale } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 
-import { defaultTheme } from './constants';
+import { defaultTheme, defaultTooltipGlyphRadius } from './constants';
 import { isValidNumber } from './isValidNumber';
 import { Portal } from './Portal';
 import { TooltipContext } from './TooltipContext';
 import type { TooltipContextType, TooltipProps as BaseTooltipProps } from './types';
-import { useDataContext } from './useDataContext';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
+import { useXYChartContext } from './useXYChartContext';
 
 export type RenderTooltipParams<Datum extends object> = TooltipContextType<Datum> & {
   colorScale?: PickD3Scale<'ordinal', string, string>;
@@ -62,7 +62,7 @@ export type PopperTooltipProps<Datum extends object> = {
   glyphStyle?: SVGProps<SVGCircleElement>;
 } & Omit<BaseTooltipProps, 'left' | 'top' | 'children'>;
 
-const INVISIBLE_STYLES: CSSProperties = {
+const invisibleStyle: CSSProperties = {
   position: 'absolute',
   left: 0,
   top: 0,
@@ -92,14 +92,13 @@ export function PopperTooltip<Datum extends object>({
 }: // verticalCrosshairStyle,
 // ...tooltipProps
 PopperTooltipProps<Datum>) {
-  const { /*colorScale, */ innerHeight, innerWidth, margin, theme } = useDataContext();
+  const { innerHeight, innerWidth, margin, theme } = useXYChartContext();
   const tooltipContext = useContext(TooltipContext) as TooltipContextType<Datum>;
   const referenceElement = useRef<HTMLElement | null>(null); // TODO should this be state?
   const updateRef = useRef<ReturnType<typeof usePopper>['update']>();
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
   const nearestDatum = tooltipContext?.tooltipData?.nearestDatum;
-  // const nearestDatumKey = nearestDatum?.key ?? '';
-  const showTooltip = tooltipContext?.tooltipOpen; // && !isNil(tooltipContent);
+  const showTooltip = tooltipContext?.tooltipOpen;
   let tooltipLeft = tooltipContext?.tooltipLeft;
   let tooltipTop = tooltipContext?.tooltipTop;
 
@@ -151,7 +150,7 @@ PopperTooltipProps<Datum>) {
   const glyphProps: GlyphProps[] = [];
 
   if (showDatumGlyph) {
-    const radius = Number(theme?.tooltip?.glyph?.radius ?? 4);
+    const radius = Number(theme?.tooltip?.glyph?.radius ?? defaultTooltipGlyphRadius);
     const strokeWidth = Number(theme?.tooltip?.glyph?.strokeWidth ?? 0);
 
     if (nearestDatum) {
@@ -184,7 +183,7 @@ PopperTooltipProps<Datum>) {
 
   return (
     <>
-      <svg ref={setContainerRef} style={INVISIBLE_STYLES} />
+      <svg ref={setContainerRef} style={invisibleStyle} />
       {transitions(
         (springStyles, item) =>
           item && (
@@ -199,7 +198,6 @@ PopperTooltipProps<Datum>) {
                   stroke="currentColor"
                   style={{ ...crosshairsStyle, ...springStyles }}
                   {...restCrosshairsStyles}
-                  // {...verticalCrosshairStyle}
                 />
               )}
               {showHorizontalCrosshair && (
@@ -230,7 +228,7 @@ PopperTooltipProps<Datum>) {
                   />
                 )
               )}
-              <Portal node={document && document.getElementById('portal-tooltip')}>
+              <Portal node={document && document.getElementById('tooltip-portal')}>
                 <animated.div
                   ref={setPopperElement}
                   style={{ ...containerStyle, ...springStyles, ...popperStyles.popper }}

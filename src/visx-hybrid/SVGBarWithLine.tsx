@@ -22,24 +22,20 @@ export function SVGBarWithLine<Datum extends object>(props: SVGBarWithLineProps<
     horizontal,
     lineProps
   } = props;
-  const { style: lineStyle, ...restLineProps } = (typeof lineProps === 'function'
-    ? lineProps(datum, index, dataKey)
-    : lineProps) ?? {
-    stroke: 'white',
-    strokeWidth: 2
-  };
+  const { style: lineStyle, ...restLineProps } =
+    (typeof lineProps === 'function' ? lineProps(datum, index, dataKey) : lineProps) ?? {};
   return (
     <>
       <SVGSimpleBar {...props} />
       <animated.line
-        x1={x1}
-        y1={y1}
-        x2={horizontal ? x1 : x2}
-        y2={horizontal ? y2 : y1}
+        x1={horizontal ? x2 : x1}
+        y1={horizontal ? y1 : y2}
+        x2={x2}
+        y2={y2}
         style={{ ...lineStyle, opacity }}
         shapeRendering={defaultShapeRendering}
-        stroke="currenColor"
-        strokeWidth={1}
+        stroke="currentColor"
+        strokeWidth={2}
         strokeLinecap="butt"
         role="presentation"
         aria-hidden
