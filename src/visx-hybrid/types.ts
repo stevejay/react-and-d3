@@ -28,6 +28,8 @@ export interface Margin {
   right: number;
 }
 
+export type AxisOrientation = 'top' | 'bottom' | 'left' | 'right';
+
 // /** Horizontal text anchor. */
 // export type TextAnchor = 'start' | 'middle' | 'end' | 'inherit';
 
@@ -291,8 +293,6 @@ export interface FontMetrics {
   heightFromBaseline: number;
 }
 
-export type AxisOrientation = 'top' | 'bottom' | 'left' | 'right';
-
 export type FormattedValue = string | undefined;
 
 export type TickFormatter<T> = (
@@ -532,4 +532,23 @@ export interface LabelTransition {
   x: number;
   y: number;
   opacity: number;
+}
+
+export interface MarginCalculationParams {
+  axisOrientation: AxisOrientation;
+  scale: AxisScale<AxisScaleOutput>;
+  rangePadding: number;
+  tickFormat?: TickFormatter<ScaleInput<AxisScale>>;
+  tickCount?: number;
+  tickValues?: ScaleInput<AxisScale>[];
+  tickLength: number;
+  hideTicks: boolean;
+  hideZero: boolean;
+  tickLabelPadding: number;
+  tickLabelAngle: TickLabelAngle;
+  smallFont: FontProperties | string;
+  label?: string;
+  labelPadding: number;
+  labelAngle: LabelAngle;
+  bigFont: FontProperties | string;
 }

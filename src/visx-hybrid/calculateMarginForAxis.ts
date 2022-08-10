@@ -1,95 +1,34 @@
+import { addMargins } from './addMargins';
+import { calculateTicksData } from './calculateTicksData';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
-import { getTicksData } from './getTicksData';
 import { measureTextWithCache } from './measureTextWithCache';
-import type {
-  AxisOrientation,
-  AxisScale,
-  AxisScaleOutput,
-  FontProperties,
-  LabelAngle,
-  Margin,
-  ScaleInput,
-  TickDatum,
-  TickFormatter,
-  TickLabelAngle
-} from './types';
+import type { Margin, MarginCalculationParams, TickDatum } from './types';
 
-function getTickLineMargin(axisOrientation: AxisOrientation, tickLength: number, hideTicks: boolean): Margin {
-  const tickDimension = hideTicks ? 0 : tickLength;
-  switch (axisOrientation) {
-    case 'left':
-      return { left: tickDimension, right: 0, top: 0, bottom: 0 };
-    case 'right':
-      return { left: 0, right: tickDimension, top: 0, bottom: 0 };
-    case 'top':
-      return { left: 0, right: 0, top: tickDimension, bottom: 0 };
-    default:
-      return { left: 0, right: 0, top: 0, bottom: tickDimension };
-  }
+function getTickLineMargin({ axisOrientation, tickLength, hideTicks }: MarginCalculationParams): Margin {
+  const result: Margin = { left: 0, right: 0, top: 0, bottom: 0 };
+  result[axisOrientation] = hideTicks ? 0 : tickLength;
+  return result;
 }
 
 function getTickLabelsMargin(
-  axisOrientation: AxisOrientation,
-  rangePadding: number,
-  ticks: TickDatum[],
-  tickLabelPadding: number,
-  tickLabelAngle: TickLabelAngle,
-  font: FontProperties | string
+  { axisOrientation, rangePadding, tickLabelPadding, tickLabelAngle, smallFont }: MarginCalculationParams,
+  ticks: readonly TickDatum[]
 ): Margin {
   // Calculate the dimensions of each tick label:
-  const widths = ticks.map((tick) => measureTextWithCache(tick.label, font));
+  const widths = ticks.map((tick) => measureTextWithCache(tick.label, smallFont));
   // Get the width of the longest tick label:
   const maxTickLabelWidth = Math.max(0, ...widths);
-  // Get the height of the tallest tick label:
-  const tickLabelHeight = getFontMetricsWithCache(font).height;
+  // Get the height of the tick labels:
+  const tickLabelHeight = getFontMetricsWithCache(smallFont).height;
 
   if (axisOrientation === 'left' || axisOrientation === 'right') {
-    if (tickLabelAngle === 'horizontal') {
-      const width = maxTickLabelWidth + tickLabelPadding;
-      const halfHeight = Math.ceil(tickLabelHeight * 0.5);
-      if (axisOrientation === 'left') {
-        return {
-          left: width,
-          right: 0,
-          top: halfHeight - rangePadding,
-          bottom: halfHeight - rangePadding
-        };
-      } else {
-        return {
-          left: 0,
-          right: width,
-          top: halfHeight - rangePadding,
-          bottom: halfHeight - rangePadding
-        };
-      }
-    } else if (tickLabelAngle === 'vertical') {
-      const width = tickLabelHeight + tickLabelPadding;
-      const halfHeight = Math.ceil(maxTickLabelWidth * 0.5);
-      if (axisOrientation === 'left') {
-        return {
-          left: width,
-          right: 0,
-          top: halfHeight - rangePadding,
-          bottom: halfHeight - rangePadding
-        };
-      } else {
-        return {
-          left: 0,
-          right: width,
-          top: halfHeight - rangePadding,
-          bottom: halfHeight - rangePadding
-        };
-      }
-    } else {
-      // Angled.
-
+    if (tickLabelAngle === 'angled') {
       const sqrtOfTwo = Math.sqrt(2);
       // Find the length of a side of the square formed where the maxTickLabelWidth
       // is the hypotenuse of that square:
       const width = Math.ceil(sqrtOfTwo * (maxTickLabelWidth * 0.5));
       // Also find the equivalent side for the height of the label:
       const widthForHeight = sqrtOfTwo * (tickLabelHeight * 0.5);
-
       const halfHeight = Math.ceil(widthForHeight * 0.5);
       if (axisOrientation === 'left') {
         return {
@@ -106,56 +45,32 @@ function getTickLabelsMargin(
           bottom: halfHeight - rangePadding
         };
       }
+    } else {
+      let width = 0;
+      let halfHeight = 0;
+      if (tickLabelAngle === 'horizontal') {
+        width = maxTickLabelWidth + tickLabelPadding;
+        halfHeight = Math.ceil(tickLabelHeight * 0.5);
+      } else {
+        width = tickLabelHeight + tickLabelPadding;
+        halfHeight = Math.ceil(maxTickLabelWidth * 0.5);
+      }
+      return {
+        left: axisOrientation === 'left' ? width : 0,
+        right: axisOrientation === 'right' ? width : 0,
+        top: halfHeight - rangePadding,
+        bottom: halfHeight - rangePadding
+      };
     }
   } else {
     // 'top' or 'bottom'.
-
-    if (tickLabelAngle === 'horizontal') {
-      const halfWidth = Math.ceil(maxTickLabelWidth * 0.5);
-      const height = tickLabelHeight + tickLabelPadding;
-      if (axisOrientation === 'top') {
-        return {
-          left: halfWidth - rangePadding,
-          right: halfWidth - rangePadding,
-          top: height,
-          bottom: 0
-        };
-      } else {
-        return {
-          left: halfWidth - rangePadding,
-          right: halfWidth - rangePadding,
-          top: 0,
-          bottom: height
-        };
-      }
-    } else if (tickLabelAngle === 'vertical') {
-      const halfWidth = Math.ceil(tickLabelHeight * 0.5);
-      const height = maxTickLabelWidth + tickLabelPadding;
-      if (axisOrientation === 'top') {
-        return {
-          left: halfWidth - rangePadding,
-          right: halfWidth - rangePadding,
-          top: height,
-          bottom: 0
-        };
-      } else {
-        return {
-          left: halfWidth - rangePadding,
-          right: halfWidth - rangePadding,
-          top: 0,
-          bottom: height
-        };
-      }
-    } else {
-      // Angled.
-
+    if (tickLabelAngle === 'angled') {
       const sqrtOfTwo = Math.sqrt(2);
       // Find the length of a side of the square formed where the maxTickLabelWidth
       // is the hypotenuse of that square:
       const width = Math.ceil(sqrtOfTwo * (maxTickLabelWidth * 0.5));
       // Also find the equivalent side for the height of the label:
       const widthForHeight = sqrtOfTwo * (tickLabelHeight * 0.5);
-
       const halfHeight = Math.ceil(widthForHeight * 0.5);
       if (axisOrientation === 'top') {
         return {
@@ -172,93 +87,54 @@ function getTickLabelsMargin(
           bottom: width + halfHeight + tickLabelPadding
         };
       }
+    } else {
+      let halfWidth = 0;
+      let height = 0;
+      if (tickLabelAngle === 'horizontal') {
+        halfWidth = Math.ceil(maxTickLabelWidth * 0.5);
+        height = tickLabelHeight + tickLabelPadding;
+      } else if (tickLabelAngle === 'vertical') {
+        halfWidth = Math.ceil(tickLabelHeight * 0.5);
+        height = maxTickLabelWidth + tickLabelPadding;
+      }
+      return {
+        left: halfWidth - rangePadding,
+        right: halfWidth - rangePadding,
+        top: axisOrientation === 'top' ? height : 0,
+        bottom: axisOrientation === 'bottom' ? height : 0
+      };
     }
   }
 }
 
 // The dimensions consists of the label and the label padding.
-function getLabelMargin(
-  axisOrientation: AxisOrientation,
-  label: string | undefined,
-  labelPadding: number,
-  labelAngle: LabelAngle,
-  font: FontProperties | string
-): Margin {
-  if (!label) {
-    return { left: 0, right: 0, top: 0, bottom: 0 };
+function getLabelMargin({
+  axisOrientation,
+  label,
+  labelPadding,
+  labelAngle,
+  bigFont
+}: MarginCalculationParams): Margin {
+  const result: Margin = { left: 0, right: 0, top: 0, bottom: 0 };
+  if (label) {
+    // Calls to the font funcs are inlined here to avoid making the call if not actually required.
+    if (axisOrientation === 'left' || axisOrientation === 'right') {
+      result[axisOrientation] =
+        labelAngle === 'horizontal'
+          ? measureTextWithCache(label, bigFont) + labelPadding
+          : getFontMetricsWithCache(bigFont).height + labelPadding;
+    } else {
+      result[axisOrientation] =
+        labelAngle === 'horizontal'
+          ? getFontMetricsWithCache(bigFont).height + labelPadding
+          : measureTextWithCache(label, bigFont) + labelPadding;
+    }
   }
-  const width = measureTextWithCache(label, font) + labelPadding;
-  const height = getFontMetricsWithCache(font).height + labelPadding;
-
-  switch (axisOrientation) {
-    case 'left':
-      return { left: labelAngle === 'horizontal' ? width : height, right: 0, top: 0, bottom: 0 };
-    case 'right':
-      return { left: 0, right: labelAngle === 'horizontal' ? width : height, top: 0, bottom: 0 };
-    case 'top':
-      return { left: 0, right: 0, top: labelAngle === 'horizontal' ? height : width, bottom: 0 };
-    default:
-      return { left: 0, right: 0, top: 0, bottom: labelAngle === 'horizontal' ? height : width };
-  }
-}
-
-export interface MarginCalculationInput {
-  axisOrientation: AxisOrientation;
-  scale: AxisScale<AxisScaleOutput>;
-  rangePadding: number;
-
-  tickFormat?: TickFormatter<ScaleInput<AxisScale>>;
-  tickCount?: number;
-  tickValues?: ScaleInput<AxisScale>[];
-  tickLength: number;
-  hideTicks: boolean;
-  hideZero: boolean;
-
-  tickLabelPadding: number;
-  tickLabelAngle: TickLabelAngle;
-  smallFont: FontProperties | string;
-
-  label?: string;
-  labelPadding: number;
-  labelAngle: LabelAngle;
-  bigFont: FontProperties | string;
+  return result;
 }
 
 // Returns the required adjustments for the given axis data.
-export function calculateMarginForAxis({
-  axisOrientation,
-  scale,
-  rangePadding,
-  bigFont,
-  smallFont,
-  hideZero,
-  tickFormat,
-  tickCount,
-  tickValues,
-  tickLength,
-  hideTicks,
-  tickLabelPadding,
-  label,
-  labelPadding,
-  tickLabelAngle,
-  labelAngle
-}: MarginCalculationInput): Margin {
-  // Calculate the ticks that we need to display for this axis:
-  const ticks = getTicksData(scale, hideZero, tickFormat, tickCount, tickValues);
-  const tickLineMargin = getTickLineMargin(axisOrientation, tickLength, hideTicks);
-  const tickLabelsMargin = getTickLabelsMargin(
-    axisOrientation,
-    rangePadding,
-    ticks,
-    tickLabelPadding,
-    tickLabelAngle,
-    smallFont
-  );
-  const labelMargin = getLabelMargin(axisOrientation, label, labelPadding, labelAngle, bigFont);
-  return {
-    left: tickLineMargin.left + tickLabelsMargin.left + labelMargin.left,
-    right: tickLineMargin.right + tickLabelsMargin.right + labelMargin.right,
-    top: tickLineMargin.top + tickLabelsMargin.top + labelMargin.top,
-    bottom: tickLineMargin.bottom + tickLabelsMargin.bottom + labelMargin.bottom
-  };
+export function calculateMarginForAxis(params: MarginCalculationParams): Margin {
+  const ticks = calculateTicksData(params);
+  return addMargins([getTickLineMargin(params), getTickLabelsMargin(params, ticks), getLabelMargin(params)]);
 }

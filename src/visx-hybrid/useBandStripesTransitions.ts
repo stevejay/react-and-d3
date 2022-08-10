@@ -13,7 +13,7 @@ export interface StripePositioningArgs {
   margin: Margin;
   innerWidth: number;
   innerHeight: number;
-  ticks: TickDatum[];
+  ticks: readonly TickDatum[];
   animate: boolean;
   springConfig: SpringConfig | undefined;
   renderingOffset: number;

@@ -6,8 +6,8 @@ import { Text } from '@visx/text';
 
 import { useAxisTransitions } from './animation';
 import { AxisDomainPath } from './AxisDomainPath';
+import { calculateTicksData } from './calculateTicksData';
 import { getLabelTransform } from './getLabelTransform';
-import { getTicksData } from './getTicksData';
 import { AxisScale, CommonAxisProps, SvgAxisRendererProps, TextProps, TicksRendererProps } from './types';
 import { XYChartContext } from './XYChartContext';
 
@@ -216,7 +216,7 @@ function SvgAxis<Scale extends AxisScale>({
   // const filteredTickValues = (tickValues ?? getTicks(scale, tickCount)).filter(
   //   (value) => !hideZero || (value !== 0 && value !== '0')
   // );
-  const ticks = getTicksData(scale, hideZero, tickFormat, tickCount, tickValues);
+  const ticks = calculateTicksData(scale, hideZero, tickFormat, tickCount, tickValues);
 
   return (
     <Group data-testid={`axis-${orientation}`} {...axisGroupProps} top={top} left={left}>

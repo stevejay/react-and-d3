@@ -7,14 +7,14 @@ import { getScaleBandwidth } from './getScaleBandwidth';
 import { isBandScale } from './isBandScale';
 import type { AxisScale, GridType, Margin, TickDatum } from './types';
 
-export interface GridPositioningArgs {
+export interface GridPositioningParams {
   gridType: GridType;
   scale: AxisScale;
   rangePadding: number;
   margin: Margin;
   innerWidth: number;
   innerHeight: number;
-  ticks: TickDatum[];
+  ticks: readonly TickDatum[];
   springConfig: SpringConfig | undefined;
   animate: boolean;
   renderingOffset: number;
@@ -28,7 +28,7 @@ function createGridPositioning({
   innerWidth,
   innerHeight,
   renderingOffset
-}: GridPositioningArgs): (tickDatum: TickDatum) => { x1: number; y1: number; x2: number; y2: number } {
+}: GridPositioningParams): (tickDatum: TickDatum) => { x1: number; y1: number; x2: number; y2: number } {
   const scaleCopy = scale.copy();
   let scaleOffset = Math.max(0, getScaleBandwidth(scaleCopy) - renderingOffset * 2) / 2;
 
@@ -60,7 +60,7 @@ function createGridPositioning({
 }
 
 /** Generates the animations for a grid. */
-export function useGridTransitions(args: GridPositioningArgs) {
+export function useGridTransitions(args: GridPositioningParams) {
   const position = createGridPositioning(args);
   const { ticks, scale, springConfig, animate } = args;
 

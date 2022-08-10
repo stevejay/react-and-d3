@@ -1,8 +1,8 @@
 import type { SVGProps } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 
+import { calculateTicksData } from './calculateTicksData';
 import { defaultShapeRendering } from './constants';
-import { getTicksData } from './getTicksData';
 import { isBandScale } from './isBandScale';
 import type { AxisScale, ScaleInput, Variable } from './types';
 import { useBandStripesTransitions } from './useBandStripesTransitions';
@@ -64,7 +64,7 @@ export function SVGBandStripes({
   const gridType =
     variable === 'independent' ? (horizontal ? 'row' : 'column') : horizontal ? 'column' : 'row';
   const rangePadding = variable === 'independent' ? dependentRangePadding : independentRangePadding;
-  const ticks = getTicksData(scale, false, undefined, tickCount, tickValues);
+  const ticks = calculateTicksData({ scale, hideZero: false, tickCount, tickValues });
   const transitions = useBandStripesTransitions({
     gridType,
     scale,

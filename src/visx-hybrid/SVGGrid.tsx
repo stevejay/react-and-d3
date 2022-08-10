@@ -1,8 +1,8 @@
 import type { SVGProps } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 
+import { calculateTicksData } from './calculateTicksData';
 import { defaultShapeRendering } from './constants';
-import { getTicksData } from './getTicksData';
 import type { AxisScale, GridType, ScaleInput, Variable } from './types';
 import { useGridTransitions } from './useGridTransitions';
 import { useXYChartContext } from './useXYChartContext';
@@ -60,7 +60,7 @@ export function SVGGrid({
   const gridTheme = theme?.grid?.[variable];
   const scale = variable === 'independent' ? scales.independent : scales.dependent;
   const rangePadding = variable === 'independent' ? dependentRangePadding : independentRangePadding;
-  const ticks = getTicksData(scale, hideZero, undefined, tickCount, tickValues);
+  const ticks = calculateTicksData({ scale, hideZero, tickCount, tickValues });
   const transitions = useGridTransitions({
     gridType,
     scale,

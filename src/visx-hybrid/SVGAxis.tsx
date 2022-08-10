@@ -2,6 +2,7 @@ import type { SVGProps } from 'react';
 import type { SpringConfig } from 'react-spring';
 
 import { calculateAxisOrientation } from './calculateAxisOrientation';
+import { calculateTicksData } from './calculateTicksData';
 import {
   defaultBigLabelsTextStyle,
   defaultHideTicks,
@@ -11,7 +12,6 @@ import {
   defaultTickLength
 } from './constants';
 import { getDefaultAxisLabelAngle } from './getDefaultAxisLabelAngle';
-import { getTicksData } from './getTicksData';
 import { SVGAnimatedGroup } from './SVGAnimatedGroup';
 import { SVGAxisLabel } from './SVGAxisLabel';
 import { SVGAxisPath } from './SVGAxisPath';
@@ -143,7 +143,7 @@ export function SVGAxis(props: SVGAxisProps) {
   const domainRange = isVertical
     ? [rangeFrom + rangePadding, rangeTo - rangePadding]
     : [rangeFrom - rangePadding, rangeTo + rangePadding];
-  const ticks = getTicksData(scale, hideZero, tickFormat, tickCount, tickValues);
+  const ticks = calculateTicksData({ scale, hideZero, tickFormat, tickCount, tickValues });
   const springConfig = userSpringConfig ?? contextSpringConfig;
   const animate = userAnimate && contextAnimate;
   const axisTheme = theme?.axis?.[axisOrientation];

@@ -28,5 +28,6 @@
   "css.validate": false,
   "typescript.tsdk": "./node_modules/typescript/lib",
   "eslint.validate": ["html", "javascript", "typescript", "javascriptreact", "typescriptreact"],
-  "eslint.packageManager": "yarn"
+  "eslint.packageManager": "yarn",
+  "explorer.enableUndo": false
 }

@@ -5,13 +5,21 @@ import { getTickFormatter } from '@/visx-next/getTickFormatter';
 
 import type { AxisScale, ScaleInput, TickDatum, TickFormatter } from './types';
 
-export function getTicksData(
-  scale: AxisScale | undefined,
-  hideZero?: boolean,
-  tickFormat?: TickFormatter<ScaleInput<AxisScale>>,
-  tickCount?: number,
-  tickValues?: ScaleInput<AxisScale>[]
-): TickDatum[] {
+export interface TicksDataParams {
+  scale: AxisScale | undefined;
+  hideZero?: boolean;
+  tickFormat?: TickFormatter<ScaleInput<AxisScale>>;
+  tickCount?: number;
+  tickValues?: ScaleInput<AxisScale>[];
+}
+
+export function calculateTicksData({
+  scale,
+  hideZero,
+  tickFormat,
+  tickCount,
+  tickValues
+}: TicksDataParams): readonly TickDatum[] {
   if (isNil(scale)) {
     return [];
   }

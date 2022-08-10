@@ -43,7 +43,7 @@ export interface SVGAxisTicksProps {
   tickLength?: number;
   /** Props to be applied to individual tick lines. */
   tickLineProps?: LineProps;
-  ticks: TickDatum[];
+  ticks: readonly TickDatum[];
   labelStyles?: TextStyles;
   axisStyles?: AxisStyles;
 }

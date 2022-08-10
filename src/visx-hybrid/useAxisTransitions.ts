@@ -22,7 +22,7 @@ function createTickPositioning(scale: AxisScale, offset: number): (datum: TickDa
 
 export function useAxisTransitions(
   scale: AxisScale,
-  ticks: TickDatum[],
+  ticks: readonly TickDatum[],
   springConfig: SpringConfig | undefined,
   animate: boolean,
   renderingOffset: number

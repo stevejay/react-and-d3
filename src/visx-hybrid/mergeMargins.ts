@@ -1,6 +1,6 @@
 import type { Margin } from './types';
 
-/** Returns a margin object that is formed from the maximum value for each margin direction in the given list of margin objects. */
+/** Returns a margin object that is formed from the maximum value for each margin direction in the given list of margin objects. If `marginList` is empty then an 'all zeros' margin is returned. */
 export function mergeMargins(marginList: Margin[]): Margin {
   return {
     left: Math.max(0, ...marginList.map((x) => x.left)) ?? 0,

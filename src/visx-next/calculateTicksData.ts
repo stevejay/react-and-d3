@@ -4,7 +4,7 @@ import { getTickFormatter } from './getTickFormatter';
 import { getTicks, ScaleInput } from './scale';
 import { AxisScale, TickDatum, TickFormatter } from './types';
 
-export function getTicksData(
+export function calculateTicksData(
   scale: AxisScale | undefined,
   hideZero?: boolean,
   tickFormat?: TickFormatter<ScaleInput<AxisScale>>,
