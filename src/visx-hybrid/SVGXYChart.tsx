@@ -224,8 +224,8 @@ function InnerChart<
 
   return (
     <>
-      {transitions(({ opacity }, value) =>
-        value ? (
+      {transitions(({ opacity }, context) =>
+        context ? (
           <animated.svg
             xmlns="http://www.w3.org/2000/svg"
             width={width}
@@ -234,13 +234,13 @@ function InnerChart<
             className={`${className} ${theme?.svg?.className ?? ''}`}
             {...restSvgProps}
           >
-            <XYChartContext.Provider value={value}>{children}</XYChartContext.Provider>
+            <XYChartContext.Provider value={context}>{children}</XYChartContext.Provider>
             {captureEvents && (
               <rect
-                x={value.margin.left}
-                y={value.margin.top}
-                width={width - value.margin.left - value.margin.right}
-                height={height - value.margin.top - value.margin.bottom}
+                x={context.margin.left}
+                y={context.margin.top}
+                width={width - context.margin.left - context.margin.right}
+                height={height - context.margin.top - context.margin.bottom}
                 fill="transparent"
                 role="presentation"
                 aria-hidden

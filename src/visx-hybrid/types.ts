@@ -30,40 +30,6 @@ export interface Margin {
 
 export type AxisOrientation = 'top' | 'bottom' | 'left' | 'right';
 
-// /** Horizontal text anchor. */
-// export type TextAnchor = 'start' | 'middle' | 'end' | 'inherit';
-
-// /** Vertical text anchor. */
-// export type VerticalTextAnchor = 'start' | 'middle' | 'end';
-
-// export interface DataEntry<
-//   IndependentScale extends AxisScale,
-//   DependentScale extends AxisScale,
-//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   Datum = any,
-//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   OriginalDatum = any
-// > {
-//   dataKey: string;
-//   data: readonly Datum[];
-//   independentAccessor: (datum: Datum) => ScaleInput<IndependentScale>;
-//   dependentAccessor: (datum: Datum) => ScaleInput<DependentScale>;
-
-//   /** Legend shape for the data key. */
-//   // legendShape?: LegendShape;
-
-//   transformation: 'none' | 'stacked' | 'grouped';
-//   underlyingDatumAccessor: (datum: Datum) => OriginalDatum; // change to underlying.datumAccessor + transformation?
-//   underlying: {
-//     /** function that returns the key value of a datum. */
-//     keyAccessor: (datum: OriginalDatum, dataKey?: string) => string;
-//     independentAccessor: (datum: OriginalDatum) => ScaleInput<IndependentScale>;
-//     dependentAccessor: (datum: OriginalDatum) => ScaleInput<DependentScale>;
-//     /** function that returns the color value of a datum. */
-//     colorAccessor?: (datum: OriginalDatum, dataKey: string) => string;
-//   };
-// }
-
 export interface IDatumEntry {
   get dataKey(): string;
   // TODO fix any
@@ -152,10 +118,6 @@ export interface ScaleSet {
 
 export interface XYChartContextType {
   scales: ScaleSet;
-  // independentScale: IndependentScale;
-  // dependentScale: DependentScale;
-  // groupScales: readonly ScaleBand<string>[];
-  // colorScale: ScaleTypeToD3Scale<string, string>['ordinal'];
   independentRangePadding: number;
   dependentRangePadding: number;
   width: number;
@@ -163,8 +125,6 @@ export interface XYChartContextType {
   innerWidth: number;
   innerHeight: number;
   margin: Margin;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // dataEntries: readonly DataEntry<IndependentScale, DependentScale, any, any>[];
   dataEntryStore: IDataEntryStore;
   horizontal: boolean;
   animate: boolean;
@@ -515,6 +475,12 @@ export interface PolygonTransition {
   opacity: number;
 }
 
+export interface LabelTransition {
+  x: number;
+  y: number;
+  opacity: number;
+}
+
 export interface SVGBarProps<Datum extends object> {
   springValues: SpringValues<PolygonTransition>;
   datum: Datum;
@@ -525,33 +491,10 @@ export interface SVGBarProps<Datum extends object> {
   colorAccessor?: (datum: Datum, dataKey: string) => string;
 }
 
+export type SVGBarComponent<Datum extends object> = (props: SVGBarProps<Datum>) => JSX.Element;
+
 export type BarLabelPosition = 'outside' | 'inside' | 'inside-centered';
 export type InternalBarLabelPosition = 'outside' | 'inside' | 'inside-centered' | 'stacked';
-
-export interface LabelTransition {
-  x: number;
-  y: number;
-  opacity: number;
-}
-
-// export interface MarginCalculationParams {
-//   axisOrientation: AxisOrientation;
-//   scale: AxisScale<AxisScaleOutput>;
-//   rangePadding: number;
-//   tickFormat?: TickFormatter<ScaleInput<AxisScale>>;
-//   tickCount?: number;
-//   tickValues?: ScaleInput<AxisScale>[];
-//   tickLength: number;
-//   hideTicks: boolean;
-//   hideZero: boolean;
-//   tickLabelPadding: number;
-//   tickLabelAngle: TickLabelAngle;
-//   smallFont: FontProperties | string;
-//   label?: string;
-//   labelPadding: number;
-//   labelAngle: LabelAngle;
-//   bigFont: FontProperties | string;
-// }
 
 export interface BasicAxisProps {
   /** Whether the axis is the independent or the dependent axis. */

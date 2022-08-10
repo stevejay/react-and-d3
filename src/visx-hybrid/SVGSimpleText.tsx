@@ -1,6 +1,6 @@
 import { animated, SpringValues } from 'react-spring';
 
-import type { Anchor, SVGTextProps, TextStyles } from './types';
+import type { Anchor, LabelTransition, SVGTextProps, TextStyles } from './types';
 
 const SVGStyle = { overflow: 'visible' };
 
@@ -80,7 +80,7 @@ interface SVGAnimatedSimpleTextOwnProps {
   textStyles?: TextStyles; // font, fill, className
   // style?: CSSProperties;
   angle?: number;
-  springValues: SpringValues<{ x: number; y: number; opacity: number }>;
+  springValues: SpringValues<LabelTransition>;
   fontHeight: number;
   fontHeightFromBaseline: number;
   /** String (or number coercible to one) to be styled and positioned. */

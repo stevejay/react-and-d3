@@ -8,7 +8,7 @@ import { isBandScale } from './isBandScale';
 import type { AxisScale, TickDatum } from './types';
 
 function keyAccessor(tickValue: TickDatum) {
-  return tickValue.value.toString(); // Should this be tickValue.label ?
+  return tickValue.value.toString();
 }
 
 function createTickPositioning(scale: AxisScale, offset: number): (datum: TickDatum) => number {

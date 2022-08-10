@@ -2,7 +2,7 @@ import type { SpringConfig } from 'react-spring';
 import { ScaleOrdinal } from 'd3-scale';
 
 import { SVGBar } from './SVGBar';
-import type { AxisScale, IDatumEntry, ScaleSet, SeriesProps, SVGBarProps } from './types';
+import type { AxisScale, IDatumEntry, ScaleSet, SeriesProps, SVGBarComponent } from './types';
 import { useBarTransitions } from './useBarTransitions';
 
 export type SVGBarSeriesRendererProps<
@@ -18,7 +18,7 @@ export type SVGBarSeriesRendererProps<
   springConfig: SpringConfig;
   colorAccessor: (datum: Datum, dataKey: string) => string;
   colorScale: ScaleOrdinal<string, string, never>;
-  component?: (props: SVGBarProps<Datum>) => JSX.Element;
+  component?: SVGBarComponent<Datum>;
   seriesIsLeaving?: boolean;
 } & Pick<
   SeriesProps<IndependentScale, DependentScale, Datum>,

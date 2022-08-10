@@ -3,7 +3,7 @@ import { SpringConfig } from 'react-spring';
 
 import { barSeriesEventSource, xyChartEventSource } from './constants';
 import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
-import type { AxisScale, ScaleInput, SVGBarProps } from './types';
+import type { AxisScale, ScaleInput, SVGBarComponent } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useXYChartContext } from './useXYChartContext';
 
@@ -18,7 +18,7 @@ export type SVGBarSeriesProps<Datum extends object> = {
   colorAccessor?: (datum: Datum, dataKey: string) => string;
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
   enableEvents?: boolean;
-  component?: (props: SVGBarProps<Datum>) => JSX.Element;
+  component?: SVGBarComponent<Datum>;
 };
 
 export function SVGBarSeries<Datum extends object>({

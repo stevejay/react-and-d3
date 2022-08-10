@@ -8,7 +8,7 @@ import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
 import { SVGBarSeriesProps } from './SVGBarSeries';
 import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
-import type { AxisScale, SVGBarProps } from './types';
+import type { AxisScale, SVGBarComponent } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
 import { useXYChartContext } from './useXYChartContext';
@@ -23,7 +23,7 @@ export interface SVGBarStackProps<Datum extends object> {
   springConfig?: SpringConfig;
   enableEvents?: boolean;
   children?: ReactNode;
-  component?: (props: SVGBarProps<Datum>) => JSX.Element;
+  component?: SVGBarComponent<Datum>;
   colorAccessor?: (datum: Datum, key: string) => string;
 }
 
