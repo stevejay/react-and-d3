@@ -52,40 +52,9 @@ export interface IDataEntry {
   get dependentAccessor(): (datum: any) => ScaleInput<AxisScale>;
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get keyAccessorForRenderingData(): (datum: any) => string | number;
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getOriginalDatumFromRenderingDatum(datum: any): any;
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getRenderingData(): readonly any[];
-  getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
-    // TODO fix any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    datum: any;
-    label: string;
-  }[];
+  get keyAccessor(): (datum: any) => string | number;
   getDomainValuesForIndependentScale(): readonly ScaleInput<AxisScale>[];
   getDomainValuesForDependentScale(): readonly ScaleInput<AxisScale>[];
-  createElementPositionerForRenderingData(args: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    renderingOffset: number;
-    // TODO fix any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }): (datum: any) => DatumPosition | null;
-  createLabelPositionerForRenderingData(args: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    renderingOffset: number;
-    font: FontProperties | string;
-    position: InternalBarLabelPosition;
-    positionOutsideOnOverflow: boolean;
-    padding: number;
-    hideOnOverflow: boolean;
-    // TODO fix any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }): (datumWithLabel: { datum: any; label: string }) => LabelTransition | null;
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getFilteredData(filter: (datum: any) => boolean): readonly any[];
@@ -109,6 +78,38 @@ export interface IDataEntry {
     // TODO fix any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }): NearestDatumReturnType<any> | null;
+
+  // TODO fix any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getOriginalDatumFromRenderingDatum(datum: any): any;
+  // TODO fix any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getRenderingData(): readonly any[];
+  getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): readonly {
+    // TODO fix any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    datum: any;
+    label: string;
+  }[];
+  createElementPositionerForRenderingData(args: {
+    scales: ScaleSet;
+    horizontal: boolean;
+    renderingOffset: number;
+    // TODO fix any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }): (datum: any) => DatumPosition | null;
+  createLabelPositionerForRenderingData(args: {
+    scales: ScaleSet;
+    horizontal: boolean;
+    renderingOffset: number;
+    font: FontProperties | string;
+    position: InternalBarLabelPosition;
+    positionOutsideOnOverflow: boolean;
+    padding: number;
+    hideOnOverflow: boolean;
+    // TODO fix any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }): (datumWithLabel: { datum: any; label: string }) => LabelTransition | null;
 }
 
 export interface IDataEntryStore {

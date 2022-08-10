@@ -57,7 +57,7 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry {
     return this._data;
   }
 
-  getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
+  getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): readonly {
     datum: Datum;
     label: string;
   }[] {
@@ -75,7 +75,7 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry {
     return this._data.map((datum) => this.dependentAccessor(datum));
   }
 
-  get keyAccessorForRenderingData() {
+  get keyAccessor() {
     return this._keyAccessor;
   }
 
@@ -200,7 +200,6 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry {
     };
   }
 
-  // return datum is original
   getFilteredData(filter: (datum: Datum) => boolean): readonly Datum[] {
     return this._data.filter(filter);
   }
@@ -269,7 +268,7 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry {
     return this._data;
   }
 
-  getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
+  getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): readonly {
     datum: Datum;
     label: string;
   }[] {
@@ -287,7 +286,7 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry {
     return this._data.map((datum) => this.dependentAccessor(datum));
   }
 
-  get keyAccessorForRenderingData() {
+  get keyAccessor() {
     return this._keyAccessor;
   }
 
@@ -503,28 +502,22 @@ export class StackDataEntry<Datum extends object> implements IDataEntry {
     this._colorAccessor = colorAccessor;
   }
 
-  // fine
   get dataKey(): string {
     return this._dataKey;
   }
 
-  // for original datum
   get independentAccessor() {
     return this._independentAccessor;
   }
 
-  // for original datum
   get dependentAccessor() {
     return this._dependentAccessor;
   }
 
-  // ***** takes stack datum and returns original datum
-  get keyAccessorForRenderingData() {
-    return (datum: StackDatum<AxisScale, AxisScale, Datum>) =>
-      this._keyAccessor(getOriginalDatumFromStackDatum(datum));
+  get keyAccessor() {
+    return this._keyAccessor;
   }
 
-  // for original datum
   get colorAccessor() {
     return this._colorAccessor;
   }
@@ -541,7 +534,6 @@ export class StackDataEntry<Datum extends object> implements IDataEntry {
     return this._stackData.map((datum) => [getFirstItem(datum), getSecondItem(datum)]).flat();
   }
 
-  // takes original datum
   getPositionForDatum(params: {
     datum: Datum;
     scales: ScaleSet;
@@ -561,8 +553,7 @@ export class StackDataEntry<Datum extends object> implements IDataEntry {
     return this._stackData;
   }
 
-  // returns stack datum
-  getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
+  getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): readonly {
     datum: StackDatum<AxisScale, AxisScale, Datum>;
     label: string;
   }[] {
@@ -572,7 +563,6 @@ export class StackDataEntry<Datum extends object> implements IDataEntry {
     });
   }
 
-  // function returned takes stack datum, but it's transparent?
   createElementPositionerForRenderingData({
     scales,
     horizontal
@@ -608,7 +598,6 @@ export class StackDataEntry<Datum extends object> implements IDataEntry {
     };
   }
 
-  // function returned takes stack datum, but it's transparent?
   createLabelPositionerForRenderingData({
     scales,
     horizontal,
@@ -658,17 +647,14 @@ export class StackDataEntry<Datum extends object> implements IDataEntry {
     };
   }
 
-  // return datum is original
   getFilteredData(filter: (datum: Datum) => boolean): readonly Datum[] {
     return this._originalData.filter(filter);
   }
 
-  // maps on original datum
   getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[] {
     return this._originalData.map(mapper);
   }
 
-  // return datum is original
   findNearestDatum({
     point,
     horizontal,

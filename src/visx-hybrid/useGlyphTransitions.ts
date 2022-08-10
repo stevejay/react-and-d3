@@ -35,7 +35,7 @@ export function useGlyphTransitions<Datum extends object>({
       seriesIsLeaving ? { opacity: 1 } : { opacity: 1, ...createGlyphTransition(position(datum)), r: radius },
     leave: ({ radius }) => ({ opacity: 0, r: radius }),
     config: springConfig,
-    keys: ({ datum }) => dataEntry.keyAccessorForRenderingData(datum),
+    keys: ({ datum }) => dataEntry.keyAccessor(dataEntry.getOriginalDatumFromRenderingDatum(datum)),
     immediate: !animate
   });
 }

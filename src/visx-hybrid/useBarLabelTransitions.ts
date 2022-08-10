@@ -38,8 +38,7 @@ export function useBarLabelTransitions(args: {
     update: (datum) => ({ ...position(datum) }),
     leave: () => ({ opacity: 0 }),
     config: springConfig,
-
-    keys: (datum) => dataEntry.keyAccessorForRenderingData(datum.datum),
+    keys: ({ datum }) => dataEntry.keyAccessor(dataEntry.getOriginalDatumFromRenderingDatum(datum)),
     immediate: !animate
   });
 }
