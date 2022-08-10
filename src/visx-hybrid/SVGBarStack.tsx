@@ -7,7 +7,7 @@ import { isDefined } from './isDefined';
 import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
 import { SVGBarSeriesProps } from './SVGBarSeries';
-import { SVGBarStackSeries } from './SVGBarStackSeries';
+import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
 import type { AxisScale, SVGBarProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
@@ -43,16 +43,12 @@ export function SVGBarStack<Datum extends object>({
     animate: contextAnimate,
     dataEntryStore
   } = useXYChartContext();
-
   const seriesChildren = useMemo(
     () => getChildrenAndGrandchildrenWithProps<SVGBarSeriesProps<Datum>>(children),
     [children]
   );
-
   const dataKeys = seriesChildren.map((child) => child.props.dataKey).filter(isDefined);
-
   const ownEventSourceKey = `${barStackEventSource}-${dataKeys.join('-')}`;
-
   // TODO fix the any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   /* const eventEmitters = */ useSeriesEvents<AxisScale, AxisScale, any>({
@@ -86,8 +82,7 @@ export function SVGBarStack<Datum extends object>({
             style={{ ...style, ...styles }}
             {...restGroupProps}
           >
-            <SVGBarStackSeries
-              dataKey={datum.dataKey}
+            <SVGBarSeriesRenderer
               scales={scales}
               dataEntry={datum}
               horizontal={horizontal}

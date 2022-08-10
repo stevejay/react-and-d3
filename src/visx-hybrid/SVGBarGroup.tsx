@@ -4,8 +4,8 @@ import { animated, SpringConfig } from 'react-spring';
 import { barGroupEventSource, xyChartEventSource } from './constants';
 import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchildrenWithProps';
 import { isDefined } from './isDefined';
-import { SVGBarGroupSeries } from './SVGBarGroupSeries';
 import { SVGBarSeriesProps } from './SVGBarSeries';
+import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
 import type { AxisScale, SVGBarProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
@@ -79,10 +79,9 @@ export function SVGBarGroup<Datum extends object>({
             style={{ ...style, ...styles }}
             {...restGroupProps}
           >
-            <SVGBarGroupSeries
+            <SVGBarSeriesRenderer
               scales={scales}
               dataEntry={datum}
-              groupDataKeys={dataKeys}
               horizontal={horizontal}
               renderingOffset={renderingOffset}
               animate={animate && contextAnimate}
@@ -91,6 +90,7 @@ export function SVGBarGroup<Datum extends object>({
               colorScale={scales.color}
               // {...events}
               component={component}
+              seriesIsLeaving={!dataKeys.includes(datum.dataKey)}
             />
           </animated.g>
         );

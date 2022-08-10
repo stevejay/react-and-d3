@@ -2,9 +2,8 @@ import type { SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
 
 import { barSeriesEventSource, xyChartEventSource } from './constants';
-import { SVGSimpleBar } from './SVGSimpleBar';
+import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
 import type { AxisScale, ScaleInput, SVGBarProps } from './types';
-import { useBarTransitions } from './useBarTransitions';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useXYChartContext } from './useXYChartContext';
 
@@ -28,7 +27,8 @@ export function SVGBarSeries<Datum extends object>({
   animate = true,
   dataKey,
   enableEvents = true,
-  component: BarComponent = SVGSimpleBar
+  colorAccessor,
+  component
 }: SVGBarSeriesProps<Datum>) {
   const {
     scales,
@@ -52,27 +52,22 @@ export function SVGBarSeries<Datum extends object>({
     source: ownEventSourceKey,
     allowedSources: [xyChartEventSource]
   });
-  const transitions = useBarTransitions<Datum>({
-    dataEntry,
-    scales,
-    horizontal,
-    springConfig: springConfig ?? contextSpringConfig,
-    animate: animate && contextAnimate,
-    renderingOffset
-  });
   return (
     <g data-testid={`bar-series-${dataKey}`} {...groupProps}>
-      {transitions((springValues, datum, _, index) => (
-        <BarComponent
-          springValues={springValues}
-          datum={datum}
-          index={index}
-          dataKey={dataKey}
+      {
+        <SVGBarSeriesRenderer
+          scales={scales}
+          dataEntry={dataEntry}
           horizontal={horizontal}
+          renderingOffset={renderingOffset}
+          animate={animate && contextAnimate}
+          springConfig={springConfig ?? contextSpringConfig}
+          colorAccessor={colorAccessor ?? dataEntry.colorAccessor}
           colorScale={scales.color}
-          colorAccessor={dataEntry.colorAccessor}
+          // {...events}
+          component={component}
         />
-      ))}
+      }
     </g>
   );
 }

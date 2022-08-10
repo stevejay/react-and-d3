@@ -2,7 +2,7 @@ import type { SVGProps } from 'react';
 import { animated } from 'react-spring';
 
 import { defaultShapeRendering } from './constants';
-import { SVGSimpleBar } from './SVGSimpleBar';
+import { SVGBar } from './SVGBar';
 import type { SVGBarProps } from './types';
 
 type PolygonProps = Omit<SVGProps<SVGPolygonElement>, 'points' | 'ref'>;
@@ -26,7 +26,7 @@ export function SVGBarWithLine<Datum extends object>(props: SVGBarWithLineProps<
     (typeof lineProps === 'function' ? lineProps(datum, index, dataKey) : lineProps) ?? {};
   return (
     <>
-      <SVGSimpleBar {...props} />
+      <SVGBar {...props} />
       <animated.line
         x1={horizontal ? x2 : x1}
         y1={horizontal ? y1 : y2}

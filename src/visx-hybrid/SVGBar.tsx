@@ -10,7 +10,7 @@ export type SVGSimpleBarProps<Datum extends object> = SVGBarProps<Datum> & {
   barProps?: PolygonProps | ((datum: Datum, index: number, dataKey: string) => PolygonProps);
 };
 
-export function SVGSimpleBar<Datum extends object>({
+export function SVGBar<Datum extends object>({
   springValues: { points, opacity },
   datum,
   index,
