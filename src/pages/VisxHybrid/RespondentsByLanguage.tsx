@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import type { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 import { format } from 'd3-format';
 import { schemeCategory10 } from 'd3-scale-chromatic';
@@ -18,7 +19,6 @@ import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
-import { BandScaleConfig, LinearScaleConfig } from '@/visx-next/scale';
 
 import { LocationStatisticSelect } from '../StateOfJS/LocationStatisticSelect';
 import { Statistic } from '../StateOfJS/types';

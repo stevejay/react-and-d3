@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { PageHeading } from '@/components/PageHeading';
 
 import { RespondentsByCountry } from './RespondentsByCountry';
-import { RespondentsByLanguage } from './RespondentsByLanguage';
+// import { RespondentsByLanguage } from './RespondentsByLanguage.tsx___';
 
 function StateOfJSPage() {
   return (
@@ -14,7 +14,7 @@ function StateOfJSPage() {
       </Helmet>
       <div className="space-y-16">
         <RespondentsByCountry />
-        <RespondentsByLanguage />
+        {/* <RespondentsByLanguage /> */}
       </div>
     </main>
   );
