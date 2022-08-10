@@ -10,7 +10,8 @@ export type SVGBarSeriesRendererProps<
   DependentScale extends AxisScale,
   Datum extends object
 > = {
-  dataEntry: IDataEntry;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dataEntry: IDataEntry<Datum, any>;
   scales: ScaleSet;
   horizontal: boolean;
   renderingOffset: number;
@@ -46,7 +47,8 @@ export function SVGBarSeriesRenderer<
   //   onPointerUp,
   component: BarComponent = SVGBar
 }: SVGBarSeriesRendererProps<IndependentScale, DependentScale, Datum>) {
-  const transitions = useBarTransitions<Datum>({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const transitions = useBarTransitions<Datum, any>({
     dataEntry,
     scales,
     horizontal,

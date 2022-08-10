@@ -10,7 +10,8 @@ export type SVGGlyphSeriesRendererProps<
   DependentScale extends AxisScale,
   Datum extends object
 > = {
-  dataEntry: IDataEntry;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dataEntry: IDataEntry<Datum, any>;
   scales: ScaleSet;
   horizontal: boolean;
   renderingOffset: number;

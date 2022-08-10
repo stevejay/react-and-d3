@@ -3,6 +3,7 @@ import { flatten } from 'lodash-es';
 
 import { coerceNumber } from './coerceNumber';
 import { getScaleBandwidth } from './getScaleBandwidth';
+import { IDataEntryStore } from './types';
 import { useXYChartContext } from './useXYChartContext';
 
 // A default bandwidth for a non-band scale on the independent axis.
@@ -26,8 +27,10 @@ export function SVGA11ySeries<Datum extends object>({
   const { horizontal, margin, innerWidth, innerHeight, scales, dataEntryStore } = useXYChartContext();
   const independentDomain = scales.independent.domain();
   const dataKeys = Array.isArray(dataKeyOrKeysRef) ? dataKeyOrKeysRef : [dataKeyOrKeysRef];
-  const filteredDataEntries = dataKeys.map((dataKey) => dataEntryStore.getByDataKey(dataKey));
-
+  const filteredDataEntries = dataKeys.map((dataKey) =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (dataEntryStore as unknown as IDataEntryStore<Datum, any>).getByDataKey(dataKey)
+  );
   return (
     <g data-testid="data-series-a11y" {...groupA11yProps}>
       {independentDomain.map((independentDomainValue) => {

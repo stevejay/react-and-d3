@@ -10,7 +10,7 @@ export function combineBarStackData<
   DependentScale extends AxisScale,
   Datum extends object
 >(
-  dataEntries: readonly IDataEntry[],
+  dataEntries: readonly IDataEntry<Datum, Datum>[],
   horizontal?: boolean
 ): StackDataWithSums<IndependentScale, DependentScale, Datum>[] {
   type MapValue = StackDataWithSums<IndependentScale, DependentScale, Datum>;

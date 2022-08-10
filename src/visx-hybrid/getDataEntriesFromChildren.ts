@@ -82,14 +82,14 @@ export function getDataEntriesFromChildren<
               child.props.dataKey === seriesData.key
           );
           return matchingChild
-            ? new StackDataEntry(
+            ? (new StackDataEntry(
                 matchingChild.props.dataKey,
                 seriesData,
                 matchingChild.props.independentAccessor,
                 matchingChild.props.dependentAccessor,
                 matchingChild.props.colorAccessor,
                 matchingChild.props.keyAccessor
-              )
+              ) as IDataEntry)
             : null;
         })
         .filter(isDefined);

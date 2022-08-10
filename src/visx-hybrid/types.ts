@@ -39,32 +39,18 @@ export interface DatumPosition {
   pointY: number;
 }
 
-export interface IDataEntry {
+export interface IDataEntry<Datum extends object = object, RenderingDatum extends object = object> {
   get dataKey(): string;
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get colorAccessor(): (datum: any, dataKey: string) => string;
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get independentAccessor(): (datum: any) => ScaleInput<AxisScale>;
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get dependentAccessor(): (datum: any) => ScaleInput<AxisScale>;
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get keyAccessor(): (datum: any) => string | number;
+  get colorAccessor(): (datum: Datum, dataKey: string) => string;
+  get independentAccessor(): (datum: Datum) => ScaleInput<AxisScale>;
+  get dependentAccessor(): (datum: Datum) => ScaleInput<AxisScale>;
+  get keyAccessor(): (datum: Datum) => string | number;
   getDomainValuesForIndependentScale(): readonly ScaleInput<AxisScale>[];
   getDomainValuesForDependentScale(): readonly ScaleInput<AxisScale>[];
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getFilteredData(filter: (datum: any) => boolean): readonly any[];
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getMappedData(mapper: (datum: any) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[];
+  getFilteredData(filter: (datum: Datum) => boolean): readonly Datum[];
+  getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[];
   getPositionForDatum(params: {
-    // TODO fix any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    datum: any;
+    datum: Datum;
     scales: ScaleSet;
     horizontal: boolean;
     renderingOffset: number;
@@ -75,29 +61,18 @@ export interface IDataEntry {
     width: number;
     height: number;
     point: Point;
-    // TODO fix any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }): NearestDatumReturnType<any> | null;
-
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getOriginalDatumFromRenderingDatum(datum: any): any;
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getRenderingData(): readonly any[];
+  }): NearestDatumReturnType<Datum> | null;
+  getOriginalDatumFromRenderingDatum(datum: RenderingDatum): Datum;
+  getRenderingData(): readonly RenderingDatum[];
   getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): readonly {
-    // TODO fix any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    datum: any;
+    datum: RenderingDatum;
     label: string;
   }[];
   createElementPositionerForRenderingData(args: {
     scales: ScaleSet;
     horizontal: boolean;
     renderingOffset: number;
-    // TODO fix any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }): (datum: any) => DatumPosition | null;
+  }): (datum: RenderingDatum) => DatumPosition | null;
   createLabelPositionerForRenderingData(args: {
     scales: ScaleSet;
     horizontal: boolean;
@@ -107,14 +82,12 @@ export interface IDataEntry {
     positionOutsideOnOverflow: boolean;
     padding: number;
     hideOnOverflow: boolean;
-    // TODO fix any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }): (datumWithLabel: { datum: any; label: string }) => LabelTransition | null;
+  }): (datumWithLabel: { datum: RenderingDatum; label: string }) => LabelTransition | null;
 }
 
-export interface IDataEntryStore {
-  getByDataKey(dataKey: string): IDataEntry;
-  tryGetByDataKey(dataKey: string): IDataEntry | null;
+export interface IDataEntryStore<Datum extends object = object, RenderingDatum extends object = object> {
+  getByDataKey(dataKey: string): IDataEntry<Datum, RenderingDatum>;
+  tryGetByDataKey(dataKey: string): IDataEntry<Datum, RenderingDatum> | null;
   getAllDataKeys(): readonly string[];
 }
 

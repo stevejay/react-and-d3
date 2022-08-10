@@ -25,7 +25,7 @@ import type {
   StackDatum
 } from './types';
 
-export class SimpleDataEntry<Datum extends object> implements IDataEntry {
+export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, Datum> {
   private _dataKey: string;
   private _data: readonly Datum[];
   private _independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
@@ -236,7 +236,7 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry {
   }
 }
 
-export class GroupDataEntry<Datum extends object> implements IDataEntry {
+export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, Datum> {
   private _dataKey: string;
   private _data: readonly Datum[];
   private _independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
@@ -476,7 +476,9 @@ function getOriginalDatumFromStackDatum<
   return datum.data.__datum__;
 }
 
-export class StackDataEntry<Datum extends object> implements IDataEntry {
+export class StackDataEntry<Datum extends object>
+  implements IDataEntry<Datum, StackDatum<AxisScale, AxisScale, Datum>>
+{
   private _dataKey: string;
   private _stackData: readonly StackDatum<AxisScale, AxisScale, Datum>[];
   private _independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;

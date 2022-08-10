@@ -13,7 +13,8 @@ export function useGlyphTransitions<Datum extends object>({
   seriesIsLeaving = false,
   getRadius
 }: {
-  dataEntry: IDataEntry;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dataEntry: IDataEntry<Datum, any>;
   scales: ScaleSet;
   horizontal: boolean;
   springConfig: Partial<SpringConfig>;

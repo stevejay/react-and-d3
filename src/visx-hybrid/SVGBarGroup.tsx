@@ -6,7 +6,7 @@ import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchild
 import { isDefined } from './isDefined';
 import { SVGBarSeriesProps } from './SVGBarSeries';
 import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
-import type { AxisScale, SVGBarComponent } from './types';
+import type { AxisScale, IDataEntryStore, SVGBarComponent } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
 import { useXYChartContext } from './useXYChartContext';
@@ -62,7 +62,9 @@ export function SVGBarGroup<Datum extends object>({
   });
 
   const transitions = useSeriesTransitions(
-    dataKeys.map((dataKey) => dataEntryStore.getByDataKey(dataKey)),
+    dataKeys.map((dataKey) =>
+      (dataEntryStore as unknown as IDataEntryStore<Datum, Datum>).getByDataKey(dataKey)
+    ),
     springConfig ?? contextSpringConfig,
     animate && contextAnimate
   );
