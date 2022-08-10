@@ -5,11 +5,11 @@ import { stack as d3stack } from 'd3-shape';
 
 import { combineBarStackData } from './combineBarStackData';
 import { defaultGroupPadding } from './constants';
-import { GroupDatumEntry, SimpleDatumEntry, StackDatumEntry } from './DatumEntry';
+import { GroupDataEntry, SimpleDataEntry, StackDataEntry } from './DataEntry';
 import { isDefined } from './isDefined';
 import { getStackOffset } from './stackOffset';
 import { getStackOrder } from './stackOrder';
-import type { AxisScale, IDatumEntry, StackDataWithSums } from './types';
+import type { AxisScale, IDataEntry, StackDataWithSums } from './types';
 
 export function getDataEntriesFromChildren<
   IndependentScale extends AxisScale,
@@ -19,10 +19,10 @@ export function getDataEntriesFromChildren<
   horizontal: boolean,
   isInsideGroup = false
 ): {
-  dataEntries: readonly IDatumEntry[];
+  dataEntries: readonly IDataEntry[];
   groupScales: readonly ScaleBand<string>[];
 } {
-  const dataEntries: IDatumEntry[] = [];
+  const dataEntries: IDataEntry[] = [];
   const groupScales: ScaleBand<string>[] = [];
 
   Children.forEach(children, (element) => {
@@ -82,7 +82,7 @@ export function getDataEntriesFromChildren<
               child.props.dataKey === seriesData.key
           );
           return matchingChild
-            ? new StackDatumEntry(
+            ? new StackDataEntry(
                 matchingChild.props.dataKey,
                 seriesData,
                 matchingChild.props.independentAccessor,
@@ -95,7 +95,7 @@ export function getDataEntriesFromChildren<
         .filter(isDefined);
       stackDataEntries.forEach((dataEntry) => dataEntries.push(dataEntry));
     } else if (element.props.dataKey && element.props.data) {
-      const dataEntry = new (isInsideGroup ? GroupDatumEntry : SimpleDatumEntry)(
+      const dataEntry = new (isInsideGroup ? GroupDataEntry : SimpleDataEntry)(
         element.props.dataKey,
         element.props.data,
         element.props.independentAccessor,

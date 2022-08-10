@@ -2,7 +2,7 @@ import type { SpringConfig } from 'react-spring';
 import { ScaleOrdinal } from 'd3-scale';
 
 import { SVGCircleGlyph } from './SVGCircleGlyph';
-import type { AxisScale, IDatumEntry, ScaleSet, SeriesProps, SVGGlyphComponent } from './types';
+import type { AxisScale, IDataEntry, ScaleSet, SeriesProps, SVGGlyphComponent } from './types';
 import { useGlyphTransitions } from './useGlyphTransitions';
 
 export type SVGGlyphSeriesRendererProps<
@@ -10,7 +10,7 @@ export type SVGGlyphSeriesRendererProps<
   DependentScale extends AxisScale,
   Datum extends object
 > = {
-  dataEntry: IDatumEntry;
+  dataEntry: IDataEntry;
   scales: ScaleSet;
   horizontal: boolean;
   renderingOffset: number;
@@ -63,7 +63,7 @@ export function SVGGlyphSeriesRenderer<
       {transitions((springValues, datum, _, index) => (
         <GlyphComponent
           springValues={springValues}
-          datum={datum as Datum} // TODO fix this cast
+          datum={dataEntry.getOriginalDatumFromRenderingDatum(datum.datum)}
           index={index}
           dataKey={dataEntry.dataKey}
           horizontal={horizontal}

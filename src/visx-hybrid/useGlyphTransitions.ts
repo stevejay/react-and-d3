@@ -1,7 +1,7 @@
 import { SpringConfig, useTransition } from 'react-spring';
 
 import { createGlyphTransition } from './createGlyphTransition';
-import type { GlyphTransition, IDatumEntry, ScaleSet } from './types';
+import type { GlyphTransition, IDataEntry, ScaleSet } from './types';
 
 export function useGlyphTransitions<Datum extends object>({
   dataEntry,
@@ -13,7 +13,7 @@ export function useGlyphTransitions<Datum extends object>({
   seriesIsLeaving = false,
   getRadius
 }: {
-  dataEntry: IDatumEntry;
+  dataEntry: IDataEntry;
   scales: ScaleSet;
   horizontal: boolean;
   springConfig: Partial<SpringConfig>;

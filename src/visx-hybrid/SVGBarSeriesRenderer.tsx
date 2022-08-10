@@ -2,7 +2,7 @@ import type { SpringConfig } from 'react-spring';
 import { ScaleOrdinal } from 'd3-scale';
 
 import { SVGBar } from './SVGBar';
-import type { AxisScale, IDatumEntry, ScaleSet, SeriesProps, SVGBarComponent } from './types';
+import type { AxisScale, IDataEntry, ScaleSet, SeriesProps, SVGBarComponent } from './types';
 import { useBarTransitions } from './useBarTransitions';
 
 export type SVGBarSeriesRendererProps<
@@ -10,7 +10,7 @@ export type SVGBarSeriesRendererProps<
   DependentScale extends AxisScale,
   Datum extends object
 > = {
-  dataEntry: IDatumEntry;
+  dataEntry: IDataEntry;
   scales: ScaleSet;
   horizontal: boolean;
   renderingOffset: number;
@@ -60,7 +60,7 @@ export function SVGBarSeriesRenderer<
       {transitions((springValues, datum, _, index) => (
         <BarComponent
           springValues={springValues}
-          datum={datum}
+          datum={dataEntry.getOriginalDatumFromRenderingDatum(datum)}
           index={index}
           dataKey={dataEntry.dataKey}
           horizontal={horizontal}

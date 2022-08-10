@@ -33,6 +33,7 @@ const xScale: BandScaleConfig<string> = {
 const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
 
 function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) {
+  console.log('_d', _d);
   switch (key) {
     case 'one':
       return schemeCategory10[0];

@@ -1,13 +1,13 @@
 import { SpringConfig, useTransition } from 'react-spring';
 
-import type { IDatumEntry } from './types';
+import type { IDataEntry } from './types';
 
 export function useSeriesTransitions(
-  dataEntries: IDatumEntry[],
+  dataEntries: IDataEntry[],
   springConfig?: Partial<SpringConfig>,
   animate?: boolean
 ) {
-  return useTransition<IDatumEntry, { opacity: number }>(dataEntries, {
+  return useTransition<IDataEntry, { opacity: number }>(dataEntries, {
     initial: { opacity: 1 },
     from: { opacity: 0 },
     enter: { opacity: 1 },

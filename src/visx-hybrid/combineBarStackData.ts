@@ -1,4 +1,4 @@
-import type { AxisScale, IDatumEntry, StackDataWithSums } from './types';
+import type { AxisScale, IDataEntry, StackDataWithSums } from './types';
 
 /**
  * Merges `seriesChildren` `props.data` by their `stack` value which
@@ -10,7 +10,7 @@ export function combineBarStackData<
   DependentScale extends AxisScale,
   Datum extends object
 >(
-  dataEntries: readonly IDatumEntry[],
+  dataEntries: readonly IDataEntry[],
   horizontal?: boolean
 ): StackDataWithSums<IndependentScale, DependentScale, Datum>[] {
   type MapValue = StackDataWithSums<IndependentScale, DependentScale, Datum>;

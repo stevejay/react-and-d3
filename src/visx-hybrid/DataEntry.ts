@@ -15,7 +15,7 @@ import type {
   AxisScale,
   DatumPosition,
   FontProperties,
-  IDatumEntry,
+  IDataEntry,
   InternalBarLabelPosition,
   LabelTransition,
   NearestDatumReturnType,
@@ -25,7 +25,7 @@ import type {
   StackDatum
 } from './types';
 
-export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
+export class SimpleDataEntry<Datum extends object> implements IDataEntry {
   private _dataKey: string;
   private _data: readonly Datum[];
   private _independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
@@ -89,6 +89,10 @@ export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
 
   get dependentAccessor() {
     return this._dependentAccessor;
+  }
+
+  getOriginalDatumFromRenderingDatum(datum: Datum): Datum {
+    return datum;
   }
 
   getPositionForDatum(params: {
@@ -233,7 +237,7 @@ export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
   }
 }
 
-export class GroupDatumEntry<Datum extends object> implements IDatumEntry {
+export class GroupDataEntry<Datum extends object> implements IDataEntry {
   private _dataKey: string;
   private _data: readonly Datum[];
   private _independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
@@ -297,6 +301,10 @@ export class GroupDatumEntry<Datum extends object> implements IDatumEntry {
 
   get dependentAccessor() {
     return this._dependentAccessor;
+  }
+
+  getOriginalDatumFromRenderingDatum(datum: Datum): Datum {
+    return datum;
   }
 
   getPositionForDatum(params: {
@@ -469,7 +477,7 @@ function getOriginalDatumFromStackDatum<
   return datum.data.__datum__;
 }
 
-export class StackDatumEntry<Datum extends object> implements IDatumEntry {
+export class StackDataEntry<Datum extends object> implements IDataEntry {
   private _dataKey: string;
   private _stackData: readonly StackDatum<AxisScale, AxisScale, Datum>[];
   private _independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
@@ -519,6 +527,10 @@ export class StackDatumEntry<Datum extends object> implements IDatumEntry {
   // for original datum
   get colorAccessor() {
     return this._colorAccessor;
+  }
+
+  getOriginalDatumFromRenderingDatum(datum: StackDatum<AxisScale, AxisScale, Datum>): Datum {
+    return getOriginalDatumFromStackDatum(datum);
   }
 
   getDomainValuesForIndependentScale(): readonly ScaleInput<AxisScale>[] {

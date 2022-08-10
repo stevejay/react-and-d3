@@ -39,7 +39,7 @@ export interface DatumPosition {
   pointY: number;
 }
 
-export interface IDatumEntry {
+export interface IDataEntry {
   get dataKey(): string;
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -53,6 +53,9 @@ export interface IDatumEntry {
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   get keyAccessorForRenderingData(): (datum: any) => string | number;
+  // TODO fix any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getOriginalDatumFromRenderingDatum(datum: any): any;
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getRenderingData(): readonly any[];
@@ -109,8 +112,8 @@ export interface IDatumEntry {
 }
 
 export interface IDataEntryStore {
-  getByDataKey(dataKey: string): IDatumEntry;
-  tryGetByDataKey(dataKey: string): IDatumEntry | null;
+  getByDataKey(dataKey: string): IDataEntry;
+  tryGetByDataKey(dataKey: string): IDataEntry | null;
   getAllDataKeys(): readonly string[];
 }
 

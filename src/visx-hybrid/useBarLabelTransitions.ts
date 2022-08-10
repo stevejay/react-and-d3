@@ -3,7 +3,7 @@ import { SpringConfig, useTransition } from 'react-spring';
 import type {
   AxisScale,
   FontProperties,
-  IDatumEntry,
+  IDataEntry,
   InternalBarLabelPosition,
   LabelTransition,
   ScaleInput,
@@ -11,7 +11,7 @@ import type {
 } from './types';
 
 export function useBarLabelTransitions(args: {
-  dataEntry: IDatumEntry;
+  dataEntry: IDataEntry;
   scales: ScaleSet;
   horizontal: boolean;
   springConfig: Partial<SpringConfig>;
