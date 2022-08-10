@@ -4,7 +4,8 @@ import { getFirstItem, getSecondItem } from '@visx/shape/lib/util/accessors';
 import { findNearestDatumX } from './findNearestDatumX';
 import { findNearestDatumY } from './findNearestDatumY';
 import { getScaleBandwidth } from './getScaleBandwidth';
-import type { NearestDatumArgs, StackDatum } from './types';
+import { isDefined } from './isDefined';
+import type { NearestDatumArgs, NearestDatumReturnType, StackDatum } from './types';
 
 /**
  * This is a wrapper around findNearestDatumX/Y for BarStack, accounting for a
@@ -18,45 +19,47 @@ export default function findNearestStackDatum<
   Datum extends object
 >(
   nearestDatumArgs: NearestDatumArgs<StackDatum<IndependentScale, DependentScale, Datum>>,
-  seriesData: readonly Datum[],
+  originalData: readonly Datum[],
   horizontal?: boolean
-) {
+): NearestDatumReturnType<Datum> | null {
   const { independentAccessor, dependentAccessor, independentScale, dependentScale, point } =
     nearestDatumArgs;
-
   if (!point) {
     return null;
   }
 
-  const datum = (horizontal ? findNearestDatumY : findNearestDatumX)(nearestDatumArgs);
-  const seriesDatum = datum?.index == null ? null : seriesData[datum.index];
+  // Get the nearest stack datum.
+  const nearestDatumResult = (horizontal ? findNearestDatumY : findNearestDatumX)(nearestDatumArgs);
+  if (!nearestDatumResult) {
+    return null;
+  }
+
+  const originalDatum = isDefined(nearestDatumResult.index) ? originalData[nearestDatumResult.index] : null;
+  if (!originalDatum) {
+    return null;
+  }
 
   const xScale = horizontal ? dependentScale : independentScale;
   const yScale = horizontal ? independentScale : dependentScale;
   const xAccessor = horizontal ? dependentAccessor : independentAccessor;
   const yAccessor = horizontal ? independentAccessor : dependentAccessor;
 
-  return datum && seriesDatum
-    ? {
-        index: datum.index,
-        datum: seriesDatum,
-        distanceX: horizontal // if mouse is ON the stack series, set 0 distance
-          ? point.x >= (xScale(getFirstItem(datum.datum)) ?? Infinity) &&
-            point.x <= (xScale(getSecondItem(datum.datum)) ?? -Infinity)
-            ? 0
-            : datum.distanceX
-          : datum.distanceX,
-        distanceY: horizontal
-          ? datum.distanceY // if mouse is ON the stack series, set 0 distance
-          : point.y <= (yScale(getFirstItem(datum.datum)) ?? -Infinity) &&
-            point.y >= (yScale(getSecondItem(datum.datum)) ?? Infinity)
-          ? 0
-          : datum.distanceY,
-
-        stackDatum: datum.datum, // Added by me
-
-        snapLeft: Number(xScale(xAccessor(datum.datum))) + getScaleBandwidth(xScale) / 2 ?? 0,
-        snapTop: Number(yScale(yAccessor(datum.datum))) + getScaleBandwidth(yScale) / 2 ?? 0
-      }
-    : null;
+  return {
+    index: nearestDatumResult.index,
+    datum: originalDatum,
+    distanceX: horizontal // if mouse is ON the stack series, set 0 distance
+      ? point.x >= (xScale(getFirstItem(nearestDatumResult.datum)) ?? Infinity) &&
+        point.x <= (xScale(getSecondItem(nearestDatumResult.datum)) ?? -Infinity)
+        ? 0
+        : nearestDatumResult.distanceX
+      : nearestDatumResult.distanceX,
+    distanceY: horizontal
+      ? nearestDatumResult.distanceY // if mouse is ON the stack series, set 0 distance
+      : point.y <= (yScale(getFirstItem(nearestDatumResult.datum)) ?? -Infinity) &&
+        point.y >= (yScale(getSecondItem(nearestDatumResult.datum)) ?? Infinity)
+      ? 0
+      : nearestDatumResult.distanceY,
+    snapLeft: Number(xScale(xAccessor(nearestDatumResult.datum))) + getScaleBandwidth(xScale) / 2 ?? 0,
+    snapTop: Number(yScale(yAccessor(nearestDatumResult.datum))) + getScaleBandwidth(yScale) / 2 ?? 0
+  };
 }

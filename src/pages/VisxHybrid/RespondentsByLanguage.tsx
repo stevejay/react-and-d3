@@ -6,9 +6,9 @@ import langmap from 'langmap';
 import { sortBy } from 'lodash-es';
 
 import { EntityBucket, useLocaleQuery } from '@/api/stateofjs/generated';
-import { InView } from '@/components/InView';
 import { SectionHeading } from '@/components/SectionHeading';
 import { isDefined } from '@/types/typeguards/isDefined';
+import { InView } from '@/visx-hybrid/InView';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';

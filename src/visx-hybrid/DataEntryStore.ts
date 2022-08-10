@@ -11,6 +11,10 @@ export class DataEntryStore implements IDataEntryStore {
       dataEntries.map((dataEntry) => [dataEntry.dataKey, dataEntry])
     );
     this._dataKeys = [...this._dataEntries.keys()];
+    if (dataEntries.length !== this._dataKeys.length) {
+      // TODO better error message
+      throw new Error('Duplicate dataKey found in chart.');
+    }
   }
 
   getByDataKey(dataKey: string): IDatumEntry {

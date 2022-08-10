@@ -21,8 +21,8 @@ export function useBarTransitions<Datum extends object>({
   /** Pass `true` if the entire series for the dataEntry is being removed. This will result in the bar not changing position while it fades out. */
   seriesIsLeaving?: boolean;
 }) {
-  const position = dataEntry.createDatumPositioner({ scales, horizontal, renderingOffset });
-  return useTransition<Datum, PolygonTransition>(dataEntry.data, {
+  const position = dataEntry.createElementPositionerForRenderingData({ scales, horizontal, renderingOffset });
+  return useTransition<Datum, PolygonTransition>(dataEntry.getRenderingData(), {
     initial: (datum) => ({ opacity: 1, ...createPolygonTransition(position(datum)) }),
     from: (datum) => ({ opacity: 0, ...createPolygonTransition(position(datum)) }),
     enter: (datum) => ({ opacity: 1, ...createPolygonTransition(position(datum)) }),

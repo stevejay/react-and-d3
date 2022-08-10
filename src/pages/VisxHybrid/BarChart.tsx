@@ -11,6 +11,7 @@ import { SVGBarAnnotation } from '@/visx-hybrid/SVGBarAnnotation';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
+import { SVGGlyphSeries } from '@/visx-hybrid/SVGGlyphSeries';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
@@ -25,7 +26,7 @@ const independentScale: BandScaleConfig<string> = {
   paddingInner: 0.3,
   paddingOuter: 0.2,
   round: true
-} as const;
+};
 
 const dependentScale: LinearScaleConfig<number> = {
   type: 'linear',
@@ -33,7 +34,14 @@ const dependentScale: LinearScaleConfig<number> = {
   round: true,
   clamp: true,
   zero: true
-} as const;
+};
+
+const glyphZScale: LinearScaleConfig<number> = {
+  type: 'linear',
+  clamp: true,
+  range: [5, 15],
+  domain: [-100, 100]
+};
 
 function independentAccessor(datum: CategoryValueDatum<string, number>) {
   return datum.category;
@@ -76,6 +84,18 @@ export function BarChart({ data }: BarChartProps) {
         component={SVGBarWithLine}
       />
       <SVGBarSeriesLabels dataKeyRef="data-a" formatter={dependentAxisTickLabelFormatter} />
+      <SVGGlyphSeries
+        dataKey="data-b"
+        data={data}
+        independentAccessor={independentAccessor}
+        dependentAccessor={dependentAccessor}
+        // radius={10}
+        radiusScale={glyphZScale}
+        radiusAccessor={dependentAccessor}
+        // colorAccessor={colorAccessor}
+        enableEvents={false}
+        // component={SVGGlyph}
+      />
       <SVGA11ySeries<CategoryValueDatum<string, number>>
         dataKeyOrKeysRef="data-a"
         categoryA11yProps={(category, data) => ({

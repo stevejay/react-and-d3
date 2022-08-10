@@ -1,3 +1,5 @@
+import { identity, isNil } from 'lodash-es';
+
 import { coerceNumber } from './coerceNumber';
 import { findNearestDatumX } from './findNearestDatumX';
 import { findNearestDatumY } from './findNearestDatumY';
@@ -11,9 +13,11 @@ import { isValidNumber } from './isValidNumber';
 import { measureTextWithCache } from './measureTextWithCache';
 import type {
   AxisScale,
+  DatumPosition,
   FontProperties,
   IDatumEntry,
   InternalBarLabelPosition,
+  LabelTransition,
   NearestDatumReturnType,
   Point,
   ScaleInput,
@@ -49,26 +53,26 @@ export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
     return this._dataKey;
   }
 
-  get data() {
+  getRenderingData(): readonly Datum[] {
     return this._data;
   }
 
-  getDataWithDatumLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
+  getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
     datum: Datum;
     label: string;
   }[] {
-    return this.data.map((datum) => {
+    return this.getRenderingData().map((datum) => {
       const value = this.dependentAccessor(datum);
       return { datum, label: labelFormatter?.(value) ?? `${value}` };
     });
   }
 
-  getIndependentDomainValues(): readonly ScaleInput<AxisScale>[] {
-    return this.data.map((datum) => this.independentAccessor(datum));
+  getDomainValuesForIndependentScale(): readonly ScaleInput<AxisScale>[] {
+    return this._data.map((datum) => this.independentAccessor(datum));
   }
 
-  getDependentDomainValues(): readonly ScaleInput<AxisScale>[] {
-    return this.data.map((datum) => this.dependentAccessor(datum));
+  getDomainValuesForDependentScale(): readonly ScaleInput<AxisScale>[] {
+    return this._data.map((datum) => this.dependentAccessor(datum));
   }
 
   get keyAccessor() {
@@ -87,31 +91,44 @@ export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
     return this._dependentAccessor;
   }
 
-  get nearestDatumIndependentAccessor() {
-    return this.independentAccessor;
+  get originalDatumAccessor() {
+    return identity;
   }
 
-  get nearestDatumDependentAccessor() {
-    return this.dependentAccessor;
+  // get nearestDatumIndependentAccessor() {
+  //   return this.independentAccessor;
+  // }
+
+  // get nearestDatumDependentAccessor() {
+  //   return this.dependentAccessor;
+  // }
+
+  getDataValues(accessor: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[] {
+    return this._data.map(accessor);
   }
 
-  findDatumForPositioner(datum: Datum): Datum | null {
-    return this.data.find((d) => d === datum) ?? null;
+  getPositionForDatum(params: {
+    datum: Datum;
+    scales: ScaleSet;
+    horizontal: boolean;
+    renderingOffset: number;
+  }) {
+    const foundDatum = this._data.find((datum) => datum === params.datum) ?? null;
+    if (isNil(foundDatum)) {
+      return null;
+    }
+    const positioner = this.createElementPositionerForRenderingData(params);
+    return positioner(foundDatum) ?? null;
   }
 
-  createDatumPositioner({
+  createElementPositionerForRenderingData({
     scales,
     horizontal
   }: {
     scales: ScaleSet;
     horizontal: boolean;
     renderingOffset: number;
-  }): (datum: Datum) => {
-    baselineX: number;
-    baselineY: number;
-    datumX: number;
-    datumY: number;
-  } | null {
+  }): (datum: Datum) => DatumPosition | null {
     const dependentStartCoord = getScaleBaseline(scales.dependent);
     const independentBandwidth = getScaleBandwidth(scales.independent);
     return (datum: Datum) => {
@@ -120,6 +137,7 @@ export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
         return null;
       }
       const independentEndCoord = independentStartCoord + independentBandwidth;
+      const independentCentreCoord = independentStartCoord + independentBandwidth * 0.5;
       const dependentEndCoord = coerceNumber(scales.dependent(this.dependentAccessor(datum)));
       if (!isValidNumber(dependentEndCoord)) {
         return null;
@@ -128,12 +146,14 @@ export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
         baselineX: horizontal ? dependentStartCoord : independentStartCoord,
         baselineY: horizontal ? independentStartCoord : dependentStartCoord,
         datumX: horizontal ? dependentEndCoord : independentEndCoord,
-        datumY: horizontal ? independentEndCoord : dependentEndCoord
+        datumY: horizontal ? independentEndCoord : dependentEndCoord,
+        pointX: horizontal ? dependentEndCoord : independentCentreCoord,
+        pointY: horizontal ? independentCentreCoord : dependentEndCoord
       };
     };
   }
 
-  createDatumLabelPositioner({
+  createLabelPositionerForRenderingData({
     scales,
     horizontal,
     font,
@@ -192,8 +212,13 @@ export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
     };
   }
 
-  getMatchingDataForA11ySeries(independentDomainValue: ScaleInput<AxisScale>): readonly Datum[] {
-    return this._data.filter((datum) => this.independentAccessor(datum) === independentDomainValue);
+  // getMatchingDataForA11ySeries(independentDomainValue: ScaleInput<AxisScale>): readonly Datum[] {
+  //   return this._data.filter((datum) => this.independentAccessor(datum) === independentDomainValue);
+  // }
+
+  // return datum is original
+  getFilteredData(filter: (datum: Datum) => boolean): readonly Datum[] {
+    return this._data.filter(filter);
   }
 
   findNearestDatum({
@@ -216,7 +241,7 @@ export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
       dependentScale: scales.dependent,
       dependentAccessor: this.dependentAccessor,
       point,
-      data: this.data,
+      data: this._data,
       width,
       height,
       dataKey: this.dataKey
@@ -252,26 +277,26 @@ export class GroupDatumEntry<Datum extends object> implements IDatumEntry {
     return this._dataKey;
   }
 
-  get data(): readonly Datum[] {
+  getRenderingData(): readonly Datum[] {
     return this._data;
   }
 
-  getDataWithDatumLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
+  getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
     datum: Datum;
     label: string;
   }[] {
-    return this.data.map((datum) => {
+    return this.getRenderingData().map((datum) => {
       const value = this.dependentAccessor(datum);
       return { datum, label: labelFormatter?.(value) ?? `${value}` };
     });
   }
 
-  getIndependentDomainValues(): readonly ScaleInput<AxisScale>[] {
-    return this.data.map((datum) => this.independentAccessor(datum));
+  getDomainValuesForIndependentScale(): readonly ScaleInput<AxisScale>[] {
+    return this._data.map((datum) => this.independentAccessor(datum));
   }
 
-  getDependentDomainValues(): readonly ScaleInput<AxisScale>[] {
-    return this.data.map((datum) => this.dependentAccessor(datum));
+  getDomainValuesForDependentScale(): readonly ScaleInput<AxisScale>[] {
+    return this._data.map((datum) => this.dependentAccessor(datum));
   }
 
   get keyAccessor() {
@@ -290,31 +315,44 @@ export class GroupDatumEntry<Datum extends object> implements IDatumEntry {
     return this._dependentAccessor;
   }
 
-  get nearestDatumIndependentAccessor() {
-    return this.independentAccessor;
+  get originalDatumAccessor() {
+    return identity;
   }
 
-  get nearestDatumDependentAccessor() {
-    return this.dependentAccessor;
+  // get nearestDatumIndependentAccessor() {
+  //   return this.independentAccessor;
+  // }
+
+  // get nearestDatumDependentAccessor() {
+  //   return this.dependentAccessor;
+  // }
+
+  getDataValues(accessor: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[] {
+    return this._data.map(accessor);
   }
 
-  findDatumForPositioner(datum: Datum): Datum | null {
-    return this.data.find((d) => d === datum) ?? null;
+  getPositionForDatum(params: {
+    datum: Datum;
+    scales: ScaleSet;
+    horizontal: boolean;
+    renderingOffset: number;
+  }) {
+    const foundDatum = this._data.find((datum) => datum === params.datum) ?? null;
+    if (isNil(foundDatum)) {
+      return null;
+    }
+    const positioner = this.createElementPositionerForRenderingData(params);
+    return positioner(foundDatum) ?? null;
   }
 
-  createDatumPositioner({
+  createElementPositionerForRenderingData({
     scales,
     horizontal
   }: {
     scales: ScaleSet;
     horizontal: boolean;
     renderingOffset: number;
-  }): (datum: Datum) => {
-    baselineX: number;
-    baselineY: number;
-    datumX: number;
-    datumY: number;
-  } | null {
+  }): (datum: Datum) => DatumPosition | null {
     const dependentStartCoord = getScaleBaseline(scales.dependent);
     const groupBandwidth = getScaleBandwidth(scales.group[0]);
     const withinGroupPosition = scales.group[0](this.dataKey) ?? 0;
@@ -326,6 +364,7 @@ export class GroupDatumEntry<Datum extends object> implements IDatumEntry {
       }
       const groupIndependentStartCoord = independentStartCoord + withinGroupPosition;
       const independentEndCoord = groupIndependentStartCoord + groupBandwidth;
+      const independentCentreCoord = groupIndependentStartCoord + groupBandwidth * 0.5;
       const dependentEndCoord = coerceNumber(scales.dependent(this.dependentAccessor(datum)));
       if (!isValidNumber(dependentEndCoord)) {
         return null;
@@ -334,12 +373,14 @@ export class GroupDatumEntry<Datum extends object> implements IDatumEntry {
         baselineX: horizontal ? dependentStartCoord : groupIndependentStartCoord,
         baselineY: horizontal ? groupIndependentStartCoord : dependentStartCoord,
         datumX: horizontal ? dependentEndCoord : independentEndCoord,
-        datumY: horizontal ? independentEndCoord : dependentEndCoord
+        datumY: horizontal ? independentEndCoord : dependentEndCoord,
+        pointX: horizontal ? dependentEndCoord : independentCentreCoord,
+        pointY: horizontal ? independentCentreCoord : dependentEndCoord
       };
     };
   }
 
-  createDatumLabelPositioner({
+  createLabelPositionerForRenderingData({
     scales,
     horizontal,
     font,
@@ -399,8 +440,13 @@ export class GroupDatumEntry<Datum extends object> implements IDatumEntry {
     };
   }
 
-  getMatchingDataForA11ySeries(independentDomainValue: ScaleInput<AxisScale>): readonly Datum[] {
-    return this._data.filter((datum) => this.independentAccessor(datum) === independentDomainValue);
+  // getMatchingDataForA11ySeries(independentDomainValue: ScaleInput<AxisScale>): readonly Datum[] {
+  //   return this._data.filter((datum) => this.independentAccessor(datum) === independentDomainValue);
+  // }
+
+  // return datum is original
+  getFilteredData(filter: (datum: Datum) => boolean): readonly Datum[] {
+    return this._data.filter(filter);
   }
 
   findNearestDatum({
@@ -423,7 +469,7 @@ export class GroupDatumEntry<Datum extends object> implements IDatumEntry {
         dependentScale: scales.dependent,
         dependentAccessor: this.dependentAccessor,
         point,
-        data: this.data,
+        data: this._data,
         width,
         height,
         dataKey: this.dataKey
@@ -448,7 +494,7 @@ const getNumericValue = <
   bar: StackDatum<IndependentScale, DependentScale, Datum>
 ) => (getFirstItem(bar) + getSecondItem(bar)) / 2;
 
-function getStackOriginalDatum<
+function getOriginalDatumFromStackDatum<
   IndependentScale extends AxisScale,
   DependentScale extends AxisScale,
   Datum extends object
@@ -458,22 +504,24 @@ function getStackOriginalDatum<
 
 export class StackDatumEntry<Datum extends object> implements IDatumEntry {
   private _dataKey: string;
-  private _data: readonly StackDatum<AxisScale, AxisScale, Datum>[];
+  private _stackData: readonly StackDatum<AxisScale, AxisScale, Datum>[];
   private _independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   private _dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   private _keyAccessor: (datum: Datum) => string | number;
   private _colorAccessor: (datum: Datum, dataKey: string) => string;
+  private _originalData: readonly Datum[];
 
   constructor(
     dataKey: string,
-    data: readonly StackDatum<AxisScale, AxisScale, Datum>[],
+    stackData: readonly StackDatum<AxisScale, AxisScale, Datum>[],
     independentAccessor: (datum: Datum) => ScaleInput<AxisScale>,
     dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>,
     colorAccessor: (datum: Datum, dataKey: string) => string,
     keyAccessor?: (datum: Datum) => string | number
   ) {
     this._dataKey = dataKey;
-    this._data = data;
+    this._originalData = stackData.map(getOriginalDatumFromStackDatum);
+    this._stackData = stackData;
     this._independentAccessor = independentAccessor;
     this._dependentAccessor = dependentAccessor;
     this._keyAccessor = keyAccessor ?? independentAccessor;
@@ -484,81 +532,94 @@ export class StackDatumEntry<Datum extends object> implements IDatumEntry {
     return this._dataKey;
   }
 
-  get data(): readonly StackDatum<AxisScale, AxisScale, Datum>[] {
-    return this._data;
-  }
-
+  // for original datum
   get independentAccessor() {
     return this._independentAccessor;
   }
 
+  // for original datum
   get dependentAccessor() {
     return this._dependentAccessor;
   }
 
-  get nearestDatumIndependentAccessor() {
-    return getStack;
+  get originalDatumAccessor() {
+    return getOriginalDatumFromStackDatum;
   }
 
-  get nearestDatumDependentAccessor() {
-    return getNumericValue;
+  // maps on stack datum
+  getDataValues(
+    accessor: (datum: StackDatum<AxisScale, AxisScale, Datum>) => ScaleInput<AxisScale>
+  ): ScaleInput<AxisScale>[] {
+    return this._stackData.map(accessor);
   }
 
-  getDataWithDatumLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
+  getRenderingData(): readonly StackDatum<AxisScale, AxisScale, Datum>[] {
+    return this._stackData;
+  }
+
+  // returns stack datum
+  getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
     datum: StackDatum<AxisScale, AxisScale, Datum>;
     label: string;
   }[] {
-    return this.data.map((datum) => {
-      const value = this.dependentAccessor(getStackOriginalDatum(datum));
+    return this.getRenderingData().map((datum) => {
+      const value = this.dependentAccessor(this.originalDatumAccessor(datum));
       return { datum, label: labelFormatter?.(value) ?? `${value}` };
     });
   }
 
-  getIndependentDomainValues(): readonly ScaleInput<AxisScale>[] {
-    return this.data.map((datum) => getStack(datum));
+  getDomainValuesForIndependentScale(): readonly ScaleInput<AxisScale>[] {
+    return this._stackData.map(getStack);
   }
 
-  getDependentDomainValues(): readonly ScaleInput<AxisScale>[] {
-    return this.data.map((datum) => [getFirstItem(datum), getSecondItem(datum)]).flat();
+  getDomainValuesForDependentScale(): readonly ScaleInput<AxisScale>[] {
+    return this._stackData.map((datum) => [getFirstItem(datum), getSecondItem(datum)]).flat();
   }
 
-  getColorAccessor() {
-    return this.colorAccessor;
-  }
-
+  // ***** takes stack datum and returns original datum
   get keyAccessor() {
     return (datum: StackDatum<AxisScale, AxisScale, Datum>) =>
-      this._keyAccessor(getStackOriginalDatum(datum));
+      this._keyAccessor(this.originalDatumAccessor(datum));
   }
 
+  // for original datum
   get colorAccessor() {
     return this._colorAccessor;
   }
 
-  findDatumForPositioner(datum: Datum): StackDatum<AxisScale, AxisScale, Datum> | null {
-    return this.data.find((d) => getStackOriginalDatum(d) === datum) ?? null;
+  // takes original datum
+  getPositionForDatum(params: {
+    datum: Datum;
+    scales: ScaleSet;
+    horizontal: boolean;
+    renderingOffset: number;
+  }) {
+    const foundDatum =
+      this._stackData.find((datum) => this.originalDatumAccessor(datum) === params.datum) ?? null;
+    if (isNil(foundDatum)) {
+      return null;
+    }
+    const positioner = this.createElementPositionerForRenderingData(params);
+    return positioner(foundDatum) ?? null;
   }
 
-  createDatumPositioner({
+  // function returned takes stack datum, but it's transparent?
+  createElementPositionerForRenderingData({
     scales,
     horizontal
   }: {
     scales: ScaleSet;
     horizontal: boolean;
     renderingOffset: number;
-  }): (datum: StackDatum<AxisScale, AxisScale, Datum>) => {
-    baselineX: number;
-    baselineY: number;
-    datumX: number;
-    datumY: number;
-  } | null {
+  }): (datum: StackDatum<AxisScale, AxisScale, Datum>) => DatumPosition | null {
     const independentBandwidth = getScaleBandwidth(scales.independent);
-    return (datum: StackDatum<AxisScale, AxisScale, Datum>) => {
+    return (datum) => {
       const independentStartCoord = coerceNumber(scales.independent(getStack(datum)));
       if (!isValidNumber(independentStartCoord)) {
         return null;
       }
       const independentEndCoord = independentStartCoord + independentBandwidth;
+      const independentCentreCoord = independentStartCoord + independentBandwidth * 0.5;
       const dependentStartCoord = coerceNumber(scales.dependent(getFirstItem(datum)));
       if (!isValidNumber(dependentStartCoord)) {
         return null;
@@ -571,12 +632,15 @@ export class StackDatumEntry<Datum extends object> implements IDatumEntry {
         baselineX: horizontal ? dependentStartCoord : independentStartCoord,
         baselineY: horizontal ? independentStartCoord : dependentStartCoord,
         datumX: horizontal ? dependentEndCoord : independentEndCoord,
-        datumY: horizontal ? independentEndCoord : dependentEndCoord
+        datumY: horizontal ? independentEndCoord : dependentEndCoord,
+        pointX: horizontal ? dependentEndCoord : independentCentreCoord,
+        pointY: horizontal ? independentCentreCoord : dependentEndCoord
       };
     };
   }
 
-  createDatumLabelPositioner({
+  // function returned takes stack datum, but it's transparent?
+  createLabelPositionerForRenderingData({
     scales,
     horizontal,
     font,
@@ -591,7 +655,10 @@ export class StackDatumEntry<Datum extends object> implements IDatumEntry {
     positionOutsideOnOverflow: boolean; // Ignored: no change of position on overflow.
     padding: number;
     hideOnOverflow: boolean;
-  }) {
+  }): (datumWithLabel: {
+    datum: StackDatum<AxisScale, AxisScale, Datum>;
+    label: string;
+  }) => LabelTransition | null {
     const independentBandwidth = getScaleBandwidth(scales.independent);
 
     return ({ datum, label }: { datum: StackDatum<AxisScale, AxisScale, Datum>; label: string }) => {
@@ -622,17 +689,26 @@ export class StackDatumEntry<Datum extends object> implements IDatumEntry {
     };
   }
 
-  getMatchingDataForA11ySeries(independentDomainValue: ScaleInput<AxisScale>): readonly Datum[] {
-    return this._data
-      .filter((datum) => this.independentAccessor(getStackOriginalDatum(datum)) === independentDomainValue)
-      .map((datum) => getStackOriginalDatum(datum));
+  // // return datum is original
+  // getMatchingDataForA11ySeries(independentDomainValue: ScaleInput<AxisScale>): readonly Datum[] {
+  //   return this._stackData
+  //     .filter(
+  //       (datum) => this.independentAccessor(this.originalDatumAccessor(datum)) === independentDomainValue
+  //     )
+  //     .map(this.originalDatumAccessor);
+  // }
+
+  // return datum is original
+  getFilteredData(filter: (datum: Datum) => boolean): readonly Datum[] {
+    return this._originalData.filter(filter);
   }
 
+  // return datum is original
   findNearestDatum({
+    point,
     horizontal,
     width,
     height,
-    point,
     scales
   }: {
     horizontal: boolean;
@@ -640,7 +716,7 @@ export class StackDatumEntry<Datum extends object> implements IDatumEntry {
     height: number;
     point: Point;
     scales: ScaleSet;
-  }): NearestDatumReturnType<StackDatum<AxisScale, AxisScale, Datum>> | null {
+  }): NearestDatumReturnType<Datum> | null {
     return findNearestStackDatum(
       {
         independentScale: scales.independent,
@@ -648,13 +724,13 @@ export class StackDatumEntry<Datum extends object> implements IDatumEntry {
         dependentScale: scales.dependent,
         dependentAccessor: getNumericValue,
         point,
-        data: this.data,
+        data: this._stackData,
         width,
         height,
         dataKey: this.dataKey
       },
-      this.data.map((d) => d.data.__datum__),
+      this._originalData,
       horizontal
-    ) as NearestDatumReturnType<StackDatum<AxisScale, AxisScale, Datum>> | null;
+    );
   }
 }

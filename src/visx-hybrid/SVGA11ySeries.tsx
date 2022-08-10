@@ -35,7 +35,9 @@ export function SVGA11ySeries<Datum extends object>({
         const bandwidth = getScaleBandwidth(scales.independent) || defaultBandwidth;
         const matchingData = flatten(
           filteredDataEntries.map((dataEntry) =>
-            dataEntry.getMatchingDataForA11ySeries(independentDomainValue)
+            dataEntry.getFilteredData(
+              (datum) => dataEntry.independentAccessor(datum) === independentDomainValue
+            )
           )
         );
         return (

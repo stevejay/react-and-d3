@@ -11,12 +11,7 @@ export function useBarAnnotation<Datum extends object>(
   if (isNil(dataEntry)) {
     return null;
   }
-  const datumForPositioner = dataEntry.findDatumForPositioner(datum);
-  if (isNil(datumForPositioner)) {
-    return null;
-  }
-  const positioner = dataEntry.createDatumPositioner({ scales, horizontal, renderingOffset });
-  const position = positioner(datumForPositioner);
+  const position = dataEntry.getPositionForDatum({ datum, scales, horizontal, renderingOffset });
   if (isNil(position)) {
     return null;
   }

@@ -25,13 +25,13 @@ export function useBarLabelTransitions(args: {
   hideOnOverflow: boolean;
 }) {
   const { dataEntry, springConfig, animate, formatter } = args;
-  const dataWithLabels = dataEntry.getDataWithDatumLabels(formatter);
-  const position = dataEntry.createDatumLabelPositioner(args);
+  const renderingDataWithLabels = dataEntry.getRenderingDataWithLabels(formatter);
+  const position = dataEntry.createLabelPositionerForRenderingData(args);
   return useTransition<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     any, // TODO fix
     LabelTransition
-  >(dataWithLabels, {
+  >(renderingDataWithLabels, {
     initial: (datum) => ({ ...position(datum) }),
     from: (datum) => ({ ...position(datum), opacity: 0 }), // 'opacity: 0' deliberately overrides the position's opacity.
     enter: (datum) => ({ ...position(datum) }),

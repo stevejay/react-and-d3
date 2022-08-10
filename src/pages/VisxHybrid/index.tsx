@@ -5,6 +5,7 @@ import { Paragraph } from '@/components/Paragraph';
 import { SectionHeading } from '@/components/SectionHeading';
 
 import { BarChartExample } from './BarChartExample';
+import { EmptyBarChart } from './EmptyBarChart';
 import { GroupedBarChartExample } from './GroupedBarChartExample';
 import { RespondentsByLanguage } from './RespondentsByLanguage';
 import { StackedBarChartExample } from './StackedBarChartExample';
@@ -24,6 +25,7 @@ function VisxHybridPage() {
       {true && <GroupedBarChartExample />}
       {true && <BarChartExample />}
       {true && <RespondentsByLanguage />}
+      {false && <EmptyBarChart />}
     </main>
   );
 }

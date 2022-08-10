@@ -4,14 +4,14 @@ export function getFirstItem<
   IndependentScale extends AxisScale,
   DependentScale extends AxisScale,
   Datum extends object
->(stackDatum: StackDatum<IndependentScale, DependentScale, Datum>): number {
-  return stackDatum[0];
+>(datum: StackDatum<IndependentScale, DependentScale, Datum>): number {
+  return datum[0];
 }
 
 export function getSecondItem<
   IndependentScale extends AxisScale,
   DependentScale extends AxisScale,
   Datum extends object
->(stackDatum: StackDatum<IndependentScale, DependentScale, Datum>): number {
-  return stackDatum[1];
+>(datum: StackDatum<IndependentScale, DependentScale, Datum>): number {
+  return datum[1];
 }

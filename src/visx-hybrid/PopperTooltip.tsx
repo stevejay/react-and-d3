@@ -4,6 +4,7 @@ import { animated, useTransition } from 'react-spring';
 import type { Options as PopperOptions, VirtualElement } from '@popperjs/core';
 import type { PickD3Scale } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
+import { isNil } from 'lodash-es';
 
 import { defaultTheme, defaultTooltipGlyphRadius } from './constants';
 import { isValidNumber } from './isValidNumber';
@@ -204,7 +205,7 @@ PopperTooltipProps<Datum>) {
                 />
               )}
               {glyphProps.map(({ left, top, strokeWidth, radius }, i) =>
-                top == null || left == null ? null : (
+                isNil(top) || isNil(left) ? null : (
                   <animated.circle
                     key={i}
                     cx={left + radius + strokeWidth}

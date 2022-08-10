@@ -10,15 +10,14 @@ export function combineBarStackData<
   DependentScale extends AxisScale,
   Datum extends object
 >(
-  stackDataEntries: readonly IDatumEntry[],
+  dataEntries: readonly IDatumEntry[],
   horizontal?: boolean
 ): StackDataWithSums<IndependentScale, DependentScale, Datum>[] {
-  const dataByStackValue: {
-    [stackValue: string]: StackDataWithSums<IndependentScale, DependentScale, Datum>;
-  } = {};
+  type MapValue = StackDataWithSums<IndependentScale, DependentScale, Datum>;
+  const dataByStackValue = new Map<string, MapValue>();
 
-  stackDataEntries.forEach((dataEntry) => {
-    const { dataKey, data, independentAccessor, dependentAccessor } = dataEntry;
+  dataEntries.forEach((dataEntry) => {
+    const { dataKey, independentAccessor, dependentAccessor } = dataEntry;
 
     if (!independentAccessor || !dependentAccessor) {
       return;
@@ -28,17 +27,18 @@ export function combineBarStackData<
       ? [dependentAccessor, independentAccessor]
       : [independentAccessor, dependentAccessor];
 
-    data.forEach((datum) => {
+    dataEntry.getRenderingData().forEach((datum) => {
       const stack = stackAccessor(datum);
       const numericValue = valueAccessor(datum);
       const stackKey = String(stack);
-      if (!dataByStackValue[stackKey]) {
-        dataByStackValue[stackKey] = { stack, positiveSum: 0, negativeSum: 0, __datum__: datum };
-      }
-      dataByStackValue[stackKey][dataKey] = numericValue;
-      dataByStackValue[stackKey][numericValue >= 0 ? 'positiveSum' : 'negativeSum'] += numericValue;
+      const stackValue =
+        dataByStackValue.get(stackKey) ??
+        ({ stack, positiveSum: 0, negativeSum: 0, __datum__: datum } as MapValue);
+      stackValue[dataKey] = numericValue;
+      stackValue[numericValue >= 0 ? 'positiveSum' : 'negativeSum'] += numericValue;
+      dataByStackValue.set(stackKey, stackValue);
     });
   });
 
-  return Object.values(dataByStackValue);
+  return [...dataByStackValue.values()];
 }

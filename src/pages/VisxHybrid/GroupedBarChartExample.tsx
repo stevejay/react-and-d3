@@ -1,6 +1,6 @@
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
-import { InView } from '@/components/InView';
 import { useSeriesDataSets } from '@/hooks/useDataSets';
+import { InView } from '@/visx-hybrid/InView';
 
 import { GroupedBarChart } from './GroupedBarChart';
 

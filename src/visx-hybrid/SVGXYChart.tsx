@@ -131,9 +131,11 @@ function InnerChart<
   const { dataEntries, groupScales } = getDataEntriesFromChildren(children, horizontal);
 
   const independentDomainValues = dataEntries
-    .map((dataEntry) => dataEntry.getIndependentDomainValues())
+    .map((dataEntry) => dataEntry.getDomainValuesForIndependentScale())
     .flat();
-  const dependentDomainValues = dataEntries.map((dataEntry) => dataEntry.getDependentDomainValues()).flat();
+  const dependentDomainValues = dataEntries
+    .map((dataEntry) => dataEntry.getDomainValuesForDependentScale())
+    .flat();
 
   // Create the scales, each with a composite domain derived from all the series data.
   const independentScale = createScaleFromScaleConfig(independentDomainValues, independentScaleConfig);

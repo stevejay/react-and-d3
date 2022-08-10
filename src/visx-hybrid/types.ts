@@ -30,11 +30,18 @@ export interface Margin {
 
 export type AxisOrientation = 'top' | 'bottom' | 'left' | 'right';
 
+export interface DatumPosition {
+  baselineX: number;
+  baselineY: number;
+  datumX: number;
+  datumY: number;
+  pointX: number;
+  pointY: number;
+}
+
 export interface IDatumEntry {
   get dataKey(): string;
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get data(): readonly any[];
+
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   get keyAccessor(): (datum: any) => string | number;
@@ -49,32 +56,30 @@ export interface IDatumEntry {
   get dependentAccessor(): (datum: any) => ScaleInput<AxisScale>;
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get nearestDatumIndependentAccessor(): (datum: any) => ScaleInput<AxisScale>;
+  // get nearestDatumIndependentAccessor(): (datum: any) => ScaleInput<AxisScale>;
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get nearestDatumDependentAccessor(): (datum: any) => ScaleInput<AxisScale>;
+  // get nearestDatumDependentAccessor(): (datum: any) => ScaleInput<AxisScale>;
 
-  getDataWithDatumLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
+  // TODO fix any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getRenderingData(): readonly any[];
+  getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): {
     // TODO fix any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     datum: any;
     label: string;
   }[];
-  getIndependentDomainValues(): readonly ScaleInput<AxisScale>[];
-  getDependentDomainValues(): readonly ScaleInput<AxisScale>[];
-  createDatumPositioner(args: {
+  getDomainValuesForIndependentScale(): readonly ScaleInput<AxisScale>[];
+  getDomainValuesForDependentScale(): readonly ScaleInput<AxisScale>[];
+  createElementPositionerForRenderingData(args: {
     scales: ScaleSet;
     horizontal: boolean;
     renderingOffset: number;
     // TODO fix any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }): (datum: any) => {
-    baselineX: number;
-    baselineY: number;
-    datumX: number;
-    datumY: number;
-  } | null;
-  createDatumLabelPositioner(args: {
+  }): (datum: any) => DatumPosition | null;
+  createLabelPositionerForRenderingData(args: {
     scales: ScaleSet;
     horizontal: boolean;
     renderingOffset: number;
@@ -88,10 +93,18 @@ export interface IDatumEntry {
   }): (datumWithLabel: { datum: any; label: string }) => LabelTransition | null;
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getMatchingDataForA11ySeries(independentDomainValue: ScaleInput<AxisScale>): readonly any[];
+  getFilteredData(filter: (datum: any) => boolean): readonly any[];
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  findDatumForPositioner(datum: any): any | null;
+  // findDatumForPositioner(datum: any): any | null;
+  getPositionForDatum(params: {
+    // TODO fix any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    datum: any;
+    scales: ScaleSet;
+    horizontal: boolean;
+    renderingOffset: number;
+  }): DatumPosition | null;
   findNearestDatum(args: {
     horizontal: boolean;
     width: number;
@@ -101,6 +114,9 @@ export interface IDatumEntry {
     // TODO fix any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }): NearestDatumReturnType<any> | null;
+  // TODO fix any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getDataValues(accessor: (datum: any) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[];
 }
 
 export interface IDataEntryStore {
@@ -466,18 +482,18 @@ export interface Point {
   y: number;
 }
 
+export interface LabelTransition {
+  x: number;
+  y: number;
+  opacity: number;
+}
+
 export interface PolygonTransition {
   points: string;
   x1: number;
   y1: number;
   x2: number;
   y2: number;
-  opacity: number;
-}
-
-export interface LabelTransition {
-  x: number;
-  y: number;
   opacity: number;
 }
 
@@ -492,6 +508,25 @@ export interface SVGBarProps<Datum extends object> {
 }
 
 export type SVGBarComponent<Datum extends object> = (props: SVGBarProps<Datum>) => JSX.Element;
+
+export interface GlyphTransition {
+  cx: number;
+  cy: number;
+  r: number;
+  opacity: number;
+}
+
+export interface SVGGlyphProps<Datum extends object> {
+  springValues: SpringValues<GlyphTransition>;
+  datum: Datum;
+  index: number;
+  dataKey: string;
+  horizontal: boolean;
+  colorScale: (dataKey: string) => string;
+  colorAccessor?: (datum: Datum, dataKey: string) => string;
+}
+
+export type SVGGlyphComponent<Datum extends object> = (props: SVGGlyphProps<Datum>) => JSX.Element;
 
 export type BarLabelPosition = 'outside' | 'inside' | 'inside-centered';
 export type InternalBarLabelPosition = 'outside' | 'inside' | 'inside-centered' | 'stacked';
