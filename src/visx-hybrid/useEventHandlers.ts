@@ -2,11 +2,9 @@ import { FocusEvent, PointerEvent, useCallback } from 'react';
 import { isNil } from 'lodash-es';
 
 import { HandlerParams } from './EventEmitterProvider';
-import { findNearestDatumX } from './findNearestDatumX';
-import { findNearestDatumY } from './findNearestDatumY';
 import { isDefined } from './isDefined';
 import { isPointerEvent } from './isPointerEvent';
-import type { EventHandlerParams, NearestDatumArgs, NearestDatumReturnType } from './types';
+import type { EventHandlerParams } from './types';
 import { useEventEmitterSubscription } from './useEventEmitterSubscription';
 import { useXYChartContext } from './useXYChartContext';
 
@@ -16,18 +14,18 @@ export const POINTER_EVENTS_NEAREST = '__POINTER_EVENTS_NEAREST';
 export type PointerEventHandlerParams<Datum extends object> = {
   /** Controls whether callbacks are invoked for one or more registered dataKeys, the nearest dataKey, or all dataKeys. */
   dataKeyOrKeysRef: string | readonly string[] | typeof POINTER_EVENTS_NEAREST | typeof POINTER_EVENTS_ALL; // last two are eaten by string
-  /** Optionally override the findNearestDatum logic. */
-  findNearestDatum?: (params: NearestDatumArgs<Datum>) => NearestDatumReturnType<Datum>;
+  // /** Optionally override the findNearestDatum logic. */
+  // findNearestDatum?: (params: NearestDatumArgs<Datum>) => NearestDatumReturnType<Datum>;
   /** Callback invoked onFocus for one or more series based on dataKey. */
-  onFocus?: (params: EventHandlerParams<Datum>) => void;
+  onFocus?: (params: readonly EventHandlerParams<Datum>[]) => void;
   /** Callback invoked onBlur. */
   onBlur?: (event: FocusEvent) => void;
   /** Callback invoked onPointerMove for one or more series based on dataKey. */
-  onPointerMove?: (params: EventHandlerParams<Datum>) => void;
+  onPointerMove?: (params: readonly EventHandlerParams<Datum>[]) => void;
   /** Callback invoked onPointerOut. */
   onPointerOut?: (event: PointerEvent) => void;
   /** Callback invoked onPointerUp for one or more series based on dataKey. */
-  onPointerUp?: (params: EventHandlerParams<Datum>) => void;
+  onPointerUp?: (params: readonly EventHandlerParams<Datum>[]) => void;
   /** Valid event sources for which to invoke handlers. */
   allowedSources?: string[];
 };
@@ -38,7 +36,7 @@ export type PointerEventHandlerParams<Datum extends object> = {
  */
 export function useEventHandlers<Datum extends object>({
   dataKeyOrKeysRef,
-  findNearestDatum: userFindNearestDatum,
+  // findNearestDatum: userFindNearestDatum,
   onBlur,
   onFocus,
   onPointerMove,
@@ -48,7 +46,7 @@ export function useEventHandlers<Datum extends object>({
 }: PointerEventHandlerParams<Datum>) {
   const { width, height, horizontal, dataEntryStore, scales } = useXYChartContext();
 
-  const findNearestDatum = userFindNearestDatum || (horizontal ? findNearestDatumY : findNearestDatumX);
+  // const findNearestDatum = userFindNearestDatum || (horizontal ? findNearestDatumY : findNearestDatumX);
 
   // this logic is shared by pointerup, pointermove, and focus handlers
   const getHandlerParams = useCallback(
@@ -80,18 +78,14 @@ export function useEventHandlers<Datum extends object>({
 
         // find nearestDatum for relevant dataKey(s)
         dataKeys.forEach((dataKey) => {
-          const entry = dataEntryStore.tryGetByDataKey(dataKey);
-          if (entry) {
-            const nearestDatum = findNearestDatum({
-              dataKey: dataKey,
-              data: entry.data,
+          const dataEntry = dataEntryStore.tryGetByDataKey(dataKey);
+          if (dataEntry) {
+            const nearestDatum = dataEntry.findNearestDatum({
+              horizontal,
+              width,
               height,
               point: svgPoint,
-              width,
-              independentScale: scales.independent,
-              dependentScale: scales.dependent,
-              independentAccessor: entry.nearestDatumIndependentAccessor,
-              dependentAccessor: entry.nearestDatumDependentAccessor
+              scales
             });
 
             if (nearestDatum) {
@@ -121,13 +115,14 @@ export function useEventHandlers<Datum extends object>({
       }
       return [];
     },
-    [dataKeyOrKeysRef, dataEntryStore, scales, width, height, findNearestDatum]
+    [dataKeyOrKeysRef, dataEntryStore, scales, width, height, horizontal]
   );
 
   const handlePointerMove = useCallback(
     (params?: HandlerParams) => {
       if (onPointerMove) {
-        getHandlerParams(params).forEach(onPointerMove);
+        const handlerParams = getHandlerParams(params);
+        onPointerMove(handlerParams);
       }
     },
     [getHandlerParams, onPointerMove]
@@ -136,7 +131,8 @@ export function useEventHandlers<Datum extends object>({
   const handlePointerUp = useCallback(
     (params?: HandlerParams) => {
       if (onPointerUp) {
-        getHandlerParams(params).forEach(onPointerUp);
+        const handlerParams = getHandlerParams(params);
+        onPointerUp(handlerParams);
       }
     },
     [getHandlerParams, onPointerUp]
@@ -145,7 +141,8 @@ export function useEventHandlers<Datum extends object>({
   const handleFocus = useCallback(
     (params?: HandlerParams) => {
       if (onFocus) {
-        getHandlerParams(params).forEach(onFocus);
+        const handlerParams = getHandlerParams(params);
+        onFocus(handlerParams);
       }
     },
     [getHandlerParams, onFocus]

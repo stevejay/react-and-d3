@@ -1,11 +1,13 @@
 import { ReactNode, useMemo } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 
+import { BARGROUP_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
 import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchildrenWithProps';
 import { isDefined } from './isDefined';
 import { SVGBarGroupSeries } from './SVGBarGroupSeries';
 import { SVGBarSeriesProps } from './SVGBarSeries';
-import type { SVGBarProps } from './types';
+import type { AxisScale, SVGBarProps } from './types';
+import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
 import { useXYChartContext } from './useXYChartContext';
 
@@ -20,6 +22,7 @@ type SVGBarGroupProps<Datum extends object> = {
   /** Optional color accessor that overrides any color accessor on the group's children. */
   colorAccessor?: (datum: Datum, dataKey: string) => string;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
+  enableEvents?: boolean;
 };
 
 export function SVGBarGroup<Datum extends object>({
@@ -27,7 +30,8 @@ export function SVGBarGroup<Datum extends object>({
   springConfig,
   animate = true,
   colorAccessor,
-  component
+  component,
+  enableEvents = true
 }: SVGBarGroupProps<Datum>) {
   const {
     scales,
@@ -43,6 +47,19 @@ export function SVGBarGroup<Datum extends object>({
     [children]
   );
   const dataKeys = barSeriesChildren.map((child) => child.props.dataKey).filter(isDefined);
+
+  const ownEventSourceKey = `${BARGROUP_EVENT_SOURCE}-${dataKeys.join('-')}}`;
+  /* const eventEmitters =  */ useSeriesEvents<AxisScale, AxisScale, Datum>({
+    dataKeyOrKeysRef: dataKeys,
+    enableEvents,
+    // onBlur,
+    // onFocus,
+    // onPointerMove,
+    // onPointerOut,
+    // onPointerUp,
+    source: ownEventSourceKey,
+    allowedSources: [XYCHART_EVENT_SOURCE, ownEventSourceKey]
+  });
 
   const transitions = useSeriesTransitions(
     dataKeys.map((dataKey) => dataEntryStore.getByDataKey(dataKey)),
@@ -63,7 +80,6 @@ export function SVGBarGroup<Datum extends object>({
             {...restGroupProps}
           >
             <SVGBarGroupSeries
-              dataKey={datum.dataKey}
               scales={scales}
               dataEntry={datum}
               groupDataKeys={dataKeys}

@@ -1,13 +1,4 @@
-import {
-  CSSProperties,
-  ReactNode,
-  SVGProps,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { CSSProperties, ReactNode, SVGProps, useCallback, useMemo, useRef, useState } from 'react';
 import { usePopper } from 'react-popper';
 import { animated, useTransition } from 'react-spring';
 import type { Options as PopperOptions, VirtualElement } from '@popperjs/core';
@@ -17,9 +8,9 @@ import { easeCubicInOut } from 'd3-ease';
 import { defaultTheme, defaultTooltipGlyphRadius } from './constants';
 import { isValidNumber } from './isValidNumber';
 import { Portal } from './Portal';
-import { TooltipContext } from './TooltipContext';
 import type { TooltipContextType, TooltipProps as BaseTooltipProps } from './types';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
+import { useTooltipContext } from './useTooltipContext';
 import { useXYChartContext } from './useXYChartContext';
 
 export type RenderTooltipParams<Datum extends object> = TooltipContextType<Datum> & {
@@ -93,7 +84,7 @@ export function PopperTooltip<Datum extends object>({
 // ...tooltipProps
 PopperTooltipProps<Datum>) {
   const { innerHeight, innerWidth, margin, theme } = useXYChartContext();
-  const tooltipContext = useContext(TooltipContext) as TooltipContextType<Datum>;
+  const tooltipContext = useTooltipContext<Datum>();
   const referenceElement = useRef<HTMLElement | null>(null); // TODO should this be state?
   const updateRef = useRef<ReturnType<typeof usePopper>['update']>();
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);

@@ -1,15 +1,14 @@
-import { ReactNode, useCallback, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 
 import { BARSTACK_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
-import findNearestStackDatum from './findNearestStackDatum';
 import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchildrenWithProps';
 import { isDefined } from './isDefined';
 import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
 import { SVGBarSeriesProps } from './SVGBarSeries';
 import { SVGBarStackSeries } from './SVGBarStackSeries';
-import type { AxisScale, NearestDatumArgs, NearestDatumReturnType, StackDatum, SVGBarProps } from './types';
+import type { AxisScale, SVGBarProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
 import { useXYChartContext } from './useXYChartContext';
@@ -52,15 +51,6 @@ export function SVGBarStack<Datum extends object>({
 
   const dataKeys = seriesChildren.map((child) => child.props.dataKey).filter(isDefined);
 
-  // custom logic to find the nearest AreaStackDatum (context) and return the original Datum (props)
-  const findNearestDatum = useCallback(
-    (params: NearestDatumArgs<StackDatum<AxisScale, AxisScale, Datum>>): NearestDatumReturnType<Datum> => {
-      const childData = seriesChildren.find((child) => child.props.dataKey === params.dataKey)?.props?.data;
-      return childData ? findNearestStackDatum(params, childData, horizontal) : null;
-    },
-    [seriesChildren, horizontal]
-  );
-
   const ownEventSourceKey = `${BARSTACK_EVENT_SOURCE}-${dataKeys.join('-')}`;
 
   // TODO fix the any
@@ -68,7 +58,7 @@ export function SVGBarStack<Datum extends object>({
   /* const eventEmitters = */ useSeriesEvents<AxisScale, AxisScale, any>({
     dataKeyOrKeysRef: dataKeys,
     enableEvents,
-    findNearestDatum,
+    // findNearestDatum,
     // onBlur,
     // onFocus,
     // onPointerMove,

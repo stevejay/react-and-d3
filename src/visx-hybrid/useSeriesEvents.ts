@@ -1,9 +1,9 @@
-import { FocusEvent, PointerEvent, useCallback, useContext } from 'react';
+import { FocusEvent, PointerEvent, useCallback } from 'react';
 
-import { TooltipContext } from './TooltipContext';
-import type { AxisScale, EventHandlerParams, SeriesProps, TooltipContextType } from './types';
+import type { AxisScale, EventHandlerParams, SeriesProps } from './types';
 import { useEventEmitters } from './useEventEmitters';
 import { PointerEventHandlerParams, useEventHandlers } from './useEventHandlers';
+import { useTooltipContext } from './useTooltipContext';
 
 export type SeriesEventsParams<
   IndependentScale extends AxisScale,
@@ -13,7 +13,7 @@ export type SeriesEventsParams<
   SeriesProps<IndependentScale, DependentScale, Datum>,
   'onBlur' | 'onFocus' | 'onPointerMove' | 'onPointerOut' | 'onPointerUp'
 > &
-  Pick<PointerEventHandlerParams<Datum>, 'dataKeyOrKeysRef' | 'allowedSources' | 'findNearestDatum'> & {
+  Pick<PointerEventHandlerParams<Datum>, 'dataKeyOrKeysRef' | 'allowedSources'> & {
     /** The source of emitted events. */
     source: string;
     enableEvents: boolean;
@@ -27,7 +27,6 @@ export function useSeriesEvents<
 >({
   dataKeyOrKeysRef,
   enableEvents,
-  findNearestDatum,
   onBlur: onBlurProps,
   onFocus: onFocusProps,
   onPointerMove: onPointerMoveProps,
@@ -36,10 +35,10 @@ export function useSeriesEvents<
   source,
   allowedSources
 }: SeriesEventsParams<IndependentScale, DependentScale, Datum>) {
-  const { showTooltip, hideTooltip } = (useContext(TooltipContext) ?? {}) as TooltipContextType<Datum>;
+  const { showTooltip, hideTooltip } = useTooltipContext<Datum>();
 
   const onPointerMove = useCallback(
-    (params: EventHandlerParams<Datum>) => {
+    (params: readonly EventHandlerParams<Datum>[]) => {
       showTooltip(params);
       if (onPointerMoveProps) {
         onPointerMoveProps(params);
@@ -49,7 +48,7 @@ export function useSeriesEvents<
   );
 
   const onFocus = useCallback(
-    (params: EventHandlerParams<Datum>) => {
+    (params: readonly EventHandlerParams<Datum>[]) => {
       showTooltip(params);
       if (onFocusProps) {
         onFocusProps(params);
@@ -80,7 +79,6 @@ export function useSeriesEvents<
 
   useEventHandlers({
     dataKeyOrKeysRef,
-    findNearestDatum,
     onBlur: enableEvents ? onBlur : undefined,
     onFocus: enableEvents ? onFocus : undefined,
     onPointerMove: enableEvents ? onPointerMove : undefined,

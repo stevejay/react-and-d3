@@ -19,7 +19,6 @@ export type SVGBarStackSeriesProps<
   springConfig: SpringConfig;
   colorAccessor?: (datum: Datum, key: string) => string;
   colorScale: ScaleOrdinal<string, string, never>;
-  enableEvents?: boolean;
   component?: (props: SVGBarProps<Datum>) => JSX.Element;
 } & Pick<
   SeriesProps<IndependentScale, DependentScale, Datum>,
@@ -45,7 +44,6 @@ export function SVGBarStackSeries<
   //   onPointerMove,
   //   onPointerOut,
   //   onPointerUp,
-  // enableEvents = true,
   component: BarComponent = SVGSimpleBar
 }: SVGBarStackSeriesProps<IndependentScale, DependentScale, Datum>) {
   const transitions = useBarTransitions({

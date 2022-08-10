@@ -2,7 +2,7 @@ import type { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 import { format } from 'd3-format';
 import { schemeCategory10 } from 'd3-scale-chromatic';
-import { capitalize } from 'lodash-es';
+import { capitalize, isNil } from 'lodash-es';
 
 import type { CategoryValueListDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
@@ -103,24 +103,19 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}
-        renderTooltip={({ tooltipData }) => {
-          const datumByKey = tooltipData?.datumByKey;
-          if (!datumByKey) {
-            return null;
-          }
-          return (
-            <div className="flex flex-col space-y-1 p-1">
-              {dataKeys.map((dataKey) => (
+        renderTooltip={({ tooltipData }) => (
+          <div className="flex flex-col space-y-1 p-1">
+            {dataKeys.map((dataKey) => {
+              const datum = tooltipData?.datumByKey.get(dataKey)?.datum;
+              return isNil(datum) ? null : (
                 <p key={dataKey}>
-                  <span style={{ color: colorAccessor(datumByKey[dataKey].datum, dataKey) }}>
-                    {capitalize(dataKey)}
-                  </span>
-                  : {datumByKey[dataKey].datum.values[dataKey]}
+                  <span style={{ color: colorAccessor(datum, dataKey) }}>{capitalize(dataKey)}</span>:{' '}
+                  {datum.values[dataKey]}
                 </p>
-              ))}
-            </div>
-          );
-        }}
+              );
+            })}
+          </div>
+        )}
       />
     </SVGXYChart>
   );

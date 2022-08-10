@@ -129,13 +129,6 @@ function InnerChart<
     dependentRange
   );
 
-  //   const independentAxisTicks = getTicksData(independentScale, config.independentAxis);
-  //   //   const independentAxisRect =
-
-  //   const dependentAxisTicks = getTicksData(dependentScale, config.dependentAxis);
-
-  //   console.log('foo', independentAxisTicks, dependentAxisTicks);
-
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} {...rest}>
       {independentScale && config.independentGrid && (
@@ -144,8 +137,6 @@ function InnerChart<
           scale={independentScale}
           gridConfig={config.independentGrid}
           horizontal={horizontal}
-          // width={width}
-          // height={height}
           innerWidth={innerWidth}
           innerHeight={innerHeight}
           margin={margin}

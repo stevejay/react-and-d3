@@ -30,89 +30,41 @@ export function TooltipProvider<Datum extends object>({
   const debouncedHideTooltip = useRef<ReturnType<typeof debounce> | null>(null);
 
   const showTooltip = useCallback(
-    ({ svgPoint, index, key, datum, distanceX, distanceY, ...rest }: EventHandlerParams<Datum>) => {
+    (eventParamsList: readonly EventHandlerParams<Datum>[]) => {
       // cancel any hideTooltip calls so it won't hide after invoking the logic below
       if (debouncedHideTooltip.current) {
         debouncedHideTooltip.current.cancel();
         debouncedHideTooltip.current = null;
       }
 
-      const cleanDistanceX = isValidNumber(distanceX) ? distanceX : Infinity;
-      const cleanDistanceY = isValidNumber(distanceY) ? distanceY : Infinity;
-      const distance = Math.sqrt(cleanDistanceX ** 2 + cleanDistanceY ** 2);
+      if (!eventParamsList.length) {
+        return;
+      }
 
-      updateTooltip(({ tooltipData: currentTooltipData }) => {
-        const currNearestDatumDistance =
-          currentTooltipData?.nearestDatum && isValidNumber(currentTooltipData.nearestDatum.distance)
-            ? currentTooltipData.nearestDatum.distance
-            : Infinity;
+      const distances = eventParamsList.map(({ distanceX, distanceY }) => {
+        const cleanDistanceX = isValidNumber(distanceX) ? distanceX : Infinity;
+        const cleanDistanceY = isValidNumber(distanceY) ? distanceY : Infinity;
+        return Math.sqrt(cleanDistanceX ** 2 + cleanDistanceY ** 2);
+      });
 
-        return {
-          tooltipOpen: true,
-          tooltipLeft: svgPoint?.x,
-          tooltipTop: svgPoint?.y,
-          tooltipData: {
-            nearestDatum:
-              (currentTooltipData?.nearestDatum?.key ?? '') !== key && currNearestDatumDistance < distance
-                ? currentTooltipData?.nearestDatum
-                : { key, index, datum, distance, ...rest },
-            datumByKey: {
-              ...currentTooltipData?.datumByKey,
-              [key]: {
-                datum,
-                index,
-                key,
-                ...rest
-              }
-            }
-          }
-        };
+      const indexOfNearestDatum = distances.reduce((result, distance, currentIndex) => {
+        return distance < distances[result] ? currentIndex : result;
+      }, 0);
+
+      const nearestDatum = eventParamsList[indexOfNearestDatum];
+
+      updateTooltip({
+        tooltipOpen: true,
+        tooltipLeft: nearestDatum.svgPoint?.x,
+        tooltipTop: nearestDatum.svgPoint?.y,
+        tooltipData: {
+          nearestDatum: { ...nearestDatum, distance: distances[indexOfNearestDatum] },
+          datumByKey: new Map(eventParamsList.map((item) => [item.key, item]))
+        }
       });
     },
     [updateTooltip]
   );
-
-  // // TODO turn into lazy init to avoid creating this func on every render.
-  // const showTooltip = useRef(
-  //   ({ svgPoint, index, key, datum, distanceX, distanceY, ...rest }: EventHandlerParams<Datum>) => {
-  //     // cancel any hideTooltip calls so it won't hide after invoking the logic below
-  //     if (debouncedHideTooltip.current) {
-  //       debouncedHideTooltip.current.cancel();
-  //       debouncedHideTooltip.current = null;
-  //     }
-
-  //     const cleanDistanceX = isValidNumber(distanceX) ? distanceX : Infinity;
-  //     const cleanDistanceY = isValidNumber(distanceY) ? distanceY : Infinity;
-  //     const distance = Math.sqrt(cleanDistanceX ** 2 + cleanDistanceY ** 2);
-
-  //     updateTooltip(({ tooltipData: currentTooltipData }) => {
-  //       const currNearestDatumDistance =
-  //         currentTooltipData?.nearestDatum && isValidNumber(currentTooltipData.nearestDatum.distance)
-  //           ? currentTooltipData.nearestDatum.distance
-  //           : Infinity;
-  //       return {
-  //         tooltipOpen: true,
-  //         tooltipLeft: svgPoint?.x,
-  //         tooltipTop: svgPoint?.y,
-  //         tooltipData: {
-  //           nearestDatum:
-  //             (currentTooltipData?.nearestDatum?.key ?? '') !== key && currNearestDatumDistance < distance
-  //               ? currentTooltipData?.nearestDatum
-  //               : { key, index, datum, distance, ...rest },
-  //           datumByKey: {
-  //             ...currentTooltipData?.datumByKey,
-  //             [key]: {
-  //               datum,
-  //               index,
-  //               key,
-  //               ...rest
-  //             }
-  //           }
-  //         }
-  //       };
-  //     });
-  //   }
-  // );
 
   const hideTooltip = useCallback(() => {
     debouncedHideTooltip.current = debounce(privateHideTooltip, hideTooltipDebounceMs);

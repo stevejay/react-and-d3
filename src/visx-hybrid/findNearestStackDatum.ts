@@ -1,10 +1,10 @@
-import { AxisScale } from '@visx/axis';
+import type { AxisScale } from '@visx/axis';
 import { getFirstItem, getSecondItem } from '@visx/shape/lib/util/accessors';
 
 import { findNearestDatumX } from './findNearestDatumX';
 import { findNearestDatumY } from './findNearestDatumY';
 import { getScaleBandwidth } from './getScaleBandwidth';
-import { NearestDatumArgs, StackDatum } from './types';
+import type { NearestDatumArgs, StackDatum } from './types';
 
 /**
  * This is a wrapper around findNearestDatumX/Y for BarStack, accounting for a

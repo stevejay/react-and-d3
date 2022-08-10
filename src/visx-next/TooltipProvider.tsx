@@ -52,7 +52,8 @@ export function TooltipProvider<Datum extends object>({
           tooltipTop: svgPoint?.y,
           tooltipData: {
             nearestDatum:
-              (currData?.nearestDatum?.key ?? '') !== key && currNearestDatumDistance < distance
+              // (currData?.nearestDatum?.key ?? '') !== key &&
+              currNearestDatumDistance < distance
                 ? currData?.nearestDatum
                 : { key, index, datum, distance, ...rest },
             datumByKey: {

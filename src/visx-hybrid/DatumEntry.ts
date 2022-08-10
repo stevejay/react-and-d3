@@ -1,4 +1,8 @@
 import { coerceNumber } from './coerceNumber';
+import { findNearestDatumX } from './findNearestDatumX';
+import { findNearestDatumY } from './findNearestDatumY';
+import { findNearestGroupDatum } from './findNearestGroupDatum';
+import findNearestStackDatum from './findNearestStackDatum';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { getFirstItem, getSecondItem } from './getItem';
 import { getScaleBandwidth } from './getScaleBandwidth';
@@ -10,6 +14,8 @@ import type {
   FontProperties,
   IDatumEntry,
   InternalBarLabelPosition,
+  NearestDatumReturnType,
+  Point,
   ScaleInput,
   ScaleSet,
   StackDatum
@@ -188,6 +194,33 @@ export class SimpleDatumEntry<Datum extends object> implements IDatumEntry {
 
   getMatchingDataForA11ySeries(independentDomainValue: ScaleInput<AxisScale>): readonly Datum[] {
     return this._data.filter((datum) => this.independentAccessor(datum) === independentDomainValue);
+  }
+
+  findNearestDatum({
+    horizontal,
+    scales,
+    point,
+    width,
+    height
+  }: {
+    horizontal: boolean;
+    width: number;
+    height: number;
+    point: Point;
+    scales: ScaleSet;
+  }): NearestDatumReturnType<Datum> | null {
+    const findNearestDatum = horizontal ? findNearestDatumY : findNearestDatumX;
+    return findNearestDatum({
+      independentScale: scales.independent,
+      independentAccessor: this.independentAccessor,
+      dependentScale: scales.dependent,
+      dependentAccessor: this.dependentAccessor,
+      point,
+      data: this.data,
+      width,
+      height,
+      dataKey: this.dataKey
+    });
   }
 }
 
@@ -368,6 +401,36 @@ export class GroupDatumEntry<Datum extends object> implements IDatumEntry {
 
   getMatchingDataForA11ySeries(independentDomainValue: ScaleInput<AxisScale>): readonly Datum[] {
     return this._data.filter((datum) => this.independentAccessor(datum) === independentDomainValue);
+  }
+
+  findNearestDatum({
+    horizontal,
+    scales,
+    point,
+    width,
+    height
+  }: {
+    horizontal: boolean;
+    width: number;
+    height: number;
+    point: Point;
+    scales: ScaleSet;
+  }): NearestDatumReturnType<Datum> | null {
+    return findNearestGroupDatum(
+      {
+        independentScale: scales.independent,
+        independentAccessor: this.independentAccessor,
+        dependentScale: scales.dependent,
+        dependentAccessor: this.dependentAccessor,
+        point,
+        data: this.data,
+        width,
+        height,
+        dataKey: this.dataKey
+      },
+      scales.group[0],
+      horizontal
+    );
   }
 }
 
@@ -563,5 +626,35 @@ export class StackDatumEntry<Datum extends object> implements IDatumEntry {
     return this._data
       .filter((datum) => this.independentAccessor(getStackOriginalDatum(datum)) === independentDomainValue)
       .map((datum) => getStackOriginalDatum(datum));
+  }
+
+  findNearestDatum({
+    horizontal,
+    width,
+    height,
+    point,
+    scales
+  }: {
+    horizontal: boolean;
+    width: number;
+    height: number;
+    point: Point;
+    scales: ScaleSet;
+  }): NearestDatumReturnType<StackDatum<AxisScale, AxisScale, Datum>> | null {
+    return findNearestStackDatum(
+      {
+        independentScale: scales.independent,
+        independentAccessor: getStack,
+        dependentScale: scales.dependent,
+        dependentAccessor: getNumericValue,
+        point,
+        data: this.data,
+        width,
+        height,
+        dataKey: this.dataKey
+      },
+      this.data.map((d) => d.data.__datum__),
+      horizontal
+    ) as NearestDatumReturnType<StackDatum<AxisScale, AxisScale, Datum>> | null;
   }
 }

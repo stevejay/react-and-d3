@@ -124,6 +124,15 @@ export interface IDatumEntry {
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   findDatumForPositioner(datum: any): any | null;
+  findNearestDatum(args: {
+    horizontal: boolean;
+    width: number;
+    height: number;
+    point: Point;
+    scales: ScaleSet;
+    // TODO fix any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }): NearestDatumReturnType<any> | null;
 }
 
 export interface IDataEntryStore {
@@ -355,13 +364,11 @@ export type TooltipData<Datum extends object = object> = {
   /** Nearest Datum to event across all Series. */
   nearestDatum?: TooltipDatum<Datum> & { distance: number };
   /** Nearest Datum to event across for each Series. */
-  datumByKey: {
-    [key: string]: TooltipDatum<Datum>;
-  };
+  datumByKey: Map<string, TooltipDatum<Datum>>;
 };
 
 export type TooltipContextType<Datum extends object> = UseTooltipParams<TooltipData<Datum>> & {
-  showTooltip: (params: EventHandlerParams<Datum>) => void;
+  showTooltip: (eventParamsList: readonly EventHandlerParams<Datum>[]) => void;
 };
 
 export type UseTooltipParams<TooltipData> = {
@@ -403,7 +410,8 @@ export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale,
    * any Series with a defined handler. Alternatively you may set <XYChart captureEvents={false} />
    * and Series will emit their own events.
    */
-  onPointerMove?: ({
+  onPointerMove?: (
+    eventParamsList: /*{
     datum,
     distanceX,
     distanceY,
@@ -411,7 +419,8 @@ export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale,
     index,
     key,
     svgPoint
-  }: EventHandlerParams<Datum>) => void;
+  }*/ readonly EventHandlerParams<Datum>[]
+  ) => void;
   /**
    * Callback invoked for onPointerOut events. By default XYChart will capture and emit
    * PointerEvents, invoking this function for any Series with a defined handler.
@@ -420,7 +429,7 @@ export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale,
    */
   onPointerOut?: (
     /** The PointerEvent. */
-    event: PointerEvent
+    eventParamsList: PointerEvent
   ) => void;
   /**
    * Callback invoked for onPointerUp events for the nearest Datum to the PointerEvent.
@@ -428,7 +437,8 @@ export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale,
    * any Series with a defined handler. Alternatively you may set <XYChart captureEvents={false} />
    * and Series will emit their own events.
    */
-  onPointerUp?: ({
+  onPointerUp?: (
+    eventParamsList: /*{
     datum,
     distanceX,
     distanceY,
@@ -436,12 +446,15 @@ export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale,
     index,
     key,
     svgPoint
-  }: EventHandlerParams<Datum>) => void;
+  }*/ readonly EventHandlerParams<Datum>[]
+  ) => void;
   /**
    * Callback invoked for onFocus events for the nearest Datum to the FocusEvent.
    * XYChart will NOT capture and emit FocusEvents, they are emitted from individual Series glyph shapes.
    */
-  onFocus?: ({ datum, distanceX, distanceY, event, index, key, svgPoint }: EventHandlerParams<Datum>) => void;
+  onFocus?: (
+    events: /*{ datum, distanceX, distanceY, event, index, key, svgPoint }*/ readonly EventHandlerParams<Datum>[]
+  ) => void;
   /**
    * Callback invoked for onBlur events for the nearest Datum to the FocusEvent.
    * XYChart will NOT capture and emit FocusEvents, they are emitted from individual Series glyph shapes.
