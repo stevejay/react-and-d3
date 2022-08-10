@@ -61,7 +61,7 @@ export function SVGGlyphSeries<Datum extends object>({
   });
   const radiusScale =
     radiusScaleConfig && radiusAccessor
-      ? createScaleFromScaleConfig(dataEntry.getDataValues(radiusAccessor), radiusScaleConfig)
+      ? createScaleFromScaleConfig(dataEntry.getMappedData(radiusAccessor), radiusScaleConfig)
       : undefined;
   const getRadius = (datum: Datum) =>
     radiusScale && radiusAccessor ? (radiusScale(radiusAccessor(datum)) as number) : radius;

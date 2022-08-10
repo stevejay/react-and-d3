@@ -41,10 +41,6 @@ export interface DatumPosition {
 
 export interface IDatumEntry {
   get dataKey(): string;
-
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get keyAccessor(): (datum: any) => string | number;
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   get colorAccessor(): (datum: any, dataKey: string) => string;
@@ -56,11 +52,7 @@ export interface IDatumEntry {
   get dependentAccessor(): (datum: any) => ScaleInput<AxisScale>;
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // get nearestDatumIndependentAccessor(): (datum: any) => ScaleInput<AxisScale>;
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // get nearestDatumDependentAccessor(): (datum: any) => ScaleInput<AxisScale>;
-
+  get keyAccessorForRenderingData(): (datum: any) => string | number;
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getRenderingData(): readonly any[];
@@ -96,7 +88,7 @@ export interface IDatumEntry {
   getFilteredData(filter: (datum: any) => boolean): readonly any[];
   // TODO fix any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // findDatumForPositioner(datum: any): any | null;
+  getMappedData(mapper: (datum: any) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[];
   getPositionForDatum(params: {
     // TODO fix any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -106,17 +98,14 @@ export interface IDatumEntry {
     renderingOffset: number;
   }): DatumPosition | null;
   findNearestDatum(args: {
+    scales: ScaleSet;
     horizontal: boolean;
     width: number;
     height: number;
     point: Point;
-    scales: ScaleSet;
     // TODO fix any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }): NearestDatumReturnType<any> | null;
-  // TODO fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getDataValues(accessor: (datum: any) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[];
 }
 
 export interface IDataEntryStore {

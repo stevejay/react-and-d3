@@ -39,7 +39,7 @@ export function useBarLabelTransitions(args: {
     leave: () => ({ opacity: 0 }),
     config: springConfig,
 
-    keys: (datum) => dataEntry.keyAccessor(datum.datum),
+    keys: (datum) => dataEntry.keyAccessorForRenderingData(datum.datum),
     immediate: !animate
   });
 }

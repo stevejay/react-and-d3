@@ -16,9 +16,10 @@ export function combineBarStackData<
   type MapValue = StackDataWithSums<IndependentScale, DependentScale, Datum>;
   const dataByStackValue = new Map<string, MapValue>();
 
+  // Note: At this point the data entries are the original data entries,
+  // ones that have not yet been transformed into stack data entries.
   dataEntries.forEach((dataEntry) => {
     const { dataKey, independentAccessor, dependentAccessor } = dataEntry;
-
     if (!independentAccessor || !dependentAccessor) {
       return;
     }
@@ -27,13 +28,13 @@ export function combineBarStackData<
       ? [dependentAccessor, independentAccessor]
       : [independentAccessor, dependentAccessor];
 
-    dataEntry.getRenderingData().forEach((datum) => {
-      const stack = stackAccessor(datum);
-      const numericValue = valueAccessor(datum);
+    dataEntry.getRenderingData().forEach((originalDatum) => {
+      const stack = stackAccessor(originalDatum);
+      const numericValue = valueAccessor(originalDatum);
       const stackKey = String(stack);
       const stackValue =
         dataByStackValue.get(stackKey) ??
-        ({ stack, positiveSum: 0, negativeSum: 0, __datum__: datum } as MapValue);
+        ({ stack, positiveSum: 0, negativeSum: 0, __datum__: originalDatum } as MapValue);
       stackValue[dataKey] = numericValue;
       stackValue[numericValue >= 0 ? 'positiveSum' : 'negativeSum'] += numericValue;
       dataByStackValue.set(stackKey, stackValue);

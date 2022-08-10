@@ -23,9 +23,11 @@ export function useGlyphTransitions<Datum extends object>({
   seriesIsLeaving?: boolean;
   getRadius: (datum: Datum) => number;
 }) {
-  const dataWithRadii = dataEntry.getRenderingData().map((datum) => ({ datum, radius: getRadius(datum) }));
+  const renderingDataWithRadii = dataEntry
+    .getRenderingData()
+    .map((datum) => ({ datum, radius: getRadius(datum) }));
   const position = dataEntry.createElementPositionerForRenderingData({ scales, horizontal, renderingOffset });
-  return useTransition<{ datum: Datum; radius: number }, GlyphTransition>(dataWithRadii, {
+  return useTransition<{ datum: Datum; radius: number }, GlyphTransition>(renderingDataWithRadii, {
     initial: ({ datum, radius }) => ({ opacity: 1, ...createGlyphTransition(position(datum)), r: radius }),
     from: ({ datum, radius }) => ({ opacity: 0, ...createGlyphTransition(position(datum)), r: radius }),
     enter: ({ datum, radius }) => ({ opacity: 1, ...createGlyphTransition(position(datum)), r: radius }),
@@ -33,7 +35,7 @@ export function useGlyphTransitions<Datum extends object>({
       seriesIsLeaving ? { opacity: 1 } : { opacity: 1, ...createGlyphTransition(position(datum)), r: radius },
     leave: ({ radius }) => ({ opacity: 0, r: radius }),
     config: springConfig,
-    keys: ({ datum }) => dataEntry.keyAccessor(datum),
+    keys: ({ datum }) => dataEntry.keyAccessorForRenderingData(datum),
     immediate: !animate
   });
 }
