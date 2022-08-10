@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 
-import { BARSTACK_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
+import { barStackEventSource, xyChartEventSource } from './constants';
 import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchildrenWithProps';
 import { isDefined } from './isDefined';
 import { STACK_OFFSETS } from './stackOffset';
@@ -51,7 +51,7 @@ export function SVGBarStack<Datum extends object>({
 
   const dataKeys = seriesChildren.map((child) => child.props.dataKey).filter(isDefined);
 
-  const ownEventSourceKey = `${BARSTACK_EVENT_SOURCE}-${dataKeys.join('-')}`;
+  const ownEventSourceKey = `${barStackEventSource}-${dataKeys.join('-')}`;
 
   // TODO fix the any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,7 +65,7 @@ export function SVGBarStack<Datum extends object>({
     // onPointerOut,
     // onPointerUp,
     source: ownEventSourceKey,
-    allowedSources: [XYCHART_EVENT_SOURCE, ownEventSourceKey]
+    allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
 
   const transitions = useSeriesTransitions(

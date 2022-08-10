@@ -9,7 +9,7 @@ import {
   defaultParentSizeDebounceMs,
   defaultSpringConfig,
   defaultTheme,
-  XYCHART_EVENT_SOURCE
+  xyChartEventSource
 } from './constants';
 import { createScaleFromScaleConfig } from './createScaleFromScaleConfig';
 import { DataEntryStore } from './DataEntryStore';
@@ -148,7 +148,7 @@ function InnerChart<
 
   // Returns event handlers to be applied to the <rect> that is for capturing events.
   // Each handler just emits the event.
-  const eventEmitters = useEventEmitters({ source: XYCHART_EVENT_SOURCE });
+  const eventEmitters = useEventEmitters({ source: xyChartEventSource });
 
   let dataContextValue: XYChartContextType | null = null;
   const hasValidContent = !isNil(independentScale) && !isNil(dependentScale) && width > 0 && height > 0;

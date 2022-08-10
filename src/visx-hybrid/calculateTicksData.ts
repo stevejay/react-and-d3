@@ -7,7 +7,7 @@ import type { AxisScale, ScaleInput, TickDatum, TickFormatter } from './types';
 
 export interface TicksDataParams {
   scale: AxisScale | undefined;
-  hideZero?: boolean;
+  hideZero: boolean;
   tickFormat?: TickFormatter<ScaleInput<AxisScale>>;
   tickCount?: number;
   tickValues?: ScaleInput<AxisScale>[];

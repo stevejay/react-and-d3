@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 
-import { BARGROUP_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
+import { barGroupEventSource, xyChartEventSource } from './constants';
 import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchildrenWithProps';
 import { isDefined } from './isDefined';
 import { SVGBarGroupSeries } from './SVGBarGroupSeries';
@@ -48,7 +48,7 @@ export function SVGBarGroup<Datum extends object>({
   );
   const dataKeys = barSeriesChildren.map((child) => child.props.dataKey).filter(isDefined);
 
-  const ownEventSourceKey = `${BARGROUP_EVENT_SOURCE}-${dataKeys.join('-')}}`;
+  const ownEventSourceKey = `${barGroupEventSource}-${dataKeys.join('-')}}`;
   /* const eventEmitters =  */ useSeriesEvents<AxisScale, AxisScale, Datum>({
     dataKeyOrKeysRef: dataKeys,
     enableEvents,
@@ -58,7 +58,7 @@ export function SVGBarGroup<Datum extends object>({
     // onPointerOut,
     // onPointerUp,
     source: ownEventSourceKey,
-    allowedSources: [XYCHART_EVENT_SOURCE, ownEventSourceKey]
+    allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
 
   const transitions = useSeriesTransitions(

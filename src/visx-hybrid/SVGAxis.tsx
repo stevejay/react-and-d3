@@ -1,12 +1,14 @@
 import type { SVGProps } from 'react';
 import type { SpringConfig } from 'react-spring';
 
+import { calculateAxisMargin } from './calculateAxisMargin';
 import { calculateAxisOrientation } from './calculateAxisOrientation';
 import { calculateTicksData } from './calculateTicksData';
 import {
   defaultBigLabelsTextStyle,
   defaultHideTicks,
   defaultHideZero,
+  defaultOuterTickLength,
   defaultTickLabelAngle,
   defaultTickLabelPadding,
   defaultTickLength
@@ -19,20 +21,20 @@ import { SVGAxisTicks } from './SVGAxisTicks';
 import { TextProps } from './SVGSimpleText';
 import type {
   AxisScale,
+  BasicAxisProps,
   LabelAngle,
   LineProps,
   ScaleInput,
   TickFormatter,
-  TickLabelAngle,
-  Variable
+  TickLabelAngle
 } from './types';
 import { useXYChartContext } from './useXYChartContext';
 
-export interface SVGAxisProps {
-  /** Whether the axis is the independent or the dependent axis. */
-  variable: Variable;
-  /** Which side of the chart the axis is rendered on. */
-  position: 'start' | 'end';
+export type SVGAxisProps = BasicAxisProps & {
+  // /** Whether the axis is the independent or the dependent axis. */
+  // variable: Variable;
+  // /** Which side of the chart the axis is rendered on. */
+  // position: 'start' | 'end';
   /** Whether the stripes should animate. Optional. Defaults to `true`. */
   animate?: boolean;
   /** A react-spring configuration object for the animation. Optional. This should be a stable object. */
@@ -75,9 +77,9 @@ export interface SVGAxisProps {
   axisLineProps?: Omit<SVGProps<SVGPathElement>, 'ref'>;
   /** Props to apply to the <g> element that wraps the axis. */
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'x' | 'y'>;
-}
+};
 
-export function SVGAxis(props: SVGAxisProps) {
+function SVGAxis(props: SVGAxisProps) {
   const {
     variable,
     position,
@@ -90,7 +92,7 @@ export function SVGAxis(props: SVGAxisProps) {
     tickLabelAngle = defaultTickLabelAngle,
     labelAngle,
     axisLineProps = {},
-    outerTickLength = 0,
+    outerTickLength = defaultOuterTickLength,
     hideAxisPath = false,
     tickLength = defaultTickLength,
     hideTicks = defaultHideTicks,
@@ -208,3 +210,7 @@ export function SVGAxis(props: SVGAxisProps) {
     </>
   );
 }
+
+SVGAxis.calculateMargin = calculateAxisMargin;
+
+export { SVGAxis };

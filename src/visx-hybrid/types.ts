@@ -534,21 +534,41 @@ export interface LabelTransition {
   opacity: number;
 }
 
-export interface MarginCalculationParams {
-  axisOrientation: AxisOrientation;
-  scale: AxisScale<AxisScaleOutput>;
-  rangePadding: number;
-  tickFormat?: TickFormatter<ScaleInput<AxisScale>>;
-  tickCount?: number;
-  tickValues?: ScaleInput<AxisScale>[];
-  tickLength: number;
-  hideTicks: boolean;
-  hideZero: boolean;
-  tickLabelPadding: number;
-  tickLabelAngle: TickLabelAngle;
-  smallFont: FontProperties | string;
-  label?: string;
-  labelPadding: number;
-  labelAngle: LabelAngle;
-  bigFont: FontProperties | string;
+// export interface MarginCalculationParams {
+//   axisOrientation: AxisOrientation;
+//   scale: AxisScale<AxisScaleOutput>;
+//   rangePadding: number;
+//   tickFormat?: TickFormatter<ScaleInput<AxisScale>>;
+//   tickCount?: number;
+//   tickValues?: ScaleInput<AxisScale>[];
+//   tickLength: number;
+//   hideTicks: boolean;
+//   hideZero: boolean;
+//   tickLabelPadding: number;
+//   tickLabelAngle: TickLabelAngle;
+//   smallFont: FontProperties | string;
+//   label?: string;
+//   labelPadding: number;
+//   labelAngle: LabelAngle;
+//   bigFont: FontProperties | string;
+// }
+
+export interface BasicAxisProps {
+  /** Whether the axis is the independent or the dependent axis. */
+  variable: Variable;
+  /** Which side of the chart the axis is rendered on. */
+  position: 'start' | 'end';
+}
+
+export type CalculateMargin<Props extends BasicAxisProps = BasicAxisProps> = (
+  axisOrientation: AxisOrientation,
+  scale: AxisScale<AxisScaleOutput>,
+  rangePadding: number,
+  theme: XYChartTheme,
+  params: Props
+) => Margin;
+
+export interface SVGAxisComponent<Props extends BasicAxisProps = BasicAxisProps> {
+  (props: Props): JSX.Element;
+  calculateMargin: CalculateMargin<Props>;
 }

@@ -17,6 +17,7 @@ export const defaultShapeRendering = 'crispEdges';
 export const defaultDatumLabelPadding = 8;
 export const defaultGroupPadding = 0.1;
 export const defaultTooltipGlyphRadius = 4;
+export const defaultOuterTickLength = 0;
 
 // font-style, font-variant, font-weight, font-size, line-height, font-family
 export const defaultBigLabelsFont = 'normal normal normal 14px/1 sans-serif';
@@ -65,11 +66,11 @@ export const defaultTheme: XYChartTheme = {
   }
 };
 
-export const AREASERIES_EVENT_SOURCE = 'AREASERIES_EVENT_SOURCE';
-export const AREASTACK_EVENT_SOURCE = 'AREASTACK_EVENT_SOURCE';
-export const BARGROUP_EVENT_SOURCE = 'BARGROUP_EVENT_SOURCE';
-export const BARSERIES_EVENT_SOURCE = 'BARSERIES_EVENT_SOURCE';
-export const BARSTACK_EVENT_SOURCE = 'BARSTACK_EVENT_SOURCE';
-export const GLYPHSERIES_EVENT_SOURCE = 'GLYPHSERIES_EVENT_SOURCE';
-export const LINESERIES_EVENT_SOURCE = 'LINESERIES_EVENT_SOURCE';
-export const XYCHART_EVENT_SOURCE = 'XYCHART_EVENT_SOURCE';
+export const areaSeriesEventSource = 'AREASERIES_EVENT_SOURCE';
+export const areaStackEventSource = 'AREASTACK_EVENT_SOURCE';
+export const barGroupEventSource = 'BARGROUP_EVENT_SOURCE';
+export const barSeriesEventSource = 'BARSERIES_EVENT_SOURCE';
+export const barStackEventSource = 'BARSTACK_EVENT_SOURCE';
+export const glyphSeriesEventSource = 'GLYPHSERIES_EVENT_SOURCE';
+export const lineSeriesEventSource = 'LINESERIES_EVENT_SOURCE';
+export const xyChartEventSource = 'XYCHART_EVENT_SOURCE';

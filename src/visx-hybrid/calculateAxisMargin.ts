@@ -1,25 +1,51 @@
 import { addMargins } from './addMargins';
 import { calculateTicksData } from './calculateTicksData';
+import {
+  defaultAutoMarginLabelPadding,
+  defaultBigLabelsTextStyle,
+  defaultHideTicks,
+  defaultHideZero,
+  defaultSmallLabelsTextStyle,
+  defaultTickLabelAngle,
+  defaultTickLabelPadding,
+  defaultTickLength
+} from './constants';
+import { getDefaultAxisLabelAngle } from './getDefaultAxisLabelAngle';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { measureTextWithCache } from './measureTextWithCache';
-import type { Margin, MarginCalculationParams, TickDatum } from './types';
+import type { SVGAxisProps } from './SVGAxis';
+import type {
+  AxisOrientation,
+  AxisScale,
+  AxisScaleOutput,
+  FontProperties,
+  LabelAngle,
+  Margin,
+  TickDatum,
+  TickLabelAngle,
+  XYChartTheme
+} from './types';
 
-function getTickLineMargin({ axisOrientation, tickLength, hideTicks }: MarginCalculationParams): Margin {
+function getTickLineMargin(axisOrientation: AxisOrientation, tickLength: number, hideTicks: boolean): Margin {
   const result: Margin = { left: 0, right: 0, top: 0, bottom: 0 };
   result[axisOrientation] = hideTicks ? 0 : tickLength;
   return result;
 }
 
 function getTickLabelsMargin(
-  { axisOrientation, rangePadding, tickLabelPadding, tickLabelAngle, smallFont }: MarginCalculationParams,
+  axisOrientation: AxisOrientation,
+  rangePadding: number,
+  tickLabelPadding: number,
+  tickLabelAngle: TickLabelAngle,
+  font: string | FontProperties,
   ticks: readonly TickDatum[]
 ): Margin {
   // Calculate the dimensions of each tick label:
-  const widths = ticks.map((tick) => measureTextWithCache(tick.label, smallFont));
+  const widths = ticks.map((tick) => measureTextWithCache(tick.label, font));
   // Get the width of the longest tick label:
   const maxTickLabelWidth = Math.max(0, ...widths);
   // Get the height of the tick labels:
-  const tickLabelHeight = getFontMetricsWithCache(smallFont).height;
+  const tickLabelHeight = getFontMetricsWithCache(font).height;
 
   if (axisOrientation === 'left' || axisOrientation === 'right') {
     if (tickLabelAngle === 'angled') {
@@ -108,33 +134,66 @@ function getTickLabelsMargin(
 }
 
 // The dimensions consists of the label and the label padding.
-function getLabelMargin({
-  axisOrientation,
-  label,
-  labelPadding,
-  labelAngle,
-  bigFont
-}: MarginCalculationParams): Margin {
+function getLabelMargin(
+  axisOrientation: AxisOrientation,
+  label: string,
+  labelPadding: number,
+  labelAngle: LabelAngle,
+  font: string | FontProperties
+): Margin {
   const result: Margin = { left: 0, right: 0, top: 0, bottom: 0 };
   if (label) {
     // Calls to the font funcs are inlined here to avoid making the call if not actually required.
     if (axisOrientation === 'left' || axisOrientation === 'right') {
       result[axisOrientation] =
         labelAngle === 'horizontal'
-          ? measureTextWithCache(label, bigFont) + labelPadding
-          : getFontMetricsWithCache(bigFont).height + labelPadding;
+          ? measureTextWithCache(label, font) + labelPadding
+          : getFontMetricsWithCache(font).height + labelPadding;
     } else {
       result[axisOrientation] =
         labelAngle === 'horizontal'
-          ? getFontMetricsWithCache(bigFont).height + labelPadding
-          : measureTextWithCache(label, bigFont) + labelPadding;
+          ? getFontMetricsWithCache(font).height + labelPadding
+          : measureTextWithCache(label, font) + labelPadding;
     }
   }
   return result;
 }
 
-// Returns the required adjustments for the given axis data.
-export function calculateMarginForAxis(params: MarginCalculationParams): Margin {
-  const ticks = calculateTicksData(params);
-  return addMargins([getTickLineMargin(params), getTickLabelsMargin(params, ticks), getLabelMargin(params)]);
+// Returns the required adjustments for the SVGAxis component.
+export function calculateAxisMargin(
+  axisOrientation: AxisOrientation,
+  scale: AxisScale<AxisScaleOutput>,
+  rangePadding: number,
+  theme: XYChartTheme,
+  props: SVGAxisProps
+): Margin {
+  const ticks = calculateTicksData({
+    scale,
+    hideZero: props.hideZero ?? defaultHideZero,
+    tickFormat: props.tickFormat,
+    tickCount: props.tickCount,
+    tickValues: props.tickValues
+  });
+  return addMargins([
+    getTickLineMargin(
+      axisOrientation,
+      props.tickLength ?? defaultTickLength,
+      props.hideTicks ?? defaultHideTicks
+    ),
+    getTickLabelsMargin(
+      axisOrientation,
+      rangePadding,
+      props.tickLabelPadding ?? defaultTickLabelPadding,
+      props.tickLabelAngle ?? defaultTickLabelAngle,
+      theme.smallLabels?.font ?? defaultSmallLabelsTextStyle.font,
+      ticks
+    ),
+    getLabelMargin(
+      axisOrientation,
+      props.label ?? '',
+      props.autoMarginLabelPadding ?? defaultAutoMarginLabelPadding,
+      props.labelAngle ?? getDefaultAxisLabelAngle(axisOrientation),
+      theme.bigLabels?.font ?? defaultBigLabelsTextStyle.font
+    )
+  ]);
 }

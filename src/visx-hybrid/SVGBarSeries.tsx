@@ -1,7 +1,7 @@
 import type { SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
 
-import { BARSERIES_EVENT_SOURCE, XYCHART_EVENT_SOURCE } from './constants';
+import { barSeriesEventSource, xyChartEventSource } from './constants';
 import { SVGSimpleBar } from './SVGSimpleBar';
 import type { AxisScale, ScaleInput, SVGBarProps } from './types';
 import { useBarTransitions } from './useBarTransitions';
@@ -39,7 +39,7 @@ export function SVGBarSeries<Datum extends object>({
     dataEntryStore
   } = useXYChartContext();
   const dataEntry = dataEntryStore.getByDataKey(dataKey);
-  const ownEventSourceKey = `${BARSERIES_EVENT_SOURCE}-${dataKey}`;
+  const ownEventSourceKey = `${barSeriesEventSource}-${dataKey}`;
   // const eventEmitters =
   useSeriesEvents<AxisScale, AxisScale, Datum>({
     dataKeyOrKeysRef: dataKey,
@@ -50,7 +50,7 @@ export function SVGBarSeries<Datum extends object>({
     // onPointerOut,
     // onPointerUp,
     source: ownEventSourceKey,
-    allowedSources: [XYCHART_EVENT_SOURCE]
+    allowedSources: [xyChartEventSource]
   });
   const transitions = useBarTransitions<Datum>({
     dataEntry,
