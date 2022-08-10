@@ -4,7 +4,7 @@ import { isNil } from 'lodash-es';
 import { HandlerParams } from './EventEmitterProvider';
 import { isDefined } from './isDefined';
 import { isPointerEvent } from './isPointerEvent';
-import type { EventHandlerParams, IDataEntryStore } from './types';
+import type { EventHandlerParams } from './types';
 import { useEventEmitterSubscription } from './useEventEmitterSubscription';
 import { useXYChartContext } from './useXYChartContext';
 
@@ -44,7 +44,8 @@ export function useEventHandlers<Datum extends object>({
   onPointerUp,
   allowedSources
 }: PointerEventHandlerParams<Datum>) {
-  const { width, height, horizontal, dataEntryStore, scales } = useXYChartContext();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { width, height, horizontal, dataEntryStore, scales } = useXYChartContext<Datum, any>();
 
   // const findNearestDatum = userFindNearestDatum || (horizontal ? findNearestDatumY : findNearestDatumX);
 
@@ -78,10 +79,7 @@ export function useEventHandlers<Datum extends object>({
 
         // find nearestDatum for relevant dataKey(s)
         dataKeys.forEach((dataKey) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const dataEntry = (dataEntryStore as unknown as IDataEntryStore<Datum, any>).tryGetByDataKey(
-            dataKey
-          );
+          const dataEntry = dataEntryStore.tryGetByDataKey(dataKey);
           if (dataEntry) {
             const nearestDatum = dataEntry.findNearestDatum({
               horizontal,

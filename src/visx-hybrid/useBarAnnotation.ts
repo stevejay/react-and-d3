@@ -6,7 +6,8 @@ export function useBarAnnotation<Datum extends object>(
   dataKey: string,
   datum: Datum
 ): { x: number; y: number } | null {
-  const { horizontal, scales, renderingOffset, dataEntryStore } = useXYChartContext();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { horizontal, scales, renderingOffset, dataEntryStore } = useXYChartContext<Datum, any>();
   const dataEntry = dataEntryStore.tryGetByDataKey(dataKey);
   if (isNil(dataEntry)) {
     return null;

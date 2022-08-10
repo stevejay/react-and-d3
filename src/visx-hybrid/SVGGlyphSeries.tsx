@@ -4,7 +4,7 @@ import { SpringConfig } from 'react-spring';
 import { defaultGlyphRadius, glyphSeriesEventSource, xyChartEventSource } from './constants';
 import { createScaleFromScaleConfig } from './createScaleFromScaleConfig';
 import { SVGGlyphSeriesRenderer } from './SVGGlyphSeriesRenderer';
-import type { AxisScale, IDataEntryStore, ScaleConfig, ScaleInput, SVGGlyphComponent } from './types';
+import type { AxisScale, ScaleConfig, ScaleInput, SVGGlyphComponent } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useXYChartContext } from './useXYChartContext';
 
@@ -44,9 +44,9 @@ export function SVGGlyphSeries<Datum extends object>({
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     dataEntryStore
-  } = useXYChartContext();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dataEntry = (dataEntryStore as unknown as IDataEntryStore<Datum, any>).getByDataKey(dataKey);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } = useXYChartContext<Datum, any>();
+  const dataEntry = dataEntryStore.getByDataKey(dataKey);
   const ownEventSourceKey = `${glyphSeriesEventSource}-${dataKey}`;
   // const eventEmitters =
   useSeriesEvents<AxisScale, AxisScale, Datum>({

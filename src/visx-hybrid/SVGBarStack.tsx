@@ -8,7 +8,7 @@ import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
 import { SVGBarSeriesProps } from './SVGBarSeries';
 import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
-import type { AxisScale, IDataEntryStore, StackDatum, SVGBarComponent } from './types';
+import type { AxisScale, SVGBarComponent } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
 import { useXYChartContext } from './useXYChartContext';
@@ -42,7 +42,8 @@ export function SVGBarStack<Datum extends object>({
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     dataEntryStore
-  } = useXYChartContext();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } = useXYChartContext<Datum, any>();
   const seriesChildren = useMemo(
     () => getChildrenAndGrandchildrenWithProps<SVGBarSeriesProps<Datum>>(children),
     [children]
@@ -65,11 +66,7 @@ export function SVGBarStack<Datum extends object>({
   });
 
   const transitions = useSeriesTransitions(
-    dataKeys.map((dataKey) =>
-      (
-        dataEntryStore as unknown as IDataEntryStore<Datum, StackDatum<AxisScale, AxisScale, Datum>>
-      ).getByDataKey(dataKey)
-    ),
+    dataKeys.map((dataKey) => dataEntryStore.getByDataKey(dataKey)),
     springConfig ?? contextSpringConfig,
     animate && contextAnimate
   );

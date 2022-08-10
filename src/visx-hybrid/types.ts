@@ -98,7 +98,7 @@ export interface ScaleSet {
   color: ScaleTypeToD3Scale<string, string>['ordinal'];
 }
 
-export interface XYChartContextType {
+export interface XYChartContextType<Datum extends object = object, RenderingDatum extends object = object> {
   scales: ScaleSet;
   independentRangePadding: number;
   dependentRangePadding: number;
@@ -107,7 +107,7 @@ export interface XYChartContextType {
   innerWidth: number;
   innerHeight: number;
   margin: Margin;
-  dataEntryStore: IDataEntryStore;
+  dataEntryStore: IDataEntryStore<Datum, RenderingDatum>;
   horizontal: boolean;
   animate: boolean;
   springConfig: SpringConfig;

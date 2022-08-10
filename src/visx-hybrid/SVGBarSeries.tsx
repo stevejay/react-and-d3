@@ -3,7 +3,7 @@ import { SpringConfig } from 'react-spring';
 
 import { barSeriesEventSource, xyChartEventSource } from './constants';
 import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
-import type { AxisScale, IDataEntryStore, ScaleInput, SVGBarComponent } from './types';
+import type { AxisScale, ScaleInput, SVGBarComponent } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useXYChartContext } from './useXYChartContext';
 
@@ -37,9 +37,9 @@ export function SVGBarSeries<Datum extends object>({
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     dataEntryStore
-  } = useXYChartContext();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dataEntry = (dataEntryStore as unknown as IDataEntryStore<Datum, any>).getByDataKey(dataKey);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } = useXYChartContext<Datum, any>();
+  const dataEntry = dataEntryStore.getByDataKey(dataKey);
   const ownEventSourceKey = `${barSeriesEventSource}-${dataKey}`;
   // const eventEmitters =
   useSeriesEvents<AxisScale, AxisScale, Datum>({
