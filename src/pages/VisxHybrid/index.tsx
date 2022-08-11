@@ -25,11 +25,11 @@ function VisxHybridPage() {
       <SectionHeading>Bar Chart</SectionHeading>
       {true && <LineChartExample />}
       {/* {true && <AreaChartExample />} */}
-      {false && <StackedBarChartExample />}
-      {false && <GroupedBarChartExample />}
-      {false && <BarChartExample />}
-      {false && <RespondentsByLanguage />}
-      {false && <EmptyBarChart />}
+      {true && <StackedBarChartExample />}
+      {true && <GroupedBarChartExample />}
+      {true && <BarChartExample />}
+      {true && <RespondentsByLanguage />}
+      {true && <EmptyBarChart />}
     </main>
   );
 }

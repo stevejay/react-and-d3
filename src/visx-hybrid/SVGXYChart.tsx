@@ -9,7 +9,8 @@ import {
   defaultParentSizeDebounceMs,
   defaultSpringConfig,
   defaultTheme,
-  xyChartEventSource
+  xyChartEventSource,
+  zeroRangePadding
 } from './constants';
 import { createScaleFromScaleConfig } from './createScaleFromScaleConfig';
 import { DataEntryStore } from './DataEntryStore';
@@ -24,6 +25,10 @@ import { XYChartContext } from './XYChartContext';
 
 // TODO:
 // - Support two dependent axes?
+
+function resolveRangePadding(rangePadding: number | [number, number]): [number, number] {
+  return typeof rangePadding === 'number' ? [rangePadding, rangePadding] : rangePadding;
+}
 
 interface SVGXYChartOwnProps<
   IndependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
@@ -44,9 +49,9 @@ interface SVGXYChartOwnProps<
   /** By default the chart has the independent scale as the x-axis and the dependent scale as the y-axis. Set `horizontal` to `true` to switch this around. Optional. */
   horizontal?: boolean;
   /** A value in pixels for adding padding to the start and end of the independent axis. Optional. Defaults to `0`. */
-  independentRangePadding?: number; // TODO support [number, number]
+  independentRangePadding?: number | [number, number];
   /** A value in pixels for adding padding to the start and end of the dependent axis. Optional. Defaults to `0`. */
-  dependentRangePadding?: number; // TODO support [number, number]
+  dependentRangePadding?: number | [number, number];
   /** Enables or disables animation for the entire chart. Optional. Defaults to `true`. */
   animate?: boolean;
   /** Whether the SVG should be animated to fade in when mounted and fade out when there is no data. Optional. Defaults to `true`. */
@@ -114,8 +119,8 @@ function InnerChart<
   height = 0,
   independentScale: independentScaleConfig,
   dependentScale: dependentScaleConfig,
-  independentRangePadding = 0,
-  dependentRangePadding = 0,
+  independentRangePadding = zeroRangePadding,
+  dependentRangePadding = zeroRangePadding,
   margin: userMargin,
   horizontal = false,
   animate = true,
@@ -156,6 +161,9 @@ function InnerChart<
   const hasValidContent = !isNil(independentScale) && !isNil(dependentScale) && width > 0 && height > 0;
 
   if (hasValidContent) {
+    const resolvedIndependentRangePadding = resolveRangePadding(independentRangePadding);
+    const resolvedDependentRangePadding = resolveRangePadding(dependentRangePadding);
+
     // Use the given margin object or calculate it automatically:
     const margin =
       userMargin ??
@@ -164,20 +172,32 @@ function InnerChart<
         horizontal,
         independentScale,
         dependentScale,
-        independentRangePadding,
-        dependentRangePadding,
+        independentRangePadding: resolvedIndependentRangePadding,
+        dependentRangePadding: resolvedDependentRangePadding,
         theme
       });
 
     // Now that we know the margin to use, calculate the range for each scale:
 
     const independentRange: [number, number] = horizontal
-      ? [Math.max(0, height - margin.bottom - independentRangePadding), margin.top + independentRangePadding]
-      : [margin.left + independentRangePadding, Math.max(0, width - margin.right - independentRangePadding)];
+      ? [
+          Math.max(0, height - margin.bottom - resolvedIndependentRangePadding[0]),
+          margin.top + resolvedIndependentRangePadding[1]
+        ]
+      : [
+          margin.left + resolvedIndependentRangePadding[0],
+          Math.max(0, width - margin.right - resolvedIndependentRangePadding[1])
+        ];
 
     const dependentRange: [number, number] = horizontal
-      ? [margin.left + dependentRangePadding, Math.max(0, width - margin.right - dependentRangePadding)]
-      : [Math.max(0, height - margin.bottom - dependentRangePadding), margin.top + dependentRangePadding];
+      ? [
+          margin.left + resolvedDependentRangePadding[0],
+          Math.max(0, width - margin.right - resolvedDependentRangePadding[1])
+        ]
+      : [
+          Math.max(0, height - margin.bottom - resolvedDependentRangePadding[0]),
+          margin.top + resolvedDependentRangePadding[1]
+        ];
 
     // Update the scales with those calculated ranges:
     independentScale.range(independentRange);
@@ -195,8 +215,8 @@ function InnerChart<
         group: groupScales,
         color: colorScale
       },
-      independentRangePadding,
-      dependentRangePadding,
+      independentRangePadding: resolvedIndependentRangePadding,
+      dependentRangePadding: resolvedDependentRangePadding,
       width,
       height,
       innerWidth,

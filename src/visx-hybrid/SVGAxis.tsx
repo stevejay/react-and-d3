@@ -142,9 +142,9 @@ function SVGAxis(props: SVGAxisProps) {
   const isVertical = axisOrientation === 'left' || axisOrientation === 'right';
   const rangeFrom = Number(scale.range()[0]) ?? 0;
   const rangeTo = Number(scale.range()[1]) ?? 0;
-  const domainRange = isVertical
-    ? [rangeFrom + rangePadding, rangeTo - rangePadding]
-    : [rangeFrom - rangePadding, rangeTo + rangePadding];
+  const domainRange: [number, number] = isVertical
+    ? [rangeFrom + rangePadding[0], rangeTo - rangePadding[1]]
+    : [rangeFrom - rangePadding[0], rangeTo + rangePadding[1]];
   const ticks = calculateTicksData({ scale, hideZero, tickFormat, tickCount, tickValues });
   const springConfig = userSpringConfig ?? contextSpringConfig;
   const animate = userAnimate && contextAnimate;
@@ -156,9 +156,10 @@ function SVGAxis(props: SVGAxisProps) {
         <SVGAxisLabel
           label={label}
           axisOrientation={axisOrientation}
+          domainRange={domainRange}
           labelProps={labelProps}
-          scale={scale}
-          rangePadding={rangePadding}
+          // scale={scale}
+          // rangePadding={rangePadding}
           width={width}
           height={height}
           labelAlignment={labelAlignment ?? getDefaultAxisLabelAngle(axisOrientation)}

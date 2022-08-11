@@ -10,7 +10,7 @@ import type { AxisScale, GridType, Margin, TickDatum } from './types';
 export interface GridPositioningParams {
   gridType: GridType;
   scale: AxisScale;
-  rangePadding: number;
+  rangePadding: [number, number];
   margin: Margin;
   innerWidth: number;
   innerHeight: number;
@@ -42,18 +42,18 @@ function createGridPositioning({
     if (gridType === 'row') {
       const y = (coerceNumber(scaleCopy(tickDatum.value)) ?? 0) + scaleOffset;
       return {
-        x1: margin.left + rangePadding,
+        x1: margin.left + rangePadding[0],
         y1: y,
-        x2: margin.left + innerWidth - rangePadding,
+        x2: margin.left + innerWidth - rangePadding[1],
         y2: y
       };
     } else {
       const x = (coerceNumber(scaleCopy(tickDatum.value)) ?? 0) + scaleOffset;
       return {
         x1: x,
-        y1: margin.top + rangePadding,
+        y1: margin.top + rangePadding[0],
         x2: x,
-        y2: margin.top + innerHeight - rangePadding
+        y2: margin.top + innerHeight - rangePadding[1]
       };
     }
   };

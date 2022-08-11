@@ -9,7 +9,7 @@ import type { AxisScale, GridType, Margin, TickDatum } from './types';
 export interface StripePositioningArgs {
   gridType: GridType;
   scale: AxisScale;
-  rangePadding: number;
+  rangePadding: [number, number];
   margin: Margin;
   innerWidth: number;
   innerHeight: number;
@@ -35,17 +35,17 @@ function createStripesPositioning({
   return (datum) => {
     if (gridType === 'row') {
       return {
-        x: margin.left + rangePadding,
+        x: margin.left + rangePadding[0],
         y: (coerceNumber(scale(datum.value)) ?? 0) - stripeOffset + renderingOffset,
-        width: innerWidth - rangePadding * 2,
+        width: innerWidth - (rangePadding[0] + rangePadding[1]),
         height: step
       };
     } else {
       return {
         x: (coerceNumber(scale(datum.value)) ?? 0) - stripeOffset,
-        y: margin.top + rangePadding + renderingOffset,
+        y: margin.top + rangePadding[1] + renderingOffset,
         width: step,
-        height: innerHeight - rangePadding * 2
+        height: innerHeight - (rangePadding[0] + rangePadding[1])
       };
     }
   };

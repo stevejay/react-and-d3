@@ -15,8 +15,8 @@ export function calculateAutoMarginFromChildren(params: {
   horizontal: boolean;
   independentScale: AxisScale;
   dependentScale: AxisScale;
-  independentRangePadding: number;
-  dependentRangePadding: number;
+  independentRangePadding: [number, number];
+  dependentRangePadding: [number, number];
   theme: XYChartTheme;
 }): Margin {
   const {

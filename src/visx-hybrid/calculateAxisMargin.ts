@@ -34,7 +34,7 @@ function getTickLineMargin(axisOrientation: AxisOrientation, tickLength: number,
 
 function getTickLabelsMargin(
   axisOrientation: AxisOrientation,
-  rangePadding: number,
+  rangePadding: [number, number],
   tickLabelPadding: number,
   tickLabelAlignment: TickLabelAlignment,
   font: string | FontProperties,
@@ -60,15 +60,15 @@ function getTickLabelsMargin(
         return {
           left: width + halfHeight + tickLabelPadding,
           right: 0,
-          top: halfHeight - rangePadding,
-          bottom: width + halfHeight - rangePadding
+          top: halfHeight - rangePadding[1],
+          bottom: width + halfHeight - rangePadding[0]
         };
       } else {
         return {
           left: 0,
           right: width + halfHeight + tickLabelPadding,
-          top: width + halfHeight - rangePadding,
-          bottom: halfHeight - rangePadding
+          top: width + halfHeight - rangePadding[1],
+          bottom: halfHeight - rangePadding[0]
         };
       }
     } else {
@@ -84,8 +84,8 @@ function getTickLabelsMargin(
       return {
         left: axisOrientation === 'left' ? width : 0,
         right: axisOrientation === 'right' ? width : 0,
-        top: halfHeight - rangePadding,
-        bottom: halfHeight - rangePadding
+        top: halfHeight - rangePadding[1],
+        bottom: halfHeight - rangePadding[0]
       };
     }
   } else {
@@ -100,15 +100,15 @@ function getTickLabelsMargin(
       const halfHeight = Math.ceil(widthForHeight * 0.5);
       if (axisOrientation === 'top') {
         return {
-          left: halfHeight - rangePadding,
-          right: width + halfHeight - rangePadding,
+          left: halfHeight - rangePadding[0],
+          right: width + halfHeight - rangePadding[1],
           top: width + halfHeight + tickLabelPadding,
           bottom: 0
         };
       } else {
         return {
-          left: width + halfHeight - rangePadding,
-          right: halfHeight - rangePadding,
+          left: width + halfHeight - rangePadding[0],
+          right: halfHeight - rangePadding[1],
           top: 0,
           bottom: width + halfHeight + tickLabelPadding
         };
@@ -124,8 +124,8 @@ function getTickLabelsMargin(
         height = maxTickLabelWidth + tickLabelPadding;
       }
       return {
-        left: halfWidth - rangePadding,
-        right: halfWidth - rangePadding,
+        left: halfWidth - rangePadding[0],
+        right: halfWidth - rangePadding[1],
         top: axisOrientation === 'top' ? height : 0,
         bottom: axisOrientation === 'bottom' ? height : 0
       };
@@ -163,7 +163,7 @@ function getLabelMargin(
 export function calculateAxisMargin(
   axisOrientation: AxisOrientation,
   scale: AxisScale<AxisScaleOutput>,
-  rangePadding: number,
+  rangePadding: [number, number],
   theme: XYChartTheme,
   props: SVGAxisProps
 ): Margin {

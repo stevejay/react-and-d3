@@ -2,7 +2,7 @@ import type { SVGProps } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 
 import { calculateTicksData } from './calculateTicksData';
-import { defaultShapeRendering } from './constants';
+import { defaultShapeRendering, zeroRangePadding } from './constants';
 import type { AxisScale, GridType, ScaleInput, Variable } from './types';
 import { useGridTransitions } from './useGridTransitions';
 import { useXYChartContext } from './useXYChartContext';
@@ -64,7 +64,7 @@ export function SVGGrid({
   const transitions = useGridTransitions({
     gridType,
     scale,
-    rangePadding: ignoreRangePadding ? 0 : rangePadding,
+    rangePadding: ignoreRangePadding ? zeroRangePadding : rangePadding,
     margin,
     innerWidth,
     innerHeight,

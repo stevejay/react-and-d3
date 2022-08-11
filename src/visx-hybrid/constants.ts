@@ -19,6 +19,7 @@ export const defaultGroupPadding = 0.1;
 export const defaultTooltipGlyphRadius = 4;
 export const defaultOuterTickLength = 0;
 export const defaultGlyphRadius = 6;
+export const zeroRangePadding: [number, number] = [0, 0];
 
 // font-style, font-variant, font-weight, font-size, line-height, font-family
 export const defaultBigLabelsFont = 'normal normal normal 14px/1 sans-serif';

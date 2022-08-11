@@ -102,8 +102,8 @@ export interface ScaleSet {
 
 export interface XYChartContextType<Datum extends object = object, RenderingDatum extends object = object> {
   scales: ScaleSet;
-  independentRangePadding: number;
-  dependentRangePadding: number;
+  independentRangePadding: [number, number];
+  dependentRangePadding: [number, number];
   width: number;
   height: number;
   innerWidth: number;
@@ -538,7 +538,7 @@ export interface BasicAxisProps {
 export type CalculateMargin<Props extends BasicAxisProps = BasicAxisProps> = (
   axisOrientation: AxisOrientation,
   scale: AxisScale<AxisScaleOutput>,
-  rangePadding: number,
+  rangePadding: [number, number],
   theme: XYChartTheme,
   params: Props
 ) => Margin;

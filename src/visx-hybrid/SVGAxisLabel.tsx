@@ -2,7 +2,7 @@ import { combineFontPropertiesWithStyles } from './combineFontPropertiesWithStyl
 import { defaultBigLabelsFont } from './constants';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { SVGSimpleText, TextProps } from './SVGSimpleText';
-import type { Anchor, AxisOrientation, AxisScale, LabelAlignment, TextStyles } from './types';
+import type { Anchor, AxisOrientation, LabelAlignment, TextStyles } from './types';
 
 function getX(axisOrientation: AxisOrientation, range: [number, number], width: number): number {
   let x = 0;
@@ -65,11 +65,12 @@ function getVerticalAnchor(axisOrientation: AxisOrientation, labelAlignment: Lab
 export interface SVGAxisLabelProps {
   label: string;
   axisOrientation: AxisOrientation;
+  domainRange: [number, number];
   labelStyles: TextStyles;
   /** Props to apply to the axis label. */
   labelProps?: TextProps;
-  scale: AxisScale;
-  rangePadding: number;
+  // scale: AxisScale;
+  // rangePadding: [number, number];
   width: number;
   height: number;
   labelAlignment: LabelAlignment;
@@ -80,8 +81,9 @@ export function SVGAxisLabel({
   label,
   labelProps = {},
   axisOrientation,
-  scale,
-  rangePadding,
+  domainRange,
+  // scale,
+  // rangePadding,
   width,
   height,
   labelAlignment,
@@ -90,14 +92,14 @@ export function SVGAxisLabel({
   const fontMetrics = getFontMetricsWithCache(labelStyles?.font ?? defaultBigLabelsFont);
   const { style: labelPropsStyle, className: labelPropsClassname, ...restLabelProps } = labelProps;
   const style = combineFontPropertiesWithStyles(labelStyles?.font, labelPropsStyle);
-  const isVertical = axisOrientation === 'left' || axisOrientation === 'right';
-  const rangeFrom = Number(scale.range()[0]) ?? 0;
-  const rangeTo = Number(scale.range()[1]) ?? 0;
-  const innerRange: [number, number] = isVertical
-    ? [rangeFrom + rangePadding, rangeTo - rangePadding]
-    : [rangeFrom - rangePadding, rangeTo + rangePadding];
-  const x = getX(axisOrientation, innerRange, width);
-  const y = getY(axisOrientation, innerRange, height);
+  // const isVertical = axisOrientation === 'left' || axisOrientation === 'right';
+  // const rangeFrom = Number(scale.range()[0]) ?? 0;
+  // const rangeTo = Number(scale.range()[1]) ?? 0;
+  // const domainRange: [number, number] = isVertical
+  //   ? [rangeFrom + rangePadding, rangeTo - rangePadding]
+  //   : [rangeFrom - rangePadding, rangeTo + rangePadding];
+  const x = getX(axisOrientation, domainRange, width);
+  const y = getY(axisOrientation, domainRange, height);
   const textAnchor: Anchor = getTextAnchor(axisOrientation, labelAlignment);
   const verticalAnchor: Anchor = getVerticalAnchor(axisOrientation, labelAlignment);
   const angle = labelAlignment === 'horizontal' ? 0 : axisOrientation === 'right' ? 90 : -90;
