@@ -27,9 +27,11 @@ export function findNearestDatumSingleDimension<Scale extends AxisScale, Datum e
     // take the two datum nearest this index, and compute which is closer
     const nearestDatum0 = data[index - 1];
     const nearestDatum1 = data[index];
+
     nearestDatum =
-      !nearestDatum0 ||
-      Math.abs(dataValue - accessor(nearestDatum0)) > Math.abs(dataValue - accessor(nearestDatum1))
+      nearestDatum1 &&
+      (!nearestDatum0 ||
+        Math.abs(dataValue - accessor(nearestDatum0)) > Math.abs(dataValue - accessor(nearestDatum1)))
         ? nearestDatum1
         : nearestDatum0;
     nearestDatumIndex = nearestDatum === nearestDatum0 ? index - 1 : index;

@@ -33,7 +33,6 @@ const xScale: BandScaleConfig<string> = {
 const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
 
 function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) {
-  console.log('_d', _d);
   switch (key) {
     case 'one':
       return schemeCategory10[0];
@@ -95,10 +94,24 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
           'aria-roledescription': `Category ${category}`
         })}
       />
-      <SVGAxis variable="independent" position="end" label="Foobar Topy" />
-      <SVGAxis variable="independent" position="start" label="Foobar Bottomy" />
-      <SVGAxis variable="dependent" position="start" label="Foobar Lefty" tickCount={5} hideZero />
-      <SVGAxis variable="dependent" position="end" label="Foobar Righty" tickCount={5} hideZero />
+      <SVGAxis variable="independent" position="end" label="Foobar Topy" tickLabelAlignment="angled" />
+      <SVGAxis variable="independent" position="start" label="Foobar Bottomy" tickLabelAlignment="angled" />
+      <SVGAxis
+        variable="dependent"
+        position="start"
+        label="Foobar Lefty"
+        tickCount={5}
+        hideZero
+        tickLabelAlignment="angled"
+      />
+      <SVGAxis
+        variable="dependent"
+        position="end"
+        label="Foobar Righty"
+        tickCount={5}
+        hideZero
+        tickLabelAlignment="angled"
+      />
       <SVGBarAnnotation datum={data[1]} dataKeyRef={dataKeys[2]} />
       <PopperTooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}

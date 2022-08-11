@@ -22,11 +22,11 @@ import { TextProps } from './SVGSimpleText';
 import type {
   AxisScale,
   BasicAxisProps,
-  LabelAngle,
+  LabelAlignment,
   LineProps,
   ScaleInput,
   TickFormatter,
-  TickLabelAngle
+  TickLabelAlignment
 } from './types';
 import { useXYChartContext } from './useXYChartContext';
 
@@ -54,7 +54,7 @@ export type SVGAxisProps = BasicAxisProps & {
   /** Props to apply to the <g> element that wraps each tick line and label. */
   tickGroupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'style'>; // TODO think about removing style.
   /** The angle that the tick label will be rendered at. */
-  tickLabelAngle?: TickLabelAngle;
+  tickLabelAlignment?: TickLabelAlignment;
   /** Padding between the tick lines and the tick labels. */
   tickLabelPadding?: number;
   /** The props to apply to the tick labels. */
@@ -72,7 +72,7 @@ export type SVGAxisProps = BasicAxisProps & {
   /** Props to apply to the axis label. */
   labelProps?: Partial<TextProps>;
   /** The angle that the axis label will be rendered at. */
-  labelAngle?: LabelAngle;
+  labelAlignment?: LabelAlignment;
   /** Props to apply to the axis domain path. */
   axisLineProps?: Omit<SVGProps<SVGPathElement>, 'ref'>;
   /** Props to apply to the <g> element that wraps the axis. */
@@ -89,8 +89,8 @@ function SVGAxis(props: SVGAxisProps) {
     tickLabelProps,
     labelProps,
     label,
-    tickLabelAngle = defaultTickLabelAngle,
-    labelAngle,
+    tickLabelAlignment = defaultTickLabelAngle,
+    labelAlignment,
     axisLineProps = {},
     outerTickLength = defaultOuterTickLength,
     hideAxisPath = false,
@@ -161,7 +161,7 @@ function SVGAxis(props: SVGAxisProps) {
           rangePadding={rangePadding}
           width={width}
           height={height}
-          labelAngle={labelAngle ?? getDefaultAxisLabelAngle(axisOrientation)}
+          labelAlignment={labelAlignment ?? getDefaultAxisLabelAngle(axisOrientation)}
           labelStyles={theme.bigLabels ?? defaultBigLabelsTextStyle}
         />
       )}
@@ -188,7 +188,7 @@ function SVGAxis(props: SVGAxisProps) {
           tickLabelPadding={tickLabelPadding}
           margin={margin}
           labelStyles={theme.smallLabels}
-          tickLabelAngle={tickLabelAngle}
+          tickLabelAlignment={tickLabelAlignment}
           axisStyles={axisTheme}
         />
         {!hideAxisPath && (

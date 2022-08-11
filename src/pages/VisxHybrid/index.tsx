@@ -7,6 +7,8 @@ import { SectionHeading } from '@/components/SectionHeading';
 import { BarChartExample } from './BarChartExample';
 import { EmptyBarChart } from './EmptyBarChart';
 import { GroupedBarChartExample } from './GroupedBarChartExample';
+// import { AreaChartExample } from './AreaChartExample';
+import { LineChartExample } from './LineChartExample';
 import { RespondentsByLanguage } from './RespondentsByLanguage';
 import { StackedBarChartExample } from './StackedBarChartExample';
 
@@ -21,10 +23,12 @@ function VisxHybridPage() {
         This page is for creating a version of Visx that has better animations and extensibility.
       </Paragraph>
       <SectionHeading>Bar Chart</SectionHeading>
-      {true && <StackedBarChartExample />}
-      {true && <GroupedBarChartExample />}
-      {true && <BarChartExample />}
-      {true && <RespondentsByLanguage />}
+      {true && <LineChartExample />}
+      {/* {true && <AreaChartExample />} */}
+      {false && <StackedBarChartExample />}
+      {false && <GroupedBarChartExample />}
+      {false && <BarChartExample />}
+      {false && <RespondentsByLanguage />}
       {false && <EmptyBarChart />}
     </main>
   );

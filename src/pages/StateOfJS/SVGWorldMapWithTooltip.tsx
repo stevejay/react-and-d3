@@ -15,7 +15,8 @@ const popperOptions: Partial<PopperOptions> = {
   placement: 'top',
   modifiers: [
     { name: 'flip', enabled: false },
-    { name: 'offset', options: { offset: [0, 12] } }
+    { name: 'offset', options: { offset: [0, 12] } },
+    { name: 'hide', enabled: false } // Added as [data-popper-reference-hidden] attribute was getting added.
   ]
 };
 

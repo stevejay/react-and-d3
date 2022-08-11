@@ -18,7 +18,7 @@ import type {
   Margin,
   TextStyles,
   TickDatum,
-  TickLabelAngle
+  TickLabelAlignment
 } from './types';
 import { useAxisTransitions } from './useAxisTransitions';
 
@@ -34,7 +34,7 @@ export interface SVGAxisTicksProps {
   /** Props to apply to the <g> element that wraps each tick line and label. */
   tickGroupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'style'>; // TODO think about removing style.
   /** The angle that the tick label will be rendered at. */
-  tickLabelAngle?: TickLabelAngle;
+  tickLabelAlignment?: TickLabelAlignment;
   /** Padding between the tick lines and the tick labels. */
   tickLabelPadding?: number;
   /** The props to apply to the tick labels. */
@@ -62,7 +62,7 @@ export function SVGAxisTicks({
   renderingOffset,
   tickLabelPadding = defaultTickLabelPadding,
   labelStyles,
-  tickLabelAngle = defaultTickLabelAngle,
+  tickLabelAlignment = defaultTickLabelAngle,
   axisStyles
 }: SVGAxisTicksProps) {
   const transitions = useAxisTransitions(scale, ticks, springConfig, animate, renderingOffset);
@@ -93,7 +93,7 @@ export function SVGAxisTicks({
             tickLength={tickLength}
             labelPadding={tickLabelPadding}
             labelStyles={labelStyles}
-            labelAngle={tickLabelAngle}
+            labelAlignment={tickLabelAlignment}
           />
         </animated.g>
       ))}

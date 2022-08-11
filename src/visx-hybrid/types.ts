@@ -2,7 +2,7 @@ import type { CSSProperties, FocusEvent, PointerEvent, ReactNode, SVGAttributes,
 import type { SpringConfig, SpringValues } from 'react-spring';
 import type { D3Scale, ScaleInput, ScaleTypeToD3Scale } from '@visx/scale';
 import type { ScaleBand } from 'd3-scale';
-import type { Series, SeriesPoint } from 'd3-shape';
+import type { CurveFactory, CurveFactoryLineOnly, Series, SeriesPoint } from 'd3-shape';
 
 export type { ScaleConfig, ScaleConfigToD3Scale, ScaleInput } from '@visx/scale';
 
@@ -83,6 +83,8 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
     padding: number;
     hideOnOverflow: boolean;
   }): (datumWithLabel: { datum: RenderingDatum; label: string }) => LabelTransition | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  createShape(shapeFunc: (data: readonly RenderingDatum[]) => any): any;
 }
 
 export interface IDataEntryStore<Datum extends object = object, RenderingDatum extends object = object> {
@@ -123,8 +125,8 @@ export interface TickDatum {
 
 export type GridType = 'row' | 'column';
 export type Variable = 'independent' | 'dependent';
-export type LabelAngle = 'horizontal' | 'vertical';
-export type TickLabelAngle = 'horizontal' | 'angled' | 'vertical';
+export type LabelAlignment = 'horizontal' | 'vertical';
+export type TickLabelAlignment = 'horizontal' | 'angled' | 'vertical';
 
 /** Arguments for findNearestDatum* functions. */
 export type NearestDatumArgs<Datum extends object> = {
@@ -339,7 +341,7 @@ export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale,
   /** Data for the Series. */
   data: readonly Datum[];
 
-  keyAccessor: (datum: Datum, dataKey?: string) => string;
+  keyAccessor: (datum: Datum, dataKey?: string) => string | number;
   /** Given a Datum, returns the x-scale value. */
   xAccessor: (datum: Datum) => ScaleInput<XScale>;
   /** Given a Datum, returns the y-scale value. */
@@ -411,6 +413,7 @@ export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale,
 
 export type SVGTextProps = SVGAttributes<SVGTextElement>;
 export type LineProps = Omit<SVGProps<SVGLineElement>, 'to' | 'from' | 'ref'>;
+export type PathProps = Omit<SVGProps<SVGLineElement>, 'ref'>;
 export type RectProps = Omit<SVGProps<SVGRectElement>, 'ref'>;
 
 export type TooltipProps = {
@@ -463,6 +466,10 @@ export interface PolygonTransition {
   opacity: number;
 }
 
+export interface LineTransition {
+  d: string;
+}
+
 export interface SVGBarProps<Datum extends object> {
   springValues: SpringValues<PolygonTransition>;
   datum: Datum;
@@ -474,6 +481,30 @@ export interface SVGBarProps<Datum extends object> {
 }
 
 export type SVGBarComponent<Datum extends object> = (props: SVGBarProps<Datum>) => JSX.Element;
+
+export type SVGAnimatedPathProps<
+  IndependentScale extends AxisScale,
+  DependentScale extends AxisScale,
+  Datum extends object
+> = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dataEntry: IDataEntry<Datum, any>;
+  scales: ScaleSet;
+  horizontal: boolean;
+  renderingOffset: number;
+  animate: boolean;
+  springConfig: SpringConfig;
+  curve: CurveFactory | CurveFactoryLineOnly;
+  color: string;
+  pathProps?: PathProps | ((dataKey: string) => PathProps);
+} & Pick<
+  SeriesProps<IndependentScale, DependentScale, Datum>,
+  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
+>;
+
+export type SVGAnimatedPathComponent<Datum extends object> = (
+  props: SVGAnimatedPathProps<AxisScale, AxisScale, Datum>
+) => JSX.Element;
 
 export interface GlyphTransition {
   cx: number;
@@ -516,3 +547,35 @@ export interface SVGAxisComponent<Props extends BasicAxisProps = BasicAxisProps>
   (props: Props): JSX.Element;
   calculateMargin: CalculateMargin<Props>;
 }
+
+export type AccessorForArrayItem<Datum, Output> = (d: Datum, index: number, data: Datum[]) => Output;
+
+export type AreaPathConfig<Datum> = {
+  /** The defined accessor for the shape. The final area shape includes all points for which this function returns true. By default all points are defined. */
+  defined?: AccessorForArrayItem<Datum, boolean>;
+  /** Sets the curve factory (from @visx/curve or d3-curve) for the area generator. Defaults to curveLinear. */
+  curve?: CurveFactory;
+  /** Sets the x0 accessor function, and sets x1 to null. */
+  x?: number | AccessorForArrayItem<Datum, number>;
+  /** Specifies the x0 accessor function which defaults to d => d[0]. */
+  x0?: number | AccessorForArrayItem<Datum, number>;
+  /** Specifies the x1 accessor function which defaults to null. */
+  x1?: number | AccessorForArrayItem<Datum, number>;
+  /** Sets the y0 accessor function, and sets y1 to null. */
+  y?: number | AccessorForArrayItem<Datum, number>;
+  /** Specifies the y0 accessor function which defaults to d => 0. */
+  y0?: number | AccessorForArrayItem<Datum, number>;
+  /** Specifies the y1 accessor function which defaults to d => d[1]. */
+  y1?: number | AccessorForArrayItem<Datum, number>;
+};
+
+export type LinePathConfig<Datum> = {
+  /** The defined accessor for the shape. The final line shape includes all points for which this function returns true. By default all points are defined. */
+  defined?: AccessorForArrayItem<Datum, boolean>;
+  /** Sets the curve factory (from @visx/curve or d3-curve) for the line generator. Defaults to curveLinear. */
+  curve?: CurveFactory | CurveFactoryLineOnly;
+  /** Sets the x0 accessor function, and sets x1 to null. */
+  x?: number | AccessorForArrayItem<Datum, number>;
+  /** Sets the y0 accessor function, and sets y1 to null. */
+  y?: number | AccessorForArrayItem<Datum, number>;
+};

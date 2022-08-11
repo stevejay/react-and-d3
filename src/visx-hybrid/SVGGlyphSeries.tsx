@@ -13,7 +13,7 @@ export type SVGGlyphSeriesProps<Datum extends object> = {
   animate?: boolean;
   dataKey: string;
   data: readonly Datum[];
-  keyAccessor?: (datum: Datum, dataKey?: string) => string;
+  keyAccessor?: (datum: Datum, dataKey?: string) => string | number;
   independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   colorAccessor?: (datum: Datum, dataKey: string) => string;

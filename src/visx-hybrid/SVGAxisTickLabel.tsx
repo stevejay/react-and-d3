@@ -2,18 +2,29 @@ import { combineFontPropertiesWithStyles } from './combineFontPropertiesWithStyl
 import { defaultSmallLabelsFont } from './constants';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { SVGSimpleText, TextProps } from './SVGSimpleText';
-import type { Anchor, AxisOrientation, TextStyles, TickLabelAngle } from './types';
+import type { Anchor, AxisOrientation, TextStyles, TickLabelAlignment } from './types';
 
-function getTextAnchor(axisOrientation: AxisOrientation, labelAngle: TickLabelAngle): Anchor {
+function getTextAnchor(axisOrientation: AxisOrientation, labelAlignment: TickLabelAlignment): Anchor {
   let textAnchor: Anchor = 'middle';
-  if (labelAngle === 'vertical') {
+  if (labelAlignment === 'vertical') {
     if (axisOrientation === 'top') {
       textAnchor = 'start';
     } else if (axisOrientation === 'bottom') {
       textAnchor = 'end';
     }
-  } else if (labelAngle === 'horizontal') {
+  } else if (labelAlignment === 'horizontal') {
     if (axisOrientation === 'left') {
+      textAnchor = 'end';
+    } else if (axisOrientation === 'right') {
+      textAnchor = 'start';
+    }
+  } else if (labelAlignment === 'angled') {
+    // TODO consolidate
+    if (axisOrientation === 'top') {
+      textAnchor = 'start';
+    } else if (axisOrientation === 'bottom') {
+      textAnchor = 'end';
+    } else if (axisOrientation === 'left') {
       textAnchor = 'end';
     } else if (axisOrientation === 'right') {
       textAnchor = 'start';
@@ -22,29 +33,36 @@ function getTextAnchor(axisOrientation: AxisOrientation, labelAngle: TickLabelAn
   return textAnchor;
 }
 
-function getVerticalTextAnchor(axisOrientation: AxisOrientation, tickLabelAngle: TickLabelAngle): Anchor {
+function getVerticalTextAnchor(
+  axisOrientation: AxisOrientation,
+  tickLabelAlignment: TickLabelAlignment
+): Anchor {
   let verticalAnchor: Anchor = 'middle';
   if (axisOrientation === 'left' || axisOrientation === 'right') {
-    if (tickLabelAngle === 'vertical') {
+    if (tickLabelAlignment === 'vertical') {
       verticalAnchor = 'end';
     }
   } else if (axisOrientation === 'top') {
-    verticalAnchor = 'end';
+    if (tickLabelAlignment === 'horizontal') {
+      verticalAnchor = 'end';
+    }
   } else if (axisOrientation === 'bottom') {
-    verticalAnchor = 'start';
+    if (tickLabelAlignment === 'horizontal') {
+      verticalAnchor = 'start';
+    }
   }
   return verticalAnchor;
 }
 
-function getTextAngle(axisOrientation: AxisOrientation, tickLabelAngle: TickLabelAngle): number {
+function getTextAngle(axisOrientation: AxisOrientation, tickLabelAlignment: TickLabelAlignment): number {
   let angle = 0;
-  if (tickLabelAngle === 'vertical') {
+  if (tickLabelAlignment === 'vertical') {
     if (axisOrientation === 'right') {
       angle = 90;
     } else {
       angle = -90;
     }
-  } else if (tickLabelAngle === 'angled') {
+  } else if (tickLabelAlignment === 'angled') {
     angle = -45;
   }
   return angle;
@@ -59,7 +77,7 @@ export interface SVGAxisTickLabelProps {
   /** Whether the axis ticks should be hidden. (The tick labels will always be shown.) Optional. Defaults to `false`. */
   hideTicks?: boolean;
   /** The angle that the tick label will be rendered at. */
-  labelAngle: TickLabelAngle;
+  labelAlignment: TickLabelAlignment;
   /** Padding between the tick lines and the tick labels. */
   labelPadding: number;
   /** The props to apply to the tick labels. */
@@ -76,7 +94,7 @@ export function SVGAxisTickLabel({
   tickLength,
   labelPadding,
   labelStyles,
-  labelAngle
+  labelAlignment
 }: SVGAxisTickLabelProps) {
   const fontMetrics = getFontMetricsWithCache(labelStyles?.font ?? defaultSmallLabelsFont);
   const isVerticalAxis = axisOrientation === 'left' || axisOrientation === 'right';
@@ -84,9 +102,9 @@ export function SVGAxisTickLabel({
   const tickSign = axisOrientation === 'left' || axisOrientation === 'top' ? -1 : 1;
   const { style: labelPropsStyle, className: labelPropsClassname, ...restLabelProps } = labelProps;
   const style = combineFontPropertiesWithStyles(labelStyles?.font, labelPropsStyle);
-  const textAnchor = getTextAnchor(axisOrientation, labelAngle);
-  const verticalAnchor = getVerticalTextAnchor(axisOrientation, labelAngle);
-  const angle = getTextAngle(axisOrientation, labelAngle);
+  const textAnchor = getTextAnchor(axisOrientation, labelAlignment);
+  const verticalAnchor = getVerticalTextAnchor(axisOrientation, labelAlignment);
+  const angle = getTextAngle(axisOrientation, labelAlignment);
 
   return (
     <SVGSimpleText

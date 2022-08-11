@@ -109,6 +109,11 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     return positioner(foundDatum) ?? null;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  createShape(shapeFunc: (data: readonly Datum[]) => any) {
+    return shapeFunc(this._data);
+  }
+
   createElementPositionerForRenderingData({
     scales,
     horizontal
@@ -320,6 +325,11 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     return positioner(foundDatum) ?? null;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  createShape(shapeFunc: (data: readonly Datum[]) => any) {
+    return shapeFunc(this._data);
+  }
+
   createElementPositionerForRenderingData({
     scales,
     horizontal
@@ -522,6 +532,12 @@ export class StackDataEntry<Datum extends object>
 
   get colorAccessor() {
     return this._colorAccessor;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  createShape(_shapeFunc: (data: readonly StackDatum<AxisScale, AxisScale, Datum>[]) => any) {
+    throw new Error('Not supported for stack data');
+    // return shapeFunc(this._stackData);
   }
 
   getOriginalDatumFromRenderingDatum(datum: StackDatum<AxisScale, AxisScale, Datum>): Datum {

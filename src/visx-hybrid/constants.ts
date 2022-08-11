@@ -1,7 +1,7 @@
 import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
-import type { TickLabelAngle, XYChartTheme } from './types';
+import type { TickLabelAlignment, XYChartTheme } from './types';
 
 export const defaultSpringConfig = { duration: 350, easing: easeCubicInOut };
 
@@ -12,7 +12,7 @@ export const defaultTickLabelPadding = 6;
 export const defaultAutoMarginLabelPadding = 8;
 export const defaultHideTooltipDebounceMs = 400;
 export const defaultParentSizeDebounceMs = 300;
-export const defaultTickLabelAngle: TickLabelAngle = 'horizontal';
+export const defaultTickLabelAngle: TickLabelAlignment = 'horizontal';
 export const defaultShapeRendering = 'crispEdges';
 export const defaultDatumLabelPadding = 8;
 export const defaultGroupPadding = 0.1;

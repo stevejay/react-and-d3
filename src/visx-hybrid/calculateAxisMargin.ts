@@ -19,10 +19,10 @@ import type {
   AxisScale,
   AxisScaleOutput,
   FontProperties,
-  LabelAngle,
+  LabelAlignment,
   Margin,
   TickDatum,
-  TickLabelAngle,
+  TickLabelAlignment,
   XYChartTheme
 } from './types';
 
@@ -36,7 +36,7 @@ function getTickLabelsMargin(
   axisOrientation: AxisOrientation,
   rangePadding: number,
   tickLabelPadding: number,
-  tickLabelAngle: TickLabelAngle,
+  tickLabelAlignment: TickLabelAlignment,
   font: string | FontProperties,
   ticks: readonly TickDatum[]
 ): Margin {
@@ -48,7 +48,7 @@ function getTickLabelsMargin(
   const tickLabelHeight = getFontMetricsWithCache(font).height;
 
   if (axisOrientation === 'left' || axisOrientation === 'right') {
-    if (tickLabelAngle === 'angled') {
+    if (tickLabelAlignment === 'angled') {
       const sqrtOfTwo = Math.sqrt(2);
       // Find the length of a side of the square formed where the maxTickLabelWidth
       // is the hypotenuse of that square:
@@ -74,7 +74,7 @@ function getTickLabelsMargin(
     } else {
       let width = 0;
       let halfHeight = 0;
-      if (tickLabelAngle === 'horizontal') {
+      if (tickLabelAlignment === 'horizontal') {
         width = maxTickLabelWidth + tickLabelPadding;
         halfHeight = Math.ceil(tickLabelHeight * 0.5);
       } else {
@@ -90,7 +90,7 @@ function getTickLabelsMargin(
     }
   } else {
     // 'top' or 'bottom'.
-    if (tickLabelAngle === 'angled') {
+    if (tickLabelAlignment === 'angled') {
       const sqrtOfTwo = Math.sqrt(2);
       // Find the length of a side of the square formed where the maxTickLabelWidth
       // is the hypotenuse of that square:
@@ -116,10 +116,10 @@ function getTickLabelsMargin(
     } else {
       let halfWidth = 0;
       let height = 0;
-      if (tickLabelAngle === 'horizontal') {
+      if (tickLabelAlignment === 'horizontal') {
         halfWidth = Math.ceil(maxTickLabelWidth * 0.5);
         height = tickLabelHeight + tickLabelPadding;
-      } else if (tickLabelAngle === 'vertical') {
+      } else if (tickLabelAlignment === 'vertical') {
         halfWidth = Math.ceil(tickLabelHeight * 0.5);
         height = maxTickLabelWidth + tickLabelPadding;
       }
@@ -138,7 +138,7 @@ function getLabelMargin(
   axisOrientation: AxisOrientation,
   label: string,
   labelPadding: number,
-  labelAngle: LabelAngle,
+  labelAlignment: LabelAlignment,
   font: string | FontProperties
 ): Margin {
   const result: Margin = { left: 0, right: 0, top: 0, bottom: 0 };
@@ -146,12 +146,12 @@ function getLabelMargin(
     // Calls to the font funcs are inlined here to avoid making the call if not actually required.
     if (axisOrientation === 'left' || axisOrientation === 'right') {
       result[axisOrientation] =
-        labelAngle === 'horizontal'
+        labelAlignment === 'horizontal'
           ? measureTextWithCache(label, font) + labelPadding
           : getFontMetricsWithCache(font).height + labelPadding;
     } else {
       result[axisOrientation] =
-        labelAngle === 'horizontal'
+        labelAlignment === 'horizontal'
           ? getFontMetricsWithCache(font).height + labelPadding
           : measureTextWithCache(label, font) + labelPadding;
     }
@@ -184,7 +184,7 @@ export function calculateAxisMargin(
       axisOrientation,
       rangePadding,
       props.tickLabelPadding ?? defaultTickLabelPadding,
-      props.tickLabelAngle ?? defaultTickLabelAngle,
+      props.tickLabelAlignment ?? defaultTickLabelAngle,
       theme.smallLabels?.font ?? defaultSmallLabelsTextStyle.font,
       ticks
     ),
@@ -192,7 +192,7 @@ export function calculateAxisMargin(
       axisOrientation,
       props.label ?? '',
       props.autoMarginLabelPadding ?? defaultAutoMarginLabelPadding,
-      props.labelAngle ?? getDefaultAxisLabelAngle(axisOrientation),
+      props.labelAlignment ?? getDefaultAxisLabelAngle(axisOrientation),
       theme.bigLabels?.font ?? defaultBigLabelsTextStyle.font
     )
   ]);

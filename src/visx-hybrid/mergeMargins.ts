@@ -1,11 +1,11 @@
 import type { Margin } from './types';
 
-/** Returns a margin object that is formed from the maximum value for each margin direction in the given list of margin objects. If `marginList` is empty then an 'all zeros' margin is returned. */
-export function mergeMargins(marginList: Margin[]): Margin {
+/** Returns a margin object that is formed from the maximum value for each margin direction in the given list of margin objects. If `marginList` is empty then a minimum value margin is returned. */
+export function mergeMargins(marginList: Margin[], minMarginValue = 1): Margin {
   return {
-    left: Math.max(0, ...marginList.map((x) => x.left)) ?? 0,
-    right: Math.max(0, ...marginList.map((x) => x.right)) ?? 0,
-    top: Math.max(0, ...marginList.map((x) => x.top)) ?? 0,
-    bottom: Math.max(0, ...marginList.map((x) => x.bottom)) ?? 0
+    left: Math.max(minMarginValue, ...marginList.map((x) => x.left)) ?? minMarginValue,
+    right: Math.max(minMarginValue, ...marginList.map((x) => x.right)) ?? minMarginValue,
+    top: Math.max(minMarginValue, ...marginList.map((x) => x.top)) ?? minMarginValue,
+    bottom: Math.max(minMarginValue, ...marginList.map((x) => x.bottom)) ?? minMarginValue
   };
 }

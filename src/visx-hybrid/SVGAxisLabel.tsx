@@ -2,7 +2,7 @@ import { combineFontPropertiesWithStyles } from './combineFontPropertiesWithStyl
 import { defaultBigLabelsFont } from './constants';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { SVGSimpleText, TextProps } from './SVGSimpleText';
-import type { Anchor, AxisOrientation, AxisScale, LabelAngle, TextStyles } from './types';
+import type { Anchor, AxisOrientation, AxisScale, LabelAlignment, TextStyles } from './types';
 
 function getX(axisOrientation: AxisOrientation, range: [number, number], width: number): number {
   let x = 0;
@@ -24,15 +24,15 @@ function getY(axisOrientation: AxisOrientation, range: [number, number], height:
   return y;
 }
 
-function getTextAnchor(axisOrientation: AxisOrientation, labelAngle: LabelAngle): Anchor {
+function getTextAnchor(axisOrientation: AxisOrientation, labelAlignment: LabelAlignment): Anchor {
   let textAnchor: Anchor = 'middle';
-  if (labelAngle === 'vertical') {
+  if (labelAlignment === 'vertical') {
     if (axisOrientation === 'top') {
       textAnchor = 'end';
     } else if (axisOrientation === 'bottom') {
       textAnchor = 'start';
     }
-  } else if (labelAngle === 'horizontal') {
+  } else if (labelAlignment === 'horizontal') {
     if (axisOrientation === 'left') {
       textAnchor = 'start';
     } else if (axisOrientation === 'right') {
@@ -42,18 +42,18 @@ function getTextAnchor(axisOrientation: AxisOrientation, labelAngle: LabelAngle)
   return textAnchor;
 }
 
-function getVerticalAnchor(axisOrientation: AxisOrientation, labelAngle: LabelAngle): Anchor {
+function getVerticalAnchor(axisOrientation: AxisOrientation, labelAlignment: LabelAlignment): Anchor {
   let verticalAnchor: Anchor = 'start';
   if (axisOrientation === 'left' || axisOrientation === 'right') {
-    if (labelAngle === 'horizontal') {
+    if (labelAlignment === 'horizontal') {
       verticalAnchor = 'middle';
     }
   } else if (axisOrientation === 'top') {
-    if (labelAngle === 'vertical') {
+    if (labelAlignment === 'vertical') {
       verticalAnchor = 'middle';
     }
   } else if (axisOrientation === 'bottom') {
-    if (labelAngle === 'horizontal') {
+    if (labelAlignment === 'horizontal') {
       verticalAnchor = 'end';
     } else {
       verticalAnchor = 'middle';
@@ -72,7 +72,7 @@ export interface SVGAxisLabelProps {
   rangePadding: number;
   width: number;
   height: number;
-  labelAngle: LabelAngle;
+  labelAlignment: LabelAlignment;
 }
 
 // Note: Does not use labelPadding as it renders the axis labels flush against the edges of the chart.
@@ -84,7 +84,7 @@ export function SVGAxisLabel({
   rangePadding,
   width,
   height,
-  labelAngle,
+  labelAlignment,
   labelStyles
 }: SVGAxisLabelProps) {
   const fontMetrics = getFontMetricsWithCache(labelStyles?.font ?? defaultBigLabelsFont);
@@ -98,9 +98,9 @@ export function SVGAxisLabel({
     : [rangeFrom - rangePadding, rangeTo + rangePadding];
   const x = getX(axisOrientation, innerRange, width);
   const y = getY(axisOrientation, innerRange, height);
-  const textAnchor: Anchor = getTextAnchor(axisOrientation, labelAngle);
-  const verticalAnchor: Anchor = getVerticalAnchor(axisOrientation, labelAngle);
-  const angle = labelAngle === 'horizontal' ? 0 : axisOrientation === 'right' ? 90 : -90;
+  const textAnchor: Anchor = getTextAnchor(axisOrientation, labelAlignment);
+  const verticalAnchor: Anchor = getVerticalAnchor(axisOrientation, labelAlignment);
+  const angle = labelAlignment === 'horizontal' ? 0 : axisOrientation === 'right' ? 90 : -90;
 
   return (
     <SVGSimpleText
