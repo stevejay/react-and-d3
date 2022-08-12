@@ -29,7 +29,7 @@ export function SVGBar<Datum extends object>({
       <animated.polygon
         data-testid="bar"
         points={points}
-        fill={colorAccessor?.(datum, dataKey) ?? fill ?? colorScale(dataKey) ?? '#666'}
+        fill={colorAccessor?.(datum, dataKey) ?? fill ?? colorScale(dataKey) ?? 'currentColor'}
         style={{ ...barStyle, opacity }}
         shapeRendering={defaultShapeRendering}
         role="presentation"

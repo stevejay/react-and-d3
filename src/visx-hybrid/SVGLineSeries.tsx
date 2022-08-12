@@ -64,7 +64,7 @@ export function SVGLineSeries<Datum extends object>({
     (typeof color === 'function' ? color(dataKey) : color) ??
     scales.color?.(dataKey) ??
     theme?.colors?.[0] ??
-    '#666';
+    'currentColor';
   return (
     <g data-testid={`line-series-${dataKey}`} {...groupProps}>
       {/* <SVGWipedPath

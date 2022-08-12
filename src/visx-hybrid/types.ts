@@ -109,6 +109,7 @@ export interface XYChartContextType<Datum extends object = object, RenderingDatu
   innerWidth: number;
   innerHeight: number;
   margin: Margin;
+  outerMargin: Margin;
   dataEntryStore: IDataEntryStore<Datum, RenderingDatum>;
   horizontal: boolean;
   animate: boolean;

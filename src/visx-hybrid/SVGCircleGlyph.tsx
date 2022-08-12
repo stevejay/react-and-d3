@@ -30,7 +30,7 @@ export function SVGCircleGlyph<Datum extends object>({
       cx={cx}
       cy={cy}
       r={r}
-      fill={colorAccessor?.(datum, dataKey) ?? fill ?? colorScale(dataKey) ?? '#666'}
+      fill={colorAccessor?.(datum, dataKey) ?? fill ?? colorScale(dataKey) ?? 'currentColor'}
       style={{ ...circleStyle, opacity }}
       shapeRendering={defaultShapeRendering}
       role="presentation"

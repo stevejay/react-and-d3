@@ -6,6 +6,7 @@ import { curveCatmullRom } from 'd3-shape';
 import { timeFormat } from 'd3-time-format';
 
 import type { TimeValueDatum } from '@/types';
+import { LineSeriesLinearGradient } from '@/visx-hybrid/LineSeriesLinearGradient';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 // import { SVGBarAnnotation } from '@/visx-hybrid/SVGBarAnnotation';
@@ -54,6 +55,8 @@ export interface LineChartProps {
   data: TimeValueDatum<number>[];
 }
 
+const gradientId = '__foo123';
+
 export function LineChart({ data }: LineChartProps) {
   return (
     <SVGXYChart
@@ -67,8 +70,15 @@ export function LineChart({ data }: LineChartProps) {
       // independentRangePadding={50}
       className="select-none"
       theme={darkTheme}
+      outerMargin={20}
       // horizontal
     >
+      <LineSeriesLinearGradient
+        id={gradientId}
+        segmentBoundaryData={data.length ? [data[1]] : null}
+        segmentColors={[schemeCategory10[1], schemeCategory10[2]]}
+        dataKeyRef="data-a"
+      />
       <SVGGrid tickCount={5} variable="dependent" />
       <SVGLineSeries
         dataKey="data-a"
@@ -78,7 +88,7 @@ export function LineChart({ data }: LineChartProps) {
         keyAccessor={keyAccessor}
         curve={curveCatmullRom}
         color={schemeCategory10[4]}
-        pathProps={{ strokeWidth: 4 }}
+        pathProps={{ strokeWidth: 4, stroke: `url(#${gradientId})` }}
         // component={SVGInterpolatedPath}
         component={SVGWipedPath}
       />

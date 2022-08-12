@@ -111,6 +111,7 @@ function SVGAxis(props: SVGAxisProps) {
     dependentRangePadding,
     horizontal,
     margin,
+    outerMargin,
     width,
     height,
     springConfig: contextSpringConfig,
@@ -126,23 +127,23 @@ function SVGAxis(props: SVGAxisProps) {
 
   const top =
     axisOrientation === 'bottom'
-      ? (height ?? 0) - (margin?.bottom ?? 0)
+      ? (height ?? 0) - (margin.bottom ?? 0)
       : axisOrientation === 'top'
-      ? margin?.top ?? 0
+      ? margin.top ?? 0
       : 0;
 
   const left =
     axisOrientation === 'left'
-      ? margin?.left ?? 0
+      ? margin.left ?? 0
       : axisOrientation === 'right'
-      ? (width ?? 0) - (margin?.right ?? 0)
+      ? (width ?? 0) - (margin.right ?? 0)
       : 0;
 
   const rangePadding = variable === 'independent' ? independentRangePadding : dependentRangePadding;
   const isVertical = axisOrientation === 'left' || axisOrientation === 'right';
   const rangeFrom = Number(scale.range()[0]) ?? 0;
   const rangeTo = Number(scale.range()[1]) ?? 0;
-  const domainRange: [number, number] = isVertical
+  const axisPathRange: [number, number] = isVertical
     ? [rangeFrom + rangePadding[0], rangeTo - rangePadding[1]]
     : [rangeFrom - rangePadding[0], rangeTo + rangePadding[1]];
   const ticks = calculateTicksData({ scale, hideZero, tickFormat, tickCount, tickValues });
@@ -156,12 +157,11 @@ function SVGAxis(props: SVGAxisProps) {
         <SVGAxisLabel
           label={label}
           axisOrientation={axisOrientation}
-          domainRange={domainRange}
+          axisPathRange={axisPathRange}
           labelProps={labelProps}
-          // scale={scale}
-          // rangePadding={rangePadding}
           width={width}
           height={height}
+          outerMargin={outerMargin}
           labelAlignment={labelAlignment ?? getDefaultAxisLabelAngle(axisOrientation)}
           labelStyles={theme.bigLabels ?? defaultBigLabelsTextStyle}
         />
@@ -197,7 +197,7 @@ function SVGAxis(props: SVGAxisProps) {
             data-testid="axis-domain"
             axisOrientation={axisOrientation}
             renderingOffset={renderingOffset}
-            range={domainRange}
+            range={axisPathRange}
             outerTickLength={
               outerTickLength === 'chart' ? (isVertical ? -innerWidth : -innerHeight) : outerTickLength
             }

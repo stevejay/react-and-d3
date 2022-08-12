@@ -1,7 +1,7 @@
 import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
-import type { TickLabelAlignment, XYChartTheme } from './types';
+import type { Margin, TickLabelAlignment, XYChartTheme } from './types';
 
 export const defaultSpringConfig = { duration: 350, easing: easeCubicInOut };
 
@@ -9,7 +9,8 @@ export const defaultHideZero = false;
 export const defaultHideTicks = false;
 export const defaultTickLength = 8;
 export const defaultTickLabelPadding = 6;
-export const defaultAutoMarginLabelPadding = 8;
+export const defaultHorizontalAxisAutoMarginLabelPadding = 8;
+export const defaultVerticalAxisAutoMarginLabelPadding = defaultHorizontalAxisAutoMarginLabelPadding + 8;
 export const defaultHideTooltipDebounceMs = 400;
 export const defaultParentSizeDebounceMs = 300;
 export const defaultTickLabelAngle: TickLabelAlignment = 'horizontal';
@@ -20,6 +21,7 @@ export const defaultTooltipGlyphRadius = 4;
 export const defaultOuterTickLength = 0;
 export const defaultGlyphRadius = 6;
 export const zeroRangePadding: [number, number] = [0, 0];
+export const zeroMargin: Margin = { left: 0, right: 0, top: 0, bottom: 0 };
 
 // font-style, font-variant, font-weight, font-size, line-height, font-family
 export const defaultBigLabelsFont = 'normal normal normal 14px/1 sans-serif';

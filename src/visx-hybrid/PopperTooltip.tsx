@@ -184,8 +184,8 @@ PopperTooltipProps<Datum>) {
                 <animated.line
                   x1={tooltipLeft}
                   x2={tooltipLeft}
-                  y1={margin?.top ?? 0}
-                  y2={(margin?.top ?? 0) + (innerHeight ?? 0)}
+                  y1={margin.top ?? 0}
+                  y2={(margin.top ?? 0) + (innerHeight ?? 0)}
                   strokeWidth={1}
                   stroke="currentColor"
                   style={{ ...crosshairsStyle, ...springStyles }}
@@ -194,8 +194,8 @@ PopperTooltipProps<Datum>) {
               )}
               {showHorizontalCrosshair && (
                 <animated.line
-                  x1={margin?.left ?? 0}
-                  x2={(margin?.left ?? 0) + (innerWidth ?? 0)}
+                  x1={margin.left ?? 0}
+                  x2={(margin.left ?? 0) + (innerWidth ?? 0)}
                   y1={tooltipTop}
                   y2={tooltipTop}
                   strokeWidth={1}

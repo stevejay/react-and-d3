@@ -72,6 +72,7 @@ export function BarChart({ data }: BarChartProps) {
       independentRangePadding={50}
       className="select-none"
       theme={darkTheme}
+      outerMargin={{ top: 20, bottom: 20, left: 20, right: 20 }}
       // horizontal
     >
       <SVGGrid tickCount={5} variable="dependent" />
@@ -112,6 +113,7 @@ export function BarChart({ data }: BarChartProps) {
         tickCount={5}
         hideZero
         tickFormat={dependentAxisTickLabelFormatter}
+        // autoMarginLabelPadding={44}
       />
       <SVGAxis
         variable="dependent"

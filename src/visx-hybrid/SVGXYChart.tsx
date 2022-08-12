@@ -3,6 +3,7 @@ import { animated, SpringConfig, useTransition } from 'react-spring';
 import { createScale } from '@visx/scale';
 import { isNil } from 'lodash-es';
 
+import { addMargins } from './addMargins';
 import { calculateAutoMarginFromChildren } from './calculateAutoMarginFromChildren';
 import {
   defaultHideTooltipDebounceMs,
@@ -10,6 +11,7 @@ import {
   defaultSpringConfig,
   defaultTheme,
   xyChartEventSource,
+  zeroMargin,
   zeroRangePadding
 } from './constants';
 import { createScaleFromScaleConfig } from './createScaleFromScaleConfig';
@@ -40,8 +42,9 @@ interface SVGXYChartOwnProps<
   height?: number;
   /** The debounce value (in milliseconds) to use for the `ParentSize` component that is added when `width` or `height` are not given. Optional. Defaults to 300ms. */
   parentSizeDebounceMs?: number;
-  /** Margin to apply around the chart. Optional. If not given then an auto margin will be calculated. */
+  /** Margin to apply around the chart itself. Optional. If not given then an auto margin will be calculated. */
   margin?: Margin;
+  outerMargin?: number | Margin;
   /** The configuration object for the independent scale. This should be a stable object. */
   independentScale: IndependentScaleConfig;
   /** The configuration object for the dependent scale. This should be a stable object. */
@@ -130,6 +133,7 @@ function InnerChart<
   captureEvents = true,
   theme = defaultTheme,
   children,
+  outerMargin = zeroMargin,
   ...svgProps
 }: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig>) {
   // Gather all the series data from the chart's child components:
@@ -161,11 +165,15 @@ function InnerChart<
   const hasValidContent = !isNil(independentScale) && !isNil(dependentScale) && width > 0 && height > 0;
 
   if (hasValidContent) {
+    const resolvedOuterMargin: Margin =
+      typeof outerMargin === 'number'
+        ? { left: outerMargin, right: outerMargin, top: outerMargin, bottom: outerMargin }
+        : outerMargin;
     const resolvedIndependentRangePadding = resolveRangePadding(independentRangePadding);
     const resolvedDependentRangePadding = resolveRangePadding(dependentRangePadding);
 
     // Use the given margin object or calculate it automatically:
-    const margin =
+    const resolvedMargin =
       userMargin ??
       calculateAutoMarginFromChildren({
         children,
@@ -176,6 +184,7 @@ function InnerChart<
         dependentRangePadding: resolvedDependentRangePadding,
         theme
       });
+    const margin = addMargins([resolvedMargin, resolvedOuterMargin]);
 
     // Now that we know the margin to use, calculate the range for each scale:
 
@@ -222,6 +231,7 @@ function InnerChart<
       innerWidth,
       innerHeight,
       margin,
+      outerMargin: resolvedOuterMargin,
       dataEntryStore: new DataEntryStore(dataEntries),
       horizontal,
       animate,

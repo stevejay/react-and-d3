@@ -1,14 +1,15 @@
 import { addMargins } from './addMargins';
 import { calculateTicksData } from './calculateTicksData';
 import {
-  defaultAutoMarginLabelPadding,
   defaultBigLabelsTextStyle,
   defaultHideTicks,
   defaultHideZero,
+  defaultHorizontalAxisAutoMarginLabelPadding,
   defaultSmallLabelsTextStyle,
   defaultTickLabelAngle,
   defaultTickLabelPadding,
-  defaultTickLength
+  defaultTickLength,
+  defaultVerticalAxisAutoMarginLabelPadding
 } from './constants';
 import { getDefaultAxisLabelAngle } from './getDefaultAxisLabelAngle';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
@@ -191,7 +192,9 @@ export function calculateAxisMargin(
     getLabelMargin(
       axisOrientation,
       props.label ?? '',
-      props.autoMarginLabelPadding ?? defaultAutoMarginLabelPadding,
+      props.autoMarginLabelPadding ?? (axisOrientation === 'left' || axisOrientation === 'right')
+        ? defaultVerticalAxisAutoMarginLabelPadding
+        : defaultHorizontalAxisAutoMarginLabelPadding,
       props.labelAlignment ?? getDefaultAxisLabelAngle(axisOrientation),
       theme.bigLabels?.font ?? defaultBigLabelsTextStyle.font
     )
