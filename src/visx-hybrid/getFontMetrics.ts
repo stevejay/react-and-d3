@@ -1,36 +1,40 @@
-import { mapFontPropertiesToFontString } from './mapFontPropertiesToFontString';
-import { getContext } from './measurementCanvas';
+import { getFallbackTextMetrics } from './getFallbackTextMetrics';
+import { isDefined } from './isDefined';
 import { supportsCanvas } from './supportsCanvas';
-import type { FontMetrics, FontProperties } from './types';
+import { getContext } from './textMeasurementCanvas';
+import type { FontMetrics } from './types';
+
+// Detects if the `TextMetrics` object has the required extended text metrics properties.
+function hasRequiredTextMetrics(textMetrics: TextMetrics): boolean {
+  return isDefined(textMetrics.fontBoundingBoxAscent) && isDefined(textMetrics.fontBoundingBoxDescent);
+}
 
 // Get the total height of the font.
-function getHeight(metrics: TextMetrics): number {
-  return Math.ceil(Math.abs(metrics.fontBoundingBoxAscent) + Math.abs(metrics.fontBoundingBoxDescent));
+function getHeight(textMetrics: TextMetrics): number {
+  return Math.ceil(
+    Math.abs(textMetrics.fontBoundingBoxAscent) + Math.abs(textMetrics.fontBoundingBoxDescent)
+  );
 }
 
 // Get the height of the font from the baseline.
-function getHeightFromBaseline(metrics: TextMetrics): number {
-  return Math.ceil(Math.abs(metrics.fontBoundingBoxAscent));
+function getHeightFromBaseline(textMetrics: TextMetrics): number {
+  return Math.ceil(Math.abs(textMetrics.fontBoundingBoxAscent));
 }
 
-const textToMeasure = 'My';
+const metricsString = '|ÉqÅM';
 
-export function getFontMetrics(font: string | FontProperties): FontMetrics {
-  const resolvedFont = typeof font === 'string' ? font : mapFontPropertiesToFontString(font);
-  if (!resolvedFont) {
-    throw new Error('Could not resolve font.');
-  }
-
+export function getFontMetrics(font: string): FontMetrics {
   if (!supportsCanvas()) {
     throw new Error("The current environment doesn't support the Canvas API.");
   }
-
   const context = getContext();
-  context.font = resolvedFont;
-  const metrics = context.measureText(textToMeasure);
-  // TODO Handle fontBoundingBoxAscent or fontBoundingBoxDescent not being available.
+  context.font = font;
+  let textMetrics = context.measureText(metricsString);
+  if (!hasRequiredTextMetrics(textMetrics)) {
+    textMetrics = getFallbackTextMetrics(font);
+  }
   return {
-    height: getHeight(metrics),
-    heightFromBaseline: getHeightFromBaseline(metrics)
+    height: getHeight(textMetrics),
+    heightFromBaseline: getHeightFromBaseline(textMetrics)
   };
 }

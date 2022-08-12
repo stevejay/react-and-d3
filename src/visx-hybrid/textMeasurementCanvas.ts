@@ -1,11 +1,12 @@
-// Adapted from https://www.npmjs.com/package/typometer
-
 import { isNil } from 'lodash-es';
 
 let context: CanvasRenderingContext2D;
 
 /**
  * Access a 2D rendering context by creating one if it doesn't exist yet.
+ *
+ * Note: The size of this canvas might get adjusted by the `getFallbackTextMetrics`
+ * function.
  */
 export function getContext() {
   if (isNil(context)) {

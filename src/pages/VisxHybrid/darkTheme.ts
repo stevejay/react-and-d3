@@ -4,6 +4,9 @@ import { XYChartTheme } from '@/visx-hybrid/types';
 
 export const darkTheme: XYChartTheme = {
   colors: schemeCategory10,
+  svg: {
+    style: { userSelect: 'none' }
+  },
   grid: {
     independent: {
       className: 'text-slate-500',

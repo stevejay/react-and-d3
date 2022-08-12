@@ -3,8 +3,8 @@
 import { isNil } from 'lodash-es';
 
 import { mapFontPropertiesToFontString } from './mapFontPropertiesToFontString';
-import { getContext } from './measurementCanvas';
 import { supportsCanvas } from './supportsCanvas';
+import { getContext } from './textMeasurementCanvas';
 import type { FontProperties } from './types';
 
 // Get the total width of the actual bounding box.
