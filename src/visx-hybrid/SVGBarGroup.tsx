@@ -6,7 +6,7 @@ import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchild
 import { isDefined } from './isDefined';
 import { SVGBarSeriesProps } from './SVGBarSeries';
 import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
-import type { AxisScale, SVGBarComponent } from './types';
+import type { AxisScale, RenderAnimatedBarProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
 import { useXYChartContext } from './useXYChartContext';
@@ -21,8 +21,9 @@ type SVGBarGroupProps<Datum extends object> = {
   padding?: number;
   /** Optional color accessor that overrides any color accessor on the group's children. */
   colorAccessor?: (datum: Datum, dataKey: string) => string;
-  component?: SVGBarComponent<Datum>;
+  // component?: SVGBarComponent<Datum>;
   enableEvents?: boolean;
+  renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
 };
 
 export function SVGBarGroup<Datum extends object>({
@@ -30,7 +31,7 @@ export function SVGBarGroup<Datum extends object>({
   springConfig,
   animate = true,
   colorAccessor,
-  component,
+  renderBar,
   enableEvents = true
 }: SVGBarGroupProps<Datum>) {
   const {
@@ -88,9 +89,9 @@ export function SVGBarGroup<Datum extends object>({
               animate={animate && contextAnimate}
               springConfig={springConfig ?? contextSpringConfig}
               colorAccessor={colorAccessor ?? datum.colorAccessor}
-              colorScale={scales.color}
+              // colorScale={scales.color}
               // {...events}
-              component={component}
+              renderBar={renderBar}
               seriesIsLeaving={!dataKeys.includes(datum.dataKey)}
             />
           </animated.g>

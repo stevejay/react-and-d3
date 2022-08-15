@@ -1,4 +1,5 @@
-import type { LinearScaleConfig, UtcScaleConfig } from '@visx/scale';
+import { useId } from 'react';
+import { LinearScaleConfig, UtcScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 import { format } from 'd3-format';
 import { schemeCategory10 } from 'd3-scale-chromatic';
@@ -6,32 +7,45 @@ import { curveCatmullRom } from 'd3-shape';
 import { timeFormat } from 'd3-time-format';
 
 import type { TimeValueDatum } from '@/types';
-import { LineSeriesLinearGradient } from '@/visx-hybrid/LineSeriesLinearGradient';
+import { createResourceUrlFromId } from '@/visx-hybrid/createResourceUrlFromId';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
+// import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
-// import { SVGBarAnnotation } from '@/visx-hybrid/SVGBarAnnotation';
+import { SVGCircleGlyph } from '@/visx-hybrid/SVGCircleGlyph';
+import { SVGGlyphSeries } from '@/visx-hybrid/SVGGlyphSeries';
+// import { SVGCircleGlyph } from '@/visx-hybrid/SVGCircleGlyph';
+// import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 // import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
-// import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
+import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
+import { SVGLinearGradient } from '@/visx-hybrid/SVGLinearGradient';
 import { SVGLineSeries } from '@/visx-hybrid/SVGLineSeries';
-import { SVGWipedPath } from '@/visx-hybrid/SVGWipedPath';
+import { SVGPointAnnotation } from '@/visx-hybrid/SVGPointAnnotation';
+import { SVGSwipedPath } from '@/visx-hybrid/SVGSwipedPath';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
 
-const independentScale: UtcScaleConfig<number> = {
+const independentScaleConfig: UtcScaleConfig<number> = {
   type: 'utc',
   nice: true,
   round: true,
   clamp: true
 } as const;
 
-const dependentScale: LinearScaleConfig<number> = {
+const dependentScaleConfig: LinearScaleConfig<number> = {
   type: 'linear',
   nice: true,
   round: true,
   clamp: true
 } as const;
+
+// const glyphSizeScale = createScale({
+//   type: 'linear',
+//   clamp: true,
+//   range: [5, 15],
+//   domain: [-100, 100]
+// } as LinearScaleConfig<number>);
 
 function independentAccessor(d: TimeValueDatum<number>) {
   return d.date;
@@ -39,10 +53,6 @@ function independentAccessor(d: TimeValueDatum<number>) {
 
 function dependentAccessor(d: TimeValueDatum<number>) {
   return d.value;
-}
-
-function keyAccessor(d: TimeValueDatum<number>) {
-  return d.date.getTime();
 }
 
 const dependentAxisTickLabelFormatter = format(',.1~f');
@@ -55,69 +65,94 @@ export interface LineChartProps {
   data: TimeValueDatum<number>[];
 }
 
-const gradientId = '__foo123';
-
 export function LineChart({ data }: LineChartProps) {
+  const linearGradientId = useId();
   return (
     <SVGXYChart
-      independentScale={independentScale}
-      dependentScale={dependentScale}
+      independentScale={independentScaleConfig}
+      dependentScale={dependentScaleConfig}
       springConfig={springConfig}
       role="graphics-document"
       aria-roledescription="Bar chart"
       aria-label="Some Important Results"
       dependentRangePadding={10}
-      // independentRangePadding={50}
-      className="select-none"
+      independentRangePadding={10}
       theme={darkTheme}
-      outerMargin={20}
+      // outerMargin={20}
       // horizontal
     >
-      <LineSeriesLinearGradient
-        id={gradientId}
+      <SVGLinearGradient
+        id={linearGradientId}
+        dataKeyRef="data-a"
         segmentBoundaryData={data.length ? [data[1]] : null}
         segmentColors={[schemeCategory10[1], schemeCategory10[2]]}
-        dataKeyRef="data-a"
       />
       <SVGGrid tickCount={5} variable="dependent" />
-      <SVGLineSeries
-        dataKey="data-a"
+      {true && (
+        <SVGLineSeries
+          dataKey="data-a"
+          data={data}
+          independentAccessor={independentAccessor}
+          dependentAccessor={dependentAccessor}
+          renderPath={(props) => (
+            <SVGSwipedPath
+              {...props}
+              strokeWidth={4}
+              stroke={createResourceUrlFromId(linearGradientId)}
+              curve={curveCatmullRom}
+            />
+          )}
+        />
+      )}
+      {false && (
+        <SVGLineSeries
+          dataKey="data-a"
+          data={data}
+          independentAccessor={independentAccessor}
+          dependentAccessor={dependentAccessor}
+          renderPath={(props) => (
+            <SVGInterpolatedPath
+              {...props}
+              strokeWidth={4}
+              stroke={createResourceUrlFromId(linearGradientId)}
+              curve={curveCatmullRom}
+            />
+          )}
+        />
+      )}
+      <SVGGlyphSeries
+        dataKey="data-b"
         data={data}
         independentAccessor={independentAccessor}
         dependentAccessor={dependentAccessor}
-        keyAccessor={keyAccessor}
-        curve={curveCatmullRom}
-        color={schemeCategory10[4]}
-        pathProps={{ strokeWidth: 4, stroke: `url(#${gradientId})` }}
-        // component={SVGInterpolatedPath}
-        component={SVGWipedPath}
+        colorAccessor={(datum) => (datum.date <= data[1]?.date ? schemeCategory10[1] : schemeCategory10[2])}
+        renderGlyph={SVGCircleGlyph}
+        enableEvents={false}
+        animate={false}
       />
-      {/* <SVGA11ySeries<CategoryValueDatum<string, number>>
-        dataKeyOrKeysRef="data-a"
-        categoryA11yProps={(category, data) => ({
-          'aria-label': `Category ${data[0].category}: ${data[0].value}`,
-          'aria-roledescription': `Category ${category}`
-        })}
+      {/* <SVGA11ySeries<TimeValueDatum<number>>
+        dataKeyOrKeysRef="data-b"
+        categoryA11yProps={(category, data) => {
+          console.log(category, data);
+          return {};
+        }}
+        // categoryA11yProps={(category, data) => ({
+        //   'aria-label': `Category ${data[0].date}: ${data[0].value}`,
+        //   'aria-roledescription': `Category ${category}`
+        // })}
       /> */}
       {/* <SVGAxis variable="independent" position="end" label="Foobar Topy" /> */}
-      <SVGAxis variable="independent" position="start" label="Foobar Bottomy" tickLabelAlignment="angled" />
+      <SVGAxis variable="independent" position="start" label="Date" tickLabelAlignment="angled" />
       <SVGAxis
         variable="dependent"
         position="start"
-        label="Foobar Lefty"
+        label="Quantity"
         tickCount={5}
         hideZero
         tickFormat={dependentAxisTickLabelFormatter}
+        hideAxisPath
       />
-      <SVGAxis
-        variable="dependent"
-        position="end"
-        label="Foobar Righty"
-        tickCount={5}
-        hideZero
-        tickFormat={dependentAxisTickLabelFormatter}
-      />
-      {/* <SVGBarAnnotation datum={data[2]} dataKeyRef="data-a" /> */}
+      <SVGPointAnnotation datum={data[2]} dataKeyRef="data-a" />
       <PopperTooltip<TimeValueDatum<number>>
         snapTooltipToDatumX
         showVerticalCrosshair

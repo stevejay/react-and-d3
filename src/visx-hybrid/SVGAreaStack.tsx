@@ -7,14 +7,12 @@ import { isDefined } from './isDefined';
 import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
 import { SVGAreaSeriesProps } from './SVGAreaSeries';
-// import { SVGBarSeriesProps } from './SVGBarSeries';
-// import { SVGAreaSeriesRenderer } from './SVGAreaSeriesRenderer';
 import type { AxisScale } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
 import { useXYChartContext } from './useXYChartContext';
 
-export interface SVGAreaStackProps<Datum extends object> {
+export interface SVGAreaStackProps {
   /** Sets the stack offset to the pre-defined d3 offset, see https://github.com/d3/d3-shape#stack_offset. */
   stackOffset?: keyof typeof STACK_OFFSETS;
   /** Sets the stack order to the pre-defined d3 function, see https://github.com/d3/d3-shape#stack_order. */
@@ -24,8 +22,6 @@ export interface SVGAreaStackProps<Datum extends object> {
   springConfig?: SpringConfig;
   enableEvents?: boolean;
   children?: ReactNode;
-  //   component?: SVGAreaComponent<Datum>;
-  colorAccessor?: (datum: Datum, key: string) => string;
 }
 
 export function SVGAreaStack<Datum extends object>({
@@ -33,13 +29,12 @@ export function SVGAreaStack<Datum extends object>({
   enableEvents = true,
   animate = true,
   springConfig
-}: // colorAccessor
-//   component
-SVGAreaStackProps<Datum>) {
+}: SVGAreaStackProps) {
   const {
-    // horizontal,
-    // scales,
-    // renderingOffset,
+    theme,
+    horizontal,
+    scales,
+    renderingOffset,
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     dataEntryStore
@@ -51,9 +46,7 @@ SVGAreaStackProps<Datum>) {
   );
   const dataKeys = seriesChildren.map((child) => child.props.dataKey).filter(isDefined);
   const ownEventSourceKey = `${areaStackEventSource}-${dataKeys.join('-')}`;
-  // TODO fix the any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  /* const eventEmitters = */ useSeriesEvents<AxisScale, AxisScale, any>({
+  /* const eventEmitters = */ useSeriesEvents<AxisScale, AxisScale, Datum>({
     dataKeyOrKeysRef: dataKeys,
     enableEvents,
     // findNearestDatum,
@@ -65,37 +58,35 @@ SVGAreaStackProps<Datum>) {
     source: ownEventSourceKey,
     allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
-
   const transitions = useSeriesTransitions(
     dataKeys.map((dataKey) => dataEntryStore.getByDataKey(dataKey)),
     springConfig ?? contextSpringConfig,
     animate && contextAnimate
   );
-
   return (
     <>
       {transitions((styles, dataEntry) => {
         const child = seriesChildren.find((child) => child.props.dataKey === dataEntry.dataKey);
-        const { groupProps } = child?.props ?? {};
+        const { groupProps, renderArea } = child?.props ?? {};
         const { style, ...restGroupProps } = groupProps ?? {};
+        const fallbackFill = scales.color?.(dataEntry.dataKey) ?? theme?.colors?.[0] ?? 'currentColor';
         return (
           <animated.g
             data-testid={`area-stack-series-${dataEntry.dataKey}`}
             style={{ ...style, ...styles }}
             {...restGroupProps}
           >
-            {/* <SVGBarSeriesRenderer
-              scales={scales}
-              dataEntry={dataEntry}
-              horizontal={horizontal}
-              renderingOffset={renderingOffset}
-              animate={animate && contextAnimate}
-              springConfig={springConfig ?? contextSpringConfig}
-              colorAccessor={colorAccessor ?? dataEntry.colorAccessor}
-              colorScale={scales.color}
-              // {...events}
-              component={component}
-            /> */}
+            {renderArea &&
+              renderArea({
+                dataEntry,
+                scales,
+                theme,
+                horizontal,
+                renderingOffset,
+                animate: animate && contextAnimate,
+                springConfig: springConfig ?? contextSpringConfig,
+                color: fallbackFill
+              })}
           </animated.g>
         );
       })}

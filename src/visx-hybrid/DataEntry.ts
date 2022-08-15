@@ -1,3 +1,4 @@
+import { CurveFactory } from 'd3-shape';
 import { isNil } from 'lodash-es';
 
 import { coerceNumber } from './coerceNumber';
@@ -9,6 +10,7 @@ import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { getFirstItem, getSecondItem } from './getItem';
 import { getScaleBandwidth } from './getScaleBandwidth';
 import { getScaleBaseline } from './getScaleBaseline';
+import { getScaledValueFactory } from './getScaledFactoryValue';
 import { isValidNumber } from './isValidNumber';
 import { measureTextWithCache } from './measureTextWithCache';
 import type {
@@ -112,6 +114,37 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createShape(shapeFunc: (data: readonly Datum[]) => any) {
     return shapeFunc(this._data);
+  }
+
+  getAreaAccessors({
+    scales,
+    dependent0Accessor
+  }: {
+    scales: ScaleSet;
+    horizontal: boolean;
+    curve: CurveFactory;
+    renderingOffset: number;
+    dependent0Accessor?: (datum: Datum) => ScaleInput<AxisScale>;
+  }): {
+    independent: (datum: Datum) => number;
+    dependent: (datum: Datum) => number;
+    dependent0: number | ((datum: Datum) => number);
+    defined: (datum: Datum) => boolean;
+  } {
+    const getScaledIndependent = getScaledValueFactory(scales.independent, this.independentAccessor);
+    const getScaledDependent = getScaledValueFactory(scales.dependent, this.dependentAccessor);
+    const getScaledDependent0 = dependent0Accessor
+      ? getScaledValueFactory(scales.dependent, dependent0Accessor)
+      : getScaleBaseline(scales.dependent);
+    const isDefined = (datum: Datum) =>
+      isValidNumber(scales.independent(this.independentAccessor(datum))) &&
+      isValidNumber(scales.dependent(this.dependentAccessor(datum)));
+    return {
+      independent: getScaledIndependent,
+      dependent: getScaledDependent,
+      dependent0: getScaledDependent0,
+      defined: isDefined
+    };
   }
 
   createElementPositionerForRenderingData({
@@ -330,6 +363,37 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     return shapeFunc(this._data);
   }
 
+  getAreaAccessors({
+    scales,
+    dependent0Accessor
+  }: {
+    scales: ScaleSet;
+    horizontal: boolean;
+    curve: CurveFactory;
+    renderingOffset: number;
+    dependent0Accessor?: (datum: Datum) => ScaleInput<AxisScale>;
+  }): {
+    independent: (datum: Datum) => number;
+    dependent: (datum: Datum) => number;
+    dependent0: number | ((datum: Datum) => number);
+    defined: (datum: Datum) => boolean;
+  } {
+    const getScaledIndependent = getScaledValueFactory(scales.independent, this.independentAccessor);
+    const getScaledDependent = getScaledValueFactory(scales.dependent, this.dependentAccessor);
+    const getScaledDependent0 = dependent0Accessor
+      ? getScaledValueFactory(scales.dependent, dependent0Accessor)
+      : getScaleBaseline(scales.dependent);
+    const isDefined = (datum: Datum) =>
+      isValidNumber(scales.independent(this.independentAccessor(datum))) &&
+      isValidNumber(scales.dependent(this.dependentAccessor(datum)));
+    return {
+      independent: getScaledIndependent,
+      dependent: getScaledDependent,
+      dependent0: getScaledDependent0,
+      defined: isDefined
+    };
+  }
+
   createElementPositionerForRenderingData({
     scales,
     horizontal
@@ -464,19 +528,21 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
   }
 }
 
-const getStack = <IndependentScale extends AxisScale, DependentScale extends AxisScale, Datum extends object>(
+function getStack<IndependentScale extends AxisScale, DependentScale extends AxisScale, Datum extends object>(
   datum: StackDatum<IndependentScale, DependentScale, Datum>
-) => datum?.data?.stack;
+) {
+  return datum?.data?.stack;
+}
 
 // returns average of top + bottom of bar (the middle) as this enables more accurately
 // finding the nearest datum to a FocusEvent (which is based on the middle of the rect bounding box)
-const getNumericValue = <
+function getNumericValue<
   IndependentScale extends AxisScale,
   DependentScale extends AxisScale,
   Datum extends object
->(
-  bar: StackDatum<IndependentScale, DependentScale, Datum>
-) => (getFirstItem(bar) + getSecondItem(bar)) / 2;
+>(bar: StackDatum<IndependentScale, DependentScale, Datum>) {
+  return (getFirstItem(bar) + getSecondItem(bar)) / 2;
+}
 
 function getOriginalDatumFromStackDatum<
   IndependentScale extends AxisScale,
@@ -535,9 +601,40 @@ export class StackDataEntry<Datum extends object>
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createShape(_shapeFunc: (data: readonly StackDatum<AxisScale, AxisScale, Datum>[]) => any) {
-    throw new Error('Not supported for stack data');
-    // return shapeFunc(this._stackData);
+  createShape(shapeFunc: (data: readonly StackDatum<AxisScale, AxisScale, Datum>[]) => any) {
+    // throw new Error('Not supported for stack data');
+    return shapeFunc(this._stackData);
+  }
+
+  getAreaAccessors({
+    scales
+  }: {
+    scales: ScaleSet;
+    horizontal: boolean;
+    curve: CurveFactory;
+    renderingOffset: number;
+    dependent0Accessor?: (datum: StackDatum<AxisScale, AxisScale, Datum>) => ScaleInput<AxisScale>;
+  }): {
+    independent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
+    dependent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
+    dependent0: number | ((datum: StackDatum<AxisScale, AxisScale, Datum>) => number);
+    defined: (datum: StackDatum<AxisScale, AxisScale, Datum>) => boolean;
+  } {
+    const getScaledIndependent = getScaledValueFactory<AxisScale, StackDatum<AxisScale, AxisScale, Datum>>(
+      scales.independent,
+      getStack
+    );
+    const getScaledDependent = getScaledValueFactory(scales.dependent, getFirstItem);
+    const getScaledDependent0 = getScaledValueFactory(scales.dependent, getSecondItem);
+    const isDefined = (datum: StackDatum<AxisScale, AxisScale, Datum>) =>
+      isValidNumber(scales.independent(getStack(datum))) &&
+      isValidNumber(scales.dependent(getSecondItem(datum)));
+    return {
+      independent: getScaledIndependent,
+      dependent: getScaledDependent,
+      dependent0: getScaledDependent0,
+      defined: isDefined
+    };
   }
 
   getOriginalDatumFromRenderingDatum(datum: StackDatum<AxisScale, AxisScale, Datum>): Datum {
@@ -581,6 +678,7 @@ export class StackDataEntry<Datum extends object>
     });
   }
 
+  // createRectPositionerForRenderingData ?
   createElementPositionerForRenderingData({
     scales,
     horizontal

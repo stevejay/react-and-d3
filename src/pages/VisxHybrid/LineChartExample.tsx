@@ -38,7 +38,7 @@ export function LineChartExample() {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
-      <div className="relative w-full h-[384px] bg-slate-700">
+      <div className="relative w-full h-[384px]">
         <InView>
           <LineChart data={data} />
         </InView>

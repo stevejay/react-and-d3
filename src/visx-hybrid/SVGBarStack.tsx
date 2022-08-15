@@ -8,7 +8,7 @@ import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
 import { SVGBarSeriesProps } from './SVGBarSeries';
 import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
-import type { AxisScale, SVGBarComponent } from './types';
+import type { AxisScale, RenderAnimatedBarProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
 import { useXYChartContext } from './useXYChartContext';
@@ -23,8 +23,8 @@ export interface SVGBarStackProps<Datum extends object> {
   springConfig?: SpringConfig;
   enableEvents?: boolean;
   children?: ReactNode;
-  component?: SVGBarComponent<Datum>;
   colorAccessor?: (datum: Datum, key: string) => string;
+  renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
 }
 
 export function SVGBarStack<Datum extends object>({
@@ -33,7 +33,7 @@ export function SVGBarStack<Datum extends object>({
   animate = true,
   springConfig,
   colorAccessor,
-  component
+  renderBar
 }: SVGBarStackProps<Datum>) {
   const {
     horizontal,
@@ -64,13 +64,11 @@ export function SVGBarStack<Datum extends object>({
     source: ownEventSourceKey,
     allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
-
   const transitions = useSeriesTransitions(
     dataKeys.map((dataKey) => dataEntryStore.getByDataKey(dataKey)),
     springConfig ?? contextSpringConfig,
     animate && contextAnimate
   );
-
   return (
     <>
       {transitions((styles, dataEntry) => {
@@ -91,9 +89,9 @@ export function SVGBarStack<Datum extends object>({
               animate={animate && contextAnimate}
               springConfig={springConfig ?? contextSpringConfig}
               colorAccessor={colorAccessor ?? dataEntry.colorAccessor}
-              colorScale={scales.color}
+              // colorScale={scales.color}
               // {...events}
-              component={component}
+              renderBar={renderBar}
             />
           </animated.g>
         );

@@ -1,8 +1,7 @@
+import type { ReactNode } from 'react';
 import type { SpringConfig } from 'react-spring';
-import { ScaleOrdinal } from 'd3-scale';
 
-import { SVGBar } from './SVGBar';
-import type { AxisScale, IDataEntry, ScaleSet, SeriesProps, SVGBarComponent } from './types';
+import type { AxisScale, IDataEntry, RenderAnimatedBarProps, ScaleSet, SeriesProps } from './types';
 import { useBarTransitions } from './useBarTransitions';
 
 export type SVGBarSeriesRendererProps<
@@ -18,8 +17,9 @@ export type SVGBarSeriesRendererProps<
   animate: boolean;
   springConfig: SpringConfig;
   colorAccessor: (datum: Datum, dataKey: string) => string;
-  colorScale: ScaleOrdinal<string, string, never>;
-  component?: SVGBarComponent<Datum>;
+  // colorScale: ScaleOrdinal<string, string, never>;
+  // component?: SVGBarComponent<Datum>;
+  renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
   seriesIsLeaving?: boolean;
 } & Pick<
   SeriesProps<IndependentScale, DependentScale, Datum>,
@@ -38,14 +38,14 @@ export function SVGBarSeriesRenderer<
   springConfig,
   animate,
   colorAccessor,
-  colorScale,
+  // colorScale,
   seriesIsLeaving = false,
   //   onBlur,
   //   onFocus,
   //   onPointerMove,
   //   onPointerOut,
   //   onPointerUp,
-  component: BarComponent = SVGBar
+  renderBar
 }: SVGBarSeriesRendererProps<IndependentScale, DependentScale, Datum>) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const transitions = useBarTransitions<Datum, any>({
@@ -57,9 +57,17 @@ export function SVGBarSeriesRenderer<
     animate,
     seriesIsLeaving
   });
+  const fallbackColor = scales.color?.(dataEntry.dataKey) ?? 'currentColor';
   return (
     <>
-      {transitions((springValues, datum, _, index) => (
+      {transitions((springValues, datum, _, index) => {
+        const dataKey = dataEntry.dataKey;
+        const originalDatum = dataEntry.getOriginalDatumFromRenderingDatum(datum);
+        const color = colorAccessor?.(originalDatum, dataKey) ?? fallbackColor;
+        return renderBar({ springValues, datum: originalDatum, index, dataKey, horizontal, color });
+      })}
+
+      {/* {transitions((springValues, datum, _, index) => (
         <BarComponent
           springValues={springValues}
           datum={dataEntry.getOriginalDatumFromRenderingDatum(datum)}
@@ -69,7 +77,7 @@ export function SVGBarSeriesRenderer<
           colorScale={colorScale}
           colorAccessor={colorAccessor}
         />
-      ))}
+      ))} */}
     </>
   );
 }

@@ -1,77 +1,118 @@
-import type { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
+import { useId } from 'react';
+import { PatternLines } from '@visx/pattern';
+import type { LinearScaleConfig, UtcScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 import { format } from 'd3-format';
 import { schemeCategory10 } from 'd3-scale-chromatic';
+import { curveCatmullRom } from 'd3-shape';
+import { timeFormat } from 'd3-time-format';
 
-import type { CategoryValueDatum } from '@/types';
+import type { TimeValueDatum } from '@/types';
+import { createResourceUrlFromId } from '@/visx-hybrid/createResourceUrlFromId';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAreaSeries } from '@/visx-hybrid/SVGAreaSeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
-import { SVGBarAnnotation } from '@/visx-hybrid/SVGBarAnnotation';
+import { SVGCustomChartBackground } from '@/visx-hybrid/SVGCustomChartBackground';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
+import { SVGInterpolatedArea } from '@/visx-hybrid/SVGInterpolatedArea';
+import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
+import { SVGLineSeries } from '@/visx-hybrid/SVGLineSeries';
+import { SVGPointAnnotation } from '@/visx-hybrid/SVGPointAnnotation';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
 
 export interface AreaChartProps {
-  data: CategoryValueDatum<string, number>[];
+  data: TimeValueDatum<number>[];
 }
 
-const independentScale: BandScaleConfig<string> = {
-  type: 'band',
-  paddingInner: 0.3,
-  paddingOuter: 0.2,
-  round: true
-};
+const independentScaleConfig: UtcScaleConfig<number> = {
+  type: 'utc',
+  nice: true,
+  round: true,
+  clamp: true
+} as const;
 
-const dependentScale: LinearScaleConfig<number> = {
+const dependentScaleConfig: LinearScaleConfig<number> = {
   type: 'linear',
   nice: true,
   round: true,
   clamp: true,
   zero: true
-};
+} as const;
 
-function independentAccessor(datum: CategoryValueDatum<string, number>) {
-  return datum.category;
+function independentAccessor(d: TimeValueDatum<number>) {
+  return d.date;
 }
 
-function dependentAccessor(datum: CategoryValueDatum<string, number>) {
-  return datum.value;
+function dependentAccessor(d: TimeValueDatum<number>) {
+  return d.value;
 }
 
-function colorAccessor() {
-  return schemeCategory10[4];
-}
+const independentDatumLabelFormatter = timeFormat('%e %B %Y');
 
 const dependentAxisTickLabelFormatter = format(',.1~f');
 
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
 export function AreaChart({ data }: AreaChartProps) {
+  const patternId = useId();
   return (
     <SVGXYChart
-      independentScale={independentScale}
-      dependentScale={dependentScale}
+      independentScale={independentScaleConfig}
+      dependentScale={dependentScaleConfig}
       springConfig={springConfig}
       role="graphics-document"
       aria-roledescription="Bar chart"
       aria-label="Some Important Results"
-      dependentRangePadding={50}
-      independentRangePadding={50}
-      className="select-none"
+      dependentRangePadding={10}
+      independentRangePadding={10}
       theme={darkTheme}
       // horizontal
     >
+      {false && <SVGCustomChartBackground />}
+      <PatternLines
+        id={patternId}
+        width={16}
+        height={16}
+        orientation={['diagonal']}
+        stroke={schemeCategory10[1]}
+        strokeWidth={2}
+      />
       <SVGGrid tickCount={5} variable="dependent" />
       <SVGAreaSeries
         dataKey="data-a"
         data={data}
         independentAccessor={independentAccessor}
         dependentAccessor={dependentAccessor}
-        colorAccessor={colorAccessor}
+        // colorAccessor={colorAccessor}
         // component={SVGBarWithLine}
+        renderArea={(props) => (
+          <SVGInterpolatedArea
+            {...props}
+            curve={curveCatmullRom}
+            opacity={0.4}
+            // fill={schemeCategory10[1]}
+            fill={createResourceUrlFromId(patternId)}
+          />
+        )}
       />
+      <SVGLineSeries
+        dataKey="data-b"
+        data={data}
+        independentAccessor={independentAccessor}
+        dependentAccessor={dependentAccessor}
+        renderPath={(props) => (
+          <SVGInterpolatedPath
+            {...props}
+            strokeWidth={4}
+            curve={curveCatmullRom}
+            color={schemeCategory10[1]}
+          />
+        )}
+        enableEvents={false}
+      />
+
       {/* <SVGA11ySeries<CategoryValueDatum<string, number>>
         dataKeyOrKeysRef="data-a"
         categoryA11yProps={(category, data) => ({
@@ -79,39 +120,29 @@ export function AreaChart({ data }: AreaChartProps) {
           'aria-roledescription': `Category ${category}`
         })}
       /> */}
-      <SVGAxis variable="independent" position="end" label="Foobar Topy" />
-      <SVGAxis variable="independent" position="start" label="Foobar Bottomy" />
+      <SVGAxis variable="independent" position="start" label="Date" tickLabelAlignment="angled" />
       <SVGAxis
         variable="dependent"
         position="start"
-        label="Foobar Lefty"
+        label="Quantity"
         tickCount={5}
-        hideZero
+        // hideZero
         tickFormat={dependentAxisTickLabelFormatter}
+        hideAxisPath
       />
-      <SVGAxis
-        variable="dependent"
-        position="end"
-        label="Foobar Righty"
-        tickCount={5}
-        hideZero
-        tickFormat={dependentAxisTickLabelFormatter}
-      />
-      <SVGBarAnnotation datum={data[2]} dataKeyRef="data-a" />
-      <PopperTooltip<CategoryValueDatum<string, number>>
+      <SVGPointAnnotation datum={data[2]} dataKeyRef="data-a" />
+      <PopperTooltip<TimeValueDatum<number>>
         snapTooltipToDatumX
         showVerticalCrosshair
-        showDatumGlyph={false}
+        showDatumGlyph
         renderTooltip={({ tooltipData }) => {
           const datum = tooltipData?.nearestDatum;
-          if (!datum) {
-            return null;
-          }
-          return (
+          return datum ? (
             <div>
-              <span className="font-bold">{datum.datum?.category}</span>: {datum.datum?.value}
+              <span className="font-bold">{independentDatumLabelFormatter(datum.datum?.date)}</span>:{' '}
+              {datum.datum?.value}
             </div>
-          );
+          ) : null;
         }}
       />
     </SVGXYChart>

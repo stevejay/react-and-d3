@@ -4,7 +4,7 @@ import type { DatumPosition, GlyphTransition } from './types';
 
 export function createGlyphTransition(
   args: DatumPosition | null
-): Omit<GlyphTransition, 'opacity' | 'r'> | null {
+): Omit<GlyphTransition, 'opacity' | 'size'> | null {
   if (isNil(args)) {
     return null;
   }

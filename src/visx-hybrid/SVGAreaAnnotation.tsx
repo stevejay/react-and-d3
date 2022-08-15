@@ -2,12 +2,15 @@ import { Annotation, CircleSubject, Connector, Label } from '@visx/annotation';
 
 import { useBarAnnotation } from './useBarAnnotation';
 
-export interface SVGBarAnnotationProps<Datum extends object> {
+export interface SVGAreaAnnotationProps<Datum extends object> {
   dataKeyRef: string;
   datum: Datum;
 }
 
-export function SVGBarAnnotation<Datum extends object>({ dataKeyRef, datum }: SVGBarAnnotationProps<Datum>) {
+export function SVGAreaAnnotation<Datum extends object>({
+  dataKeyRef,
+  datum
+}: SVGAreaAnnotationProps<Datum>) {
   const origin = useBarAnnotation(dataKeyRef, datum);
   if (!origin) {
     return null;

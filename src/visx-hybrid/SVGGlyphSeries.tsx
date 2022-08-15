@@ -1,41 +1,30 @@
-import type { SVGProps } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { ReactNode, SVGProps } from 'react';
 
-import { defaultGlyphRadius, glyphSeriesEventSource, xyChartEventSource } from './constants';
-import { createScaleFromScaleConfig } from './createScaleFromScaleConfig';
+import { defaultGlyphSize, glyphSeriesEventSource, xyChartEventSource } from './constants';
 import { SVGGlyphSeriesRenderer } from './SVGGlyphSeriesRenderer';
-import type { AxisScale, ScaleConfig, ScaleInput, SVGGlyphComponent } from './types';
+import type { AxisScale, BasicSeriesProps, RenderAnimatedGlyphProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useXYChartContext } from './useXYChartContext';
 
-export type SVGGlyphSeriesProps<Datum extends object> = {
-  springConfig?: SpringConfig;
-  animate?: boolean;
-  dataKey: string;
-  data: readonly Datum[];
-  keyAccessor?: (datum: Datum, dataKey?: string) => string | number;
-  independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
-  dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+export type SVGGlyphSeriesProps<Datum extends object> = BasicSeriesProps<Datum> & {
+  groupProps?: SVGProps<SVGGElement>;
   colorAccessor?: (datum: Datum, dataKey: string) => string;
-  groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
-  enableEvents?: boolean;
-  component?: SVGGlyphComponent<Datum>;
-  radius?: number;
-  radiusScale?: ScaleConfig<number>;
-  radiusAccessor?: (datum: Datum) => number;
+  // component?: SVGGlyphComponent<Datum>;
+  // radius?: number;
+  // radiusScale?: ScaleConfig<number>;
+  // radiusAccessor?: (datum: Datum) => number;
+  glyphSize?: number | ((datum: Datum, dataKey: string) => number);
+  renderGlyph: (props: RenderAnimatedGlyphProps<Datum>) => ReactNode;
 };
 
 export function SVGGlyphSeries<Datum extends object>({
+  dataKey,
   groupProps,
   springConfig,
   animate = true,
-  dataKey,
   enableEvents = true,
-  colorAccessor,
-  component,
-  radius = defaultGlyphRadius,
-  radiusScale: radiusScaleConfig,
-  radiusAccessor
+  glyphSize = defaultGlyphSize,
+  renderGlyph
 }: SVGGlyphSeriesProps<Datum>) {
   const {
     scales,
@@ -58,29 +47,29 @@ export function SVGGlyphSeries<Datum extends object>({
     // onPointerOut,
     // onPointerUp,
     source: ownEventSourceKey,
-    allowedSources: [xyChartEventSource]
+    allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
-  const radiusScale =
-    radiusScaleConfig && radiusAccessor
-      ? createScaleFromScaleConfig(dataEntry.getMappedData(radiusAccessor), radiusScaleConfig)
-      : undefined;
-  const getRadius = (datum: Datum) =>
-    radiusScale && radiusAccessor ? (radiusScale(radiusAccessor(datum)) as number) : radius;
+  // const radiusScale =
+  //   radiusScaleConfig && radiusAccessor
+  //     ? createScaleFromScaleConfig(dataEntry.getMappedData(radiusAccessor), radiusScaleConfig)
+  //     : undefined;
+  // const getRadius = (datum: Datum) =>
+  //   radiusScale && radiusAccessor ? (radiusScale(radiusAccessor(datum)) as number) : radius;
   return (
     <g data-testid={`glyph-series-${dataKey}`} {...groupProps}>
       {
-        <SVGGlyphSeriesRenderer
+        <SVGGlyphSeriesRenderer<Datum>
           scales={scales}
           dataEntry={dataEntry}
           horizontal={horizontal}
           renderingOffset={renderingOffset}
           animate={animate && contextAnimate}
           springConfig={springConfig ?? contextSpringConfig}
-          colorAccessor={colorAccessor ?? dataEntry.colorAccessor}
-          colorScale={scales.color}
+          colorAccessor={dataEntry.colorAccessor}
+          // colorScale={scales.color}
           // {...events}
-          component={component}
-          getRadius={getRadius}
+          glyphSize={glyphSize}
+          renderGlyph={renderGlyph}
         />
       }
     </g>

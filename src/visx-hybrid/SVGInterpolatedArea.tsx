@@ -1,18 +1,18 @@
 import type { SVGProps } from 'react';
 import { animated } from 'react-spring';
-import { CurveFactory, CurveFactoryLineOnly, curveLinear } from 'd3-shape';
+import { CurveFactory, curveLinear } from 'd3-shape';
 
 import { defaultShapeRendering } from './constants';
-import { createLineSeriesPathShape } from './createLineSeriesPathShape';
+import { createAreaSeriesPathShape } from './createAreaSeriesPathShape';
 import type { RenderPathProps } from './types';
 import { useInterpolatedPathTransitions } from './useInterpolatedPathTransitions';
 
-export type SVGInterpolatedPathProps<Datum extends object> = RenderPathProps<Datum> & {
-  curve?: CurveFactory | CurveFactoryLineOnly;
+export type SVGInterpolatedAreaProps<Datum extends object> = RenderPathProps<Datum> & {
+  curve?: CurveFactory;
 } & Omit<Omit<SVGProps<SVGPathElement>, 'ref'>, keyof RenderPathProps<Datum>>;
 
 /** Cannot be used if the data to interpolate contains missing values (e.g., `null` or `undefined` values). */
-export function SVGInterpolatedPath<Datum extends object>({
+export function SVGInterpolatedArea<Datum extends object>({
   dataEntry,
   scales,
   horizontal,
@@ -28,18 +28,18 @@ export function SVGInterpolatedPath<Datum extends object>({
 //   onPointerMove,
 //   onPointerOut,
 //   onPointerUp,
-SVGInterpolatedPathProps<Datum>) {
-  const pathShape = createLineSeriesPathShape({ scales, horizontal, curve, dataEntry, renderingOffset });
+SVGInterpolatedAreaProps<Datum>) {
+  const pathShape = createAreaSeriesPathShape({ scales, horizontal, curve, dataEntry, renderingOffset });
   const transitions = useInterpolatedPathTransitions({ pathShape, springConfig, animate, renderingOffset });
   return (
     <animated.path
-      data-testid="path"
+      data-testid="area"
       d={transitions}
       shapeRendering={defaultShapeRendering}
-      stroke={color}
-      strokeWidth={2}
-      strokeLinecap="round" // Without this a datum surrounded by nulls will not be visible
-      fill="none"
+      stroke="none"
+      // strokeWidth={2}
+      // strokeLinecap="round" // Without this a datum surrounded by nulls will not be visible
+      fill={color}
       role="presentation"
       aria-hidden
       {...rest}

@@ -85,6 +85,18 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
   }): (datumWithLabel: { datum: RenderingDatum; label: string }) => LabelTransition | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createShape(shapeFunc: (data: readonly RenderingDatum[]) => any): any;
+  getAreaAccessors(params: {
+    scales: ScaleSet;
+    horizontal: boolean;
+    curve: CurveFactory;
+    renderingOffset: number;
+    dependent0Accessor?: (datum: RenderingDatum) => ScaleInput<AxisScale>;
+  }): {
+    independent: (datum: RenderingDatum) => number;
+    dependent: (datum: RenderingDatum) => number;
+    dependent0: number | ((datum: RenderingDatum) => number);
+    defined: (datum: RenderingDatum) => boolean;
+  };
 }
 
 export interface IDataEntryStore<Datum extends object = object, RenderingDatum extends object = object> {
@@ -416,6 +428,7 @@ export type SVGTextProps = SVGAttributes<SVGTextElement>;
 export type LineProps = Omit<SVGProps<SVGLineElement>, 'to' | 'from' | 'ref'>;
 export type PathProps = Omit<SVGProps<SVGLineElement>, 'ref'>;
 export type RectProps = Omit<SVGProps<SVGRectElement>, 'ref'>;
+export type GlyphProps = Omit<SVGProps<SVGCircleElement>, 'ref'>;
 
 export type TooltipProps = {
   /** Tooltip content. */
@@ -471,17 +484,18 @@ export interface LineTransition {
   d: string;
 }
 
-export interface SVGBarProps<Datum extends object> {
+export interface RenderAnimatedBarProps<Datum extends object> {
   springValues: SpringValues<PolygonTransition>;
   datum: Datum;
   index: number;
   dataKey: string;
   horizontal: boolean;
-  colorScale: (dataKey: string) => string;
-  colorAccessor?: (datum: Datum, dataKey: string) => string;
+  color: string;
+  // colorScale: (dataKey: string) => string;
+  // colorAccessor?: (datum: Datum, dataKey: string) => string;
 }
 
-export type SVGBarComponent<Datum extends object> = (props: SVGBarProps<Datum>) => JSX.Element;
+// export type SVGBarComponent<Datum extends object> = (props: SVGBarProps<Datum>) => JSX.Element;
 
 export type SVGAnimatedPathProps<
   IndependentScale extends AxisScale,
@@ -510,21 +524,22 @@ export type SVGAnimatedPathComponent<Datum extends object> = (
 export interface GlyphTransition {
   cx: number;
   cy: number;
-  r: number;
+  size: number;
   opacity: number;
 }
 
-export interface SVGGlyphProps<Datum extends object> {
-  springValues: SpringValues<GlyphTransition>;
-  datum: Datum;
-  index: number;
-  dataKey: string;
-  horizontal: boolean;
-  colorScale: (dataKey: string) => string;
-  colorAccessor?: (datum: Datum, dataKey: string) => string;
-}
+// export interface SVGGlyphProps<Datum extends object> {
+//   springValues: SpringValues<GlyphTransition>;
+//   datum: Datum;
+//   index: number;
+//   dataKey: string;
+//   horizontal: boolean;
+//   color: string;
+//   // colorScale: (dataKey: string) => string;
+//   // colorAccessor?: (datum: Datum, dataKey: string) => string;
+// }
 
-export type SVGGlyphComponent<Datum extends object> = (props: SVGGlyphProps<Datum>) => JSX.Element;
+// export type SVGGlyphComponent<Datum extends object> = (props: SVGGlyphProps<Datum>) => JSX.Element;
 
 export type BarLabelPosition = 'outside' | 'inside' | 'inside-centered';
 export type InternalBarLabelPosition = 'outside' | 'inside' | 'inside-centered' | 'stacked';
@@ -580,3 +595,42 @@ export type LinePathConfig<Datum> = {
   /** Sets the y0 accessor function, and sets y1 to null. */
   y?: number | AccessorForArrayItem<Datum, number>;
 };
+
+export type RenderPathProps<Datum extends object> = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dataEntry: IDataEntry<Datum, any>;
+  scales: ScaleSet;
+  theme: XYChartTheme;
+  horizontal: boolean;
+  renderingOffset: number;
+  animate: boolean;
+  springConfig: SpringConfig;
+  // curve: CurveFactory | CurveFactoryLineOnly;
+  color: string;
+};
+//  & Pick<
+//   SeriesProps<AxisScale, AxisScale, Datum>,
+//   'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
+// >;
+
+export type RenderAnimatedGlyphProps<Datum extends object> = {
+  springValues: SpringValues<GlyphTransition>;
+  datum: Datum;
+  index: number;
+  dataKey: string;
+  horizontal: boolean;
+  color: string;
+  // colorScale: (dataKey: string) => string;
+  // colorAccessor?: (datum: Datum, dataKey: string) => string;
+};
+
+export interface BasicSeriesProps<Datum extends object> {
+  dataKey: string;
+  data: readonly Datum[];
+  keyAccessor?: (datum: Datum, dataKey?: string) => string | number;
+  independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  springConfig?: SpringConfig;
+  animate?: boolean;
+  enableEvents?: boolean;
+}

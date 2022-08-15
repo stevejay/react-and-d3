@@ -13,7 +13,7 @@ export class DataEntryStore implements IDataEntryStore {
     this._dataKeys = [...this._dataEntries.keys()];
     if (dataEntries.length !== this._dataKeys.length) {
       // TODO better error message
-      throw new Error('Duplicate dataKey found in chart.');
+      throw new Error('One or more duplicate dataKeys exist in the chart.');
     }
   }
 

@@ -10,8 +10,7 @@ export function useGlyphTransitions<Datum extends object>({
   renderingOffset,
   springConfig,
   animate,
-  seriesIsLeaving = false,
-  getRadius
+  glyphSize
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataEntry: IDataEntry<Datum, any>;
@@ -20,21 +19,19 @@ export function useGlyphTransitions<Datum extends object>({
   springConfig: Partial<SpringConfig>;
   animate: boolean;
   renderingOffset: number;
-  /** Pass `true` if the entire series for the dataEntry is being removed. This will result in the bar not changing position while it fades out. */
-  seriesIsLeaving?: boolean;
-  getRadius: (datum: Datum) => number;
+  glyphSize: number | ((datum: Datum, dataKey: string) => number);
 }) {
-  const renderingDataWithRadii = dataEntry
-    .getRenderingData()
-    .map((datum) => ({ datum, radius: getRadius(datum) }));
+  const renderingDataWithRadii = dataEntry.getRenderingData().map((datum) => ({
+    datum,
+    size: typeof glyphSize === 'function' ? glyphSize(datum, dataEntry.dataKey) : glyphSize
+  }));
   const position = dataEntry.createElementPositionerForRenderingData({ scales, horizontal, renderingOffset });
-  return useTransition<{ datum: Datum; radius: number }, GlyphTransition>(renderingDataWithRadii, {
-    initial: ({ datum, radius }) => ({ opacity: 1, ...createGlyphTransition(position(datum)), r: radius }),
-    from: ({ datum, radius }) => ({ opacity: 0, ...createGlyphTransition(position(datum)), r: radius }),
-    enter: ({ datum, radius }) => ({ opacity: 1, ...createGlyphTransition(position(datum)), r: radius }),
-    update: ({ datum, radius }) =>
-      seriesIsLeaving ? { opacity: 1 } : { opacity: 1, ...createGlyphTransition(position(datum)), r: radius },
-    leave: ({ radius }) => ({ opacity: 0, r: radius }),
+  return useTransition<{ datum: Datum; size: number }, GlyphTransition>(renderingDataWithRadii, {
+    initial: ({ datum, size }) => ({ opacity: 1, ...createGlyphTransition(position(datum)), size }),
+    from: ({ datum, size }) => ({ opacity: 0, ...createGlyphTransition(position(datum)), size }),
+    enter: ({ datum, size }) => ({ opacity: 1, ...createGlyphTransition(position(datum)), size }),
+    update: ({ datum, size }) => ({ opacity: 1, ...createGlyphTransition(position(datum)), size }),
+    leave: ({ size }) => ({ opacity: 0, size }),
     config: springConfig,
     keys: ({ datum }) => dataEntry.keyAccessor(dataEntry.getOriginalDatumFromRenderingDatum(datum)),
     immediate: !animate

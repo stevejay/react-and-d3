@@ -1,15 +1,13 @@
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useSeriesDataSets } from '@/hooks/useDataSets';
+import { CategoryValueListDatum } from '@/types';
 import { InView } from '@/visx-hybrid/InView';
 
 import { StackedBarChart } from './StackedBarChart';
 
 const dataSets: {
   seriesKeys: readonly string[];
-  data: readonly {
-    category: string;
-    values: { one?: number; two?: number; three?: number };
-  }[];
+  data: readonly CategoryValueListDatum<string, number>[];
 }[] = [
   {
     seriesKeys: ['one', 'two', 'three'],

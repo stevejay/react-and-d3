@@ -1,10 +1,11 @@
-import type { AxisScale, StackDataWithSums } from './types';
+import type { AxisScale, StackDatum } from './types';
 
+// REMOVE
 /** Returns the value which forms a stack group. */
-export const getStackValue = <
+export function getStackValue<
   IndependentScale extends AxisScale,
   DependentScale extends AxisScale,
   Datum extends object
->(
-  d: Pick<StackDataWithSums<IndependentScale, DependentScale, Datum>, 'stack'>
-) => d.stack;
+>(datum: StackDatum<IndependentScale, DependentScale, Datum>) {
+  return datum?.data?.stack;
+}

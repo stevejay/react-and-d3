@@ -37,7 +37,6 @@ export function EmptyBarChart() {
             aria-label="Some Important Results"
             dependentRangePadding={50}
             independentRangePadding={50}
-            className="select-none"
             theme={darkTheme}
           />
         </InView>

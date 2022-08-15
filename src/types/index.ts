@@ -35,9 +35,9 @@ export interface TimeValueDatum<ValueT extends DomainValue> {
   readonly value: ValueT;
 }
 
-// Limitation here: key is always a string.
 export interface CategoryValueListDatum<CategoryT extends DomainValue, ValueT extends DomainValue> {
   readonly category: CategoryT;
+  // Limitation here: key is always a string:
   readonly values: { [key: string]: ValueT };
 }
 

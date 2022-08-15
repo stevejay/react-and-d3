@@ -57,7 +57,6 @@ export function getDataEntriesFromChildren<
         result.dataEntries,
         horizontal
       );
-      // Set offset to diverging if it's undefined and negative values are present
       const hasSomeNegativeValues = stackOffset ? false : combinedData.some((datum) => datum.negativeSum < 0);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,6 +67,7 @@ export function getDataEntriesFromChildren<
         stack.order(getStackOrder(stackOrder));
       }
 
+      // Set offset to diverging if it's undefined and negative values are present
       if (stackOffset || hasSomeNegativeValues) {
         stack.offset(getStackOffset(stackOffset || 'diverging'));
       }

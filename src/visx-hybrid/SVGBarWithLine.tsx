@@ -3,26 +3,25 @@ import { animated } from 'react-spring';
 
 import { defaultShapeRendering } from './constants';
 import { SVGBar } from './SVGBar';
-import type { SVGBarProps } from './types';
+import { RenderAnimatedBarProps } from './types';
 
-type PolygonProps = Omit<SVGProps<SVGPolygonElement>, 'points' | 'ref'>;
 type LineProps = Omit<SVGProps<SVGLineElement>, 'x1' | 'y1' | 'x2' | 'y2' | 'ref'>;
 
-export type SVGBarWithLineProps<Datum extends object> = SVGBarProps<Datum> & {
-  barProps?: PolygonProps | ((datum: Datum, index: number, dataKey: string) => PolygonProps);
-  lineProps?: LineProps | ((datum: Datum, index: number, dataKey: string) => LineProps);
-};
+export type SVGBarWithLineProps<Datum extends object> = RenderAnimatedBarProps<Datum> &
+  Omit<Omit<SVGProps<SVGPolygonElement>, 'points' | 'ref'>, keyof RenderAnimatedBarProps<Datum>> & {
+    lineProps?: LineProps | ((datum: Datum, index: number, dataKey: string) => LineProps);
+  };
 
 export function SVGBarWithLine<Datum extends object>(props: SVGBarWithLineProps<Datum>) {
   const {
     springValues: { opacity, x1, y1, x2, y2 },
+    dataKey,
     datum,
     index,
-    dataKey,
     horizontal,
     lineProps
   } = props;
-  const { style: lineStyle, ...restLineProps } =
+  const { style, ...restLineProps } =
     (typeof lineProps === 'function' ? lineProps(datum, index, dataKey) : lineProps) ?? {};
   return (
     <>
@@ -32,7 +31,7 @@ export function SVGBarWithLine<Datum extends object>(props: SVGBarWithLineProps<
         y1={horizontal ? y1 : y2}
         x2={x2}
         y2={y2}
-        style={{ ...lineStyle, opacity }}
+        style={{ ...style, opacity }}
         shapeRendering={defaultShapeRendering}
         stroke="currentColor"
         strokeWidth={2}

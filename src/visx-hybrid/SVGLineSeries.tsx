@@ -1,40 +1,22 @@
-import type { SVGProps } from 'react';
-import { SpringConfig } from 'react-spring';
-import { CurveFactory, CurveFactoryLineOnly, curveLinear } from 'd3-shape';
+import type { ReactNode, SVGProps } from 'react';
 
-import { barSeriesEventSource, xyChartEventSource } from './constants';
-import { SVGWipedPath } from './SVGWipedPath';
-import type { AxisScale, PathProps, ScaleInput, SVGAnimatedPathComponent } from './types';
+import { lineSeriesEventSource, xyChartEventSource } from './constants';
+import type { AxisScale, BasicSeriesProps, RenderPathProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useXYChartContext } from './useXYChartContext';
 
-export type SVGLineSeriesProps<Datum extends object> = {
-  springConfig?: SpringConfig;
-  animate?: boolean;
-  dataKey: string;
-  data: readonly Datum[];
-  keyAccessor?: (datum: Datum, dataKey?: string) => string | number;
-  independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
-  dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
-  // colorAccessor?: (datum: Datum, dataKey: string) => string;
-  groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
-  enableEvents?: boolean;
-  component?: SVGAnimatedPathComponent<Datum>;
-  curve?: CurveFactory | CurveFactoryLineOnly;
-  color?: string | ((dataKey: string) => string);
-  pathProps?: PathProps | ((dataKey: string) => PathProps);
+export type SVGLineSeriesProps<Datum extends object> = BasicSeriesProps<Datum> & {
+  groupProps?: SVGProps<SVGGElement>;
+  renderPath: (props: RenderPathProps<Datum>) => ReactNode;
 };
 
 export function SVGLineSeries<Datum extends object>({
-  groupProps,
-  springConfig,
-  animate = true,
   dataKey,
+  animate = true,
+  springConfig,
+  groupProps,
   enableEvents = true,
-  curve = curveLinear,
-  color,
-  pathProps,
-  component: Component = SVGWipedPath
+  renderPath
 }: SVGLineSeriesProps<Datum>) {
   const {
     scales,
@@ -47,7 +29,7 @@ export function SVGLineSeries<Datum extends object>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = useXYChartContext<Datum, any>();
   const dataEntry = dataEntryStore.getByDataKey(dataKey);
-  const ownEventSourceKey = `${barSeriesEventSource}-${dataKey}`;
+  const ownEventSourceKey = `${lineSeriesEventSource}-${dataKey}`;
   // const eventEmitters =
   useSeriesEvents<AxisScale, AxisScale, Datum>({
     dataKeyOrKeysRef: dataKey,
@@ -58,37 +40,22 @@ export function SVGLineSeries<Datum extends object>({
     // onPointerOut,
     // onPointerUp,
     source: ownEventSourceKey,
-    allowedSources: [xyChartEventSource]
+    allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
-  const resolvedColor =
-    (typeof color === 'function' ? color(dataKey) : color) ??
-    scales.color?.(dataKey) ??
-    theme?.colors?.[0] ??
-    'currentColor';
+  // Provide a fallback stroke value:
+  const fallbackStroke = scales.color?.(dataKey) ?? theme?.colors?.[0] ?? 'currentColor';
   return (
     <g data-testid={`line-series-${dataKey}`} {...groupProps}>
-      {/* <SVGWipedPath
-        dataEntry={dataEntry}
-        scales={scales}
-        horizontal={horizontal}
-        renderingOffset={renderingOffset}
-        animate={animate && contextAnimate}
-        springConfig={springConfig ?? contextSpringConfig}
-        color={resolvedColor}
-        curve={curve}
-        pathProps={pathProps}
-      /> */}
-      <Component
-        dataEntry={dataEntry}
-        scales={scales}
-        horizontal={horizontal}
-        renderingOffset={renderingOffset}
-        animate={animate && contextAnimate}
-        springConfig={springConfig ?? contextSpringConfig}
-        color={resolvedColor}
-        curve={curve}
-        pathProps={pathProps}
-      />
+      {renderPath({
+        dataEntry,
+        scales,
+        theme,
+        horizontal,
+        renderingOffset,
+        animate: animate && contextAnimate,
+        springConfig: springConfig ?? contextSpringConfig,
+        color: fallbackStroke
+      })}
     </g>
   );
 }

@@ -19,7 +19,7 @@ export const defaultDatumLabelPadding = 8;
 export const defaultGroupPadding = 0.1;
 export const defaultTooltipGlyphRadius = 4;
 export const defaultOuterTickLength = 0;
-export const defaultGlyphRadius = 6;
+export const defaultGlyphSize = 6;
 export const zeroRangePadding: [number, number] = [0, 0];
 export const zeroMargin: Margin = { left: 0, right: 0, top: 0, bottom: 0 };
 

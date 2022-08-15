@@ -6,12 +6,11 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 import type { CategoryValueDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
+import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
-import { SVGBarAnnotation } from '@/visx-hybrid/SVGBarAnnotation';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
-import { SVGGlyphSeries } from '@/visx-hybrid/SVGGlyphSeries';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
@@ -34,13 +33,6 @@ const dependentScale: LinearScaleConfig<number> = {
   round: true,
   clamp: true,
   zero: true
-};
-
-const glyphZScale: LinearScaleConfig<number> = {
-  type: 'linear',
-  clamp: true,
-  range: [5, 15],
-  domain: [-100, 100]
 };
 
 function independentAccessor(datum: CategoryValueDatum<string, number>) {
@@ -70,7 +62,6 @@ export function BarChart({ data }: BarChartProps) {
       aria-label="Some Important Results"
       dependentRangePadding={50}
       independentRangePadding={50}
-      className="select-none"
       theme={darkTheme}
       outerMargin={{ top: 20, bottom: 20, left: 20, right: 20 }}
       // horizontal
@@ -82,21 +73,9 @@ export function BarChart({ data }: BarChartProps) {
         independentAccessor={independentAccessor}
         dependentAccessor={dependentAccessor}
         colorAccessor={colorAccessor}
-        component={SVGBarWithLine}
+        renderBar={SVGBarWithLine}
       />
       <SVGBarSeriesLabels dataKeyRef="data-a" formatter={dependentAxisTickLabelFormatter} />
-      <SVGGlyphSeries
-        dataKey="data-b"
-        data={data}
-        independentAccessor={independentAccessor}
-        dependentAccessor={dependentAccessor}
-        // radius={10}
-        radiusScale={glyphZScale}
-        radiusAccessor={dependentAccessor}
-        // colorAccessor={colorAccessor}
-        enableEvents={false}
-        // component={SVGGlyph}
-      />
       <SVGA11ySeries<CategoryValueDatum<string, number>>
         dataKeyOrKeysRef="data-a"
         categoryA11yProps={(category, data) => ({
@@ -123,7 +102,7 @@ export function BarChart({ data }: BarChartProps) {
         hideZero
         tickFormat={dependentAxisTickLabelFormatter}
       />
-      <SVGBarAnnotation datum={data[2]} dataKeyRef="data-a" />
+      <SVGAreaAnnotation datum={data[2]} dataKeyRef="data-a" />
       <PopperTooltip<CategoryValueDatum<string, number>>
         snapTooltipToDatumX
         showVerticalCrosshair

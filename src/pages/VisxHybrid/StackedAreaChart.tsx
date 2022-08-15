@@ -1,39 +1,39 @@
-import type { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
+import type { LinearScaleConfig, UtcScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
-import { format } from 'd3-format';
+// import { format } from 'd3-format';
 import { schemeCategory10 } from 'd3-scale-chromatic';
+import { curveCatmullRom } from 'd3-shape';
 import { capitalize, isNil } from 'lodash-es';
 
 import type { CategoryValueListDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
-import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
 import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
+import { SVGAreaSeries } from '@/visx-hybrid/SVGAreaSeries';
+import { SVGAreaStack } from '@/visx-hybrid/SVGAreaStack';
+// import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
-import { SVGBar } from '@/visx-hybrid/SVGBar';
-import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
-import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
-import { SVGBarStack } from '@/visx-hybrid/SVGBarStack';
-import { SVGBarStackLabels } from '@/visx-hybrid/SVGBarStackLabels';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
+import { SVGInterpolatedArea } from '@/visx-hybrid/SVGInterpolatedArea';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
 
-export interface StackedBarChartProps {
-  data: readonly CategoryValueListDatum<string, number>[];
-  dataKeys: readonly string[];
-}
-
-const xScale: BandScaleConfig<string> = {
-  type: 'band',
-  paddingInner: 0.4,
-  paddingOuter: 0.2,
-  round: true
+const independentScaleConfig: UtcScaleConfig<number> = {
+  type: 'utc',
+  nice: true,
+  round: true,
+  clamp: true
 } as const;
 
-const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
+const dependentScaleConfig: LinearScaleConfig<number> = {
+  type: 'linear',
+  nice: true,
+  round: true,
+  clamp: true,
+  zero: true
+} as const;
 
-function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) {
+function colorAccessor(_d: CategoryValueListDatum<Date, number>, key: string) {
   switch (key) {
     case 'one':
       return schemeCategory10[0];
@@ -48,13 +48,18 @@ function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) 
 
 const springConfig = { duration: 350, easing: easeCubicInOut };
 
-const dependentAxisTickLabelFormatter = format(',.1~f');
+// const dependentAxisTickLabelFormatter = format(',.1~f');
 
-export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
+export interface StackedAreaChartProps {
+  data: readonly CategoryValueListDatum<Date, number>[];
+  dataKeys: readonly string[];
+}
+
+export function StackedAreaChart({ data, dataKeys }: StackedAreaChartProps) {
   return (
     <SVGXYChart
-      independentScale={xScale}
-      dependentScale={yScale}
+      independentScale={independentScaleConfig}
+      dependentScale={dependentScaleConfig}
       springConfig={springConfig}
       role="graphics-document"
       aria-label="Some title"
@@ -62,20 +67,29 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
       theme={darkTheme}
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      <SVGBarStack<CategoryValueListDatum<string, number>> stackOrder="none" renderBar={SVGBar}>
+      <SVGAreaStack<CategoryValueListDatum<Date, number>>
+      //  stackOrder="none"
+      >
         {dataKeys.map((dataKey) => (
-          <SVGBarSeries
+          <SVGAreaSeries
             key={dataKey}
             dataKey={dataKey}
             data={data}
             independentAccessor={(datum) => datum.category}
             dependentAccessor={(datum) => datum.values[dataKey]}
-            colorAccessor={colorAccessor}
-            renderBar={SVGBar}
+            renderArea={(props) => (
+              <SVGInterpolatedArea
+                {...props}
+                curve={curveCatmullRom}
+                // opacity={0.4}
+                // fill={schemeCategory10[1]}
+                // fill={createResourceUrlFromId(patternId)}
+              />
+            )}
           />
         ))}
-      </SVGBarStack>
-      <SVGBarStackLabels>
+      </SVGAreaStack>
+      {/* <SVGBarStackLabels>
         {dataKeys.map((dataKey) => (
           <SVGBarSeriesLabels
             key={dataKey}
@@ -86,8 +100,8 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
             hideOnOverflow={false}
           />
         ))}
-      </SVGBarStackLabels>
-      <SVGA11ySeries<CategoryValueListDatum<string, number>>
+      </SVGBarStackLabels> */}
+      {/* <SVGA11ySeries<CategoryValueListDatum<Date, number>>
         dataKeyOrKeysRef={dataKeys}
         categoryA11yProps={(category, data) => ({
           'aria-label': `Category ${category}: ${dataKeys
@@ -95,30 +109,31 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
             .join(', ')}`,
           'aria-roledescription': `Category ${category}`
         })}
-      />
-      <SVGAxis variable="independent" position="end" label="Foobar Topy" tickLabelAlignment="angled" />
+      /> */}
+      {/* <SVGAxis variable="independent" position="end" label="Foobar Topy" tickLabelAlignment="angled" /> */}
       <SVGAxis variable="independent" position="start" label="Foobar Bottomy" tickLabelAlignment="angled" />
       <SVGAxis
         variable="dependent"
         position="start"
         label="Foobar Lefty"
         tickCount={5}
-        hideZero
+        // hideZero
         tickLabelAlignment="angled"
       />
-      <SVGAxis
+      {/* <SVGAxis
         variable="dependent"
         position="end"
         label="Foobar Righty"
         tickCount={5}
         hideZero
         tickLabelAlignment="angled"
-      />
+      /> */}
       <SVGAreaAnnotation datum={data[1]} dataKeyRef={dataKeys[2]} />
-      <PopperTooltip<CategoryValueListDatum<string, number>>
+      <PopperTooltip<CategoryValueListDatum<Date, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}
+        // showDatumGlyph
         renderTooltip={({ tooltipData }) => (
           <div className="flex flex-col space-y-1 p-1">
             {dataKeys.map((dataKey) => {

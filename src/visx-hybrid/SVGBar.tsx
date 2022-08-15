@@ -2,35 +2,39 @@ import type { SVGProps } from 'react';
 import { animated } from 'react-spring';
 
 import { defaultShapeRendering } from './constants';
-import type { SVGBarProps } from './types';
+import { RenderAnimatedBarProps } from './types';
 
-type PolygonProps = Omit<SVGProps<SVGPolygonElement>, 'points' | 'ref'>;
-
-export type SVGSimpleBarProps<Datum extends object> = SVGBarProps<Datum> & {
-  barProps?: PolygonProps | ((datum: Datum, index: number, dataKey: string) => PolygonProps);
-};
+export type SVGBarProps<Datum extends object> = RenderAnimatedBarProps<Datum> &
+  Omit<Omit<SVGProps<SVGPolygonElement>, 'points' | 'ref'>, keyof RenderAnimatedBarProps<Datum>>;
+//  & {
+//   barProps?: PolygonProps | ((datum: Datum, index: number, dataKey: string) => PolygonProps);
+// };
 
 export function SVGBar<Datum extends object>({
   springValues: { points, opacity },
-  datum,
-  index,
-  dataKey,
-  colorScale,
-  colorAccessor,
-  barProps
-}: SVGSimpleBarProps<Datum>) {
-  const {
-    style: barStyle,
-    fill,
-    ...restBarProps
-  } = (typeof barProps === 'function' ? barProps(datum, index, dataKey) : barProps) ?? {};
+  dataKey: _dataKey,
+  datum: _datum,
+  index: _index,
+  horizontal: _horizontal,
+  color,
+  ...rest
+}: // colorScale,
+// colorAccessor,
+// barProps
+SVGBarProps<Datum>) {
+  const { style, ...restBarProps } = rest;
+  // const {
+  //   style: barStyle,
+  //   // fill,
+  //   ...restBarProps
+  // } = (typeof barProps === 'function' ? barProps(datum, index, dataKey) : barProps) ?? {};
   return (
     <>
       <animated.polygon
         data-testid="bar"
         points={points}
-        fill={colorAccessor?.(datum, dataKey) ?? fill ?? colorScale(dataKey) ?? 'currentColor'}
-        style={{ ...barStyle, opacity }}
+        fill={color}
+        style={{ ...style, opacity }}
         shapeRendering={defaultShapeRendering}
         role="presentation"
         aria-hidden

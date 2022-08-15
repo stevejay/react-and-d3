@@ -6,8 +6,8 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 import type { CategoryValueListDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
+import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
-import { SVGBarAnnotation } from '@/visx-hybrid/SVGBarAnnotation';
 import { SVGBarGroup } from '@/visx-hybrid/SVGBarGroup';
 import { SVGBarGroupLabels } from '@/visx-hybrid/SVGBarGroupLabels';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
@@ -64,12 +64,11 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
       aria-roledescription="Grouped bar chart"
       aria-label="Some title"
       dependentRangePadding={30}
-      className="select-none"
       theme={darkTheme}
       // horizontal
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      <SVGBarGroup padding={0} component={SVGBarWithLine}>
+      <SVGBarGroup padding={0} renderBar={SVGBarWithLine}>
         {dataKeys.map((dataKey) => (
           <SVGBarSeries
             key={dataKey}
@@ -78,6 +77,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
             independentAccessor={(datum) => datum.category}
             dependentAccessor={(datum) => datum.values[dataKey]}
             colorAccessor={colorAccessor}
+            renderBar={SVGBarWithLine}
           />
         ))}
       </SVGBarGroup>
@@ -99,7 +99,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
           'aria-roledescription': `Category ${category}`
         })}
       />
-      <SVGBarAnnotation datum={data[2]} dataKeyRef="three" />
+      <SVGAreaAnnotation datum={data[2]} dataKeyRef="three" />
       <SVGAxis variable="independent" position="end" label="Foobar Top" hideTicks tickLabelPadding={6} />
       <SVGAxis variable="independent" position="start" label="Foobar Bottom" hideTicks tickLabelPadding={6} />
       <SVGAxis

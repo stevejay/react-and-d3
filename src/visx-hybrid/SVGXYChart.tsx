@@ -25,9 +25,6 @@ import type { AxisScaleOutput, Margin, ScaleConfig, XYChartContextType, XYChartT
 import { useEventEmitters } from './useEventEmitters';
 import { XYChartContext } from './XYChartContext';
 
-// TODO:
-// - Support two dependent axes?
-
 function resolveRangePadding(rangePadding: number | [number, number]): [number, number] {
   return typeof rangePadding === 'number' ? [rangePadding, rangePadding] : rangePadding;
 }
@@ -93,7 +90,7 @@ export function SVGXYChart<
   } = props;
 
   if (isNil(width) || isNil(height)) {
-    // If hardcoded dimensions are not available then wrap self in ParentSize.
+    // If hardcoded dimensions are not available then wrap the chart in ParentSize.
     return (
       <ParentSize debouncedMeasureWaitMs={parentSizeDebounceMs}>
         {(dimensions) => <SVGXYChart {...props} width={dimensions.width} height={dimensions.height} />}
@@ -139,15 +136,15 @@ function InnerChart<
   // Gather all the series data from the chart's child components:
   const { dataEntries, groupScales } = getDataEntriesFromChildren(children, horizontal);
 
+  // Create the scales, each with a composite domain derived from all the series data.
   const independentDomainValues = dataEntries
     .map((dataEntry) => dataEntry.getDomainValuesForIndependentScale())
     .flat();
+  const independentScale = createScaleFromScaleConfig(independentDomainValues, independentScaleConfig);
+
   const dependentDomainValues = dataEntries
     .map((dataEntry) => dataEntry.getDomainValuesForDependentScale())
     .flat();
-
-  // Create the scales, each with a composite domain derived from all the series data.
-  const independentScale = createScaleFromScaleConfig(independentDomainValues, independentScaleConfig);
   const dependentScale = createScaleFromScaleConfig(dependentDomainValues, dependentScaleConfig);
 
   // Create a fallback color scale for coloring each series:
@@ -208,7 +205,7 @@ function InnerChart<
           margin.top + resolvedDependentRangePadding[1]
         ];
 
-    // Update the scales with those calculated ranges:
+    // Update the scales with the calculated ranges:
     independentScale.range(independentRange);
     dependentScale.range(dependentRange);
     groupScales.forEach((groupScale) => groupScale.range([0, getScaleBandwidth(independentScale)]));
@@ -244,16 +241,15 @@ function InnerChart<
   const { style, className = '', ...restSvgProps } = svgProps;
 
   const transitions = useTransition(dataContextValue, {
-    initial: { opacity: 0 },
     from: { opacity: 0 },
     enter: { opacity: 1 },
-    update: { opacity: 1 },
     leave: { opacity: 0 },
     config: springConfig,
     key: Boolean(dataContextValue),
     immediate: !(animate && animateSVG)
   });
 
+  console.log('>> render');
   return (
     <>
       {transitions(({ opacity }, context) =>

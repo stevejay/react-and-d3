@@ -1,9 +1,9 @@
-import type { SVGProps } from 'react';
+import type { ReactNode, SVGProps } from 'react';
 import { SpringConfig } from 'react-spring';
 
 import { barSeriesEventSource, xyChartEventSource } from './constants';
 import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
-import type { AxisScale, ScaleInput, SVGBarComponent } from './types';
+import type { AxisScale, RenderAnimatedBarProps, ScaleInput } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useXYChartContext } from './useXYChartContext';
 
@@ -18,7 +18,7 @@ export type SVGBarSeriesProps<Datum extends object> = {
   colorAccessor?: (datum: Datum, dataKey: string) => string;
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
   enableEvents?: boolean;
-  component?: SVGBarComponent<Datum>;
+  renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
 };
 
 export function SVGBarSeries<Datum extends object>({
@@ -28,7 +28,7 @@ export function SVGBarSeries<Datum extends object>({
   dataKey,
   enableEvents = true,
   colorAccessor,
-  component
+  renderBar
 }: SVGBarSeriesProps<Datum>) {
   const {
     scales,
@@ -51,7 +51,7 @@ export function SVGBarSeries<Datum extends object>({
     // onPointerOut,
     // onPointerUp,
     source: ownEventSourceKey,
-    allowedSources: [xyChartEventSource]
+    allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
   return (
     <g data-testid={`bar-series-${dataKey}`} {...groupProps}>
@@ -64,9 +64,8 @@ export function SVGBarSeries<Datum extends object>({
           animate={animate && contextAnimate}
           springConfig={springConfig ?? contextSpringConfig}
           colorAccessor={colorAccessor ?? dataEntry.colorAccessor}
-          colorScale={scales.color}
           // {...events}
-          component={component}
+          renderBar={renderBar}
         />
       }
     </g>

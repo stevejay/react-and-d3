@@ -129,7 +129,7 @@ export function RespondentsByLanguage() {
                 role="graphics-document"
                 aria-roledescription="Bar chart"
                 aria-label="Some Important Results"
-                className="bg-slate-700 select-none"
+                className="bg-slate-700"
                 theme={darkTheme}
               >
                 <SVGBandStripes variable="independent" even={false} ignoreRangePadding={false} />
@@ -140,7 +140,7 @@ export function RespondentsByLanguage() {
                   independentAccessor={independentAccessor}
                   dependentAccessor={dependentAccessor}
                   colorAccessor={colorAccessor}
-                  component={SVGBarWithLine}
+                  renderBar={SVGBarWithLine}
                 />
                 <SVGBarSeriesLabels dataKeyRef="data-a" formatter={dependentAxisTickLabelFormatter} />
                 <SVGA11ySeries<EntityBucket>
