@@ -9,16 +9,36 @@ import { isNil } from 'lodash-es';
 import { defaultTheme, defaultTooltipGlyphRadius } from './constants';
 import { isValidNumber } from './isValidNumber';
 import { Portal } from './Portal';
-import type { TooltipContextType, TooltipProps as BaseTooltipProps } from './types';
+import type { TooltipContextType, TooltipDatum, TooltipProps as BaseTooltipProps } from './types';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 import { useTooltipContext } from './useTooltipContext';
 import { useXYChartContext } from './useXYChartContext';
+
+function addGlyph<Datum extends object>(
+  glyphProps: GlyphProps[],
+  datum: TooltipDatum<Datum>,
+  key: string | number,
+  radius: number,
+  strokeWidth: number
+) {
+  const { snapLeft: left, snapTop: top } = datum;
+  if (isValidNumber(left) && isValidNumber(top)) {
+    glyphProps.push({
+      key,
+      left, //: left - radius - strokeWidth,
+      top, //: top - radius - strokeWidth,
+      radius,
+      strokeWidth
+    });
+  }
+}
 
 export type RenderTooltipParams<Datum extends object> = TooltipContextType<Datum> & {
   colorScale?: PickD3Scale<'ordinal', string, string>;
 };
 
 type GlyphProps = {
+  key: string | number;
   left?: number;
   top?: number;
   fill?: string;
@@ -45,7 +65,7 @@ export type PopperTooltipProps<Datum extends object> = {
   /** Whether to show a glyph at the tooltip position for the (single) nearest Datum. */
   showDatumGlyph?: boolean;
   /** Whether to show a glyph for the nearest Datum in each series. */
-  // showSeriesGlyphs?: boolean;
+  showSeriesGlyphs?: boolean;
   /** Optional styles for the vertical crosshair, if visible. */
   verticalCrosshairStyle?: SVGProps<SVGLineElement>;
   /** Optional styles for the vertical crosshair, if visible. */
@@ -76,6 +96,7 @@ export function PopperTooltip<Datum extends object>({
   renderTooltip,
   // scroll = true,
   showDatumGlyph = false,
+  showSeriesGlyphs = false,
   showHorizontalCrosshair = false,
   // showSeriesGlyphs = false,
   showVerticalCrosshair = false,
@@ -141,22 +162,16 @@ PopperTooltipProps<Datum>) {
   // collect positions + styles for glyphs; glyphs always snap to Datum, not event coords
   const glyphProps: GlyphProps[] = [];
 
-  if (showDatumGlyph) {
+  if (showDatumGlyph || showSeriesGlyphs) {
     const radius = Number(theme?.tooltip?.glyph?.radius ?? defaultTooltipGlyphRadius);
     const strokeWidth = Number(theme?.tooltip?.glyph?.strokeWidth ?? 0);
 
-    if (nearestDatum) {
-      const { snapLeft: left, snapTop: top } = nearestDatum;
-
-      // don't show glyphs if coords are unavailable
-      if (isValidNumber(left) && isValidNumber(top)) {
-        glyphProps.push({
-          left: left - radius - strokeWidth,
-          top: top - radius - strokeWidth,
-          radius,
-          strokeWidth
-        });
-      }
+    if (showSeriesGlyphs) {
+      tooltipContext?.tooltipData?.datumByKey.forEach((datum, key) => {
+        addGlyph(glyphProps, datum, key, radius, strokeWidth);
+      });
+    } else if (nearestDatum) {
+      addGlyph(glyphProps, nearestDatum, nearestDatum.key, radius, strokeWidth);
     }
   }
 
@@ -204,12 +219,14 @@ PopperTooltipProps<Datum>) {
                   {...restCrosshairsStyles}
                 />
               )}
-              {glyphProps.map(({ left, top, strokeWidth, radius }, i) =>
+              {glyphProps.map(({ key, left, top, strokeWidth, radius }) =>
                 isNil(top) || isNil(left) ? null : (
                   <animated.circle
-                    key={i}
-                    cx={left + radius + strokeWidth}
-                    cy={top + radius + strokeWidth}
+                    key={key}
+                    // cx={left + radius + strokeWidth}
+                    // cy={top + radius + strokeWidth}
+                    cx={left}
+                    cy={top}
                     r={radius}
                     strokeWidth={strokeWidth}
                     stroke="currentColor"

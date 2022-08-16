@@ -2,7 +2,6 @@ import type { SVGProps } from 'react';
 import { animated } from 'react-spring';
 import { CurveFactory, curveLinear } from 'd3-shape';
 
-import { defaultShapeRendering } from './constants';
 import { createAreaSeriesPathShape } from './createAreaSeriesPathShape';
 import type { RenderPathProps } from './types';
 import { useInterpolatedPathTransitions } from './useInterpolatedPathTransitions';
@@ -34,7 +33,7 @@ SVGInterpolatedAreaProps<Datum>) {
     <animated.path
       data-testid="area"
       d={transitions}
-      shapeRendering={defaultShapeRendering}
+      // shapeRendering={defaultShapeRendering}
       stroke="none"
       fill={color}
       role="presentation"

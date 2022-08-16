@@ -70,7 +70,9 @@ export function StackedAreaChart({ data, dataKeys }: StackedAreaChartProps) {
       theme={darkTheme}
     >
       <SVGGrid tickCount={5} variable="dependent" />
-      <SVGAreaStack<CategoryValueListDatum<Date, number>> stackOffset="none">
+      <SVGAreaStack<CategoryValueListDatum<Date, number>>
+      // stackOffset="none"
+      >
         {dataKeys.map((dataKey) => (
           <SVGAreaSeries
             key={dataKey}
@@ -135,6 +137,7 @@ export function StackedAreaChart({ data, dataKeys }: StackedAreaChartProps) {
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}
         // showDatumGlyph
+        showSeriesGlyphs
         renderTooltip={({ tooltipData }) => (
           <div className="flex flex-col space-y-1 p-1">
             {dataKeys.map((dataKey) => {

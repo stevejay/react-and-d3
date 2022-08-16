@@ -2,7 +2,6 @@ import type { SVGProps } from 'react';
 import { animated } from 'react-spring';
 import { CurveFactory, CurveFactoryLineOnly, curveLinear } from 'd3-shape';
 
-import { defaultShapeRendering } from './constants';
 import { createLineSeriesPathShape } from './createLineSeriesPathShape';
 import type { RenderPathProps } from './types';
 import { useInterpolatedPathTransitions } from './useInterpolatedPathTransitions';
@@ -34,7 +33,7 @@ SVGInterpolatedPathProps<Datum>) {
     <animated.path
       data-testid="path"
       d={transitions}
-      shapeRendering={defaultShapeRendering}
+      // shapeRendering={defaultShapeRendering}
       stroke={color}
       strokeWidth={2}
       strokeLinecap="round" // Without this a datum surrounded by nulls will not be visible
