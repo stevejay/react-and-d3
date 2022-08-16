@@ -68,22 +68,6 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
     datum: RenderingDatum;
     label: string;
   }[];
-  // createBarPositionerForRenderingData(args: {
-  //   scales: ScaleSet;
-  //   horizontal: boolean;
-  // }): (datum: RenderingDatum) => DatumPosition | null;
-  // createLabelPositionerForRenderingData(args: {
-  //   scales: ScaleSet;
-  //   horizontal: boolean;
-  //   renderingOffset: number;
-  //   font: FontProperties | string;
-  //   position: InternalBarLabelPosition;
-  //   positionOutsideOnOverflow: boolean;
-  //   padding: number;
-  //   hideOnOverflow: boolean;
-  // }): (datumWithLabel: { datum: RenderingDatum; label: string }) => LabelTransition | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // createShape(shapeFunc: (data: readonly RenderingDatum[]) => any): any;
   getAreaAccessorsForRenderingData(
     scales: ScaleSet,
     dependent0Accessor?: (datum: RenderingDatum) => ScaleInput<AxisScale>
