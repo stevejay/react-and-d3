@@ -23,15 +23,6 @@ export function createScaleFromScaleConfig<Scale extends AnyD3Scale>(
     : (d3Extent(values) as [ScaleInput<Scale>, ScaleInput<Scale>]);
 
   return !isNil(domain) && 'zero' in scaleConfig && scaleConfig.zero === true && scaleCanBeZeroed(scaleConfig)
-    ? createScale({
-        domain,
-        range,
-        zero: true,
-        ...scaleConfig
-      })
-    : createScale({
-        domain: domain as [ScaleInput<Scale>, ScaleInput<Scale>],
-        range,
-        ...scaleConfig
-      });
+    ? createScale({ domain, range, zero: true, ...scaleConfig })
+    : createScale({ domain: domain as [ScaleInput<Scale>, ScaleInput<Scale>], range, ...scaleConfig });
 }

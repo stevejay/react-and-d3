@@ -41,8 +41,7 @@ export function SVGBarGroup<Datum extends object>({
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     dataEntryStore
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } = useXYChartContext<Datum, any>();
+  } = useXYChartContext<Datum>();
 
   const barSeriesChildren = useMemo(
     () => getChildrenAndGrandchildrenWithProps<SVGBarSeriesProps<Datum>>(children),

@@ -48,89 +48,75 @@ function getTickLabelsMargin(
   // Get the height of the tick labels:
   const tickLabelHeight = getFontMetricsWithCache(font).height;
 
-  if (axisOrientation === 'left' || axisOrientation === 'right') {
-    if (tickLabelAlignment === 'angled') {
-      const sqrtOfTwo = Math.sqrt(2);
-      // Find the length of a side of the square formed where the maxTickLabelWidth
-      // is the hypotenuse of that square:
-      const width = Math.ceil(sqrtOfTwo * (maxTickLabelWidth * 0.5));
-      // Also find the equivalent side for the height of the label:
-      const widthForHeight = sqrtOfTwo * (tickLabelHeight * 0.5);
-      const halfHeight = Math.ceil(widthForHeight * 0.5);
-      if (axisOrientation === 'left') {
-        return {
-          left: width + halfHeight + tickLabelPadding,
-          right: 0,
-          top: halfHeight - rangePadding[1],
-          bottom: width + halfHeight - rangePadding[0]
-        };
-      } else {
-        return {
-          left: 0,
-          right: width + halfHeight + tickLabelPadding,
-          top: width + halfHeight - rangePadding[1],
-          bottom: halfHeight - rangePadding[0]
-        };
-      }
-    } else {
-      let width = 0;
-      let halfHeight = 0;
-      if (tickLabelAlignment === 'horizontal') {
-        width = maxTickLabelWidth + tickLabelPadding;
-        halfHeight = Math.ceil(tickLabelHeight * 0.5);
-      } else {
-        width = tickLabelHeight + tickLabelPadding;
-        halfHeight = Math.ceil(maxTickLabelWidth * 0.5);
-      }
+  if (tickLabelAlignment === 'angled') {
+    const sqrtOfTwo = Math.sqrt(2);
+    // Find the length of a side of the square formed where the maxTickLabelWidth
+    // is the hypotenuse of that square:
+    const width = Math.ceil(sqrtOfTwo * (maxTickLabelWidth * 0.5));
+    // Also find the equivalent side for the height of the label:
+    const widthForHeight = sqrtOfTwo * (tickLabelHeight * 0.5);
+    const halfHeight = Math.ceil(widthForHeight * 0.5);
+    if (axisOrientation === 'left') {
       return {
-        left: axisOrientation === 'left' ? width : 0,
-        right: axisOrientation === 'right' ? width : 0,
+        left: width + halfHeight + tickLabelPadding,
+        right: 0,
         top: halfHeight - rangePadding[1],
+        bottom: width + halfHeight - rangePadding[0]
+      };
+    } else if (axisOrientation === 'right') {
+      return {
+        left: 0,
+        right: width + halfHeight + tickLabelPadding,
+        top: width + halfHeight - rangePadding[1],
         bottom: halfHeight - rangePadding[0]
       };
-    }
-  } else {
-    // 'top' or 'bottom'.
-    if (tickLabelAlignment === 'angled') {
-      const sqrtOfTwo = Math.sqrt(2);
-      // Find the length of a side of the square formed where the maxTickLabelWidth
-      // is the hypotenuse of that square:
-      const width = Math.ceil(sqrtOfTwo * (maxTickLabelWidth * 0.5));
-      // Also find the equivalent side for the height of the label:
-      const widthForHeight = sqrtOfTwo * (tickLabelHeight * 0.5);
-      const halfHeight = Math.ceil(widthForHeight * 0.5);
-      if (axisOrientation === 'top') {
-        return {
-          left: halfHeight - rangePadding[0],
-          right: width + halfHeight - rangePadding[1],
-          top: width + halfHeight + tickLabelPadding,
-          bottom: 0
-        };
-      } else {
-        return {
-          left: width + halfHeight - rangePadding[0],
-          right: halfHeight - rangePadding[1],
-          top: 0,
-          bottom: width + halfHeight + tickLabelPadding
-        };
-      }
-    } else {
-      let halfWidth = 0;
-      let height = 0;
-      if (tickLabelAlignment === 'horizontal') {
-        halfWidth = Math.ceil(maxTickLabelWidth * 0.5);
-        height = tickLabelHeight + tickLabelPadding;
-      } else if (tickLabelAlignment === 'vertical') {
-        halfWidth = Math.ceil(tickLabelHeight * 0.5);
-        height = maxTickLabelWidth + tickLabelPadding;
-      }
+    } else if (axisOrientation === 'top') {
       return {
-        left: halfWidth - rangePadding[0],
-        right: halfWidth - rangePadding[1],
-        top: axisOrientation === 'top' ? height : 0,
-        bottom: axisOrientation === 'bottom' ? height : 0
+        left: halfHeight - rangePadding[0],
+        right: width + halfHeight - rangePadding[1],
+        top: width + halfHeight + tickLabelPadding,
+        bottom: 0
+      };
+    } else {
+      return {
+        left: width + halfHeight - rangePadding[0],
+        right: halfHeight - rangePadding[1],
+        top: 0,
+        bottom: width + halfHeight + tickLabelPadding
       };
     }
+  } else if (axisOrientation === 'left' || axisOrientation === 'right') {
+    let width = 0;
+    let halfHeight = 0;
+    if (tickLabelAlignment === 'horizontal') {
+      width = maxTickLabelWidth + tickLabelPadding;
+      halfHeight = Math.ceil(tickLabelHeight * 0.5);
+    } else {
+      width = tickLabelHeight + tickLabelPadding;
+      halfHeight = Math.ceil(maxTickLabelWidth * 0.5);
+    }
+    return {
+      left: axisOrientation === 'left' ? width : 0,
+      right: axisOrientation === 'right' ? width : 0,
+      top: halfHeight - rangePadding[1],
+      bottom: halfHeight - rangePadding[0]
+    };
+  } else {
+    let halfWidth = 0;
+    let height = 0;
+    if (tickLabelAlignment === 'horizontal') {
+      height = tickLabelHeight + tickLabelPadding;
+      halfWidth = Math.ceil(maxTickLabelWidth * 0.5);
+    } else if (tickLabelAlignment === 'vertical') {
+      height = maxTickLabelWidth + tickLabelPadding;
+      halfWidth = Math.ceil(tickLabelHeight * 0.5);
+    }
+    return {
+      left: halfWidth - rangePadding[0],
+      right: halfWidth - rangePadding[1],
+      top: axisOrientation === 'top' ? height : 0,
+      bottom: axisOrientation === 'bottom' ? height : 0
+    };
   }
 }
 

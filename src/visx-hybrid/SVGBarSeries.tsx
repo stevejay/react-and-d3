@@ -37,8 +37,7 @@ export function SVGBarSeries<Datum extends object>({
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     dataEntryStore
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } = useXYChartContext<Datum, any>();
+  } = useXYChartContext<Datum>();
   const dataEntry = dataEntryStore.getByDataKey(dataKey);
   const ownEventSourceKey = `${barSeriesEventSource}-${dataKey}`;
   // const eventEmitters =

@@ -26,8 +26,7 @@ export function SVGAreaSeries<Datum extends object>({
     animate: contextAnimate,
     dataEntryStore,
     theme
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } = useXYChartContext<Datum, any>();
+  } = useXYChartContext<Datum>();
   const dataEntry = dataEntryStore.getByDataKey(dataKey);
   const ownEventSourceKey = `${areaSeriesEventSource}-${dataKey}`;
   // const eventEmitters =

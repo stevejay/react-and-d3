@@ -44,11 +44,7 @@ export function useEventHandlers<Datum extends object>({
   onPointerUp,
   allowedSources
 }: PointerEventHandlerParams<Datum>) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { width, height, horizontal, dataEntryStore, scales } = useXYChartContext<Datum, any>();
-
-  // const findNearestOriginalDatum = userFindNearestDatum || (horizontal ? findNearestDatumY : findNearestDatumX);
-
+  const { width, height, horizontal, dataEntryStore, scales } = useXYChartContext<Datum>();
   // this logic is shared by pointerup, pointermove, and focus handlers
   const getHandlerParams = useCallback(
     (params?: HandlerParams) => {

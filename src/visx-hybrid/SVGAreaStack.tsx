@@ -38,8 +38,7 @@ export function SVGAreaStack<Datum extends object>({
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     dataEntryStore
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } = useXYChartContext<Datum, any>();
+  } = useXYChartContext<Datum>();
   const seriesChildren = useMemo(
     () => getChildrenAndGrandchildrenWithProps<SVGAreaSeriesProps<Datum>>(children),
     [children]

@@ -2,9 +2,6 @@ import { useCallback, useState } from 'react';
 
 import type { ShowTooltipArgs, UseTooltipParams, UseTooltipState } from './types';
 
-/**
- * @param initialTooltipState  Optional initial `TooltipState`.
- */
 export function useTooltip<TooltipData = object>(
   initialTooltipState?: Partial<UseTooltipParams<TooltipData>>
 ): UseTooltipParams<TooltipData> {
