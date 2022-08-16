@@ -21,7 +21,6 @@ export function SVGInterpolatedPath<Datum extends object>({
   springConfig,
   curve = curveLinear,
   color,
-  // stroke,
   ...rest
 }: //   onBlur,
 //   onFocus,

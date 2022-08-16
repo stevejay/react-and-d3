@@ -10,9 +10,10 @@ import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 import { SVGAreaSeries } from '@/visx-hybrid/SVGAreaSeries';
 import { SVGAreaStack } from '@/visx-hybrid/SVGAreaStack';
-// import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
+// import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
+import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
 import { SVGInterpolatedArea } from '@/visx-hybrid/SVGInterpolatedArea';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
@@ -89,6 +90,15 @@ export function StackedAreaChart({ data, dataKeys }: StackedAreaChartProps) {
           />
         ))}
       </SVGAreaStack>
+      <SVGIndependentScaleA11ySeries<CategoryValueListDatum<Date, number>>
+        dataKeyOrKeysRef={dataKeys}
+        categoryA11yProps={(category, data) => ({
+          'aria-label': `Category ${category}: ${dataKeys
+            .map((dataKey, index) => `${dataKey} is ${data[index].values[dataKey]}`)
+            .join(', ')}`,
+          'aria-roledescription': `Category ${category}`
+        })}
+      />
       {/* <SVGBarStackLabels>
         {dataKeys.map((dataKey) => (
           <SVGBarSeriesLabels
@@ -101,7 +111,7 @@ export function StackedAreaChart({ data, dataKeys }: StackedAreaChartProps) {
           />
         ))}
       </SVGBarStackLabels> */}
-      {/* <SVGA11ySeries<CategoryValueListDatum<Date, number>>
+      {/* <SVGIndependentScaleA11ySeries<CategoryValueListDatum<Date, number>>
         dataKeyOrKeysRef={dataKeys}
         categoryA11yProps={(category, data) => ({
           'aria-label': `Category ${category}: ${dataKeys

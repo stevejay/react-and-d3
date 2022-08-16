@@ -134,7 +134,7 @@ function InnerChart<
   ...svgProps
 }: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig>) {
   // Gather all the series data from the chart's child components:
-  const { dataEntries, groupScales } = getDataEntriesFromChildren(children, horizontal);
+  const { dataEntries, groupScale } = getDataEntriesFromChildren(children, horizontal);
 
   // Create the scales, each with a composite domain derived from all the series data.
   const independentDomainValues = dataEntries
@@ -208,7 +208,7 @@ function InnerChart<
     // Update the scales with the calculated ranges:
     independentScale.range(independentRange);
     dependentScale.range(dependentRange);
-    groupScales.forEach((groupScale) => groupScale.range([0, getScaleBandwidth(independentScale)]));
+    groupScale && groupScale.range([0, getScaleBandwidth(independentScale)]);
 
     // Calculate the size of the chart area:
     const innerWidth = Math.max(0, width - margin.left - margin.right);
@@ -218,7 +218,7 @@ function InnerChart<
       scales: {
         independent: independentScale,
         dependent: dependentScale,
-        group: groupScales,
+        group: groupScale,
         color: colorScale
       },
       independentRangePadding: resolvedIndependentRangePadding,

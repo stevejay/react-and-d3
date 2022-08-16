@@ -1,6 +1,6 @@
 import { PatternLines } from '@visx/pattern';
 
-import { useXYChartContext } from './useXYChartContext';
+import { useXYChartContext } from '../../visx-hybrid/useXYChartContext';
 
 const patternId = 'xy-chart-pattern';
 

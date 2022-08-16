@@ -12,8 +12,8 @@ import { createResourceUrlFromId } from '@/visx-hybrid/createResourceUrlFromId';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAreaSeries } from '@/visx-hybrid/SVGAreaSeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
-import { SVGCustomChartBackground } from '@/visx-hybrid/SVGCustomChartBackground';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
+import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
 import { SVGInterpolatedArea } from '@/visx-hybrid/SVGInterpolatedArea';
 import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
 import { SVGLineSeries } from '@/visx-hybrid/SVGLineSeries';
@@ -70,7 +70,6 @@ export function AreaChart({ data }: AreaChartProps) {
       theme={darkTheme}
       // horizontal
     >
-      {false && <SVGCustomChartBackground />}
       <PatternLines
         id={patternId}
         width={16}
@@ -85,8 +84,6 @@ export function AreaChart({ data }: AreaChartProps) {
         data={data}
         independentAccessor={independentAccessor}
         dependentAccessor={dependentAccessor}
-        // colorAccessor={colorAccessor}
-        // component={SVGBarWithLine}
         renderArea={(props) => (
           <SVGInterpolatedArea
             {...props}
@@ -112,14 +109,13 @@ export function AreaChart({ data }: AreaChartProps) {
         )}
         enableEvents={false}
       />
-
-      {/* <SVGA11ySeries<CategoryValueDatum<string, number>>
+      <SVGIndependentScaleA11ySeries<TimeValueDatum<number>>
         dataKeyOrKeysRef="data-a"
         categoryA11yProps={(category, data) => ({
-          'aria-label': `Category ${data[0].category}: ${data[0].value}`,
+          'aria-label': `Category ${data[0].date}: ${data[0].value}`,
           'aria-roledescription': `Category ${category}`
         })}
-      /> */}
+      />
       <SVGAxis variable="independent" position="start" label="Date" tickLabelAlignment="angled" />
       <SVGAxis
         variable="dependent"

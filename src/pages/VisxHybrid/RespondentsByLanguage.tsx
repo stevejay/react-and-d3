@@ -11,13 +11,13 @@ import { SectionHeading } from '@/components/SectionHeading';
 import { isDefined } from '@/types/typeguards/isDefined';
 import { InView } from '@/visx-hybrid/InView';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
-import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBandStripes } from '@/visx-hybrid/SVGBandStripes';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
+import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { LocationStatisticSelect } from '../StateOfJS/LocationStatisticSelect';
@@ -143,7 +143,7 @@ export function RespondentsByLanguage() {
                   renderBar={SVGBarWithLine}
                 />
                 <SVGBarSeriesLabels dataKeyRef="data-a" formatter={dependentAxisTickLabelFormatter} />
-                <SVGA11ySeries<EntityBucket>
+                <SVGIndependentScaleA11ySeries<EntityBucket>
                   dataKeyOrKeysRef="data-a"
                   categoryA11yProps={(category, data) => ({
                     'aria-label': `${independentAxisTickFormatter(

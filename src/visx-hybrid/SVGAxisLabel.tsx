@@ -115,6 +115,7 @@ export function SVGAxisLabel({
   const angle = getAngle(axisOrientation, labelAlignment);
   return (
     <SVGSimpleText
+      data-testid={`axis-${axisOrientation}-label`}
       textAnchor={textAnchor}
       verticalAnchor={verticalAnchor}
       angle={angle}

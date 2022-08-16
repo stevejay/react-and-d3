@@ -15,10 +15,6 @@ export type SVGGlyphSeriesRendererProps<Datum extends object> = {
   colorAccessor: (datum: Datum, dataKey: string) => string;
   glyphSize: number | ((datum: Datum, dataKey: string) => number);
   renderGlyph: (props: RenderAnimatedGlyphProps<Datum>) => ReactNode;
-  // colorScale: ScaleOrdinal<string, string, never>;
-  // component?: SVGGlyphComponent<Datum>;
-  // // seriesIsLeaving?: boolean;
-  // getRadius: (datum: Datum) => number;
 } & Pick<
   SeriesProps<AxisScale, AxisScale, Datum>,
   'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
@@ -34,15 +30,11 @@ export function SVGGlyphSeriesRenderer<Datum extends object>({
   colorAccessor,
   renderGlyph,
   glyphSize
-}: // colorScale,
-// seriesIsLeaving = false,
-//   onBlur,
+}: //   onBlur,
 //   onFocus,
 //   onPointerMove,
 //   onPointerOut,
 //   onPointerUp,
-// component: GlyphComponent = SVGCircleGlyph,
-// getRadius
 SVGGlyphSeriesRendererProps<Datum>) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const transitions = useGlyphTransitions<Datum, any>({
@@ -52,7 +44,6 @@ SVGGlyphSeriesRendererProps<Datum>) {
     renderingOffset,
     springConfig,
     animate,
-    // seriesIsLeaving,
     glyphSize
   });
   const fallbackColor = scales.color?.(dataEntry.dataKey) ?? 'currentColor';

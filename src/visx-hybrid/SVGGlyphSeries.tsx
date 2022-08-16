@@ -9,10 +9,6 @@ import { useXYChartContext } from './useXYChartContext';
 export type SVGGlyphSeriesProps<Datum extends object> = BasicSeriesProps<Datum> & {
   groupProps?: SVGProps<SVGGElement>;
   colorAccessor?: (datum: Datum, dataKey: string) => string;
-  // component?: SVGGlyphComponent<Datum>;
-  // radius?: number;
-  // radiusScale?: ScaleConfig<number>;
-  // radiusAccessor?: (datum: Datum) => number;
   glyphSize?: number | ((datum: Datum, dataKey: string) => number);
   renderGlyph: (props: RenderAnimatedGlyphProps<Datum>) => ReactNode;
 };
@@ -49,12 +45,6 @@ export function SVGGlyphSeries<Datum extends object>({
     source: ownEventSourceKey,
     allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
-  // const radiusScale =
-  //   radiusScaleConfig && radiusAccessor
-  //     ? createScaleFromScaleConfig(dataEntry.getMappedData(radiusAccessor), radiusScaleConfig)
-  //     : undefined;
-  // const getRadius = (datum: Datum) =>
-  //   radiusScale && radiusAccessor ? (radiusScale(radiusAccessor(datum)) as number) : radius;
   return (
     <g data-testid={`glyph-series-${dataKey}`} {...groupProps}>
       {
@@ -66,7 +56,6 @@ export function SVGGlyphSeries<Datum extends object>({
           animate={animate && contextAnimate}
           springConfig={springConfig ?? contextSpringConfig}
           colorAccessor={dataEntry.colorAccessor}
-          // colorScale={scales.color}
           // {...events}
           glyphSize={glyphSize}
           renderGlyph={renderGlyph}

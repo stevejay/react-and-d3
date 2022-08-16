@@ -47,7 +47,6 @@ SVGSwipedPathProps<Datum>) {
       strokeDasharray={`${offset} ${offset}`}
       strokeWidth={2}
       strokeLinecap="round" // Without this a datum surrounded by nulls will not be visible.
-      // stroke={color}
       fill="none"
       role="presentation"
       aria-hidden

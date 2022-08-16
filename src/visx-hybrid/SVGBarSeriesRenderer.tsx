@@ -17,8 +17,6 @@ export type SVGBarSeriesRendererProps<
   animate: boolean;
   springConfig: SpringConfig;
   colorAccessor: (datum: Datum, dataKey: string) => string;
-  // colorScale: ScaleOrdinal<string, string, never>;
-  // component?: SVGBarComponent<Datum>;
   renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
   seriesIsLeaving?: boolean;
 } & Pick<
@@ -38,7 +36,6 @@ export function SVGBarSeriesRenderer<
   springConfig,
   animate,
   colorAccessor,
-  // colorScale,
   seriesIsLeaving = false,
   //   onBlur,
   //   onFocus,
@@ -66,18 +63,6 @@ export function SVGBarSeriesRenderer<
         const color = colorAccessor?.(originalDatum, dataKey) ?? fallbackColor;
         return renderBar({ springValues, datum: originalDatum, index, dataKey, horizontal, color });
       })}
-
-      {/* {transitions((springValues, datum, _, index) => (
-        <BarComponent
-          springValues={springValues}
-          datum={dataEntry.getOriginalDatumFromRenderingDatum(datum)}
-          index={index}
-          dataKey={dataEntry.dataKey}
-          horizontal={horizontal}
-          colorScale={colorScale}
-          colorAccessor={colorAccessor}
-        />
-      ))} */}
     </>
   );
 }

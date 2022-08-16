@@ -5,13 +5,13 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import type { CategoryValueDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
-import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
 import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
+import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
@@ -76,7 +76,7 @@ export function BarChart({ data }: BarChartProps) {
         renderBar={SVGBarWithLine}
       />
       <SVGBarSeriesLabels dataKeyRef="data-a" formatter={dependentAxisTickLabelFormatter} />
-      <SVGA11ySeries<CategoryValueDatum<string, number>>
+      <SVGIndependentScaleA11ySeries<CategoryValueDatum<string, number>>
         dataKeyOrKeysRef="data-a"
         categoryA11yProps={(category, data) => ({
           'aria-label': `Category ${data[0].category}: ${data[0].value}`,
@@ -109,14 +109,11 @@ export function BarChart({ data }: BarChartProps) {
         showDatumGlyph={false}
         renderTooltip={({ tooltipData }) => {
           const datum = tooltipData?.nearestDatum;
-          if (!datum) {
-            return null;
-          }
-          return (
+          return datum ? (
             <div>
               <span className="font-bold">{datum.datum?.category}</span>: {datum.datum?.value}
             </div>
-          );
+          ) : null;
         }}
       />
     </SVGXYChart>

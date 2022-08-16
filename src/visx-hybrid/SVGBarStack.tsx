@@ -55,7 +55,6 @@ export function SVGBarStack<Datum extends object>({
   /* const eventEmitters = */ useSeriesEvents<AxisScale, AxisScale, any>({
     dataKeyOrKeysRef: dataKeys,
     enableEvents,
-    // findNearestOriginalDatum,
     // onBlur,
     // onFocus,
     // onPointerMove,
@@ -89,7 +88,6 @@ export function SVGBarStack<Datum extends object>({
               animate={animate && contextAnimate}
               springConfig={springConfig ?? contextSpringConfig}
               colorAccessor={colorAccessor ?? dataEntry.colorAccessor}
-              // colorScale={scales.color}
               // {...events}
               renderBar={renderBar}
             />

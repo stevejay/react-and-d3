@@ -49,6 +49,10 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     return this._dataKey;
   }
 
+  getOriginalData(): readonly Datum[] {
+    return this._data;
+  }
+
   getRenderingData(): readonly Datum[] {
     return this._data;
   }
@@ -226,6 +230,10 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     return this._dataKey;
   }
 
+  getOriginalData(): readonly Datum[] {
+    return this._data;
+  }
+
   getRenderingData(): readonly Datum[] {
     return this._data;
   }
@@ -306,9 +314,6 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
       : getScaleBaseline(scales.dependent);
     const isDefined = (datum: Datum) =>
       isValidNumber(getScaledIndependent(datum)) && isValidNumber(getScaledDependent(datum));
-    // const isDefined = (datum: Datum) =>
-    //   isValidNumber(scales.independent(this.independentAccessor(datum))) &&
-    //   isValidNumber(scales.dependent(this.dependentAccessor(datum)));
     return {
       independent: getScaledIndependent,
       dependent: getScaledDependent,
@@ -323,9 +328,12 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     dependent0: (datum: Datum) => number;
     dependent1: (datum: Datum) => number;
   } {
+    if (!scales.group) {
+      throw new Error('Chart has a grouping but the group scale is nil.');
+    }
     const dependentStartCoord = getScaleBaseline(scales.dependent);
-    const withinGroupPosition = scales.group[0](this.dataKey) ?? 0;
-    const groupBandwidth = getScaleBandwidth(scales.group[0]);
+    const withinGroupPosition = scales.group(this.dataKey) ?? 0;
+    const groupBandwidth = getScaleBandwidth(scales.group);
     const independent = getScaledValueFactory<AxisScale, Datum>(
       scales.independent,
       this.independentAccessor,
@@ -360,6 +368,9 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     point: Point;
     scales: ScaleSet;
   }): NearestDatumReturnType<Datum> | null {
+    if (!scales.group) {
+      throw new Error('Chart has a grouping but the group scale is nil.');
+    }
     return findNearestGroupDatum(
       {
         independentScale: scales.independent,
@@ -372,7 +383,7 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
         height,
         dataKey: this.dataKey
       },
-      scales.group[0],
+      scales.group,
       horizontal
     );
   }
@@ -482,6 +493,10 @@ export class StackDataEntry<Datum extends object>
     return position(foundDatum) ?? null;
   }
 
+  getOriginalData(): readonly Datum[] {
+    return this._originalData;
+  }
+
   getRenderingData(): readonly StackDatum<AxisScale, AxisScale, Datum>[] {
     return this._stackData;
   }
@@ -530,10 +545,6 @@ export class StackDataEntry<Datum extends object>
     );
     const getScaledDependent0 = getScaledValueFactory(scales.dependent, getFirstItem);
     const getScaledDependent = getScaledValueFactory(scales.dependent, getSecondItem);
-    // TODO convert isDefined to use the value factories above.
-    // const isDefined = (datum: StackDatum<AxisScale, AxisScale, Datum>) =>
-    //   isValidNumber(scales.independent(getStack(datum))) &&
-    //   isValidNumber(scales.dependent(getSecondItem(datum)));
     const isDefined = (datum: StackDatum<AxisScale, AxisScale, Datum>) =>
       isValidNumber(getScaledIndependent(datum)) && isValidNumber(getScaledDependent(datum));
     return {

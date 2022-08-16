@@ -9,14 +9,11 @@ import { timeFormat } from 'd3-time-format';
 import type { TimeValueDatum } from '@/types';
 import { createResourceUrlFromId } from '@/visx-hybrid/createResourceUrlFromId';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
-// import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGCircleGlyph } from '@/visx-hybrid/SVGCircleGlyph';
 import { SVGGlyphSeries } from '@/visx-hybrid/SVGGlyphSeries';
-// import { SVGCircleGlyph } from '@/visx-hybrid/SVGCircleGlyph';
-// import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
-// import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
+import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
 import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
 import { SVGLinearGradient } from '@/visx-hybrid/SVGLinearGradient';
 import { SVGLineSeries } from '@/visx-hybrid/SVGLineSeries';
@@ -130,18 +127,13 @@ export function LineChart({ data }: LineChartProps) {
         enableEvents={false}
         animate={false}
       />
-      {/* <SVGA11ySeries<TimeValueDatum<number>>
-        dataKeyOrKeysRef="data-b"
-        categoryA11yProps={(category, data) => {
-          console.log(category, data);
-          return {};
-        }}
-        // categoryA11yProps={(category, data) => ({
-        //   'aria-label': `Category ${data[0].date}: ${data[0].value}`,
-        //   'aria-roledescription': `Category ${category}`
-        // })}
-      /> */}
-      {/* <SVGAxis variable="independent" position="end" label="Foobar Topy" /> */}
+      <SVGIndependentScaleA11ySeries<TimeValueDatum<number>>
+        dataKeyOrKeysRef="data-a"
+        categoryA11yProps={(category, data) => ({
+          'aria-label': `Category ${data[0].date}: ${data[0].value}`,
+          'aria-roledescription': `Category ${category}`
+        })}
+      />
       <SVGAxis variable="independent" position="start" label="Date" tickLabelAlignment="angled" />
       <SVGAxis
         variable="dependent"

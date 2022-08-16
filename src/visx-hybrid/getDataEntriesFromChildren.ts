@@ -20,10 +20,10 @@ export function getDataEntriesFromChildren<
   isInsideGroup = false
 ): {
   dataEntries: readonly IDataEntry[];
-  groupScales: readonly ScaleBand<string>[];
+  groupScale: ScaleBand<string> | null;
 } {
   const dataEntries: IDataEntry[] = [];
-  const groupScales: ScaleBand<string>[] = [];
+  let groupScale: ScaleBand<string> | null = null;
 
   Children.forEach(children, (element) => {
     if (!isValidElement(element)) {
@@ -35,14 +35,13 @@ export function getDataEntriesFromChildren<
       element.type === Fragment ||
       (typeof element.type !== 'string' && element.type.name.endsWith('Group') && !isInsideGroup)
     ) {
+      if (groupScale) {
+        throw new Error('Only one grouping is allowed in the XY chart.');
+      }
       const { sort, padding = defaultGroupPadding, children } = element.props;
-
       const result = getDataEntriesFromChildren<IndependentScale, DependentScale>(children, horizontal, true);
       const dataKeys = result.dataEntries.map((dataEntry) => dataEntry.dataKey);
-
-      const groupScale = scaleBand<string>({ domain: sort ? [...dataKeys].sort(sort) : dataKeys, padding });
-      groupScales.push(groupScale);
-
+      groupScale = scaleBand<string>({ domain: sort ? [...dataKeys].sort(sort) : dataKeys, padding });
       result.dataEntries.forEach((dataEntry) => dataEntries.push(dataEntry));
     } else if (typeof element.type !== 'string' && element.type.name.endsWith('Stack')) {
       const { stackOrder, stackOffset } = element.props;
@@ -107,5 +106,5 @@ export function getDataEntriesFromChildren<
     }
   });
 
-  return { dataEntries, groupScales };
+  return { dataEntries, groupScale };
 }

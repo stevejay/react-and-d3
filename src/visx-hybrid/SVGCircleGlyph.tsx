@@ -8,9 +8,6 @@ type CircleProps = Omit<SVGProps<SVGCircleElement>, 'cx' | 'cy' | 'r' | 'ref'>;
 
 export type SVGCircleGlyphProps<Datum extends object> = RenderAnimatedGlyphProps<Datum> &
   Omit<CircleProps, keyof RenderAnimatedGlyphProps<Datum>>;
-//  & {
-//   circleProps?: CircleProps | ((datum: Datum, index: number, dataKey: string) => CircleProps);
-// };
 
 export function SVGCircleGlyph<Datum extends object>({
   springValues: { cx, cy, size, opacity },
@@ -20,8 +17,7 @@ export function SVGCircleGlyph<Datum extends object>({
   horizontal: _horizontal,
   color,
   ...rest
-}: // circleProps
-SVGCircleGlyphProps<Datum>) {
+}: SVGCircleGlyphProps<Datum>) {
   const { style, ...restCircleProps } = rest;
   return (
     <animated.circle

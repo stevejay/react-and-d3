@@ -5,7 +5,6 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import type { CategoryValueListDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
-import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
 import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarGroup } from '@/visx-hybrid/SVGBarGroup';
@@ -14,6 +13,7 @@ import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
+import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
@@ -90,7 +90,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
           />
         ))}
       </SVGBarGroupLabels>
-      <SVGA11ySeries<CategoryValueListDatum<string, number>>
+      <SVGIndependentScaleA11ySeries<CategoryValueListDatum<string, number>>
         dataKeyOrKeysRef={dataKeys}
         categoryA11yProps={(category, data) => ({
           'aria-label': `Category ${data[0]?.category}: ${dataKeys

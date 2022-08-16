@@ -23,6 +23,9 @@ export const defaultGlyphSize = 6;
 export const zeroRangePadding: [number, number] = [0, 0];
 export const zeroMargin: Margin = { left: 0, right: 0, top: 0, bottom: 0 };
 
+// An arbitrary default bandwidth for a non-band scale on the independent axis.
+export const defaultA11yElementBandwidth = 40;
+
 // font-style, font-variant, font-weight, font-size, line-height, font-family
 export const defaultBigLabelsFont = 'normal normal normal 14px/1 sans-serif';
 

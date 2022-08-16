@@ -21,7 +21,6 @@ export function SVGInterpolatedArea<Datum extends object>({
   springConfig,
   curve = curveLinear,
   color,
-  // stroke,
   ...rest
 }: //   onBlur,
 //   onFocus,
@@ -37,8 +36,6 @@ SVGInterpolatedAreaProps<Datum>) {
       d={transitions}
       shapeRendering={defaultShapeRendering}
       stroke="none"
-      // strokeWidth={2}
-      // strokeLinecap="round" // Without this a datum surrounded by nulls will not be visible
       fill={color}
       role="presentation"
       aria-hidden

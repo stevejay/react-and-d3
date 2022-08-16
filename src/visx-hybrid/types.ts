@@ -15,10 +15,6 @@ export type AxisScaleOutput = number | NumberLike | undefined;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AxisScale<Output extends AxisScaleOutput = AxisScaleOutput> = D3Scale<Output, any, any>;
 
-// /** A catch-all type for scales that returns number */
-// // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// export type PositionScale = D3Scale<number, any, any>;
-
 export type Anchor = 'start' | 'middle' | 'end';
 
 export interface Margin {
@@ -63,6 +59,7 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
     point: Point;
   }): NearestDatumReturnType<Datum> | null;
   getOriginalDatumFromRenderingDatum(datum: RenderingDatum): Datum;
+  getOriginalData(): readonly Datum[];
   getRenderingData(): readonly RenderingDatum[];
   getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): readonly {
     datum: RenderingDatum;
@@ -94,7 +91,7 @@ export interface IDataEntryStore<Datum extends object = object, RenderingDatum e
 export interface ScaleSet {
   independent: AxisScale;
   dependent: AxisScale;
-  group: readonly ScaleBand<string>[];
+  group: ScaleBand<string> | null;
   color: ScaleTypeToD3Scale<string, string>['ordinal'];
 }
 
@@ -620,3 +617,7 @@ export interface BasicSeriesProps<Datum extends object> {
   animate?: boolean;
   enableEvents?: boolean;
 }
+
+export type A11yProps = Partial<
+  Pick<SVGProps<Element>, 'role' | 'aria-roledescription' | 'aria-label' | 'aria-labelledby'>
+>;

@@ -9,10 +9,7 @@ interface SVGSimpleTextOwnProps {
   textAnchor?: Anchor;
   /** Vertical text anchor. */
   verticalAnchor?: Anchor;
-  /** Fill color of text. */
-  // fill?: string;
   textStyles?: TextStyles; // font, fill, className
-  // style?: CSSProperties;
   angle?: number;
   x: number;
   y: number;

@@ -97,7 +97,6 @@ export function useBarLabelTransitions(args: {
   const { dataEntry, springConfig, animate, formatter } = args;
   const renderingDataWithLabels = dataEntry.getRenderingDataWithLabels(formatter);
   const position = createLabelPositionerForRenderingData(args);
-  // dataEntry.createLabelPositionerForRenderingData(args);
   return useTransition<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     any, // TODO fix
