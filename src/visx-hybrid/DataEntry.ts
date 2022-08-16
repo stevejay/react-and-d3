@@ -133,13 +133,25 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
       : getScaleBaseline(scales.dependent);
     const isDefined = (datum: Datum) =>
       isValidNumber(getScaledIndependent(datum)) && isValidNumber(getScaledDependent(datum));
-    // isValidNumber(scales.independent(this.independentAccessor(datum))) &&
-    // isValidNumber(scales.dependent(this.dependentAccessor(datum)));
     return {
       independent: getScaledIndependent,
       dependent: getScaledDependent,
       dependent0: getScaledDependent0,
       defined: isDefined
+    };
+  }
+
+  getPointAccessorsForRenderingData(scales: ScaleSet): {
+    independent: (datum: Datum) => number;
+    dependent: (datum: Datum) => number;
+  } {
+    return {
+      independent: getScaledValueFactory<AxisScale, Datum>(
+        scales.independent,
+        this.independentAccessor,
+        'center'
+      ),
+      dependent: getScaledValueFactory(scales.dependent, this.dependentAccessor)
     };
   }
 
@@ -298,6 +310,7 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     return position(foundDatum) ?? null;
   }
 
+  // TODO this must be wrong as it doesn't take group scale into account.
   getAreaAccessorsForRenderingData(
     scales: ScaleSet,
     dependent0Accessor?: (datum: Datum) => ScaleInput<AxisScale>
@@ -319,6 +332,26 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
       dependent: getScaledDependent,
       dependent0: getScaledDependent0,
       defined: isDefined
+    };
+  }
+
+  getPointAccessorsForRenderingData(scales: ScaleSet): {
+    independent: (datum: Datum) => number;
+    dependent: (datum: Datum) => number;
+  } {
+    if (!scales.group) {
+      throw new Error('Chart has a grouping but the group scale is nil.');
+    }
+    const withinGroupPosition = scales.group(this.dataKey) ?? 0;
+    const groupBandwidth = getScaleBandwidth(scales.group);
+    const independent = getScaledValueFactory<AxisScale, Datum>(
+      scales.independent,
+      this.independentAccessor,
+      'start'
+    );
+    return {
+      independent: (datum: Datum) => independent(datum) + withinGroupPosition + groupBandwidth * 0.5,
+      dependent: getScaledValueFactory(scales.dependent, this.dependentAccessor)
     };
   }
 
@@ -530,6 +563,20 @@ export class StackDataEntry<Datum extends object>
       ),
       dependent0: getScaledValueFactory(scales.dependent, getFirstItem),
       dependent1: getScaledValueFactory(scales.dependent, getSecondItem)
+    };
+  }
+
+  getPointAccessorsForRenderingData(scales: ScaleSet): {
+    independent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
+    dependent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
+  } {
+    return {
+      independent: getScaledValueFactory<AxisScale, StackDatum<AxisScale, AxisScale, Datum>>(
+        scales.independent,
+        getStack,
+        'center'
+      ),
+      dependent: getScaledValueFactory(scales.dependent, getSecondItem)
     };
   }
 

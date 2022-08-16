@@ -27,8 +27,6 @@ const independentScale: BandScaleConfig<string> = {
   type: 'band',
   paddingInner: 0.2,
   paddingOuter: 0.4,
-  // paddingOuter: 0,
-  // paddingInner: 0
   round: true
 } as const;
 

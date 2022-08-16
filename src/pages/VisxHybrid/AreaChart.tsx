@@ -16,8 +16,8 @@ import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
 import { SVGInterpolatedArea } from '@/visx-hybrid/SVGInterpolatedArea';
 import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
-import { SVGLineSeries } from '@/visx-hybrid/SVGLineSeries';
 import { SVGPointAnnotation } from '@/visx-hybrid/SVGPointAnnotation';
+import { SVGPointSeriesLabels } from '@/visx-hybrid/SVGPointSeriesLabels';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
@@ -93,12 +93,6 @@ export function AreaChart({ data }: AreaChartProps) {
             fill={createResourceUrlFromId(patternId)}
           />
         )}
-      />
-      <SVGLineSeries
-        dataKey="data-b"
-        data={data}
-        independentAccessor={independentAccessor}
-        dependentAccessor={dependentAccessor}
         renderPath={(props) => (
           <SVGInterpolatedPath
             {...props}
@@ -107,8 +101,8 @@ export function AreaChart({ data }: AreaChartProps) {
             color={schemeCategory10[1]}
           />
         )}
-        enableEvents={false}
       />
+      <SVGPointSeriesLabels dataKeyRef="data-a" formatter={dependentAxisTickLabelFormatter} />
       <SVGIndependentScaleA11ySeries<TimeValueDatum<number>>
         dataKeyOrKeysRef="data-a"
         categoryA11yProps={(category, data) => ({

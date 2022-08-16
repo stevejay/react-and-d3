@@ -62,13 +62,16 @@ export function SVGAreaStack<Datum extends object>({
     springConfig ?? contextSpringConfig,
     animate && contextAnimate
   );
+  const resolvedAnimate = animate && contextAnimate;
+  const resolvedSpringConfig = springConfig ?? contextSpringConfig;
   return (
     <>
       {transitions((styles, dataEntry) => {
         const child = seriesChildren.find((child) => child.props.dataKey === dataEntry.dataKey);
-        const { groupProps, renderArea } = child?.props ?? {};
+        const { groupProps, renderArea, renderPath } = child?.props ?? {};
         const { style, ...restGroupProps } = groupProps ?? {};
         const fallbackFill = scales.color?.(dataEntry.dataKey) ?? theme?.colors?.[0] ?? 'currentColor';
+        const fallbackStroke = scales.color?.(dataEntry.dataKey) ?? theme?.colors?.[0] ?? 'currentColor';
         return (
           <animated.g
             data-testid={`area-stack-series-${dataEntry.dataKey}`}
@@ -82,9 +85,20 @@ export function SVGAreaStack<Datum extends object>({
                 theme,
                 horizontal,
                 renderingOffset,
-                animate: animate && contextAnimate,
-                springConfig: springConfig ?? contextSpringConfig,
+                animate: resolvedAnimate,
+                springConfig: resolvedSpringConfig,
                 color: fallbackFill
+              })}
+            {renderPath &&
+              renderPath({
+                dataEntry,
+                scales,
+                theme,
+                horizontal,
+                renderingOffset,
+                animate: resolvedAnimate,
+                springConfig: resolvedSpringConfig,
+                color: fallbackStroke
               })}
           </animated.g>
         );

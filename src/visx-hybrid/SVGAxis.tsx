@@ -47,6 +47,8 @@ export type SVGAxisProps = BasicAxisProps & {
   tickCount?: number;
   /** The ticks values to use for ticks instead of those returned by the scale’s automatic tick generator. */
   tickValues?: ScaleInput<AxisScale>[];
+  /** Whether the axis domain line should include any range padding. Optional. Defaults to `true`. */
+  includeRangePaddingInAxisPath?: boolean;
   /** Whether the axis domain line should be hidden. Optional. Defaults to `false`. */
   hideAxisPath?: boolean;
   /** Whether the axis ticks should be hidden. (The tick labels will always be shown.) Optional. Defaults to `false`. */
@@ -102,7 +104,8 @@ function SVGAxis(props: SVGAxisProps) {
     hideZero = defaultHideZero,
     tickFormat,
     tickCount,
-    tickValues
+    tickValues,
+    includeRangePaddingInAxisPath = true
   } = props;
 
   const {
@@ -143,9 +146,11 @@ function SVGAxis(props: SVGAxisProps) {
   const isVertical = axisOrientation === 'left' || axisOrientation === 'right';
   const rangeFrom = Number(scale.range()[0]) ?? 0;
   const rangeTo = Number(scale.range()[1]) ?? 0;
-  const axisPathRange: [number, number] = isVertical
-    ? [rangeFrom + rangePadding[0], rangeTo - rangePadding[1]]
-    : [rangeFrom - rangePadding[0], rangeTo + rangePadding[1]];
+  const axisPathRange: [number, number] = includeRangePaddingInAxisPath
+    ? isVertical
+      ? [rangeFrom + rangePadding[0], rangeTo - rangePadding[1]]
+      : [rangeFrom - rangePadding[0], rangeTo + rangePadding[1]]
+    : [rangeFrom, rangeTo];
   const ticks = calculateTicksData({ scale, hideZero, tickFormat, tickCount, tickValues });
   const springConfig = userSpringConfig ?? contextSpringConfig;
   const animate = userAnimate && contextAnimate;

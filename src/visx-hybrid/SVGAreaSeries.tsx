@@ -8,6 +8,7 @@ import { useXYChartContext } from './useXYChartContext';
 export type SVGAreaSeriesProps<Datum extends object> = BasicSeriesProps<Datum> & {
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
   renderArea: (props: RenderPathProps<Datum>) => ReactNode;
+  renderPath?: (props: RenderPathProps<Datum>) => ReactNode;
 };
 
 export function SVGAreaSeries<Datum extends object>({
@@ -16,7 +17,8 @@ export function SVGAreaSeries<Datum extends object>({
   animate = true,
   dataKey,
   enableEvents = true,
-  renderArea
+  renderArea,
+  renderPath
 }: SVGAreaSeriesProps<Datum>) {
   const {
     scales,
@@ -41,8 +43,12 @@ export function SVGAreaSeries<Datum extends object>({
     source: ownEventSourceKey,
     allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
+  const resolvedAnimate = animate && contextAnimate;
+  const resolvedSpringConfig = springConfig ?? contextSpringConfig;
   // Provide a fallback fill value:
   const fallbackFill = scales.color?.(dataKey) ?? theme?.colors?.[0] ?? 'currentColor';
+  // Provide a fallback stroke value:
+  const fallbackStroke = scales.color?.(dataKey) ?? theme?.colors?.[0] ?? 'currentColor';
   return (
     <g data-testid={`area-series-${dataKey}`} {...groupProps}>
       {renderArea({
@@ -51,10 +57,21 @@ export function SVGAreaSeries<Datum extends object>({
         theme,
         horizontal,
         renderingOffset,
-        animate: animate && contextAnimate,
-        springConfig: springConfig ?? contextSpringConfig,
+        animate: resolvedAnimate,
+        springConfig: resolvedSpringConfig,
         color: fallbackFill
       })}
+      {renderPath &&
+        renderPath({
+          dataEntry,
+          scales,
+          theme,
+          horizontal,
+          renderingOffset,
+          animate: resolvedAnimate,
+          springConfig: resolvedSpringConfig,
+          color: fallbackStroke
+        })}
     </g>
   );
 }

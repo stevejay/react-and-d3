@@ -80,6 +80,10 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
     dependent0: (datum: RenderingDatum) => number;
     dependent1: (datum: RenderingDatum) => number;
   };
+  getPointAccessorsForRenderingData(scales: ScaleSet): {
+    independent: (datum: RenderingDatum) => number;
+    dependent: (datum: RenderingDatum) => number;
+  };
 }
 
 export interface IDataEntryStore<Datum extends object = object, RenderingDatum extends object = object> {

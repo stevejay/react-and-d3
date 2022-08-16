@@ -14,10 +14,10 @@ import { SVGCircleGlyph } from '@/visx-hybrid/SVGCircleGlyph';
 import { SVGGlyphSeries } from '@/visx-hybrid/SVGGlyphSeries';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
-import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
 import { SVGLinearGradient } from '@/visx-hybrid/SVGLinearGradient';
 import { SVGLineSeries } from '@/visx-hybrid/SVGLineSeries';
 import { SVGPointAnnotation } from '@/visx-hybrid/SVGPointAnnotation';
+import { SVGPointSeriesLabels } from '@/visx-hybrid/SVGPointSeriesLabels';
 import { SVGSwipedPath } from '@/visx-hybrid/SVGSwipedPath';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
@@ -85,38 +85,20 @@ export function LineChart({ data }: LineChartProps) {
         segmentColors={[schemeCategory10[1], schemeCategory10[2]]}
       />
       <SVGGrid tickCount={5} variable="dependent" />
-      {true && (
-        <SVGLineSeries
-          dataKey="data-a"
-          data={data}
-          independentAccessor={independentAccessor}
-          dependentAccessor={dependentAccessor}
-          renderPath={(props) => (
-            <SVGSwipedPath
-              {...props}
-              strokeWidth={4}
-              stroke={createResourceUrlFromId(linearGradientId)}
-              curve={curveCatmullRom}
-            />
-          )}
-        />
-      )}
-      {false && (
-        <SVGLineSeries
-          dataKey="data-a"
-          data={data}
-          independentAccessor={independentAccessor}
-          dependentAccessor={dependentAccessor}
-          renderPath={(props) => (
-            <SVGInterpolatedPath
-              {...props}
-              strokeWidth={4}
-              stroke={createResourceUrlFromId(linearGradientId)}
-              curve={curveCatmullRom}
-            />
-          )}
-        />
-      )}
+      <SVGLineSeries
+        dataKey="data-a"
+        data={data}
+        independentAccessor={independentAccessor}
+        dependentAccessor={dependentAccessor}
+        renderPath={(props) => (
+          <SVGSwipedPath
+            {...props}
+            strokeWidth={4}
+            stroke={createResourceUrlFromId(linearGradientId)}
+            curve={curveCatmullRom}
+          />
+        )}
+      />
       <SVGGlyphSeries
         dataKey="data-b"
         data={data}
@@ -127,6 +109,7 @@ export function LineChart({ data }: LineChartProps) {
         enableEvents={false}
         animate={false}
       />
+      <SVGPointSeriesLabels dataKeyRef="data-a" formatter={dependentAxisTickLabelFormatter} />
       <SVGIndependentScaleA11ySeries<TimeValueDatum<number>>
         dataKeyOrKeysRef="data-a"
         categoryA11yProps={(category, data) => ({

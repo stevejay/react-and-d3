@@ -227,6 +227,7 @@ function InnerChart<
       height,
       innerWidth,
       innerHeight,
+      // margin includes outerMargin.
       margin,
       outerMargin: resolvedOuterMargin,
       dataEntryStore: new DataEntryStore(dataEntries),

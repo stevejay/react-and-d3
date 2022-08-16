@@ -4,36 +4,28 @@ import { SpringConfig } from 'react-spring';
 import { defaultDatumLabelPadding, defaultSmallLabelsFont } from './constants';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { SVGAnimatedSimpleText } from './SVGSimpleText';
-import type { AxisScale, BarLabelPosition, ScaleInput } from './types';
-import { useBarLabelTransitions } from './useBarLabelTransitions';
+import type { AxisScale, ScaleInput } from './types';
+import { usePointLabelTransitions } from './usePointLabelTransitions';
 import { useXYChartContext } from './useXYChartContext';
 
-export type SVGBarSeriesLabelsProps = {
+export type SVGPointSeriesLabelsProps = {
   springConfig?: SpringConfig;
   animate?: boolean;
   dataKeyRef: string;
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
   /** Must be a stable function. */
   formatter?: (value: ScaleInput<AxisScale>) => string;
-  /** Optional; defaults to `'inside'`. Ignored if `labelFormatter` prop is not given. */
-  position?: BarLabelPosition;
-  /** Optional; defaults to `true`. Ignored if `labelFormatter` prop is not given. */
-  positionOutsideOnOverflow?: boolean;
-  hideOnOverflow?: boolean;
   padding?: number;
 };
 
-export function SVGBarSeriesLabels({
+export function SVGPointSeriesLabels({
   groupProps,
   springConfig,
   animate = true,
   dataKeyRef,
   formatter,
-  position = 'inside',
-  positionOutsideOnOverflow = true,
-  hideOnOverflow = false,
   padding = defaultDatumLabelPadding
-}: SVGBarSeriesLabelsProps) {
+}: SVGPointSeriesLabelsProps) {
   const {
     scales,
     horizontal,
@@ -41,13 +33,16 @@ export function SVGBarSeriesLabels({
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     dataEntryStore,
-    theme
+    theme,
+    margin,
+    innerWidth,
+    innerHeight
   } = useXYChartContext();
   const dataEntry = dataEntryStore.getByDataKey(dataKeyRef);
   const labelStyles = theme.datumLabels ?? theme.smallLabels;
   const { font = defaultSmallLabelsFont, ...otherLabelStyles } = labelStyles ?? {};
   const fontMetrics = getFontMetricsWithCache(font);
-  const transitions = useBarLabelTransitions({
+  const transitions = usePointLabelTransitions({
     dataEntry,
     scales,
     horizontal,
@@ -56,10 +51,10 @@ export function SVGBarSeriesLabels({
     renderingOffset,
     formatter,
     font,
-    position,
-    positionOutsideOnOverflow,
-    hideOnOverflow,
-    padding
+    padding,
+    margin,
+    innerWidth,
+    innerHeight
   });
   return (
     <g data-testid={`series-labels-${dataKeyRef}`} {...groupProps}>

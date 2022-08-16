@@ -14,11 +14,11 @@ type SVGBarStackLabelsProps = {
 
 export function SVGBarStackLabels({ children, springConfig, animate = true }: SVGBarStackLabelsProps) {
   const { springConfig: contextSpringConfig, animate: contextAnimate, dataEntryStore } = useXYChartContext();
-  const barSeriesChildren = useMemo(
+  const seriesChildren = useMemo(
     () => getChildrenAndGrandchildrenWithProps<{ dataKeyRef: string }>(children),
     [children]
   );
-  const dataKeys = barSeriesChildren.map((child) => child.props.dataKeyRef).filter(isDefined);
+  const dataKeys = seriesChildren.map((child) => child.props.dataKeyRef).filter(isDefined);
   const transitions = useSeriesTransitions(
     dataKeys.map((dataKey) => dataEntryStore.getByDataKey(dataKey)),
     springConfig ?? contextSpringConfig,
@@ -27,12 +27,12 @@ export function SVGBarStackLabels({ children, springConfig, animate = true }: SV
   return (
     <>
       {transitions((styles, datum) => {
-        const child = barSeriesChildren.find((child) => child.props.dataKeyRef === datum.dataKey);
+        const child = seriesChildren.find((child) => child.props.dataKeyRef === datum.dataKey);
         if (!child) {
           return null;
         }
         return (
-          <animated.g data-testid={`bar-stack-series-${datum.dataKey}-labels`} style={styles}>
+          <animated.g data-testid={`stack-series-labels-${datum.dataKey}`} style={styles}>
             {child}
           </animated.g>
         );

@@ -93,6 +93,8 @@ export function BarChart({ data }: BarChartProps) {
         hideZero
         tickFormat={dependentAxisTickLabelFormatter}
         // autoMarginLabelPadding={44}
+        // outerTickLength={8}
+        // includeRangePaddingInAxisPath={false}
       />
       <SVGAxis
         variable="dependent"
@@ -101,6 +103,8 @@ export function BarChart({ data }: BarChartProps) {
         tickCount={5}
         hideZero
         tickFormat={dependentAxisTickLabelFormatter}
+        // outerTickLength={8}
+        // includeRangePaddingInAxisPath={false}
       />
       <SVGAreaAnnotation datum={data[2]} dataKeyRef="data-a" />
       <PopperTooltip<CategoryValueDatum<string, number>>
