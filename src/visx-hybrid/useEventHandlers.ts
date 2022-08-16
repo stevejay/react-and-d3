@@ -14,8 +14,8 @@ export const POINTER_EVENTS_NEAREST = '__POINTER_EVENTS_NEAREST';
 export type PointerEventHandlerParams<Datum extends object> = {
   /** Controls whether callbacks are invoked for one or more registered dataKeys, the nearest dataKey, or all dataKeys. */
   dataKeyOrKeysRef: string | readonly string[] | typeof POINTER_EVENTS_NEAREST | typeof POINTER_EVENTS_ALL; // last two are eaten by string
-  // /** Optionally override the findNearestDatum logic. */
-  // findNearestDatum?: (params: NearestDatumArgs<Datum>) => NearestDatumReturnType<Datum>;
+  // /** Optionally override the findNearestOriginalDatum logic. */
+  // findNearestOriginalDatum?: (params: NearestDatumArgs<Datum>) => NearestDatumReturnType<Datum>;
   /** Callback invoked onFocus for one or more series based on dataKey. */
   onFocus?: (params: readonly EventHandlerParams<Datum>[]) => void;
   /** Callback invoked onBlur. */
@@ -36,7 +36,7 @@ export type PointerEventHandlerParams<Datum extends object> = {
  */
 export function useEventHandlers<Datum extends object>({
   dataKeyOrKeysRef,
-  // findNearestDatum: userFindNearestDatum,
+  // findNearestOriginalDatum: userFindNearestDatum,
   onBlur,
   onFocus,
   onPointerMove,
@@ -47,7 +47,7 @@ export function useEventHandlers<Datum extends object>({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { width, height, horizontal, dataEntryStore, scales } = useXYChartContext<Datum, any>();
 
-  // const findNearestDatum = userFindNearestDatum || (horizontal ? findNearestDatumY : findNearestDatumX);
+  // const findNearestOriginalDatum = userFindNearestDatum || (horizontal ? findNearestDatumY : findNearestDatumX);
 
   // this logic is shared by pointerup, pointermove, and focus handlers
   const getHandlerParams = useCallback(
@@ -81,7 +81,7 @@ export function useEventHandlers<Datum extends object>({
         dataKeys.forEach((dataKey) => {
           const dataEntry = dataEntryStore.tryGetByDataKey(dataKey);
           if (dataEntry) {
-            const nearestDatum = dataEntry.findNearestDatum({
+            const nearestDatum = dataEntry.findNearestOriginalDatum({
               horizontal,
               width,
               height,

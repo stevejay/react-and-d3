@@ -9,11 +9,11 @@ import type { NearestDatumArgs, NearestDatumReturnType, StackDatum } from './typ
 
 /**
  * This is a wrapper around findNearestDatumX/Y for BarStack, accounting for a
- * Bar's d0 and d1, not just d1 (which findNearestDatum uses). Additionally,
+ * Bar's d0 and d1, not just d1 (which findNearestOriginalDatum uses). Additionally,
  * returns the BarSeries original `Datum`, not the `StackDatum` so
  * Tooltip typing is correct.
  */
-export default function findNearestStackDatum<
+export function findNearestStackDatum<
   IndependentScale extends AxisScale,
   DependentScale extends AxisScale,
   Datum extends object

@@ -55,7 +55,7 @@ export function SVGBarStack<Datum extends object>({
   /* const eventEmitters = */ useSeriesEvents<AxisScale, AxisScale, any>({
     dataKeyOrKeysRef: dataKeys,
     enableEvents,
-    // findNearestDatum,
+    // findNearestOriginalDatum,
     // onBlur,
     // onFocus,
     // onPointerMove,

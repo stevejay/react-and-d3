@@ -47,15 +47,15 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
   get keyAccessor(): (datum: Datum) => string | number;
   getDomainValuesForIndependentScale(): readonly ScaleInput<AxisScale>[];
   getDomainValuesForDependentScale(): readonly ScaleInput<AxisScale>[];
-  getFilteredData(filter: (datum: Datum) => boolean): readonly Datum[];
+  getOriginalDataByIndependentValue(value: ScaleInput<AxisScale>): readonly Datum[];
   getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[];
-  getPositionForDatum(params: {
+  getPositionForOriginalDatum(params: {
     datum: Datum;
     scales: ScaleSet;
     horizontal: boolean;
     renderingOffset: number;
   }): DatumPosition | null;
-  findNearestDatum(args: {
+  findNearestOriginalDatum(args: {
     scales: ScaleSet;
     horizontal: boolean;
     width: number;
@@ -68,34 +68,36 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
     datum: RenderingDatum;
     label: string;
   }[];
-  createElementPositionerForRenderingData(args: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    renderingOffset: number;
-  }): (datum: RenderingDatum) => DatumPosition | null;
-  createLabelPositionerForRenderingData(args: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    renderingOffset: number;
-    font: FontProperties | string;
-    position: InternalBarLabelPosition;
-    positionOutsideOnOverflow: boolean;
-    padding: number;
-    hideOnOverflow: boolean;
-  }): (datumWithLabel: { datum: RenderingDatum; label: string }) => LabelTransition | null;
+  // createBarPositionerForRenderingData(args: {
+  //   scales: ScaleSet;
+  //   horizontal: boolean;
+  // }): (datum: RenderingDatum) => DatumPosition | null;
+  // createLabelPositionerForRenderingData(args: {
+  //   scales: ScaleSet;
+  //   horizontal: boolean;
+  //   renderingOffset: number;
+  //   font: FontProperties | string;
+  //   position: InternalBarLabelPosition;
+  //   positionOutsideOnOverflow: boolean;
+  //   padding: number;
+  //   hideOnOverflow: boolean;
+  // }): (datumWithLabel: { datum: RenderingDatum; label: string }) => LabelTransition | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createShape(shapeFunc: (data: readonly RenderingDatum[]) => any): any;
-  getAreaAccessors(params: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    curve: CurveFactory;
-    renderingOffset: number;
-    dependent0Accessor?: (datum: RenderingDatum) => ScaleInput<AxisScale>;
-  }): {
+  // createShape(shapeFunc: (data: readonly RenderingDatum[]) => any): any;
+  getAreaAccessorsForRenderingData(
+    scales: ScaleSet,
+    dependent0Accessor?: (datum: RenderingDatum) => ScaleInput<AxisScale>
+  ): {
     independent: (datum: RenderingDatum) => number;
     dependent: (datum: RenderingDatum) => number;
     dependent0: number | ((datum: RenderingDatum) => number);
     defined: (datum: RenderingDatum) => boolean;
+  };
+  getBarAccessorsForRenderingData(scales: ScaleSet): {
+    independent0: (datum: RenderingDatum) => number;
+    independent: (datum: RenderingDatum) => number;
+    dependent0: (datum: RenderingDatum) => number;
+    dependent1: (datum: RenderingDatum) => number;
   };
 }
 
@@ -141,7 +143,7 @@ export type Variable = 'independent' | 'dependent';
 export type LabelAlignment = 'horizontal' | 'vertical';
 export type TickLabelAlignment = 'horizontal' | 'angled' | 'vertical';
 
-/** Arguments for findNearestDatum* functions. */
+/** Arguments for findNearestOriginalDatum* functions. */
 export type NearestDatumArgs<Datum extends object> = {
   dataKey: string;
   point: { x: number; y: number } | null;

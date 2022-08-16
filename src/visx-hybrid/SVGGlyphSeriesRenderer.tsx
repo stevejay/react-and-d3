@@ -44,7 +44,8 @@ export function SVGGlyphSeriesRenderer<Datum extends object>({
 // component: GlyphComponent = SVGCircleGlyph,
 // getRadius
 SVGGlyphSeriesRendererProps<Datum>) {
-  const transitions = useGlyphTransitions<Datum>({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const transitions = useGlyphTransitions<Datum, any>({
     dataEntry,
     scales,
     horizontal,

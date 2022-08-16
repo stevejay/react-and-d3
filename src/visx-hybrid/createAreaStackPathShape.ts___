@@ -33,5 +33,5 @@ export function createAreaStackPathShape<Datum extends object>({
   setNumberOrNumberAccessor(horizontal ? area.y : area.x, getScaledIndependent);
   setNumberOrNumberAccessor(horizontal ? area.x0 : area.y0, getScaledDependent0);
   setNumberOrNumberAccessor(horizontal ? area.x1 : area.y1, getScaledDependent);
-  return dataEntry.createShape(area) ?? '';
+ return area(dataEntry.getRenderingData()) ?? ''
 }

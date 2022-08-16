@@ -49,7 +49,7 @@ export function SVGAreaStack<Datum extends object>({
   /* const eventEmitters = */ useSeriesEvents<AxisScale, AxisScale, Datum>({
     dataKeyOrKeysRef: dataKeys,
     enableEvents,
-    // findNearestDatum,
+    // findNearestOriginalDatum,
     // onBlur,
     // onFocus,
     // onPointerMove,

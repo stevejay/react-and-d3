@@ -1,25 +1,19 @@
-import { CurveFactory } from 'd3-shape';
 import { isNil } from 'lodash-es';
 
-import { coerceNumber } from './coerceNumber';
+import { createBarPositionerForRenderingData } from './createBarPositionerForRenderingData';
 import { findNearestDatumX } from './findNearestDatumX';
 import { findNearestDatumY } from './findNearestDatumY';
 import { findNearestGroupDatum } from './findNearestGroupDatum';
-import findNearestStackDatum from './findNearestStackDatum';
-import { getFontMetricsWithCache } from './getFontMetricsWithCache';
+import { findNearestStackDatum } from './findNearestStackDatum';
 import { getFirstItem, getSecondItem } from './getItem';
 import { getScaleBandwidth } from './getScaleBandwidth';
 import { getScaleBaseline } from './getScaleBaseline';
 import { getScaledValueFactory } from './getScaledFactoryValue';
 import { isValidNumber } from './isValidNumber';
-import { measureTextWithCache } from './measureTextWithCache';
 import type {
   AxisScale,
   DatumPosition,
-  FontProperties,
   IDataEntry,
-  InternalBarLabelPosition,
-  LabelTransition,
   NearestDatumReturnType,
   Point,
   ScaleInput,
@@ -97,35 +91,37 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     return datum;
   }
 
-  getPositionForDatum(params: {
+  getPositionForOriginalDatum({
+    datum,
+    scales,
+    horizontal
+  }: {
     datum: Datum;
     scales: ScaleSet;
     horizontal: boolean;
     renderingOffset: number;
   }) {
-    const foundDatum = this._data.find((datum) => datum === params.datum) ?? null;
+    const foundDatum = this._data.find((originalDatum) => originalDatum === datum) ?? null;
     if (isNil(foundDatum)) {
       return null;
     }
-    const positioner = this.createElementPositionerForRenderingData(params);
-    return positioner(foundDatum) ?? null;
+    const position: (datum: Datum) => DatumPosition | null = createBarPositionerForRenderingData(
+      scales,
+      this,
+      horizontal
+    );
+    return position(foundDatum) ?? null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createShape(shapeFunc: (data: readonly Datum[]) => any) {
-    return shapeFunc(this._data);
-  }
+  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // createShape(shapeFunc: (data: readonly Datum[]) => any) {
+  //   return shapeFunc(this._data);
+  // }
 
-  getAreaAccessors({
-    scales,
-    dependent0Accessor
-  }: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    curve: CurveFactory;
-    renderingOffset: number;
-    dependent0Accessor?: (datum: Datum) => ScaleInput<AxisScale>;
-  }): {
+  getAreaAccessorsForRenderingData(
+    scales: ScaleSet,
+    dependent0Accessor?: (datum: Datum) => ScaleInput<AxisScale>
+  ): {
     independent: (datum: Datum) => number;
     dependent: (datum: Datum) => number;
     dependent0: number | ((datum: Datum) => number);
@@ -147,106 +143,145 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     };
   }
 
-  createElementPositionerForRenderingData({
-    scales,
-    horizontal
-  }: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    renderingOffset: number;
-  }): (datum: Datum) => DatumPosition | null {
+  // createBarPositionerForRenderingData({
+  //   scales,
+  //   horizontal
+  // }: {
+  //   scales: ScaleSet;
+  //   horizontal: boolean;
+  // }): (datum: Datum) => DatumPosition | null {
+  //   const dependentStartCoord = getScaleBaseline(scales.dependent);
+  //   const independentBandwidth = getScaleBandwidth(scales.independent);
+  //   return (datum: Datum) => {
+  //     const independentStartCoord = coerceNumber(scales.independent(this.independentAccessor(datum)));
+  //     if (!isValidNumber(independentStartCoord)) {
+  //       return null;
+  //     }
+  //     const independentEndCoord = independentStartCoord + independentBandwidth;
+  //     const independentCentreCoord = independentStartCoord + independentBandwidth * 0.5;
+  //     const dependentEndCoord = coerceNumber(scales.dependent(this.dependentAccessor(datum)));
+  //     if (!isValidNumber(dependentEndCoord)) {
+  //       return null;
+  //     }
+  //     return {
+  //       baselineX: horizontal ? dependentStartCoord : independentStartCoord,
+  //       baselineY: horizontal ? independentStartCoord : dependentStartCoord,
+  //       datumX: horizontal ? dependentEndCoord : independentEndCoord,
+  //       datumY: horizontal ? independentEndCoord : dependentEndCoord,
+  //       pointX: horizontal ? dependentEndCoord : independentCentreCoord,
+  //       pointY: horizontal ? independentCentreCoord : dependentEndCoord
+  //     };
+  //   };
+  // }
+
+  // getLabelAccessorsForRenderingData({ scales }: { scales: ScaleSet }): {
+  //   independent: (datum: Datum) => number;
+  //   dependent0: (datum: Datum) => number;
+  //   dependent1: (datum: Datum) => number;
+  // } {
+  //   const dependentStartCoord = getScaleBaseline(scales.dependent);
+  //   return {
+  //     independent: getScaledValueFactory<AxisScale, Datum>(scales.independent, this.independentAccessor),
+  //     dependent0: () => dependentStartCoord,
+  //     dependent1: getScaledValueFactory(scales.dependent, this.dependentAccessor)
+  //   };
+  // }
+
+  getBarAccessorsForRenderingData(scales: ScaleSet): {
+    independent0: (datum: Datum) => number;
+    independent: (datum: Datum) => number;
+    dependent0: (datum: Datum) => number;
+    dependent1: (datum: Datum) => number;
+  } {
     const dependentStartCoord = getScaleBaseline(scales.dependent);
-    const independentBandwidth = getScaleBandwidth(scales.independent);
-    return (datum: Datum) => {
-      const independentStartCoord = coerceNumber(scales.independent(this.independentAccessor(datum)));
-      if (!isValidNumber(independentStartCoord)) {
-        return null;
-      }
-      const independentEndCoord = independentStartCoord + independentBandwidth;
-      const independentCentreCoord = independentStartCoord + independentBandwidth * 0.5;
-      const dependentEndCoord = coerceNumber(scales.dependent(this.dependentAccessor(datum)));
-      if (!isValidNumber(dependentEndCoord)) {
-        return null;
-      }
-      return {
-        baselineX: horizontal ? dependentStartCoord : independentStartCoord,
-        baselineY: horizontal ? independentStartCoord : dependentStartCoord,
-        datumX: horizontal ? dependentEndCoord : independentEndCoord,
-        datumY: horizontal ? independentEndCoord : dependentEndCoord,
-        pointX: horizontal ? dependentEndCoord : independentCentreCoord,
-        pointY: horizontal ? independentCentreCoord : dependentEndCoord
-      };
+    return {
+      independent0: getScaledValueFactory<AxisScale, Datum>(
+        scales.independent,
+        this.independentAccessor,
+        'start'
+      ),
+      independent: getScaledValueFactory<AxisScale, Datum>(
+        scales.independent,
+        this.independentAccessor,
+        'end'
+      ),
+      dependent0: () => dependentStartCoord,
+      dependent1: getScaledValueFactory(scales.dependent, this.dependentAccessor)
     };
   }
 
-  createLabelPositionerForRenderingData({
-    scales,
-    horizontal,
-    font,
-    hideOnOverflow,
-    padding,
-    position,
-    positionOutsideOnOverflow
-  }: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    renderingOffset: number;
-    font: FontProperties | string;
-    position: InternalBarLabelPosition;
-    positionOutsideOnOverflow: boolean;
-    padding: number;
-    hideOnOverflow: boolean;
-  }) {
-    const dependentStartCoord = getScaleBaseline(scales.dependent);
-    const independentBandwidth = getScaleBandwidth(scales.independent);
+  // createLabelPositionerForRenderingData({
+  //   scales,
+  //   horizontal,
+  //   font,
+  //   hideOnOverflow,
+  //   padding,
+  //   position,
+  //   positionOutsideOnOverflow
+  // }: {
+  //   scales: ScaleSet;
+  //   horizontal: boolean;
+  //   renderingOffset: number;
+  //   font: FontProperties | string;
+  //   position: InternalBarLabelPosition;
+  //   positionOutsideOnOverflow: boolean;
+  //   padding: number;
+  //   hideOnOverflow: boolean;
+  // }) {
+  //   const dependentStartCoord = getScaleBaseline(scales.dependent);
+  //   const independentBandwidth = getScaleBandwidth(scales.independent);
 
-    return ({ datum, label }: { datum: Datum; label: string }) => {
-      const independentStartCoord = coerceNumber(scales.independent(this.independentAccessor(datum)));
-      if (!isValidNumber(independentStartCoord)) {
-        return null;
-      }
-      const dependentEndCoord = coerceNumber(scales.dependent(this.dependentAccessor(datum)));
-      if (!isValidNumber(dependentEndCoord)) {
-        return null;
-      }
-      const dependentLengthWithSign = dependentEndCoord - dependentStartCoord;
-      const isNegative = dependentLengthWithSign > 0;
-      const dependentLength = Math.abs(dependentLengthWithSign);
-      const textDimension = horizontal
-        ? measureTextWithCache(label, font)
-        : getFontMetricsWithCache(font).height;
+  //   return ({ datum, label }: { datum: Datum; label: string }) => {
+  //     const independentStartCoord = coerceNumber(scales.independent(this.independentAccessor(datum)));
+  //     if (!isValidNumber(independentStartCoord)) {
+  //       return null;
+  //     }
+  //     const dependentEndCoord = coerceNumber(scales.dependent(this.dependentAccessor(datum)));
+  //     if (!isValidNumber(dependentEndCoord)) {
+  //       return null;
+  //     }
+  //     const dependentLengthWithSign = dependentEndCoord - dependentStartCoord;
+  //     const isNegative = dependentLengthWithSign > 0;
+  //     const dependentLength = Math.abs(dependentLengthWithSign);
+  //     const textDimension = horizontal
+  //       ? measureTextWithCache(label, font)
+  //       : getFontMetricsWithCache(font).height;
 
-      const isOverflowing = textDimension + padding * 2 > dependentLength;
-      const independent = independentStartCoord + independentBandwidth * 0.5;
-      let opacity = 1;
-      let dependent = 0;
+  //     const isOverflowing = textDimension + padding * 2 > dependentLength;
+  //     const independent = independentStartCoord + independentBandwidth * 0.5;
+  //     let opacity = 1;
+  //     let dependent = 0;
 
-      if (position === 'outside' || (positionOutsideOnOverflow && isOverflowing)) {
-        dependent = dependentEndCoord + (textDimension * 0.5 + padding) * (isNegative ? 1 : -1);
-      } else {
-        if (position === 'inside') {
-          dependent = dependentEndCoord + (textDimension * 0.5 + padding) * (isNegative ? -1 : 1);
-        } else {
-          dependent = dependentEndCoord + dependentLength * 0.5 * (isNegative ? -1 : 1);
-        }
-        if (hideOnOverflow && isOverflowing) {
-          opacity = 0;
-        }
-      }
+  //     if (position === 'outside' || (positionOutsideOnOverflow && isOverflowing)) {
+  //       dependent = dependentEndCoord + (textDimension * 0.5 + padding) * (isNegative ? 1 : -1);
+  //     } else {
+  //       if (position === 'inside') {
+  //         dependent = dependentEndCoord + (textDimension * 0.5 + padding) * (isNegative ? -1 : 1);
+  //       } else {
+  //         dependent = dependentEndCoord + dependentLength * 0.5 * (isNegative ? -1 : 1);
+  //       }
+  //       if (hideOnOverflow && isOverflowing) {
+  //         opacity = 0;
+  //       }
+  //     }
 
-      return { x: horizontal ? dependent : independent, y: horizontal ? independent : dependent, opacity };
-    };
-  }
+  //     return { x: horizontal ? dependent : independent, y: horizontal ? independent : dependent, opacity };
+  //   };
+  // }
 
-  getFilteredData(filter: (datum: Datum) => boolean): readonly Datum[] {
-    return this._data.filter(filter);
+  // getFilteredData(filter: (datum: Datum) => boolean): readonly Datum[] {
+  //   return this._data.filter(filter);
+  // }
+
+  getOriginalDataByIndependentValue(value: ScaleInput<AxisScale>): readonly Datum[] {
+    return this._data.filter((datum) => this.independentAccessor(datum) === value);
   }
 
   getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[] {
     return this._data.map(mapper);
   }
 
-  findNearestDatum({
+  findNearestOriginalDatum({
     horizontal,
     scales,
     point,
@@ -259,8 +294,8 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     point: Point;
     scales: ScaleSet;
   }): NearestDatumReturnType<Datum> | null {
-    const findNearestDatum = horizontal ? findNearestDatumY : findNearestDatumX;
-    return findNearestDatum({
+    const findNearestOriginalDatum = horizontal ? findNearestDatumY : findNearestDatumX;
+    return findNearestOriginalDatum({
       independentScale: scales.independent,
       independentAccessor: this.independentAccessor,
       dependentScale: scales.dependent,
@@ -344,35 +379,37 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     return datum;
   }
 
-  getPositionForDatum(params: {
+  getPositionForOriginalDatum({
+    datum,
+    scales,
+    horizontal
+  }: {
     datum: Datum;
     scales: ScaleSet;
     horizontal: boolean;
     renderingOffset: number;
   }) {
-    const foundDatum = this._data.find((datum) => datum === params.datum) ?? null;
+    const foundDatum = this._data.find((originalDatum) => originalDatum === datum) ?? null;
     if (isNil(foundDatum)) {
       return null;
     }
-    const positioner = this.createElementPositionerForRenderingData(params);
-    return positioner(foundDatum) ?? null;
+    const position: (datum: Datum) => DatumPosition | null = createBarPositionerForRenderingData(
+      scales,
+      this,
+      horizontal
+    );
+    return position(foundDatum) ?? null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createShape(shapeFunc: (data: readonly Datum[]) => any) {
-    return shapeFunc(this._data);
-  }
+  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // createShape(shapeFunc: (data: readonly Datum[]) => any) {
+  //   return shapeFunc(this._data);
+  // }
 
-  getAreaAccessors({
-    scales,
-    dependent0Accessor
-  }: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    curve: CurveFactory;
-    renderingOffset: number;
-    dependent0Accessor?: (datum: Datum) => ScaleInput<AxisScale>;
-  }): {
+  getAreaAccessorsForRenderingData(
+    scales: ScaleSet,
+    dependent0Accessor?: (datum: Datum) => ScaleInput<AxisScale>
+  ): {
     independent: (datum: Datum) => number;
     dependent: (datum: Datum) => number;
     dependent0: number | ((datum: Datum) => number);
@@ -394,110 +431,162 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     };
   }
 
-  createElementPositionerForRenderingData({
-    scales,
-    horizontal
-  }: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    renderingOffset: number;
-  }): (datum: Datum) => DatumPosition | null {
-    const dependentStartCoord = getScaleBaseline(scales.dependent);
-    const groupBandwidth = getScaleBandwidth(scales.group[0]);
-    const withinGroupPosition = scales.group[0](this.dataKey) ?? 0;
+  // createBarPositionerForRenderingData({
+  //   scales,
+  //   horizontal
+  // }: {
+  //   scales: ScaleSet;
+  //   horizontal: boolean;
+  // }): (datum: Datum) => DatumPosition | null {
+  //   const dependentStartCoord = getScaleBaseline(scales.dependent);
+  //   const groupBandwidth = getScaleBandwidth(scales.group[0]);
+  //   const withinGroupPosition = scales.group[0](this.dataKey) ?? 0;
 
-    return (datum: Datum) => {
-      const independentStartCoord = coerceNumber(scales.independent(this.independentAccessor(datum)));
-      if (!isValidNumber(independentStartCoord)) {
-        return null;
-      }
-      const groupIndependentStartCoord = independentStartCoord + withinGroupPosition;
-      const independentEndCoord = groupIndependentStartCoord + groupBandwidth;
-      const independentCentreCoord = groupIndependentStartCoord + groupBandwidth * 0.5;
-      const dependentEndCoord = coerceNumber(scales.dependent(this.dependentAccessor(datum)));
-      if (!isValidNumber(dependentEndCoord)) {
-        return null;
-      }
-      return {
-        baselineX: horizontal ? dependentStartCoord : groupIndependentStartCoord,
-        baselineY: horizontal ? groupIndependentStartCoord : dependentStartCoord,
-        datumX: horizontal ? dependentEndCoord : independentEndCoord,
-        datumY: horizontal ? independentEndCoord : dependentEndCoord,
-        pointX: horizontal ? dependentEndCoord : independentCentreCoord,
-        pointY: horizontal ? independentCentreCoord : dependentEndCoord
-      };
+  //   return (datum: Datum) => {
+  //     const independentStartCoord = coerceNumber(scales.independent(this.independentAccessor(datum)));
+  //     if (!isValidNumber(independentStartCoord)) {
+  //       return null;
+  //     }
+  //     const groupIndependentStartCoord = independentStartCoord + withinGroupPosition;
+  //     const independentEndCoord = groupIndependentStartCoord + groupBandwidth;
+  //     const independentCentreCoord = groupIndependentStartCoord + groupBandwidth * 0.5;
+  //     const dependentEndCoord = coerceNumber(scales.dependent(this.dependentAccessor(datum)));
+  //     if (!isValidNumber(dependentEndCoord)) {
+  //       return null;
+  //     }
+  //     return {
+  //       baselineX: horizontal ? dependentStartCoord : groupIndependentStartCoord,
+  //       baselineY: horizontal ? groupIndependentStartCoord : dependentStartCoord,
+  //       datumX: horizontal ? dependentEndCoord : independentEndCoord,
+  //       datumY: horizontal ? independentEndCoord : dependentEndCoord,
+  //       pointX: horizontal ? dependentEndCoord : independentCentreCoord,
+  //       pointY: horizontal ? independentCentreCoord : dependentEndCoord
+  //     };
+  //   };
+  // }
+
+  // getLabelAccessorsForRenderingData({ scales }: { scales: ScaleSet }): {
+  //   independent: (datum: Datum) => number;
+  //   dependent0: (datum: Datum) => number;
+  //   dependent1: (datum: Datum) => number;
+  // } {
+  //   const dependentStartCoord = getScaleBaseline(scales.dependent);
+  //   const withinGroupPosition = scales.group[0](this.dataKey) ?? 0;
+  //   const groupBandwidth = getScaleBandwidth(scales.group[0]);
+
+  //   const independent = getScaledValueFactory<AxisScale, Datum>(
+  //     scales.independent,
+  //     this.independentAccessor,
+  //     'start'
+  //   );
+  //   return {
+  //     independent: (datum: Datum) => independent(datum) + withinGroupPosition + groupBandwidth,
+  //     dependent0: () => dependentStartCoord,
+  //     dependent1: getScaledValueFactory(scales.dependent, this.dependentAccessor)
+  //   };
+
+  //   return {
+  //     independent: getScaledValueFactory<AxisScale, Datum>(scales.independent, this.independentAccessor),
+  //     dependent0: () => dependentStartCoord,
+  //     dependent1: getScaledValueFactory(scales.dependent, this.dependentAccessor)
+  //   };
+  // }
+
+  getBarAccessorsForRenderingData(scales: ScaleSet): {
+    independent0: (datum: Datum) => number;
+    independent: (datum: Datum) => number;
+    dependent0: (datum: Datum) => number;
+    dependent1: (datum: Datum) => number;
+  } {
+    const dependentStartCoord = getScaleBaseline(scales.dependent);
+    const withinGroupPosition = scales.group[0](this.dataKey) ?? 0;
+    const groupBandwidth = getScaleBandwidth(scales.group[0]);
+    const independent = getScaledValueFactory<AxisScale, Datum>(
+      scales.independent,
+      this.independentAccessor,
+      'start'
+    );
+    return {
+      independent0: (datum: Datum) => independent(datum) + withinGroupPosition,
+      independent: (datum: Datum) => independent(datum) + withinGroupPosition + groupBandwidth,
+      dependent0: () => dependentStartCoord,
+      dependent1: getScaledValueFactory(scales.dependent, this.dependentAccessor)
     };
   }
 
-  createLabelPositionerForRenderingData({
-    scales,
-    horizontal,
-    font,
-    hideOnOverflow,
-    padding,
-    position,
-    positionOutsideOnOverflow
-  }: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    renderingOffset: number;
-    font: FontProperties | string;
-    position: InternalBarLabelPosition;
-    positionOutsideOnOverflow: boolean;
-    padding: number;
-    hideOnOverflow: boolean;
-  }) {
-    const dependentStartCoord = getScaleBaseline(scales.dependent);
-    const groupBandwidth = getScaleBandwidth(scales.group[0]);
-    const withinGroupPosition = scales.group[0](this.dataKey) ?? 0;
+  // createLabelPositionerForRenderingData({
+  //   scales,
+  //   horizontal,
+  //   font,
+  //   hideOnOverflow,
+  //   padding,
+  //   position,
+  //   positionOutsideOnOverflow
+  // }: {
+  //   scales: ScaleSet;
+  //   horizontal: boolean;
+  //   renderingOffset: number;
+  //   font: FontProperties | string;
+  //   position: InternalBarLabelPosition;
+  //   positionOutsideOnOverflow: boolean;
+  //   padding: number;
+  //   hideOnOverflow: boolean;
+  // }) {
+  //   const dependentStartCoord = getScaleBaseline(scales.dependent);
+  //   const groupBandwidth = getScaleBandwidth(scales.group[0]);
+  //   const withinGroupPosition = scales.group[0](this.dataKey) ?? 0;
 
-    return ({ datum, label }: { datum: Datum; label: string }) => {
-      const independentStartCoord = coerceNumber(scales.independent(this.independentAccessor(datum)));
-      if (!isValidNumber(independentStartCoord)) {
-        return null;
-      }
-      const dependentEndCoord = coerceNumber(scales.dependent(this.dependentAccessor(datum)));
-      if (!isValidNumber(dependentEndCoord)) {
-        return null;
-      }
-      const dependentLengthWithSign = dependentEndCoord - dependentStartCoord;
-      const isNegative = dependentLengthWithSign > 0;
-      const dependentLength = Math.abs(dependentLengthWithSign);
-      const textDimension = horizontal
-        ? measureTextWithCache(label, font)
-        : getFontMetricsWithCache(font).height;
+  //   return ({ datum, label }: { datum: Datum; label: string }) => {
+  //     const independentStartCoord = coerceNumber(scales.independent(this.independentAccessor(datum)));
+  //     if (!isValidNumber(independentStartCoord)) {
+  //       return null;
+  //     }
+  //     const dependentEndCoord = coerceNumber(scales.dependent(this.dependentAccessor(datum)));
+  //     if (!isValidNumber(dependentEndCoord)) {
+  //       return null;
+  //     }
+  //     const dependentLengthWithSign = dependentEndCoord - dependentStartCoord;
+  //     const isNegative = dependentLengthWithSign > 0;
+  //     const dependentLength = Math.abs(dependentLengthWithSign);
+  //     const textDimension = horizontal
+  //       ? measureTextWithCache(label, font)
+  //       : getFontMetricsWithCache(font).height;
 
-      const isOverflowing = textDimension + padding * 2 > dependentLength;
-      const independent = independentStartCoord + withinGroupPosition + groupBandwidth * 0.5;
-      let dependent = 0;
-      let opacity = 1;
+  //     const isOverflowing = textDimension + padding * 2 > dependentLength;
+  //     const independent = independentStartCoord + withinGroupPosition + groupBandwidth * 0.5;
+  //     let dependent = 0;
+  //     let opacity = 1;
 
-      if (position === 'outside' || (positionOutsideOnOverflow && isOverflowing)) {
-        dependent = dependentEndCoord + (textDimension * 0.5 + padding) * (isNegative ? 1 : -1);
-      } else {
-        if (position === 'inside') {
-          dependent = dependentEndCoord + (textDimension * 0.5 + padding) * (isNegative ? -1 : 1);
-        } else {
-          dependent = dependentEndCoord + dependentLength * 0.5 * (isNegative ? -1 : 1);
-        }
-        if (hideOnOverflow && isOverflowing) {
-          opacity = 0;
-        }
-      }
+  //     if (position === 'outside' || (positionOutsideOnOverflow && isOverflowing)) {
+  //       dependent = dependentEndCoord + (textDimension * 0.5 + padding) * (isNegative ? 1 : -1);
+  //     } else {
+  //       if (position === 'inside') {
+  //         dependent = dependentEndCoord + (textDimension * 0.5 + padding) * (isNegative ? -1 : 1);
+  //       } else {
+  //         dependent = dependentEndCoord + dependentLength * 0.5 * (isNegative ? -1 : 1);
+  //       }
+  //       if (hideOnOverflow && isOverflowing) {
+  //         opacity = 0;
+  //       }
+  //     }
 
-      return { x: horizontal ? dependent : independent, y: horizontal ? independent : dependent, opacity };
-    };
-  }
+  //     return { x: horizontal ? dependent : independent, y: horizontal ? independent : dependent, opacity };
+  //   };
+  // }
 
-  getFilteredData(filter: (datum: Datum) => boolean): readonly Datum[] {
-    return this._data.filter(filter);
+  // getFilteredData(filter: (datum: Datum) => boolean): readonly Datum[] {
+  //   return this._data.filter(filter);
+  // }
+
+  getOriginalDataByIndependentValue(value: ScaleInput<AxisScale>): readonly Datum[] {
+    return this._data.filter((datum) => this.independentAccessor(datum) === value);
   }
 
   getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[] {
     return this._data.map(mapper);
   }
 
-  findNearestDatum({
+  findNearestOriginalDatum({
     horizontal,
     scales,
     point,
@@ -600,42 +689,10 @@ export class StackDataEntry<Datum extends object>
     return this._colorAccessor;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createShape(shapeFunc: (data: readonly StackDatum<AxisScale, AxisScale, Datum>[]) => any) {
-    // throw new Error('Not supported for stack data');
-    return shapeFunc(this._stackData);
-  }
-
-  getAreaAccessors({
-    scales
-  }: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    curve: CurveFactory;
-    renderingOffset: number;
-    dependent0Accessor?: (datum: StackDatum<AxisScale, AxisScale, Datum>) => ScaleInput<AxisScale>;
-  }): {
-    independent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
-    dependent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
-    dependent0: number | ((datum: StackDatum<AxisScale, AxisScale, Datum>) => number);
-    defined: (datum: StackDatum<AxisScale, AxisScale, Datum>) => boolean;
-  } {
-    const getScaledIndependent = getScaledValueFactory<AxisScale, StackDatum<AxisScale, AxisScale, Datum>>(
-      scales.independent,
-      getStack
-    );
-    const getScaledDependent = getScaledValueFactory(scales.dependent, getFirstItem);
-    const getScaledDependent0 = getScaledValueFactory(scales.dependent, getSecondItem);
-    const isDefined = (datum: StackDatum<AxisScale, AxisScale, Datum>) =>
-      isValidNumber(scales.independent(getStack(datum))) &&
-      isValidNumber(scales.dependent(getSecondItem(datum)));
-    return {
-      independent: getScaledIndependent,
-      dependent: getScaledDependent,
-      dependent0: getScaledDependent0,
-      defined: isDefined
-    };
-  }
+  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // createShape(shapeFunc: (data: readonly StackDatum<AxisScale, AxisScale, Datum>[]) => any) {
+  //   return shapeFunc(this._stackData);
+  // }
 
   getOriginalDatumFromRenderingDatum(datum: StackDatum<AxisScale, AxisScale, Datum>): Datum {
     return getOriginalDatumFromStackDatum(datum);
@@ -649,19 +706,24 @@ export class StackDataEntry<Datum extends object>
     return this._stackData.map((datum) => [getFirstItem(datum), getSecondItem(datum)]).flat();
   }
 
-  getPositionForDatum(params: {
+  getPositionForOriginalDatum({
+    datum,
+    scales,
+    horizontal
+  }: {
     datum: Datum;
     scales: ScaleSet;
     horizontal: boolean;
     renderingOffset: number;
   }) {
     const foundDatum =
-      this._stackData.find((datum) => getOriginalDatumFromStackDatum(datum) === params.datum) ?? null;
+      this._stackData.find((stackDatum) => getOriginalDatumFromStackDatum(stackDatum) === datum) ?? null;
     if (isNil(foundDatum)) {
       return null;
     }
-    const positioner = this.createElementPositionerForRenderingData(params);
-    return positioner(foundDatum) ?? null;
+    const position: (datum: StackDatum<AxisScale, AxisScale, Datum>) => DatumPosition | null =
+      createBarPositionerForRenderingData(scales, this, horizontal);
+    return position(foundDatum) ?? null;
   }
 
   getRenderingData(): readonly StackDatum<AxisScale, AxisScale, Datum>[] {
@@ -678,100 +740,165 @@ export class StackDataEntry<Datum extends object>
     });
   }
 
-  // createRectPositionerForRenderingData ?
-  createElementPositionerForRenderingData({
-    scales,
-    horizontal
-  }: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    renderingOffset: number;
-  }): (datum: StackDatum<AxisScale, AxisScale, Datum>) => DatumPosition | null {
-    const independentBandwidth = getScaleBandwidth(scales.independent);
-    return (datum) => {
-      const independentStartCoord = coerceNumber(scales.independent(getStack(datum)));
-      if (!isValidNumber(independentStartCoord)) {
-        return null;
-      }
-      const independentEndCoord = independentStartCoord + independentBandwidth;
-      const independentCentreCoord = independentStartCoord + independentBandwidth * 0.5;
-      const dependentStartCoord = coerceNumber(scales.dependent(getFirstItem(datum)));
-      if (!isValidNumber(dependentStartCoord)) {
-        return null;
-      }
-      const dependentEndCoord = coerceNumber(scales.dependent(getSecondItem(datum)));
-      if (!isValidNumber(dependentEndCoord)) {
-        return null;
-      }
-      return {
-        baselineX: horizontal ? dependentStartCoord : independentStartCoord,
-        baselineY: horizontal ? independentStartCoord : dependentStartCoord,
-        datumX: horizontal ? dependentEndCoord : independentEndCoord,
-        datumY: horizontal ? independentEndCoord : dependentEndCoord,
-        pointX: horizontal ? dependentEndCoord : independentCentreCoord,
-        pointY: horizontal ? independentCentreCoord : dependentEndCoord
-      };
+  // createBarPositionerForRenderingData({
+  //   scales,
+  //   horizontal
+  // }: {
+  //   scales: ScaleSet;
+  //   horizontal: boolean;
+  // }): (datum: StackDatum<AxisScale, AxisScale, Datum>) => DatumPosition | null {
+  //   const independentBandwidth = getScaleBandwidth(scales.independent);
+  //   return (datum) => {
+  //     const independentStartCoord = coerceNumber(scales.independent(getStack(datum)));
+  //     if (!isValidNumber(independentStartCoord)) {
+  //       return null;
+  //     }
+  //     const independentEndCoord = independentStartCoord + independentBandwidth;
+  //     const independentCentreCoord = independentStartCoord + independentBandwidth * 0.5;
+  //     const dependentStartCoord = coerceNumber(scales.dependent(getFirstItem(datum)));
+  //     if (!isValidNumber(dependentStartCoord)) {
+  //       return null;
+  //     }
+  //     const dependentEndCoord = coerceNumber(scales.dependent(getSecondItem(datum)));
+  //     if (!isValidNumber(dependentEndCoord)) {
+  //       return null;
+  //     }
+  //     return {
+  //       baselineX: horizontal ? dependentStartCoord : independentStartCoord,
+  //       baselineY: horizontal ? independentStartCoord : dependentStartCoord,
+  //       datumX: horizontal ? dependentEndCoord : independentEndCoord,
+  //       datumY: horizontal ? independentEndCoord : dependentEndCoord,
+  //       pointX: horizontal ? dependentEndCoord : independentCentreCoord,
+  //       pointY: horizontal ? independentCentreCoord : dependentEndCoord
+  //     };
+  //   };
+  // }
+
+  getBarAccessorsForRenderingData(scales: ScaleSet): {
+    independent0: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
+    independent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
+    dependent0: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
+    dependent1: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
+  } {
+    return {
+      // independent0: (datum: StackDatum<AxisScale, AxisScale, Datum>) => coerceNumber(scales.independent(getStack(datum)) ?? NaN,
+      independent0: getScaledValueFactory<AxisScale, StackDatum<AxisScale, AxisScale, Datum>>(
+        scales.independent,
+        getStack,
+        'start'
+      ),
+      independent: getScaledValueFactory<AxisScale, StackDatum<AxisScale, AxisScale, Datum>>(
+        scales.independent,
+        getStack,
+        'end'
+      ),
+      dependent0: getScaledValueFactory(scales.dependent, getFirstItem),
+      dependent1: getScaledValueFactory(scales.dependent, getSecondItem)
     };
   }
 
-  createLabelPositionerForRenderingData({
-    scales,
-    horizontal,
-    font,
-    hideOnOverflow,
-    padding
-  }: {
-    scales: ScaleSet;
-    horizontal: boolean;
-    renderingOffset: number;
-    font: FontProperties | string;
-    position: InternalBarLabelPosition; // Ignored: always inside-centered.
-    positionOutsideOnOverflow: boolean; // Ignored: no change of position on overflow.
-    padding: number;
-    hideOnOverflow: boolean;
-  }): (datumWithLabel: {
-    datum: StackDatum<AxisScale, AxisScale, Datum>;
-    label: string;
-  }) => LabelTransition | null {
-    const independentBandwidth = getScaleBandwidth(scales.independent);
+  // getLabelAccessorsForRenderingData({ scales }: { scales: ScaleSet }): {
+  //   independent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
+  //   dependent0: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
+  //   dependent1: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
+  // } {
+  //   return {
+  //     independent: getScaledValueFactory<AxisScale, StackDatum<AxisScale, AxisScale, Datum>>(
+  //       scales.independent,
+  //       getStack,
+  //       'center'
+  //     ),
+  //     dependent0: getScaledValueFactory(scales.dependent, getFirstItem),
+  //     dependent1: getScaledValueFactory(scales.dependent, getSecondItem)
+  //   };
+  // }
 
-    return ({ datum, label }: { datum: StackDatum<AxisScale, AxisScale, Datum>; label: string }) => {
-      const independentStartCoord = coerceNumber(scales.independent(getStack(datum)));
-      if (!isValidNumber(independentStartCoord)) {
-        return null;
-      }
-      const dependentStartCoord = coerceNumber(scales.dependent(getFirstItem(datum)));
-      if (!isValidNumber(dependentStartCoord)) {
-        return null;
-      }
-      const dependentEndCoord = coerceNumber(scales.dependent(getSecondItem(datum)));
-      if (!isValidNumber(dependentEndCoord)) {
-        return null;
-      }
-
-      const dependentLengthWithSign = dependentEndCoord - dependentStartCoord;
-      const dependentLength = Math.abs(dependentLengthWithSign);
-      const isNegative = dependentLengthWithSign > 0;
-      const textDimension = horizontal
-        ? measureTextWithCache(label, font)
-        : getFontMetricsWithCache(font).height;
-
-      const independent = independentStartCoord + independentBandwidth * 0.5;
-      const dependent = dependentEndCoord + dependentLength * 0.5 * (isNegative ? -1 : 1);
-      const opacity = hideOnOverflow && textDimension + padding * 2 > dependentLength ? 0 : 1;
-      return { x: horizontal ? dependent : independent, y: horizontal ? independent : dependent, opacity };
+  getAreaAccessorsForRenderingData(scales: ScaleSet): {
+    independent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
+    dependent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
+    dependent0: number | ((datum: StackDatum<AxisScale, AxisScale, Datum>) => number);
+    defined: (datum: StackDatum<AxisScale, AxisScale, Datum>) => boolean;
+  } {
+    const getScaledIndependent = getScaledValueFactory<AxisScale, StackDatum<AxisScale, AxisScale, Datum>>(
+      scales.independent,
+      getStack
+    );
+    const getScaledDependent0 = getScaledValueFactory(scales.dependent, getFirstItem);
+    const getScaledDependent = getScaledValueFactory(scales.dependent, getSecondItem);
+    // TODO convert isDefined to use the value factories above.
+    const isDefined = (datum: StackDatum<AxisScale, AxisScale, Datum>) =>
+      isValidNumber(scales.independent(getStack(datum))) &&
+      isValidNumber(scales.dependent(getSecondItem(datum)));
+    return {
+      independent: getScaledIndependent,
+      dependent0: getScaledDependent0,
+      dependent: getScaledDependent,
+      defined: isDefined
     };
   }
 
-  getFilteredData(filter: (datum: Datum) => boolean): readonly Datum[] {
-    return this._originalData.filter(filter);
+  // createLabelPositionerForRenderingData({
+  //   scales,
+  //   horizontal,
+  //   font,
+  //   hideOnOverflow,
+  //   padding
+  // }: {
+  //   scales: ScaleSet;
+  //   horizontal: boolean;
+  //   renderingOffset: number;
+  //   font: FontProperties | string;
+  //   position: InternalBarLabelPosition; // Ignored: always inside-centered.
+  //   positionOutsideOnOverflow: boolean; // Ignored: no change of position on overflow.
+  //   padding: number;
+  //   hideOnOverflow: boolean;
+  // }): (datumWithLabel: {
+  //   datum: StackDatum<AxisScale, AxisScale, Datum>;
+  //   label: string;
+  // }) => LabelTransition | null {
+  //   const independentBandwidth = getScaleBandwidth(scales.independent);
+
+  //   return ({ datum, label }: { datum: StackDatum<AxisScale, AxisScale, Datum>; label: string }) => {
+  //     const independentStartCoord = coerceNumber(scales.independent(getStack(datum)));
+  //     if (!isValidNumber(independentStartCoord)) {
+  //       return null;
+  //     }
+  //     const dependentStartCoord = coerceNumber(scales.dependent(getFirstItem(datum)));
+  //     if (!isValidNumber(dependentStartCoord)) {
+  //       return null;
+  //     }
+  //     const dependentEndCoord = coerceNumber(scales.dependent(getSecondItem(datum)));
+  //     if (!isValidNumber(dependentEndCoord)) {
+  //       return null;
+  //     }
+
+  //     const dependentLengthWithSign = dependentEndCoord - dependentStartCoord;
+  //     const dependentLength = Math.abs(dependentLengthWithSign);
+  //     const isNegative = dependentLengthWithSign > 0;
+  //     const textDimension = horizontal
+  //       ? measureTextWithCache(label, font)
+  //       : getFontMetricsWithCache(font).height;
+
+  //     const independent = independentStartCoord + independentBandwidth * 0.5;
+  //     const dependent = dependentEndCoord + dependentLength * 0.5 * (isNegative ? -1 : 1);
+  //     const opacity = hideOnOverflow && textDimension + padding * 2 > dependentLength ? 0 : 1;
+  //     return { x: horizontal ? dependent : independent, y: horizontal ? independent : dependent, opacity };
+  //   };
+  // }
+
+  // getFilteredData(filter: (datum: Datum) => boolean): readonly Datum[] {
+  //   return this._originalData.filter(filter);
+  // }
+
+  getOriginalDataByIndependentValue(value: ScaleInput<AxisScale>): readonly Datum[] {
+    return this._originalData.filter((datum) => this.independentAccessor(datum) === value);
   }
 
   getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[] {
     return this._originalData.map(mapper);
   }
 
-  findNearestDatum({
+  findNearestOriginalDatum({
     point,
     horizontal,
     width,

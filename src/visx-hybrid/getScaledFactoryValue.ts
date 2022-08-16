@@ -1,4 +1,6 @@
+import { coerceNumber } from './coerceNumber';
 import { getScaleBandwidth } from './getScaleBandwidth';
+import { isBandScale } from './isBandScale';
 import { isValidNumber } from './isValidNumber';
 import type { AxisScale, ScaleInput } from './types';
 
@@ -9,11 +11,15 @@ export function getScaledValueFactory<Scale extends AxisScale, Datum>(
   align: 'start' | 'center' | 'end' = 'center'
 ) {
   return (datum: Datum) => {
-    const scaledValue = scale(accessor(datum));
+    const scaledValue = coerceNumber(scale(accessor(datum)));
     if (isValidNumber(scaledValue)) {
-      const bandwidthOffset =
-        (align === 'start' ? 0 : getScaleBandwidth(scale)) / (align === 'center' ? 2 : 1); // TODO change to multiply.
-      return scaledValue + bandwidthOffset;
+      if (isBandScale(scale)) {
+        const bandwidthOffset =
+          (align === 'start' ? 0 : getScaleBandwidth(scale)) * (align === 'center' ? 0.5 : 1);
+        return scaledValue + bandwidthOffset;
+      } else {
+        return scaledValue;
+      }
     }
     return NaN;
   };

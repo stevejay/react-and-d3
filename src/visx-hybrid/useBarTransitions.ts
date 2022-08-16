@@ -1,5 +1,6 @@
 import { SpringConfig, useTransition } from 'react-spring';
 
+import { createBarPositionerForRenderingData } from './createBarPositionerForRenderingData';
 import { createPolygonTransition } from './createPolygonTransition';
 import type { IDataEntry, PolygonTransition, ScaleSet } from './types';
 
@@ -7,7 +8,6 @@ export function useBarTransitions<Datum extends object, RenderingDatum extends o
   dataEntry,
   scales,
   horizontal,
-  renderingOffset,
   springConfig,
   animate,
   seriesIsLeaving = false
@@ -21,7 +21,7 @@ export function useBarTransitions<Datum extends object, RenderingDatum extends o
   /** Pass `true` if the entire series for the dataEntry is being removed. This will result in the bar not changing position while it fades out. */
   seriesIsLeaving?: boolean;
 }) {
-  const position = dataEntry.createElementPositionerForRenderingData({ scales, horizontal, renderingOffset });
+  const position = createBarPositionerForRenderingData(scales, dataEntry, horizontal);
   return useTransition<RenderingDatum, PolygonTransition>(dataEntry.getRenderingData(), {
     initial: (datum) => ({ opacity: 1, ...createPolygonTransition(position(datum)) }),
     from: (datum) => ({ opacity: 0, ...createPolygonTransition(position(datum)) }),
