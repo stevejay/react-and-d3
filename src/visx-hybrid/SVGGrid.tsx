@@ -58,7 +58,10 @@ export function SVGGrid({
   const gridType: GridType =
     variable === 'independent' ? (horizontal ? 'row' : 'column') : horizontal ? 'column' : 'row';
   const gridTheme = theme?.grid?.[variable];
-  const scale = variable === 'independent' ? scales.independent : scales.dependent;
+  const scale =
+    variable === 'independent'
+      ? scales.independent
+      : scales.getDependentScale(variable === 'alternateDependent');
   const rangePadding = variable === 'independent' ? dependentRangePadding : independentRangePadding;
   const ticks = calculateTicksData({ scale, hideZero, tickCount, tickValues });
   const transitions = useGridTransitions({

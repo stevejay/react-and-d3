@@ -1,13 +1,13 @@
 import type { ReactNode } from 'react';
 import type { SpringConfig } from 'react-spring';
 
-import type { AxisScale, IDataEntry, RenderAnimatedGlyphProps, ScaleSet, SeriesProps } from './types';
+import type { IDataEntry, IScaleSet, RenderAnimatedGlyphProps } from './types';
 import { useGlyphTransitions } from './useGlyphTransitions';
 
 export type SVGGlyphSeriesRendererProps<Datum extends object> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataEntry: IDataEntry<Datum, any>;
-  scales: ScaleSet;
+  scales: IScaleSet;
   horizontal: boolean;
   renderingOffset: number;
   animate: boolean;
@@ -16,8 +16,8 @@ export type SVGGlyphSeriesRendererProps<Datum extends object> = {
   glyphSize: number | ((datum: Datum, dataKey: string) => number);
   renderGlyph: (props: RenderAnimatedGlyphProps<Datum>) => ReactNode;
 } & Pick<
-  SeriesProps<AxisScale, AxisScale, Datum>,
-  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
+  React.SVGProps<SVGRectElement | SVGPathElement | SVGRectElement | SVGCircleElement>, // TODO ???
+  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'
 >;
 
 export function SVGGlyphSeriesRenderer<Datum extends object>({
@@ -29,13 +29,9 @@ export function SVGGlyphSeriesRenderer<Datum extends object>({
   animate,
   colorAccessor,
   renderGlyph,
-  glyphSize
-}: //   onBlur,
-//   onFocus,
-//   onPointerMove,
-//   onPointerOut,
-//   onPointerUp,
-SVGGlyphSeriesRendererProps<Datum>) {
+  glyphSize,
+  ...rest
+}: SVGGlyphSeriesRendererProps<Datum>) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const transitions = useGlyphTransitions<Datum, any>({
     dataEntry,
@@ -53,7 +49,15 @@ SVGGlyphSeriesRendererProps<Datum>) {
         const dataKey = dataEntry.dataKey;
         const originalDatum = dataEntry.getOriginalDatumFromRenderingDatum(datum.datum);
         const color = colorAccessor?.(originalDatum, dataKey) ?? fallbackColor;
-        return renderGlyph({ springValues, datum: originalDatum, index, dataKey, horizontal, color });
+        return renderGlyph({
+          springValues,
+          datum: originalDatum,
+          index,
+          dataKey,
+          horizontal,
+          color,
+          ...rest
+        });
       })}
     </>
   );

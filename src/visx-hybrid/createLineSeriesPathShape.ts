@@ -1,7 +1,7 @@
 import { CurveFactory, CurveFactoryLineOnly, line as d3Line } from 'd3-shape';
 
 import { setNumberOrNumberAccessor } from './setNumberOrNumberAccessor';
-import type { IDataEntry, ScaleSet } from './types';
+import type { IDataEntry, IScaleSet } from './types';
 
 export function createLineSeriesPathShape<Datum extends object>({
   scales,
@@ -9,7 +9,7 @@ export function createLineSeriesPathShape<Datum extends object>({
   horizontal,
   curve
 }: {
-  scales: ScaleSet;
+  scales: IScaleSet;
   dataEntry: IDataEntry<Datum, Datum>;
   horizontal: boolean;
   curve: CurveFactory | CurveFactoryLineOnly;

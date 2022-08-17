@@ -10,12 +10,12 @@ import type { AxisScaleOutput } from './types';
 
 export function createScaleFromScaleConfig<Scale extends AnyD3Scale>(
   values: ScaleInput<Scale>[],
-  scaleConfig: ScaleConfig<AxisScaleOutput>,
+  scaleConfig?: ScaleConfig<AxisScaleOutput>,
   range?: [number, number]
 ) {
   // d3.extent returns NaN domain for empty arrays
-  if (values.length === 0) {
-    return undefined;
+  if (values.length === 0 || isNil(scaleConfig)) {
+    return null;
   }
 
   const domain = isDiscreteScaleConfig(scaleConfig)

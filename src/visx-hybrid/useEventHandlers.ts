@@ -1,10 +1,10 @@
-import { FocusEvent, PointerEvent, useCallback } from 'react';
+import { useCallback } from 'react';
 import { isNil } from 'lodash-es';
 
 import { HandlerParams } from './EventEmitterProvider';
 import { isDefined } from './isDefined';
 import { isPointerEvent } from './isPointerEvent';
-import type { EventHandlerParams } from './types';
+import type { BasicSeriesProps, EventHandlerParams } from './types';
 import { useEventEmitterSubscription } from './useEventEmitterSubscription';
 import { useXYChartContext } from './useXYChartContext';
 
@@ -13,22 +13,9 @@ export const POINTER_EVENTS_NEAREST = '__POINTER_EVENTS_NEAREST';
 
 export type PointerEventHandlerParams<Datum extends object> = {
   /** Controls whether callbacks are invoked for one or more registered dataKeys, the nearest dataKey, or all dataKeys. */
-  dataKeyOrKeysRef: string | readonly string[] | typeof POINTER_EVENTS_NEAREST | typeof POINTER_EVENTS_ALL; // last two are eaten by string
-  // /** Optionally override the findNearestOriginalDatum logic. */
-  // findNearestOriginalDatum?: (params: NearestDatumArgs<Datum>) => NearestDatumReturnType<Datum>;
-  /** Callback invoked onFocus for one or more series based on dataKey. */
-  onFocus?: (params: readonly EventHandlerParams<Datum>[]) => void;
-  /** Callback invoked onBlur. */
-  onBlur?: (event: FocusEvent) => void;
-  /** Callback invoked onPointerMove for one or more series based on dataKey. */
-  onPointerMove?: (params: readonly EventHandlerParams<Datum>[]) => void;
-  /** Callback invoked onPointerOut. */
-  onPointerOut?: (event: PointerEvent) => void;
-  /** Callback invoked onPointerUp for one or more series based on dataKey. */
-  onPointerUp?: (params: readonly EventHandlerParams<Datum>[]) => void;
-  /** Valid event sources for which to invoke handlers. */
+  dataKeyOrKeysRef: string | readonly string[] | typeof POINTER_EVENTS_NEAREST | typeof POINTER_EVENTS_ALL;
   allowedSources?: string[];
-};
+} & Pick<BasicSeriesProps<Datum>, 'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onFocus' | 'onBlur'>;
 
 /**
  * Hook that returns PointerEvent handlers that invoke the passed pointer
@@ -62,7 +49,7 @@ export function useEventHandlers<Datum extends object>({
         width &&
         height &&
         !isNil(scales.independent) &&
-        !isNil(scales.dependent)
+        !isNil(scales.getDependentScale(false))
       ) {
         const considerAllKeys =
           dataKeyOrKeysRef === POINTER_EVENTS_NEAREST || dataKeyOrKeysRef === POINTER_EVENTS_ALL;

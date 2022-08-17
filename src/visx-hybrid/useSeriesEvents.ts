@@ -1,16 +1,12 @@
 import { FocusEvent, PointerEvent, useCallback } from 'react';
 
-import type { AxisScale, EventHandlerParams, SeriesProps } from './types';
+import type { BasicSeriesProps, EventHandlerParams } from './types';
 import { useEventEmitters } from './useEventEmitters';
 import { PointerEventHandlerParams, useEventHandlers } from './useEventHandlers';
 import { useTooltipContext } from './useTooltipContext';
 
-export type SeriesEventsParams<
-  IndependentScale extends AxisScale,
-  DependentScale extends AxisScale,
-  Datum extends object
-> = Pick<
-  SeriesProps<IndependentScale, DependentScale, Datum>,
+export type SeriesEventsParams<Datum extends object> = Pick<
+  BasicSeriesProps<Datum>,
   'onBlur' | 'onFocus' | 'onPointerMove' | 'onPointerOut' | 'onPointerUp'
 > &
   Pick<PointerEventHandlerParams<Datum>, 'dataKeyOrKeysRef' | 'allowedSources'> & {
@@ -20,11 +16,7 @@ export type SeriesEventsParams<
   };
 
 /** This hook simplifies the logic for initializing Series event emitters + handlers. */
-export function useSeriesEvents<
-  IndependentScale extends AxisScale,
-  DependentScale extends AxisScale,
-  Datum extends object
->({
+export function useSeriesEvents<Datum extends object>({
   dataKeyOrKeysRef,
   enableEvents,
   onBlur: onBlurProps,
@@ -34,7 +26,7 @@ export function useSeriesEvents<
   onPointerUp: onPointerUpProps,
   source,
   allowedSources
-}: SeriesEventsParams<IndependentScale, DependentScale, Datum>) {
+}: SeriesEventsParams<Datum>) {
   const { showTooltip, hideTooltip } = useTooltipContext<Datum>();
 
   const onPointerMove = useCallback(

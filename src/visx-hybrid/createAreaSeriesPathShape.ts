@@ -1,7 +1,7 @@
 import { area as d3Area, CurveFactory } from 'd3-shape';
 
 import { setNumberOrNumberAccessor } from './setNumberOrNumberAccessor';
-import type { AxisScale, IDataEntry, ScaleInput, ScaleSet } from './types';
+import type { AxisScale, IDataEntry, IScaleSet, ScaleInput } from './types';
 
 export function createAreaSeriesPathShape<Datum extends object>({
   scales,
@@ -10,7 +10,7 @@ export function createAreaSeriesPathShape<Datum extends object>({
   horizontal,
   dependent0Accessor
 }: {
-  scales: ScaleSet;
+  scales: IScaleSet;
   dataEntry: IDataEntry<Datum, Datum>;
   horizontal: boolean;
   curve: CurveFactory;

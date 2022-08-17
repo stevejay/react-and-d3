@@ -23,12 +23,7 @@ export function SVGSwipedPath<Datum extends object>({
   color,
   curve = curveLinear,
   ...rest
-}: //   onBlur,
-//   onFocus,
-//   onPointerMove,
-//   onPointerOut,
-//   onPointerUp,
-SVGSwipedPathProps<Datum>) {
+}: SVGSwipedPathProps<Datum>) {
   const [offset, pathRef] = useSVGPathLength();
   const pathShape = createLineSeriesPathShape({
     dataEntry,
@@ -44,7 +39,7 @@ SVGSwipedPathProps<Datum>) {
       d={pathShape}
       stroke={color}
       strokeDashoffset={transitions.offset}
-      strokeDasharray={`${offset} ${offset}`}
+      strokeDasharray={dataEntry.getOriginalData().length > 1 ? `${offset} ${offset}` : undefined}
       strokeWidth={2}
       strokeLinecap="round" // Without this a datum surrounded by nulls will not be visible.
       fill="none"

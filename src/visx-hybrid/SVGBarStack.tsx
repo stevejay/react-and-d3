@@ -8,12 +8,12 @@ import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
 import { SVGBarSeriesProps } from './SVGBarSeries';
 import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
-import type { AxisScale, RenderAnimatedBarProps } from './types';
+import type { BasicSeriesProps, RenderAnimatedBarProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
 import { useXYChartContext } from './useXYChartContext';
 
-export interface SVGBarStackProps<Datum extends object> {
+export type SVGBarStackProps<Datum extends object> = {
   /** Sets the stack offset to the pre-defined d3 offset, see https://github.com/d3/d3-shape#stack_offset. */
   stackOffset?: keyof typeof STACK_OFFSETS;
   /** Sets the stack order to the pre-defined d3 function, see https://github.com/d3/d3-shape#stack_order. */
@@ -25,7 +25,7 @@ export interface SVGBarStackProps<Datum extends object> {
   children?: ReactNode;
   colorAccessor?: (datum: Datum, key: string) => string;
   renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
-}
+} & Pick<BasicSeriesProps<Datum>, 'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'>;
 
 export function SVGBarStack<Datum extends object>({
   children,
@@ -33,7 +33,12 @@ export function SVGBarStack<Datum extends object>({
   animate = true,
   springConfig,
   colorAccessor,
-  renderBar
+  renderBar,
+  onBlur,
+  onFocus,
+  onPointerMove,
+  onPointerOut,
+  onPointerUp
 }: SVGBarStackProps<Datum>) {
   const {
     horizontal,
@@ -49,16 +54,14 @@ export function SVGBarStack<Datum extends object>({
   );
   const dataKeys = seriesChildren.map((child) => child.props.dataKey).filter(isDefined);
   const ownEventSourceKey = `${barStackEventSource}-${dataKeys.join('-')}`;
-  // TODO fix the any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  /* const eventEmitters = */ useSeriesEvents<AxisScale, AxisScale, any>({
+  const eventEmitters = useSeriesEvents<Datum>({
     dataKeyOrKeysRef: dataKeys,
     enableEvents,
-    // onBlur,
-    // onFocus,
-    // onPointerMove,
-    // onPointerOut,
-    // onPointerUp,
+    onBlur,
+    onFocus,
+    onPointerMove,
+    onPointerOut,
+    onPointerUp,
     source: ownEventSourceKey,
     allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
@@ -87,8 +90,8 @@ export function SVGBarStack<Datum extends object>({
               animate={animate && contextAnimate}
               springConfig={springConfig ?? contextSpringConfig}
               colorAccessor={colorAccessor ?? dataEntry.colorAccessor}
-              // {...events}
               renderBar={renderBar}
+              {...eventEmitters}
             />
           </animated.g>
         );

@@ -21,12 +21,7 @@ export function SVGInterpolatedArea<Datum extends object>({
   curve = curveLinear,
   color,
   ...rest
-}: //   onBlur,
-//   onFocus,
-//   onPointerMove,
-//   onPointerOut,
-//   onPointerUp,
-SVGInterpolatedAreaProps<Datum>) {
+}: SVGInterpolatedAreaProps<Datum>) {
   const pathShape = createAreaSeriesPathShape({ scales, horizontal, curve, dataEntry, renderingOffset });
   const transitions = useInterpolatedPathTransitions({ pathShape, springConfig, animate, renderingOffset });
   return (
@@ -39,7 +34,6 @@ SVGInterpolatedAreaProps<Datum>) {
       role="presentation"
       aria-hidden
       {...rest}
-      // {...eventEmitters}
     />
   );
 }

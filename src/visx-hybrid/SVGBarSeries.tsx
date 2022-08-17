@@ -1,23 +1,14 @@
 import type { ReactNode, SVGProps } from 'react';
-import { SpringConfig } from 'react-spring';
 
 import { barSeriesEventSource, xyChartEventSource } from './constants';
 import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
-import type { AxisScale, RenderAnimatedBarProps, ScaleInput } from './types';
+import type { BasicSeriesProps, RenderAnimatedBarProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useXYChartContext } from './useXYChartContext';
 
-export type SVGBarSeriesProps<Datum extends object> = {
-  springConfig?: SpringConfig;
-  animate?: boolean;
-  dataKey: string;
-  data: readonly Datum[];
-  keyAccessor?: (datum: Datum, dataKey?: string) => string | number;
-  independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
-  dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+export type SVGBarSeriesProps<Datum extends object> = BasicSeriesProps<Datum> & {
   colorAccessor?: (datum: Datum, dataKey: string) => string;
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
-  enableEvents?: boolean;
   renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
 };
 
@@ -28,7 +19,12 @@ export function SVGBarSeries<Datum extends object>({
   dataKey,
   enableEvents = true,
   colorAccessor,
-  renderBar
+  renderBar,
+  onBlur,
+  onFocus,
+  onPointerMove,
+  onPointerOut,
+  onPointerUp
 }: SVGBarSeriesProps<Datum>) {
   const {
     scales,
@@ -40,15 +36,14 @@ export function SVGBarSeries<Datum extends object>({
   } = useXYChartContext<Datum>();
   const dataEntry = dataEntryStore.getByDataKey(dataKey);
   const ownEventSourceKey = `${barSeriesEventSource}-${dataKey}`;
-  // const eventEmitters =
-  useSeriesEvents<AxisScale, AxisScale, Datum>({
+  const eventEmitters = useSeriesEvents<Datum>({
     dataKeyOrKeysRef: dataKey,
     enableEvents,
-    // onBlur,
-    // onFocus,
-    // onPointerMove,
-    // onPointerOut,
-    // onPointerUp,
+    onBlur,
+    onFocus,
+    onPointerMove,
+    onPointerOut,
+    onPointerUp,
     source: ownEventSourceKey,
     allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
@@ -63,8 +58,8 @@ export function SVGBarSeries<Datum extends object>({
           animate={animate && contextAnimate}
           springConfig={springConfig ?? contextSpringConfig}
           colorAccessor={colorAccessor ?? dataEntry.colorAccessor}
-          // {...events}
           renderBar={renderBar}
+          {...eventEmitters}
         />
       }
     </g>

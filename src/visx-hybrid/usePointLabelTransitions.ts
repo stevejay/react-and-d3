@@ -5,7 +5,7 @@ import { Margin } from '@/types';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { isValidNumber } from './isValidNumber';
 import { measureTextWithCache } from './measureTextWithCache';
-import type { AxisScale, FontProperties, IDataEntry, LabelTransition, ScaleInput, ScaleSet } from './types';
+import type { AxisScale, FontProperties, IDataEntry, IScaleSet, LabelTransition, ScaleInput } from './types';
 
 function createLabelPositionerForRenderingData<RenderingDatum extends object = object>({
   dataEntry,
@@ -17,7 +17,7 @@ function createLabelPositionerForRenderingData<RenderingDatum extends object = o
   innerHeight
 }: {
   dataEntry: IDataEntry;
-  scales: ScaleSet;
+  scales: IScaleSet;
   horizontal: boolean;
   font: FontProperties | string;
   padding: number;
@@ -60,7 +60,7 @@ function createLabelPositionerForRenderingData<RenderingDatum extends object = o
 /** Positions the text according to a text origin of center horizontal and center vertical. */
 export function usePointLabelTransitions(args: {
   dataEntry: IDataEntry;
-  scales: ScaleSet;
+  scales: IScaleSet;
   horizontal: boolean;
   springConfig: Partial<SpringConfig>;
   animate: boolean;

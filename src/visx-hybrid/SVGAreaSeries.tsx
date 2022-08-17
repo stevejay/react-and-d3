@@ -1,7 +1,7 @@
 import type { ReactNode, SVGProps } from 'react';
 
 import { areaSeriesEventSource, xyChartEventSource } from './constants';
-import type { AxisScale, BasicSeriesProps, RenderPathProps } from './types';
+import type { BasicSeriesProps, RenderPathProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useXYChartContext } from './useXYChartContext';
 
@@ -18,7 +18,12 @@ export function SVGAreaSeries<Datum extends object>({
   dataKey,
   enableEvents = true,
   renderArea,
-  renderPath
+  renderPath,
+  onBlur,
+  onFocus,
+  onPointerMove,
+  onPointerOut,
+  onPointerUp
 }: SVGAreaSeriesProps<Datum>) {
   const {
     scales,
@@ -31,15 +36,14 @@ export function SVGAreaSeries<Datum extends object>({
   } = useXYChartContext<Datum>();
   const dataEntry = dataEntryStore.getByDataKey(dataKey);
   const ownEventSourceKey = `${areaSeriesEventSource}-${dataKey}`;
-  // const eventEmitters =
-  useSeriesEvents<AxisScale, AxisScale, Datum>({
+  const eventEmitters = useSeriesEvents<Datum>({
     dataKeyOrKeysRef: dataKey,
     enableEvents,
-    // onBlur,
-    // onFocus,
-    // onPointerMove,
-    // onPointerOut,
-    // onPointerUp,
+    onBlur,
+    onFocus,
+    onPointerMove,
+    onPointerOut,
+    onPointerUp,
     source: ownEventSourceKey,
     allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
@@ -59,7 +63,8 @@ export function SVGAreaSeries<Datum extends object>({
         renderingOffset,
         animate: resolvedAnimate,
         springConfig: resolvedSpringConfig,
-        color: fallbackFill
+        color: fallbackFill,
+        ...eventEmitters
       })}
       {renderPath &&
         renderPath({

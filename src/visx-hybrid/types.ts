@@ -43,16 +43,17 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
   get keyAccessor(): (datum: Datum) => string | number;
   getDomainValuesForIndependentScale(): readonly ScaleInput<AxisScale>[];
   getDomainValuesForDependentScale(): readonly ScaleInput<AxisScale>[];
+  getDomainValuesForAlternateDependentScale(): readonly ScaleInput<AxisScale>[];
   getOriginalDataByIndependentValue(value: ScaleInput<AxisScale>): readonly Datum[];
   getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[];
   getPositionForOriginalDatum(params: {
     datum: Datum;
-    scales: ScaleSet;
+    scales: IScaleSet;
     horizontal: boolean;
     renderingOffset: number;
   }): DatumPosition | null;
   findNearestOriginalDatum(args: {
-    scales: ScaleSet;
+    scales: IScaleSet;
     horizontal: boolean;
     width: number;
     height: number;
@@ -66,7 +67,7 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
     label: string;
   }[];
   getAreaAccessorsForRenderingData(
-    scales: ScaleSet,
+    scales: IScaleSet,
     dependent0Accessor?: (datum: RenderingDatum) => ScaleInput<AxisScale>
   ): {
     independent: (datum: RenderingDatum) => number;
@@ -74,13 +75,13 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
     dependent0: number | ((datum: RenderingDatum) => number);
     defined: (datum: RenderingDatum) => boolean;
   };
-  getBarAccessorsForRenderingData(scales: ScaleSet): {
+  getBarAccessorsForRenderingData(scales: IScaleSet): {
     independent0: (datum: RenderingDatum) => number;
     independent: (datum: RenderingDatum) => number;
     dependent0: (datum: RenderingDatum) => number;
     dependent1: (datum: RenderingDatum) => number;
   };
-  getPointAccessorsForRenderingData(scales: ScaleSet): {
+  getPointAccessorsForRenderingData(scales: IScaleSet): {
     independent: (datum: RenderingDatum) => number;
     dependent: (datum: RenderingDatum) => number;
   };
@@ -92,15 +93,15 @@ export interface IDataEntryStore<Datum extends object = object, RenderingDatum e
   getAllDataKeys(): readonly string[];
 }
 
-export interface ScaleSet {
+export interface IScaleSet {
   independent: AxisScale;
-  dependent: AxisScale;
+  getDependentScale(usesAlternateDependent: boolean): AxisScale;
   group: ScaleBand<string> | null;
   color: ScaleTypeToD3Scale<string, string>['ordinal'];
 }
 
 export interface XYChartContextType<Datum extends object = object, RenderingDatum extends object = object> {
-  scales: ScaleSet;
+  scales: IScaleSet;
   independentRangePadding: [number, number];
   dependentRangePadding: [number, number];
   width: number;
@@ -124,7 +125,7 @@ export interface TickDatum {
 }
 
 export type GridType = 'row' | 'column';
-export type Variable = 'independent' | 'dependent';
+export type Variable = 'independent' | 'dependent' | 'alternateDependent';
 export type LabelAlignment = 'horizontal' | 'vertical';
 export type TickLabelAlignment = 'horizontal' | 'angled' | 'vertical';
 
@@ -204,6 +205,7 @@ export interface XYChartTheme {
   grid?: {
     independent?: LineStyles;
     dependent?: LineStyles;
+    alternateDependent?: LineStyles;
   };
   bandStripes?: RectStyles;
   /** Styles to applied to big SVG labels (axis label, annotation title, etc.). */
@@ -334,82 +336,82 @@ type ValueOrFunc<T> = T | ((t: T) => T);
 export type ShowTooltipArgs<TooltipData> = ValueOrFunc<Omit<UseTooltipState<TooltipData>, 'tooltipOpen'>>;
 export type UpdateTooltipArgs<TooltipData> = ValueOrFunc<UseTooltipState<TooltipData>>;
 
-/** Common props for data series. */
-export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> {
-  /** Required data key for the Series, should be unique across all series. */
-  dataKey: string;
-  /** Data for the Series. */
-  data: readonly Datum[];
+// /** Common props for data series. */
+// export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> {
+//   /** Required data key for the Series, should be unique across all series. */
+//   dataKey: string;
+//   /** Data for the Series. */
+//   data: readonly Datum[];
 
-  keyAccessor: (datum: Datum, dataKey?: string) => string | number;
-  /** Given a Datum, returns the x-scale value. */
-  xAccessor: (datum: Datum) => ScaleInput<XScale>;
-  /** Given a Datum, returns the y-scale value. */
-  yAccessor: (datum: Datum) => ScaleInput<YScale>;
+//   keyAccessor: (datum: Datum, dataKey?: string) => string | number;
+//   /** Given a Datum, returns the x-scale value. */
+//   xAccessor: (datum: Datum) => ScaleInput<XScale>;
+//   /** Given a Datum, returns the y-scale value. */
+//   yAccessor: (datum: Datum) => ScaleInput<YScale>;
 
-  colorAccessor?: (datum: Datum, dataKey: string) => string;
-  /**
-   * Callback invoked for onPointerMove events for the nearest Datum to the PointerEvent.
-   * By default XYChart will capture and emit PointerEvents, invoking this function for
-   * any Series with a defined handler. Alternatively you may set <XYChart captureEvents={false} />
-   * and Series will emit their own events.
-   */
-  onPointerMove?: (
-    eventParamsList: /*{
-    datum,
-    distanceX,
-    distanceY,
-    event,
-    index,
-    key,
-    svgPoint
-  }*/ readonly EventHandlerParams<Datum>[]
-  ) => void;
-  /**
-   * Callback invoked for onPointerOut events. By default XYChart will capture and emit
-   * PointerEvents, invoking this function for any Series with a defined handler.
-   * Alternatively you may set <XYChart captureEvents={false} /> and Series will emit
-   * their own events.
-   */
-  onPointerOut?: (
-    /** The PointerEvent. */
-    eventParamsList: PointerEvent
-  ) => void;
-  /**
-   * Callback invoked for onPointerUp events for the nearest Datum to the PointerEvent.
-   * By default XYChart will capture and emit PointerEvents, invoking this function for
-   * any Series with a defined handler. Alternatively you may set <XYChart captureEvents={false} />
-   * and Series will emit their own events.
-   */
-  onPointerUp?: (
-    eventParamsList: /*{
-    datum,
-    distanceX,
-    distanceY,
-    event,
-    index,
-    key,
-    svgPoint
-  }*/ readonly EventHandlerParams<Datum>[]
-  ) => void;
-  /**
-   * Callback invoked for onFocus events for the nearest Datum to the FocusEvent.
-   * XYChart will NOT capture and emit FocusEvents, they are emitted from individual Series glyph shapes.
-   */
-  onFocus?: (
-    events: /*{ datum, distanceX, distanceY, event, index, key, svgPoint }*/ readonly EventHandlerParams<Datum>[]
-  ) => void;
-  /**
-   * Callback invoked for onBlur events for the nearest Datum to the FocusEvent.
-   * XYChart will NOT capture and emit FocusEvents, they are emitted from individual Series glyph shapes.
-   */
-  onBlur?: (
-    /** The FocusEvent. */
-    event: FocusEvent
-  ) => void;
-  /** Whether the Series emits and subscribes to PointerEvents and FocusEvents (including Tooltip triggering). */
-  enableEvents?: boolean;
-}
+//   colorAccessor?: (datum: Datum, dataKey: string) => string;
+//   /**
+//    * Callback invoked for onPointerMove events for the nearest Datum to the PointerEvent.
+//    * By default XYChart will capture and emit PointerEvents, invoking this function for
+//    * any Series with a defined handler. Alternatively you may set <XYChart captureEvents={false} />
+//    * and Series will emit their own events.
+//    */
+//   onPointerMove?: (
+//     eventParamsList: /*{
+//     datum,
+//     distanceX,
+//     distanceY,
+//     event,
+//     index,
+//     key,
+//     svgPoint
+//   }*/ readonly EventHandlerParams<Datum>[]
+//   ) => void;
+//   /**
+//    * Callback invoked for onPointerOut events. By default XYChart will capture and emit
+//    * PointerEvents, invoking this function for any Series with a defined handler.
+//    * Alternatively you may set <XYChart captureEvents={false} /> and Series will emit
+//    * their own events.
+//    */
+//   onPointerOut?: (
+//     /** The PointerEvent. */
+//     eventParamsList: PointerEvent
+//   ) => void;
+//   /**
+//    * Callback invoked for onPointerUp events for the nearest Datum to the PointerEvent.
+//    * By default XYChart will capture and emit PointerEvents, invoking this function for
+//    * any Series with a defined handler. Alternatively you may set <XYChart captureEvents={false} />
+//    * and Series will emit their own events.
+//    */
+//   onPointerUp?: (
+//     eventParamsList: /*{
+//     datum,
+//     distanceX,
+//     distanceY,
+//     event,
+//     index,
+//     key,
+//     svgPoint
+//   }*/ readonly EventHandlerParams<Datum>[]
+//   ) => void;
+//   /**
+//    * Callback invoked for onFocus events for the nearest Datum to the FocusEvent.
+//    * XYChart will NOT capture and emit FocusEvents, they are emitted from individual Series glyph shapes.
+//    */
+//   onFocus?: (
+//     events: /*{ datum, distanceX, distanceY, event, index, key, svgPoint }*/ readonly EventHandlerParams<Datum>[]
+//   ) => void;
+//   /**
+//    * Callback invoked for onBlur events for the nearest Datum to the FocusEvent.
+//    * XYChart will NOT capture and emit FocusEvents, they are emitted from individual Series glyph shapes.
+//    */
+//   onBlur?: (
+//     /** The FocusEvent. */
+//     event: FocusEvent
+//   ) => void;
+//   /** Whether the Series emits and subscribes to PointerEvents and FocusEvents (including Tooltip triggering). */
+//   enableEvents?: boolean;
+// }
 
 export type SVGTextProps = SVGAttributes<SVGTextElement>;
 export type LineProps = Omit<SVGProps<SVGLineElement>, 'to' | 'from' | 'ref'>;
@@ -471,7 +473,7 @@ export interface LineTransition {
   d: string;
 }
 
-export interface RenderAnimatedBarProps<Datum extends object> {
+export type RenderAnimatedBarProps<Datum extends object> = {
   springValues: SpringValues<PolygonTransition>;
   datum: Datum;
   index: number;
@@ -480,18 +482,17 @@ export interface RenderAnimatedBarProps<Datum extends object> {
   color: string;
   // colorScale: (dataKey: string) => string;
   // colorAccessor?: (datum: Datum, dataKey: string) => string;
-}
+} & Pick<
+  React.SVGProps<SVGRectElement | SVGPathElement>,
+  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'
+>;
 
 // export type SVGBarComponent<Datum extends object> = (props: SVGBarProps<Datum>) => JSX.Element;
 
-export type SVGAnimatedPathProps<
-  IndependentScale extends AxisScale,
-  DependentScale extends AxisScale,
-  Datum extends object
-> = {
+export type SVGAnimatedPathProps<Datum extends object> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataEntry: IDataEntry<Datum, any>;
-  scales: ScaleSet;
+  scales: IScaleSet;
   horizontal: boolean;
   renderingOffset: number;
   animate: boolean;
@@ -500,12 +501,12 @@ export type SVGAnimatedPathProps<
   color: string;
   pathProps?: PathProps | ((dataKey: string) => PathProps);
 } & Pick<
-  SeriesProps<IndependentScale, DependentScale, Datum>,
+  BasicSeriesProps<Datum>,
   'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
 >;
 
 export type SVGAnimatedPathComponent<Datum extends object> = (
-  props: SVGAnimatedPathProps<AxisScale, AxisScale, Datum>
+  props: SVGAnimatedPathProps<Datum>
 ) => JSX.Element;
 
 export interface GlyphTransition {
@@ -586,7 +587,7 @@ export type LinePathConfig<Datum> = {
 export type RenderPathProps<Datum extends object> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataEntry: IDataEntry<Datum, any>;
-  scales: ScaleSet;
+  scales: IScaleSet;
   theme: XYChartTheme;
   horizontal: boolean;
   renderingOffset: number;
@@ -594,11 +595,10 @@ export type RenderPathProps<Datum extends object> = {
   springConfig: SpringConfig;
   // curve: CurveFactory | CurveFactoryLineOnly;
   color: string;
-};
-//  & Pick<
-//   SeriesProps<AxisScale, AxisScale, Datum>,
-//   'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
-// >;
+} & Pick<
+  React.SVGProps<SVGPathElement>,
+  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'
+>;
 
 export type RenderAnimatedGlyphProps<Datum extends object> = {
   springValues: SpringValues<GlyphTransition>;
@@ -616,10 +616,71 @@ export interface BasicSeriesProps<Datum extends object> {
   data: readonly Datum[];
   keyAccessor?: (datum: Datum, dataKey?: string) => string | number;
   independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
-  dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  dependentAccessor?: (datum: Datum) => ScaleInput<AxisScale>;
+  alternateDependentAccessor?: (datum: Datum) => ScaleInput<AxisScale>;
   springConfig?: SpringConfig;
   animate?: boolean;
   enableEvents?: boolean;
+
+  /**
+   * Callback invoked for onPointerMove events for the nearest Datum to the PointerEvent.
+   * By default XYChart will capture and emit PointerEvents, invoking this function for
+   * any Series with a defined handler. Alternatively you may set <XYChart captureEvents={false} />
+   * and Series will emit their own events.
+   */
+  onPointerMove?: (
+    eventParamsList: /*{
+    datum,
+    distanceX,
+    distanceY,
+    event,
+    index,
+    key,
+    svgPoint
+  }*/ readonly EventHandlerParams<Datum>[]
+  ) => void;
+  /**
+   * Callback invoked for onPointerOut events. By default XYChart will capture and emit
+   * PointerEvents, invoking this function for any Series with a defined handler.
+   * Alternatively you may set <XYChart captureEvents={false} /> and Series will emit
+   * their own events.
+   */
+  onPointerOut?: (
+    /** The PointerEvent. */
+    eventParamsList: PointerEvent
+  ) => void;
+  /**
+   * Callback invoked for onPointerUp events for the nearest Datum to the PointerEvent.
+   * By default XYChart will capture and emit PointerEvents, invoking this function for
+   * any Series with a defined handler. Alternatively you may set <XYChart captureEvents={false} />
+   * and Series will emit their own events.
+   */
+  onPointerUp?: (
+    eventParamsList: /*{
+    datum,
+    distanceX,
+    distanceY,
+    event,
+    index,
+    key,
+    svgPoint
+  }*/ readonly EventHandlerParams<Datum>[]
+  ) => void;
+  /**
+   * Callback invoked for onFocus events for the nearest Datum to the FocusEvent.
+   * XYChart will NOT capture and emit FocusEvents, they are emitted from individual Series glyph shapes.
+   */
+  onFocus?: (
+    events: /*{ datum, distanceX, distanceY, event, index, key, svgPoint }*/ readonly EventHandlerParams<Datum>[]
+  ) => void;
+  /**
+   * Callback invoked for onBlur events for the nearest Datum to the FocusEvent.
+   * XYChart will NOT capture and emit FocusEvents, they are emitted from individual Series glyph shapes.
+   */
+  onBlur?: (
+    /** The FocusEvent. */
+    event: FocusEvent
+  ) => void;
 }
 
 export type A11yProps = Partial<

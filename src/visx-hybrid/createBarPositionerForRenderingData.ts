@@ -1,8 +1,8 @@
 import { isValidNumber } from './isValidNumber';
-import type { DatumPosition, IDataEntry, ScaleSet } from './types';
+import type { DatumPosition, IDataEntry, IScaleSet } from './types';
 
 export function createBarPositionerForRenderingData<Datum extends object, RenderingDatum extends object>(
-  scales: ScaleSet,
+  scales: IScaleSet,
   dataEntry: IDataEntry<Datum, RenderingDatum>,
   horizontal: boolean
 ): (datum: RenderingDatum) => DatumPosition | null {

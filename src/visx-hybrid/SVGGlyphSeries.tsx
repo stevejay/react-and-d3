@@ -2,7 +2,7 @@ import type { ReactNode, SVGProps } from 'react';
 
 import { defaultGlyphSize, glyphSeriesEventSource, xyChartEventSource } from './constants';
 import { SVGGlyphSeriesRenderer } from './SVGGlyphSeriesRenderer';
-import type { AxisScale, BasicSeriesProps, RenderAnimatedGlyphProps } from './types';
+import type { BasicSeriesProps, RenderAnimatedGlyphProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useXYChartContext } from './useXYChartContext';
 
@@ -20,7 +20,12 @@ export function SVGGlyphSeries<Datum extends object>({
   animate = true,
   enableEvents = true,
   glyphSize = defaultGlyphSize,
-  renderGlyph
+  renderGlyph,
+  onBlur,
+  onFocus,
+  onPointerMove,
+  onPointerOut,
+  onPointerUp
 }: SVGGlyphSeriesProps<Datum>) {
   const {
     scales,
@@ -32,15 +37,14 @@ export function SVGGlyphSeries<Datum extends object>({
   } = useXYChartContext<Datum>();
   const dataEntry = dataEntryStore.getByDataKey(dataKey);
   const ownEventSourceKey = `${glyphSeriesEventSource}-${dataKey}`;
-  // const eventEmitters =
-  useSeriesEvents<AxisScale, AxisScale, Datum>({
+  const eventEmitters = useSeriesEvents<Datum>({
     dataKeyOrKeysRef: dataKey,
     enableEvents,
-    // onBlur,
-    // onFocus,
-    // onPointerMove,
-    // onPointerOut,
-    // onPointerUp,
+    onBlur,
+    onFocus,
+    onPointerMove,
+    onPointerOut,
+    onPointerUp,
     source: ownEventSourceKey,
     allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
@@ -55,9 +59,9 @@ export function SVGGlyphSeries<Datum extends object>({
           animate={animate && contextAnimate}
           springConfig={springConfig ?? contextSpringConfig}
           colorAccessor={dataEntry.colorAccessor}
-          // {...events}
           glyphSize={glyphSize}
           renderGlyph={renderGlyph}
+          {...eventEmitters}
         />
       }
     </g>

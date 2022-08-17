@@ -20,6 +20,7 @@ import { EventEmitterProvider } from './EventEmitterProvider';
 import { getDataEntriesFromChildren } from './getDataEntriesFromChildren';
 import { getScaleBandwidth } from './getScaleBandwidth';
 import { ParentSize } from './ParentSize';
+import { ScaleSet } from './ScaleSet';
 import { TooltipProvider } from './TooltipProvider';
 import type { AxisScaleOutput, Margin, ScaleConfig, XYChartContextType, XYChartTheme } from './types';
 import { useEventEmitters } from './useEventEmitters';
@@ -31,7 +32,8 @@ function resolveRangePadding(rangePadding: number | [number, number]): [number, 
 
 interface SVGXYChartOwnProps<
   IndependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
-  DependentScaleConfig extends ScaleConfig<AxisScaleOutput>
+  DependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
+  AlternateDependentScaleConfig extends ScaleConfig<AxisScaleOutput>
 > {
   /** The width of the chart. Optional. If either of `width` or `height` are not given then the chart will wrap itself in a `ParentSize` component. */
   width?: number;
@@ -46,6 +48,8 @@ interface SVGXYChartOwnProps<
   independentScale: IndependentScaleConfig;
   /** The configuration object for the dependent scale. This should be a stable object. */
   dependentScale: DependentScaleConfig;
+  /** The configuration object for the alternate dependent scale. This should be a stable object. Optional. */
+  alternateDependentScale?: AlternateDependentScaleConfig;
   /** By default the chart has the independent scale as the x-axis and the dependent scale as the y-axis. Set `horizontal` to `true` to switch this around. Optional. */
   horizontal?: boolean;
   /** A value in pixels for adding padding to the start and end of the independent axis. Optional. Defaults to `0`. */
@@ -70,18 +74,23 @@ interface SVGXYChartOwnProps<
 
 export type SVGXYChartProps<
   IndependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
-  DependentScaleConfig extends ScaleConfig<AxisScaleOutput>
-> = SVGXYChartOwnProps<IndependentScaleConfig, DependentScaleConfig> &
+  DependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
+  AlternateDependentScaleConfig extends ScaleConfig<AxisScaleOutput>
+> = SVGXYChartOwnProps<IndependentScaleConfig, DependentScaleConfig, AlternateDependentScaleConfig> &
   Omit<
-    Omit<SVGProps<SVGSVGElement>, keyof SVGXYChartOwnProps<IndependentScaleConfig, DependentScaleConfig>>,
+    Omit<
+      SVGProps<SVGSVGElement>,
+      keyof SVGXYChartOwnProps<IndependentScaleConfig, DependentScaleConfig, AlternateDependentScaleConfig>
+    >,
     'ref'
   >;
 
 /** The root component for the XY chart. */
 export function SVGXYChart<
   IndependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
-  DependentScaleConfig extends ScaleConfig<AxisScaleOutput>
->(props: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig>) {
+  DependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
+  AlternateDependentScaleConfig extends ScaleConfig<AxisScaleOutput>
+>(props: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig, AlternateDependentScaleConfig>) {
   const {
     width,
     height,
@@ -113,12 +122,14 @@ export function SVGXYChart<
 
 function InnerChart<
   IndependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
-  DependentScaleConfig extends ScaleConfig<AxisScaleOutput>
+  DependentScaleConfig extends ScaleConfig<AxisScaleOutput>,
+  AlternateDependentScaleConfig extends ScaleConfig<AxisScaleOutput>
 >({
   width = 0,
   height = 0,
   independentScale: independentScaleConfig,
   dependentScale: dependentScaleConfig,
+  alternateDependentScale: alternateDependentScaleConfig,
   independentRangePadding = zeroRangePadding,
   dependentRangePadding = zeroRangePadding,
   margin: userMargin,
@@ -132,7 +143,7 @@ function InnerChart<
   children,
   outerMargin = zeroMargin,
   ...svgProps
-}: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig>) {
+}: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig, AlternateDependentScaleConfig>) {
   // Gather all the series data from the chart's child components:
   const { dataEntries, groupScale } = getDataEntriesFromChildren(children, horizontal);
 
@@ -146,6 +157,14 @@ function InnerChart<
     .map((dataEntry) => dataEntry.getDomainValuesForDependentScale())
     .flat();
   const dependentScale = createScaleFromScaleConfig(dependentDomainValues, dependentScaleConfig);
+
+  const alternateDependentDomainValues = dataEntries
+    .map((dataEntry) => dataEntry.getDomainValuesForAlternateDependentScale())
+    .flat();
+  const alternateDependentScale = createScaleFromScaleConfig(
+    alternateDependentDomainValues,
+    alternateDependentScaleConfig
+  );
 
   // Create a fallback color scale for coloring each series:
   const colorScale = createScale({
@@ -177,6 +196,7 @@ function InnerChart<
         horizontal,
         independentScale,
         dependentScale,
+        alternateDependentScale,
         independentRangePadding: resolvedIndependentRangePadding,
         dependentRangePadding: resolvedDependentRangePadding,
         theme
@@ -208,6 +228,7 @@ function InnerChart<
     // Update the scales with the calculated ranges:
     independentScale.range(independentRange);
     dependentScale.range(dependentRange);
+    alternateDependentScale && alternateDependentScale.range(dependentRange);
     groupScale && groupScale.range([0, getScaleBandwidth(independentScale)]);
 
     // Calculate the size of the chart area:
@@ -215,20 +236,20 @@ function InnerChart<
     const innerHeight = Math.max(0, height - margin.top - margin.bottom);
 
     dataContextValue = {
-      scales: {
-        independent: independentScale,
-        dependent: dependentScale,
-        group: groupScale,
-        color: colorScale
-      },
+      scales: new ScaleSet({
+        independentScale,
+        dependentScale,
+        alternateDependentScale,
+        groupScale,
+        colorScale
+      }),
       independentRangePadding: resolvedIndependentRangePadding,
       dependentRangePadding: resolvedDependentRangePadding,
       width,
       height,
       innerWidth,
       innerHeight,
-      // margin includes outerMargin.
-      margin,
+      margin, // The margin includes the outerMargin.
       outerMargin: resolvedOuterMargin,
       dataEntryStore: new DataEntryStore(dataEntries),
       horizontal,
@@ -250,7 +271,6 @@ function InnerChart<
     immediate: !(animate && animateSVG)
   });
 
-  console.log('>> render');
   return (
     <>
       {transitions(({ opacity }, context) =>

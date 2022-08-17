@@ -2,7 +2,7 @@ import { SpringConfig, useTransition } from 'react-spring';
 
 import { createBarPositionerForRenderingData } from './createBarPositionerForRenderingData';
 import { createGlyphTransition } from './createGlyphTransition';
-import type { GlyphTransition, IDataEntry, ScaleSet } from './types';
+import type { GlyphTransition, IDataEntry, IScaleSet } from './types';
 
 export function useGlyphTransitions<Datum extends object, RenderingDatum extends object>({
   dataEntry,
@@ -13,7 +13,7 @@ export function useGlyphTransitions<Datum extends object, RenderingDatum extends
   glyphSize
 }: {
   dataEntry: IDataEntry<Datum, RenderingDatum>;
-  scales: ScaleSet;
+  scales: IScaleSet;
   horizontal: boolean;
   springConfig: Partial<SpringConfig>;
   animate: boolean;

@@ -2,6 +2,7 @@ import type { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
 import { format } from 'd3-format';
 import { schemeCategory10 } from 'd3-scale-chromatic';
+import { curveCatmullRom } from 'd3-shape';
 
 import type { CategoryValueDatum } from '@/types';
 import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
@@ -12,6 +13,8 @@ import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
+import { SVGLineSeries } from '@/visx-hybrid/SVGLineSeries';
+import { SVGSwipedPath } from '@/visx-hybrid/SVGSwipedPath';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
@@ -28,6 +31,14 @@ const independentScale: BandScaleConfig<string> = {
 };
 
 const dependentScale: LinearScaleConfig<number> = {
+  type: 'linear',
+  nice: true,
+  round: true,
+  clamp: true,
+  zero: true
+};
+
+const alternateDependentScale: LinearScaleConfig<number> = {
   type: 'linear',
   nice: true,
   round: true,
@@ -56,6 +67,7 @@ export function BarChart({ data }: BarChartProps) {
     <SVGXYChart
       independentScale={independentScale}
       dependentScale={dependentScale}
+      alternateDependentScale={alternateDependentScale}
       springConfig={springConfig}
       role="graphics-document"
       aria-roledescription="Bar chart"
@@ -83,6 +95,15 @@ export function BarChart({ data }: BarChartProps) {
           'aria-roledescription': `Category ${category}`
         })}
       />
+      <SVGLineSeries
+        dataKey="data-b"
+        data={data}
+        independentAccessor={independentAccessor}
+        alternateDependentAccessor={dependentAccessor}
+        renderPath={(props) => (
+          <SVGSwipedPath {...props} strokeWidth={4} stroke="red" curve={curveCatmullRom} />
+        )}
+      />
       <SVGAxis variable="independent" position="end" label="Foobar Topy" />
       <SVGAxis variable="independent" position="start" label="Foobar Bottomy" />
       <SVGAxis
@@ -97,7 +118,7 @@ export function BarChart({ data }: BarChartProps) {
         // includeRangePaddingInAxisPath={false}
       />
       <SVGAxis
-        variable="dependent"
+        variable="alternateDependent"
         position="end"
         label="Foobar Righty"
         tickCount={5}

@@ -8,9 +8,9 @@ import type {
   FontProperties,
   IDataEntry,
   InternalBarLabelPosition,
+  IScaleSet,
   LabelTransition,
-  ScaleInput,
-  ScaleSet
+  ScaleInput
 } from './types';
 
 function createLabelPositionerForRenderingData<RenderingDatum extends object = object>({
@@ -24,7 +24,7 @@ function createLabelPositionerForRenderingData<RenderingDatum extends object = o
   hideOnOverflow
 }: {
   dataEntry: IDataEntry;
-  scales: ScaleSet;
+  scales: IScaleSet;
   horizontal: boolean;
   font: FontProperties | string;
   position: InternalBarLabelPosition;
@@ -82,7 +82,7 @@ function createLabelPositionerForRenderingData<RenderingDatum extends object = o
 
 export function useBarLabelTransitions(args: {
   dataEntry: IDataEntry;
-  scales: ScaleSet;
+  scales: IScaleSet;
   horizontal: boolean;
   springConfig: Partial<SpringConfig>;
   animate: boolean;

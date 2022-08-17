@@ -125,7 +125,10 @@ function SVGAxis(props: SVGAxisProps) {
     renderingOffset
   } = useXYChartContext();
 
-  const scale = variable === 'independent' ? scales.independent : scales.dependent;
+  const scale =
+    variable === 'independent'
+      ? scales.independent
+      : scales.getDependentScale(variable === 'alternateDependent');
   const axisOrientation = calculateAxisOrientation(horizontal, variable, position);
 
   const top =

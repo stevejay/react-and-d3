@@ -14,10 +14,10 @@ import type {
   AxisScale,
   DatumPosition,
   IDataEntry,
+  IScaleSet,
   NearestDatumReturnType,
   Point,
   ScaleInput,
-  ScaleSet,
   StackDatum
 } from './types';
 
@@ -26,21 +26,32 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
   private _data: readonly Datum[];
   private _independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   private _dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  private _usesAlternateDependent: boolean;
   private _keyAccessor: (datum: Datum) => string | number;
   private _colorAccessor: (datum: Datum, dataKey: string) => string;
 
-  constructor(
-    dataKey: string,
-    data: readonly Datum[],
-    independentAccessor: (datum: Datum) => ScaleInput<AxisScale>,
-    dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>,
-    colorAccessor: (datum: Datum, dataKey: string) => string,
-    keyAccessor?: (datum: Datum) => string | number
-  ) {
+  constructor({
+    dataKey,
+    data,
+    independentAccessor,
+    dependentAccessor,
+    usesAlternateDependent,
+    colorAccessor,
+    keyAccessor
+  }: {
+    dataKey: string;
+    data: readonly Datum[];
+    independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+    dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+    usesAlternateDependent: boolean;
+    colorAccessor: (datum: Datum, dataKey: string) => string;
+    keyAccessor?: (datum: Datum) => string | number;
+  }) {
     this._dataKey = dataKey;
     this._data = data;
     this._independentAccessor = independentAccessor;
     this._dependentAccessor = dependentAccessor;
+    this._usesAlternateDependent = usesAlternateDependent;
     this._keyAccessor = keyAccessor ?? independentAccessor;
     this._colorAccessor = colorAccessor;
   }
@@ -72,7 +83,11 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
   }
 
   getDomainValuesForDependentScale(): readonly ScaleInput<AxisScale>[] {
-    return this._data.map((datum) => this.dependentAccessor(datum));
+    return this._usesAlternateDependent ? [] : this._data.map((datum) => this.dependentAccessor(datum));
+  }
+
+  getDomainValuesForAlternateDependentScale(): readonly ScaleInput<AxisScale>[] {
+    return this._usesAlternateDependent ? this._data.map((datum) => this.dependentAccessor(datum)) : [];
   }
 
   get keyAccessor() {
@@ -101,7 +116,7 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     horizontal
   }: {
     datum: Datum;
-    scales: ScaleSet;
+    scales: IScaleSet;
     horizontal: boolean;
     renderingOffset: number;
   }) {
@@ -118,7 +133,7 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
   }
 
   getAreaAccessorsForRenderingData(
-    scales: ScaleSet,
+    scales: IScaleSet,
     dependent0Accessor?: (datum: Datum) => ScaleInput<AxisScale>
   ): {
     independent: (datum: Datum) => number;
@@ -126,11 +141,12 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     dependent0: number | ((datum: Datum) => number);
     defined: (datum: Datum) => boolean;
   } {
+    const dependentScale = scales.getDependentScale(this._usesAlternateDependent);
     const getScaledIndependent = getScaledValueFactory(scales.independent, this.independentAccessor);
-    const getScaledDependent = getScaledValueFactory(scales.dependent, this.dependentAccessor);
+    const getScaledDependent = getScaledValueFactory(dependentScale, this.dependentAccessor);
     const getScaledDependent0 = dependent0Accessor
-      ? getScaledValueFactory(scales.dependent, dependent0Accessor)
-      : getScaleBaseline(scales.dependent);
+      ? getScaledValueFactory(dependentScale, dependent0Accessor)
+      : getScaleBaseline(dependentScale);
     const isDefined = (datum: Datum) =>
       isValidNumber(getScaledIndependent(datum)) && isValidNumber(getScaledDependent(datum));
     return {
@@ -141,27 +157,29 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     };
   }
 
-  getPointAccessorsForRenderingData(scales: ScaleSet): {
+  getPointAccessorsForRenderingData(scales: IScaleSet): {
     independent: (datum: Datum) => number;
     dependent: (datum: Datum) => number;
   } {
+    const dependentScale = scales.getDependentScale(this._usesAlternateDependent);
     return {
       independent: getScaledValueFactory<AxisScale, Datum>(
         scales.independent,
         this.independentAccessor,
         'center'
       ),
-      dependent: getScaledValueFactory(scales.dependent, this.dependentAccessor)
+      dependent: getScaledValueFactory(dependentScale, this.dependentAccessor)
     };
   }
 
-  getBarAccessorsForRenderingData(scales: ScaleSet): {
+  getBarAccessorsForRenderingData(scales: IScaleSet): {
     independent0: (datum: Datum) => number;
     independent: (datum: Datum) => number;
     dependent0: (datum: Datum) => number;
     dependent1: (datum: Datum) => number;
   } {
-    const dependentStartCoord = getScaleBaseline(scales.dependent);
+    const dependentScale = scales.getDependentScale(this._usesAlternateDependent);
+    const dependentStartCoord = getScaleBaseline(dependentScale);
     return {
       independent0: getScaledValueFactory<AxisScale, Datum>(
         scales.independent,
@@ -174,7 +192,7 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
         'end'
       ),
       dependent0: () => dependentStartCoord,
-      dependent1: getScaledValueFactory(scales.dependent, this.dependentAccessor)
+      dependent1: getScaledValueFactory(dependentScale, this.dependentAccessor)
     };
   }
 
@@ -197,13 +215,14 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     width: number;
     height: number;
     point: Point;
-    scales: ScaleSet;
+    scales: IScaleSet;
   }): NearestDatumReturnType<Datum> | null {
+    const dependentScale = scales.getDependentScale(this._usesAlternateDependent);
     const findNearestOriginalDatum = horizontal ? findNearestDatumY : findNearestDatumX;
     return findNearestOriginalDatum({
       independentScale: scales.independent,
       independentAccessor: this.independentAccessor,
-      dependentScale: scales.dependent,
+      dependentScale,
       dependentAccessor: this.dependentAccessor,
       point,
       data: this._data,
@@ -219,21 +238,32 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
   private _data: readonly Datum[];
   private _independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   private _dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  private _usesAlternateDependent: boolean;
   private _keyAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   private _colorAccessor: (datum: Datum, dataKey: string) => string;
 
-  constructor(
-    dataKey: string,
-    data: readonly Datum[],
-    independentAccessor: (datum: Datum) => ScaleInput<AxisScale>,
-    dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>,
-    colorAccessor: (datum: Datum, dataKey: string) => string,
-    keyAccessor?: (datum: Datum) => string | number
-  ) {
+  constructor({
+    dataKey,
+    data,
+    independentAccessor,
+    dependentAccessor,
+    usesAlternateDependent,
+    colorAccessor,
+    keyAccessor
+  }: {
+    dataKey: string;
+    data: readonly Datum[];
+    independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+    dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+    usesAlternateDependent: boolean;
+    colorAccessor: (datum: Datum, dataKey: string) => string;
+    keyAccessor?: (datum: Datum) => string | number;
+  }) {
     this._dataKey = dataKey;
     this._data = data;
     this._independentAccessor = independentAccessor;
     this._dependentAccessor = dependentAccessor;
+    this._usesAlternateDependent = usesAlternateDependent;
     this._keyAccessor = keyAccessor ?? independentAccessor;
     this._colorAccessor = colorAccessor;
   }
@@ -265,7 +295,11 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
   }
 
   getDomainValuesForDependentScale(): readonly ScaleInput<AxisScale>[] {
-    return this._data.map((datum) => this.dependentAccessor(datum));
+    return this._usesAlternateDependent ? [] : this._data.map((datum) => this.dependentAccessor(datum));
+  }
+
+  getDomainValuesForAlternateDependentScale(): readonly ScaleInput<AxisScale>[] {
+    return this._usesAlternateDependent ? this._data.map((datum) => this.dependentAccessor(datum)) : [];
   }
 
   get keyAccessor() {
@@ -294,7 +328,7 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     horizontal
   }: {
     datum: Datum;
-    scales: ScaleSet;
+    scales: IScaleSet;
     horizontal: boolean;
     renderingOffset: number;
   }) {
@@ -310,7 +344,7 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     return position(foundDatum) ?? null;
   }
 
-  getBarAccessorsForRenderingData(scales: ScaleSet): {
+  getBarAccessorsForRenderingData(scales: IScaleSet): {
     independent0: (datum: Datum) => number;
     independent: (datum: Datum) => number;
     dependent0: (datum: Datum) => number;
@@ -319,7 +353,8 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     if (!scales.group) {
       throw new Error('Chart has a grouping but the group scale is nil.');
     }
-    const dependentStartCoord = getScaleBaseline(scales.dependent);
+    const dependentScale = scales.getDependentScale(this._usesAlternateDependent);
+    const dependentStartCoord = getScaleBaseline(dependentScale);
     const withinGroupPosition = scales.group(this.dataKey) ?? 0;
     const groupBandwidth = getScaleBandwidth(scales.group);
     const independent = getScaledValueFactory<AxisScale, Datum>(
@@ -331,12 +366,12 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
       independent0: (datum: Datum) => independent(datum) + withinGroupPosition,
       independent: (datum: Datum) => independent(datum) + withinGroupPosition + groupBandwidth,
       dependent0: () => dependentStartCoord,
-      dependent1: getScaledValueFactory(scales.dependent, this.dependentAccessor)
+      dependent1: getScaledValueFactory(dependentScale, this.dependentAccessor)
     };
   }
 
   getAreaAccessorsForRenderingData(
-    scales: ScaleSet,
+    scales: IScaleSet,
     dependent0Accessor?: (datum: Datum) => ScaleInput<AxisScale>
   ): {
     independent: (datum: Datum) => number;
@@ -347,13 +382,14 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     if (!scales.group) {
       throw new Error('Chart has a grouping but the group scale is nil.');
     }
+    const dependentScale = scales.getDependentScale(this._usesAlternateDependent);
     const withinGroupPosition = scales.group(this.dataKey) ?? 0;
     const groupBandwidth = getScaleBandwidth(scales.group);
     const independent = getScaledValueFactory(scales.independent, this.independentAccessor);
-    const dependent = getScaledValueFactory(scales.dependent, this.dependentAccessor);
+    const dependent = getScaledValueFactory(dependentScale, this.dependentAccessor);
     const dependent0 = dependent0Accessor
-      ? getScaledValueFactory(scales.dependent, dependent0Accessor)
-      : getScaleBaseline(scales.dependent);
+      ? getScaledValueFactory(dependentScale, dependent0Accessor)
+      : getScaleBaseline(dependentScale);
     const isDefined = (datum: Datum) => isValidNumber(independent(datum)) && isValidNumber(dependent(datum));
     return {
       independent: (datum: Datum) => independent(datum) + withinGroupPosition + groupBandwidth,
@@ -363,13 +399,14 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     };
   }
 
-  getPointAccessorsForRenderingData(scales: ScaleSet): {
+  getPointAccessorsForRenderingData(scales: IScaleSet): {
     independent: (datum: Datum) => number;
     dependent: (datum: Datum) => number;
   } {
     if (!scales.group) {
       throw new Error('Chart has a grouping but the group scale is nil.');
     }
+    const dependentScale = scales.getDependentScale(this._usesAlternateDependent);
     const withinGroupPosition = scales.group(this.dataKey) ?? 0;
     const groupBandwidth = getScaleBandwidth(scales.group);
     const independent = getScaledValueFactory<AxisScale, Datum>(
@@ -379,7 +416,7 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     );
     return {
       independent: (datum: Datum) => independent(datum) + withinGroupPosition + groupBandwidth * 0.5,
-      dependent: getScaledValueFactory(scales.dependent, this.dependentAccessor)
+      dependent: getScaledValueFactory(dependentScale, this.dependentAccessor)
     };
   }
 
@@ -402,16 +439,17 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     width: number;
     height: number;
     point: Point;
-    scales: ScaleSet;
+    scales: IScaleSet;
   }): NearestDatumReturnType<Datum> | null {
     if (!scales.group) {
       throw new Error('Chart has a grouping but the group scale is nil.');
     }
+    const dependentScale = scales.getDependentScale(this._usesAlternateDependent);
     return findNearestGroupDatum(
       {
         independentScale: scales.independent,
         independentAccessor: this.independentAccessor,
-        dependentScale: scales.dependent,
+        dependentScale,
         dependentAccessor: this.dependentAccessor,
         point,
         data: this._data,
@@ -456,23 +494,34 @@ export class StackDataEntry<Datum extends object>
   private _stackData: readonly StackDatum<AxisScale, AxisScale, Datum>[];
   private _independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   private _dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+  private _usesAlternateDependent: boolean;
   private _keyAccessor: (datum: Datum) => string | number;
   private _colorAccessor: (datum: Datum, dataKey: string) => string;
   private _originalData: readonly Datum[];
 
-  constructor(
-    dataKey: string,
-    stackData: readonly StackDatum<AxisScale, AxisScale, Datum>[],
-    independentAccessor: (datum: Datum) => ScaleInput<AxisScale>,
-    dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>,
-    colorAccessor: (datum: Datum, dataKey: string) => string,
-    keyAccessor?: (datum: Datum) => string | number
-  ) {
+  constructor({
+    dataKey,
+    stackData,
+    independentAccessor,
+    dependentAccessor,
+    usesAlternateDependent,
+    colorAccessor,
+    keyAccessor
+  }: {
+    dataKey: string;
+    stackData: readonly StackDatum<AxisScale, AxisScale, Datum>[];
+    independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+    dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
+    usesAlternateDependent: boolean;
+    colorAccessor: (datum: Datum, dataKey: string) => string;
+    keyAccessor?: (datum: Datum) => string | number;
+  }) {
     this._dataKey = dataKey;
     this._originalData = stackData.map(getOriginalDatumFromStackDatum);
     this._stackData = stackData;
     this._independentAccessor = independentAccessor;
     this._dependentAccessor = dependentAccessor;
+    this._usesAlternateDependent = usesAlternateDependent;
     this._keyAccessor = keyAccessor ?? independentAccessor;
     this._colorAccessor = colorAccessor;
   }
@@ -506,7 +555,15 @@ export class StackDataEntry<Datum extends object>
   }
 
   getDomainValuesForDependentScale(): readonly ScaleInput<AxisScale>[] {
-    return this._stackData.map((datum) => [getFirstItem(datum), getSecondItem(datum)]).flat();
+    return this._usesAlternateDependent
+      ? []
+      : this._stackData.map((datum) => [getFirstItem(datum), getSecondItem(datum)]).flat();
+  }
+
+  getDomainValuesForAlternateDependentScale(): readonly ScaleInput<AxisScale>[] {
+    return this._usesAlternateDependent
+      ? this._stackData.map((datum) => [getFirstItem(datum), getSecondItem(datum)]).flat()
+      : [];
   }
 
   getPositionForOriginalDatum({
@@ -515,7 +572,7 @@ export class StackDataEntry<Datum extends object>
     horizontal
   }: {
     datum: Datum;
-    scales: ScaleSet;
+    scales: IScaleSet;
     horizontal: boolean;
     renderingOffset: number;
   }) {
@@ -547,12 +604,13 @@ export class StackDataEntry<Datum extends object>
     });
   }
 
-  getBarAccessorsForRenderingData(scales: ScaleSet): {
+  getBarAccessorsForRenderingData(scales: IScaleSet): {
     independent0: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
     independent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
     dependent0: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
     dependent1: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
   } {
+    const dependentScale = scales.getDependentScale(this._usesAlternateDependent);
     return {
       independent0: getScaledValueFactory<AxisScale, StackDatum<AxisScale, AxisScale, Datum>>(
         scales.independent,
@@ -564,37 +622,39 @@ export class StackDataEntry<Datum extends object>
         getStack,
         'end'
       ),
-      dependent0: getScaledValueFactory(scales.dependent, getFirstItem),
-      dependent1: getScaledValueFactory(scales.dependent, getSecondItem)
+      dependent0: getScaledValueFactory(dependentScale, getFirstItem),
+      dependent1: getScaledValueFactory(dependentScale, getSecondItem)
     };
   }
 
-  getPointAccessorsForRenderingData(scales: ScaleSet): {
+  getPointAccessorsForRenderingData(scales: IScaleSet): {
     independent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
     dependent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
   } {
+    const dependentScale = scales.getDependentScale(this._usesAlternateDependent);
     return {
       independent: getScaledValueFactory<AxisScale, StackDatum<AxisScale, AxisScale, Datum>>(
         scales.independent,
         getStack,
         'center'
       ),
-      dependent: getScaledValueFactory(scales.dependent, getSecondItem)
+      dependent: getScaledValueFactory(dependentScale, getSecondItem)
     };
   }
 
-  getAreaAccessorsForRenderingData(scales: ScaleSet): {
+  getAreaAccessorsForRenderingData(scales: IScaleSet): {
     independent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
     dependent: (datum: StackDatum<AxisScale, AxisScale, Datum>) => number;
     dependent0: number | ((datum: StackDatum<AxisScale, AxisScale, Datum>) => number);
     defined: (datum: StackDatum<AxisScale, AxisScale, Datum>) => boolean;
   } {
+    const dependentScale = scales.getDependentScale(this._usesAlternateDependent);
     const getScaledIndependent = getScaledValueFactory<AxisScale, StackDatum<AxisScale, AxisScale, Datum>>(
       scales.independent,
       getStack
     );
-    const getScaledDependent0 = getScaledValueFactory(scales.dependent, getFirstItem);
-    const getScaledDependent = getScaledValueFactory(scales.dependent, getSecondItem);
+    const getScaledDependent0 = getScaledValueFactory(dependentScale, getFirstItem);
+    const getScaledDependent = getScaledValueFactory(dependentScale, getSecondItem);
     const isDefined = (datum: StackDatum<AxisScale, AxisScale, Datum>) =>
       isValidNumber(getScaledIndependent(datum)) && isValidNumber(getScaledDependent(datum));
     return {
@@ -624,13 +684,14 @@ export class StackDataEntry<Datum extends object>
     width: number;
     height: number;
     point: Point;
-    scales: ScaleSet;
+    scales: IScaleSet;
   }): NearestDatumReturnType<Datum> | null {
+    const dependentScale = scales.getDependentScale(this._usesAlternateDependent);
     return findNearestStackDatum(
       {
         independentScale: scales.independent,
         independentAccessor: getStack,
-        dependentScale: scales.dependent,
+        dependentScale,
         dependentAccessor: getNumericValue,
         point,
         data: this._stackData,

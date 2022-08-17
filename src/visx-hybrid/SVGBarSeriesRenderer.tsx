@@ -1,17 +1,13 @@
 import type { ReactNode } from 'react';
 import type { SpringConfig } from 'react-spring';
 
-import type { AxisScale, IDataEntry, RenderAnimatedBarProps, ScaleSet, SeriesProps } from './types';
+import type { IDataEntry, IScaleSet, RenderAnimatedBarProps } from './types';
 import { useBarTransitions } from './useBarTransitions';
 
-export type SVGBarSeriesRendererProps<
-  IndependentScale extends AxisScale,
-  DependentScale extends AxisScale,
-  Datum extends object
-> = {
+export type SVGBarSeriesRendererProps<Datum extends object> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataEntry: IDataEntry<Datum, any>;
-  scales: ScaleSet;
+  scales: IScaleSet;
   horizontal: boolean;
   renderingOffset: number;
   animate: boolean;
@@ -20,15 +16,11 @@ export type SVGBarSeriesRendererProps<
   renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
   seriesIsLeaving?: boolean;
 } & Pick<
-  SeriesProps<IndependentScale, DependentScale, Datum>,
-  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
+  React.SVGProps<SVGRectElement | SVGPathElement>,
+  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'
 >;
 
-export function SVGBarSeriesRenderer<
-  IndependentScale extends AxisScale,
-  DependentScale extends AxisScale,
-  Datum extends object
->({
+export function SVGBarSeriesRenderer<Datum extends object>({
   dataEntry,
   scales,
   horizontal,
@@ -37,13 +29,9 @@ export function SVGBarSeriesRenderer<
   animate,
   colorAccessor,
   seriesIsLeaving = false,
-  //   onBlur,
-  //   onFocus,
-  //   onPointerMove,
-  //   onPointerOut,
-  //   onPointerUp,
-  renderBar
-}: SVGBarSeriesRendererProps<IndependentScale, DependentScale, Datum>) {
+  renderBar,
+  ...rest
+}: SVGBarSeriesRendererProps<Datum>) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const transitions = useBarTransitions<Datum, any>({
     dataEntry,
@@ -61,7 +49,7 @@ export function SVGBarSeriesRenderer<
         const dataKey = dataEntry.dataKey;
         const originalDatum = dataEntry.getOriginalDatumFromRenderingDatum(datum);
         const color = colorAccessor?.(originalDatum, dataKey) ?? fallbackColor;
-        return renderBar({ springValues, datum: originalDatum, index, dataKey, horizontal, color });
+        return renderBar({ springValues, datum: originalDatum, index, dataKey, horizontal, color, ...rest });
       })}
     </>
   );

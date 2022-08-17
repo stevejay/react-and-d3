@@ -6,7 +6,7 @@ import { getChildrenAndGrandchildrenWithProps } from './getChildrenAndGrandchild
 import { isDefined } from './isDefined';
 import { SVGBarSeriesProps } from './SVGBarSeries';
 import { SVGBarSeriesRenderer } from './SVGBarSeriesRenderer';
-import type { AxisScale, RenderAnimatedBarProps } from './types';
+import type { BasicSeriesProps, RenderAnimatedBarProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
 import { useXYChartContext } from './useXYChartContext';
@@ -24,7 +24,7 @@ type SVGBarGroupProps<Datum extends object> = {
   // component?: SVGBarComponent<Datum>;
   enableEvents?: boolean;
   renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
-};
+} & Pick<BasicSeriesProps<Datum>, 'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'>;
 
 export function SVGBarGroup<Datum extends object>({
   children,
@@ -32,7 +32,12 @@ export function SVGBarGroup<Datum extends object>({
   animate = true,
   colorAccessor,
   renderBar,
-  enableEvents = true
+  enableEvents = true,
+  onBlur,
+  onFocus,
+  onPointerMove,
+  onPointerOut,
+  onPointerUp
 }: SVGBarGroupProps<Datum>) {
   const {
     scales,
@@ -50,14 +55,14 @@ export function SVGBarGroup<Datum extends object>({
   const dataKeys = barSeriesChildren.map((child) => child.props.dataKey).filter(isDefined);
 
   const ownEventSourceKey = `${barGroupEventSource}-${dataKeys.join('-')}}`;
-  /* const eventEmitters =  */ useSeriesEvents<AxisScale, AxisScale, Datum>({
+  const eventEmitters = useSeriesEvents<Datum>({
     dataKeyOrKeysRef: dataKeys,
     enableEvents,
-    // onBlur,
-    // onFocus,
-    // onPointerMove,
-    // onPointerOut,
-    // onPointerUp,
+    onBlur,
+    onFocus,
+    onPointerMove,
+    onPointerOut,
+    onPointerUp,
     source: ownEventSourceKey,
     allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
@@ -88,10 +93,9 @@ export function SVGBarGroup<Datum extends object>({
               animate={animate && contextAnimate}
               springConfig={springConfig ?? contextSpringConfig}
               colorAccessor={colorAccessor ?? datum.colorAccessor}
-              // colorScale={scales.color}
-              // {...events}
               renderBar={renderBar}
               seriesIsLeaving={!dataKeys.includes(datum.dataKey)}
+              {...eventEmitters}
             />
           </animated.g>
         );

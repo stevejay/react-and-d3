@@ -15,6 +15,7 @@ export function calculateAutoMarginFromChildren(params: {
   horizontal: boolean;
   independentScale: AxisScale;
   dependentScale: AxisScale;
+  alternateDependentScale: AxisScale | null;
   independentRangePadding: [number, number];
   dependentRangePadding: [number, number];
   theme: XYChartTheme;
@@ -24,6 +25,7 @@ export function calculateAutoMarginFromChildren(params: {
     horizontal,
     independentScale,
     dependentScale,
+    alternateDependentScale,
     independentRangePadding,
     dependentRangePadding,
     theme
@@ -39,7 +41,15 @@ export function calculateAutoMarginFromChildren(params: {
         const elementType = element.type as SVGAxisComponent;
         const props = element.props as BasicAxisProps;
         const axisOrientation = calculateAxisOrientation(horizontal, props.variable, props.position);
-        const scale = props.variable === 'independent' ? independentScale : dependentScale;
+        const scale =
+          props.variable === 'independent'
+            ? independentScale
+            : props.variable === 'dependent'
+            ? dependentScale
+            : alternateDependentScale;
+        if (!scale) {
+          throw new Error(`Missing scale configuration for ${props.variable} scale.`);
+        }
         const rangePadding =
           props.variable === 'independent' ? independentRangePadding : dependentRangePadding;
         const calculateMargin = elementType.calculateMargin ?? calculateAxisMargin;

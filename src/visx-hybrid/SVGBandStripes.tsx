@@ -56,7 +56,10 @@ export function SVGBandStripes({
     theme
   } = useXYChartContext();
 
-  const scale = variable === 'independent' ? scales.independent : scales.dependent;
+  const scale =
+    variable === 'independent'
+      ? scales.independent
+      : scales.getDependentScale(variable === 'alternateDependent');
   if (!isBandScale(scale)) {
     throw new Error('The <SVGBandStripes> component can only be used with a band scale.');
   }

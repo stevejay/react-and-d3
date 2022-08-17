@@ -27,7 +27,6 @@ export function SVGBar<Datum extends object>({
       role="presentation"
       aria-hidden
       {...restBarProps}
-      // {...eventEmitters}
     />
   );
 }

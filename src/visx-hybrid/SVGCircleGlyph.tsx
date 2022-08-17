@@ -31,7 +31,6 @@ export function SVGCircleGlyph<Datum extends object>({
       role="presentation"
       aria-hidden
       {...restCircleProps}
-      // {...eventEmitters}
     />
   );
 }

@@ -81,27 +81,30 @@ export function getDataEntriesFromChildren<
               child.props.dataKey === seriesData.key
           );
           return matchingChild
-            ? (new StackDataEntry(
-                matchingChild.props.dataKey,
-                seriesData,
-                matchingChild.props.independentAccessor,
-                matchingChild.props.dependentAccessor,
-                matchingChild.props.colorAccessor,
-                matchingChild.props.keyAccessor
-              ) as IDataEntry)
+            ? (new StackDataEntry({
+                dataKey: matchingChild.props.dataKey,
+                stackData: seriesData,
+                independentAccessor: matchingChild.props.independentAccessor,
+                dependentAccessor:
+                  matchingChild.props.alternateDependentAccessor ?? matchingChild.props.dependentAccessor,
+                usesAlternateDependent: Boolean(matchingChild.props.alternateDependentAccessor),
+                colorAccessor: matchingChild.props.colorAccessor,
+                keyAccessor: matchingChild.props.keyAccessor
+              }) as IDataEntry)
             : null;
         })
         .filter(isDefined);
       stackDataEntries.forEach((dataEntry) => dataEntries.push(dataEntry));
     } else if (element.props.dataKey && element.props.data) {
-      const dataEntry = new (isInsideGroup ? GroupDataEntry : SimpleDataEntry)(
-        element.props.dataKey,
-        element.props.data,
-        element.props.independentAccessor,
-        element.props.dependentAccessor,
-        element.props.colorAccessor,
-        element.props.keyAccessor
-      );
+      const dataEntry = new (isInsideGroup ? GroupDataEntry : SimpleDataEntry)({
+        dataKey: element.props.dataKey,
+        data: element.props.data,
+        independentAccessor: element.props.independentAccessor,
+        dependentAccessor: element.props.alternateDependentAccessor ?? element.props.dependentAccessor,
+        usesAlternateDependent: Boolean(element.props.alternateDependentAccessor),
+        colorAccessor: element.props.colorAccessor,
+        keyAccessor: element.props.keyAccessor
+      });
       dataEntries.push(dataEntry);
     }
   });

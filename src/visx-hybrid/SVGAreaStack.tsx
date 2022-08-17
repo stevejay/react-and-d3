@@ -7,12 +7,12 @@ import { isDefined } from './isDefined';
 import { STACK_OFFSETS } from './stackOffset';
 import { STACK_ORDERS } from './stackOrder';
 import { SVGAreaSeriesProps } from './SVGAreaSeries';
-import type { AxisScale } from './types';
+import { BasicSeriesProps } from './types';
 import { useSeriesEvents } from './useSeriesEvents';
 import { useSeriesTransitions } from './useSeriesTransitions';
 import { useXYChartContext } from './useXYChartContext';
 
-export interface SVGAreaStackProps {
+export type SVGAreaStackProps<Datum extends object> = {
   /** Sets the stack offset to the pre-defined d3 offset, see https://github.com/d3/d3-shape#stack_offset. */
   stackOffset?: keyof typeof STACK_OFFSETS;
   /** Sets the stack order to the pre-defined d3 function, see https://github.com/d3/d3-shape#stack_order. */
@@ -22,14 +22,19 @@ export interface SVGAreaStackProps {
   springConfig?: SpringConfig;
   enableEvents?: boolean;
   children?: ReactNode;
-}
+} & Pick<BasicSeriesProps<Datum>, 'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'>;
 
 export function SVGAreaStack<Datum extends object>({
   children,
   enableEvents = true,
   animate = true,
-  springConfig
-}: SVGAreaStackProps) {
+  springConfig,
+  onBlur,
+  onFocus,
+  onPointerMove,
+  onPointerOut,
+  onPointerUp
+}: SVGAreaStackProps<Datum>) {
   const {
     theme,
     horizontal,
@@ -45,15 +50,14 @@ export function SVGAreaStack<Datum extends object>({
   );
   const dataKeys = seriesChildren.map((child) => child.props.dataKey).filter(isDefined);
   const ownEventSourceKey = `${areaStackEventSource}-${dataKeys.join('-')}`;
-  /* const eventEmitters = */ useSeriesEvents<AxisScale, AxisScale, Datum>({
+  const eventEmitters = useSeriesEvents<Datum>({
     dataKeyOrKeysRef: dataKeys,
     enableEvents,
-    // findNearestOriginalDatum,
-    // onBlur,
-    // onFocus,
-    // onPointerMove,
-    // onPointerOut,
-    // onPointerUp,
+    onBlur,
+    onFocus,
+    onPointerMove,
+    onPointerOut,
+    onPointerUp,
     source: ownEventSourceKey,
     allowedSources: [xyChartEventSource, ownEventSourceKey]
   });
@@ -87,7 +91,8 @@ export function SVGAreaStack<Datum extends object>({
                 renderingOffset,
                 animate: resolvedAnimate,
                 springConfig: resolvedSpringConfig,
-                color: fallbackFill
+                color: fallbackFill,
+                ...eventEmitters
               })}
             {renderPath &&
               renderPath({
