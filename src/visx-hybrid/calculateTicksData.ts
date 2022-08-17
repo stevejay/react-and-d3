@@ -12,6 +12,9 @@ export interface TicksDataParams {
   tickValues?: ScaleInput<AxisScale>[];
 }
 
+/**
+ * Calculates the tick label values using the given tick parameters.
+ */
 export function calculateTicksData({
   scale,
   hideZero,

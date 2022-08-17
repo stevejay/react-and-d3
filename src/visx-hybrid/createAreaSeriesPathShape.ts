@@ -3,6 +3,9 @@ import { area as d3Area, CurveFactory } from 'd3-shape';
 import { setNumberOrNumberAccessor } from './setNumberOrNumberAccessor';
 import type { AxisScale, IDataEntry, IScaleSet, ScaleInput } from './types';
 
+/**
+ * Uses the d3 area function to create a `d` string for an SVG <path> element.
+ */
 export function createAreaSeriesPathShape<Datum extends object>({
   scales,
   dataEntry,

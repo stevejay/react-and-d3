@@ -8,7 +8,9 @@ import type { AxisScale, BasicAxisProps, IXYChartTheme, Margin, SVGAxisComponent
 /**
  * Looks for children of the SVGXYChart that have component names that end in 'Axis'.
  * For each of these, it calculates a margin value, before then combining those margins
- * into the single returned margin.
+ * into the single returned margin. If the axis component has a property on it called
+ * `calculateMargin` then that function is invoked to calculate the margin for it,
+ * otherwise the fallback `calculateAxisMargin` function is invoked.
  */
 export function calculateAutoMarginFromChildren(params: {
   children: ReactNode;

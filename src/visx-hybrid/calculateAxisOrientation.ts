@@ -1,5 +1,8 @@
 import type { AxisOrientation, Variable } from './types';
 
+/**
+ * Determines the correct `AxisOrientation` value for an axis, given the particular arguments.
+ */
 export function calculateAxisOrientation(
   horizontal: boolean,
   variable: Variable,

@@ -146,7 +146,10 @@ function getLabelMargin(
   return result;
 }
 
-// Returns the required adjustments for the SVGAxis component.
+/**
+ * A function for calculating the margin for an axis. This function is correct
+ * for calculating the margin for the `SVGAxis` component.
+ */
 export function calculateAxisMargin(
   axisOrientation: AxisOrientation,
   scale: AxisScale<AxisScaleOutput>,

@@ -1,11 +1,14 @@
 import type { NumberLike } from './types';
 
-export function coerceNumber<T>(val: T | NumberLike): T | number {
-  if ((typeof val === 'function' || (typeof val === 'object' && !!val)) && 'valueOf' in val) {
-    const num = val.valueOf();
+/**
+ * Tries to convert the given value into a number.
+ */
+export function coerceNumber<T>(value: T | NumberLike): T | number {
+  if ((typeof value === 'function' || (typeof value === 'object' && !!value)) && 'valueOf' in value) {
+    const num = value.valueOf();
     if (typeof num === 'number') {
       return num;
     }
   }
-  return val as T;
+  return value as T;
 }

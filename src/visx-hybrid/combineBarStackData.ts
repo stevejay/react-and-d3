@@ -15,8 +15,8 @@ export function combineBarStackData<
 ): StackDataWithSums<IndependentScale, DependentScale, Datum>[] {
   type MapValue = StackDataWithSums<IndependentScale, DependentScale, Datum>;
   const dataByStackValue = new Map<string, MapValue>();
-  // Note: At this point the data entries are the original data entries,
-  // ones that have not yet been transformed into stack data entries.
+  // Note: At this point the data entries are the original data entries.
+  // They have not yet been transformed into stack data entries.
   dataEntries.forEach((dataEntry) => {
     const { dataKey, independentAccessor, dependentAccessor } = dataEntry;
     if (!independentAccessor || !dependentAccessor) {
