@@ -3,8 +3,8 @@ import { debounce } from 'lodash-es';
 
 import { defaultHideTooltipDebounceMs } from './constants';
 import { isValidNumber } from './isValidNumber';
-import { TooltipControlContext } from './TooltipControlContext';
 import { TooltipStateContext } from './TooltipStateContext';
+import { TooltipUpdateContext } from './TooltipUpdateContext';
 import type { EventHandlerParams } from './types';
 import { useTooltip } from './useTooltip';
 
@@ -97,7 +97,7 @@ export function TooltipProvider<Datum extends object>({
 
   return (
     <TooltipStateContext.Provider value={stateContextValue}>
-      <TooltipControlContext.Provider value={controlContextValue}>{children}</TooltipControlContext.Provider>
+      <TooltipUpdateContext.Provider value={controlContextValue}>{children}</TooltipUpdateContext.Provider>
     </TooltipStateContext.Provider>
   );
 }

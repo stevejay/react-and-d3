@@ -319,20 +319,14 @@ export type UseTooltipParams<Datum extends object> = {
   tooltipTop?: number;
   tooltipData?: TooltipData<Datum>;
   updateTooltip: (args: UpdateTooltipArgs<Datum>) => void;
-  // hideTooltip: () => void;
 };
-
-// export type TooltipContextType<Datum extends object> = UseTooltipParams<Datum> & {
-//   showTooltip: (eventParamsList: readonly EventHandlerParams<Datum>[]) => void;
-//   hideTooltip: () => void;
-// };
 
 export type TooltipStateContextType<Datum extends object> = Pick<
   UseTooltipParams<Datum>,
   'tooltipOpen' | 'tooltipLeft' | 'tooltipTop' | 'tooltipData'
 >;
 
-export interface TooltipControlContextType<Datum extends object> {
+export interface TooltipUpdateContextType<Datum extends object> {
   showTooltip: (eventParamsList: readonly EventHandlerParams<Datum>[]) => void;
   hideTooltip: () => void;
 }
