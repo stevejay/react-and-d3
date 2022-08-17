@@ -24,6 +24,7 @@ export function SVGGlyphSeries<Datum extends object>({
   onBlur,
   onFocus,
   onPointerMove,
+  onPointerDown,
   onPointerOut,
   onPointerUp
 }: SVGGlyphSeriesProps<Datum>) {
@@ -43,6 +44,7 @@ export function SVGGlyphSeries<Datum extends object>({
     onBlur,
     onFocus,
     onPointerMove,
+    onPointerDown,
     onPointerOut,
     onPointerUp,
     source: ownEventSourceKey,

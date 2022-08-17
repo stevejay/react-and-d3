@@ -24,7 +24,10 @@ type SVGBarGroupProps<Datum extends object> = {
   // component?: SVGBarComponent<Datum>;
   enableEvents?: boolean;
   renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
-} & Pick<BasicSeriesProps<Datum>, 'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'>;
+} & Pick<
+  BasicSeriesProps<Datum>,
+  'onPointerMove' | 'onPointerOut' | 'onPointerDown' | 'onPointerUp' | 'onBlur' | 'onFocus'
+>;
 
 export function SVGBarGroup<Datum extends object>({
   children,
@@ -36,6 +39,7 @@ export function SVGBarGroup<Datum extends object>({
   onBlur,
   onFocus,
   onPointerMove,
+  onPointerDown,
   onPointerOut,
   onPointerUp
 }: SVGBarGroupProps<Datum>) {
@@ -61,6 +65,7 @@ export function SVGBarGroup<Datum extends object>({
     onBlur,
     onFocus,
     onPointerMove,
+    onPointerDown,
     onPointerOut,
     onPointerUp,
     source: ownEventSourceKey,

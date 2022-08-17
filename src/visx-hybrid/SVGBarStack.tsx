@@ -25,7 +25,10 @@ export type SVGBarStackProps<Datum extends object> = {
   children?: ReactNode;
   colorAccessor?: (datum: Datum, key: string) => string;
   renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
-} & Pick<BasicSeriesProps<Datum>, 'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'>;
+} & Pick<
+  BasicSeriesProps<Datum>,
+  'onPointerMove' | 'onPointerOut' | 'onPointerDown' | 'onPointerUp' | 'onBlur' | 'onFocus'
+>;
 
 export function SVGBarStack<Datum extends object>({
   children,
@@ -37,6 +40,7 @@ export function SVGBarStack<Datum extends object>({
   onBlur,
   onFocus,
   onPointerMove,
+  onPointerDown,
   onPointerOut,
   onPointerUp
 }: SVGBarStackProps<Datum>) {
@@ -60,6 +64,7 @@ export function SVGBarStack<Datum extends object>({
     onBlur,
     onFocus,
     onPointerMove,
+    onPointerDown,
     onPointerOut,
     onPointerUp,
     source: ownEventSourceKey,

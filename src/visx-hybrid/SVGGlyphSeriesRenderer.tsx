@@ -17,7 +17,7 @@ export type SVGGlyphSeriesRendererProps<Datum extends object> = {
   renderGlyph: (props: RenderAnimatedGlyphProps<Datum>) => ReactNode;
 } & Pick<
   React.SVGProps<SVGRectElement | SVGPathElement | SVGRectElement | SVGCircleElement>, // TODO ???
-  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'
+  'onPointerMove' | 'onPointerOut' | 'onPointerDown' | 'onPointerUp' | 'onBlur' | 'onFocus'
 >;
 
 export function SVGGlyphSeriesRenderer<Datum extends object>({

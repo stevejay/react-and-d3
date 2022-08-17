@@ -13,6 +13,7 @@ export type HandlerParams = {
 
 export type Events = {
   pointermove: HandlerParams;
+  pointerdown: HandlerParams;
   pointerout: HandlerParams;
   pointerup: HandlerParams;
   focus: HandlerParams;

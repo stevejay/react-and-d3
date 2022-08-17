@@ -7,7 +7,7 @@ import { useTooltipUpdateContext } from './useTooltipUpdateContext';
 
 export type SeriesEventsParams<Datum extends object> = Pick<
   BasicSeriesProps<Datum>,
-  'onBlur' | 'onFocus' | 'onPointerMove' | 'onPointerOut' | 'onPointerUp'
+  'onBlur' | 'onFocus' | 'onPointerMove' | 'onPointerDown' | 'onPointerOut' | 'onPointerUp'
 > &
   Pick<PointerEventHandlerParams<Datum>, 'dataKeyOrKeysRef' | 'allowedSources'> & {
     /** The source of emitted events. */
@@ -22,6 +22,7 @@ export function useSeriesEvents<Datum extends object>({
   onBlur: onBlurProps,
   onFocus: onFocusProps,
   onPointerMove: onPointerMoveProps,
+  onPointerDown: onPointerDownProps,
   onPointerOut: onPointerOutProps,
   onPointerUp: onPointerUpProps,
   source,
@@ -37,6 +38,16 @@ export function useSeriesEvents<Datum extends object>({
       }
     },
     [showTooltip, onPointerMoveProps]
+  );
+
+  const onPointerDown = useCallback(
+    (params: readonly EventHandlerParams<Datum>[]) => {
+      showTooltip(params);
+      if (onPointerDownProps) {
+        onPointerDownProps(params);
+      }
+    },
+    [showTooltip, onPointerDownProps]
   );
 
   const onFocus = useCallback(
@@ -74,6 +85,7 @@ export function useSeriesEvents<Datum extends object>({
     onBlur: enableEvents ? onBlur : undefined,
     onFocus: enableEvents ? onFocus : undefined,
     onPointerMove: enableEvents ? onPointerMove : undefined,
+    onPointerDown: enableEvents ? onPointerDown : undefined,
     onPointerOut: enableEvents ? onPointerOut : undefined,
     onPointerUp: enableEvents ? onPointerUpProps : undefined,
     allowedSources
@@ -84,6 +96,7 @@ export function useSeriesEvents<Datum extends object>({
     onBlur: !!onBlurProps && enableEvents,
     onFocus: !!onFocusProps && enableEvents,
     onPointerMove: !!onPointerMoveProps && enableEvents,
+    onPointerDown: !!onPointerDownProps && enableEvents,
     onPointerOut: !!onPointerOutProps && enableEvents,
     onPointerUp: !!onPointerUpProps && enableEvents
   });

@@ -15,7 +15,10 @@ export type PointerEventHandlerParams<Datum extends object> = {
   /** Controls whether callbacks are invoked for one or more registered dataKeys, the nearest dataKey, or all dataKeys. */
   dataKeyOrKeysRef: string | readonly string[] | typeof POINTER_EVENTS_NEAREST | typeof POINTER_EVENTS_ALL;
   allowedSources?: string[];
-} & Pick<BasicSeriesProps<Datum>, 'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onFocus' | 'onBlur'>;
+} & Pick<
+  BasicSeriesProps<Datum>,
+  'onPointerMove' | 'onPointerOut' | 'onPointerDown' | 'onPointerUp' | 'onFocus' | 'onBlur'
+>;
 
 /**
  * Hook that returns PointerEvent handlers that invoke the passed pointer
@@ -27,6 +30,7 @@ export function useEventHandlers<Datum extends object>({
   onBlur,
   onFocus,
   onPointerMove,
+  onPointerDown,
   onPointerOut,
   onPointerUp,
   allowedSources
@@ -112,6 +116,16 @@ export function useEventHandlers<Datum extends object>({
     [getHandlerParams, onPointerMove]
   );
 
+  const handlePointerDown = useCallback(
+    (params?: HandlerParams) => {
+      if (onPointerDown) {
+        const handlerParams = getHandlerParams(params);
+        onPointerDown(handlerParams);
+      }
+    },
+    [getHandlerParams, onPointerDown]
+  );
+
   const handlePointerUp = useCallback(
     (params?: HandlerParams) => {
       if (onPointerUp) {
@@ -153,6 +167,7 @@ export function useEventHandlers<Datum extends object>({
   );
 
   useEventEmitterSubscription('pointermove', onPointerMove ? handlePointerMove : undefined, allowedSources);
+  useEventEmitterSubscription('pointerdown', onPointerDown ? handlePointerDown : undefined, allowedSources);
   useEventEmitterSubscription('pointerout', onPointerOut ? handlePointerOut : undefined, allowedSources);
   useEventEmitterSubscription('pointerup', onPointerUp ? handlePointerUp : undefined, allowedSources);
   useEventEmitterSubscription('focus', onFocus ? handleFocus : undefined, allowedSources);

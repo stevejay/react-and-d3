@@ -22,7 +22,10 @@ export type SVGAreaStackProps<Datum extends object> = {
   springConfig?: SpringConfig;
   enableEvents?: boolean;
   children?: ReactNode;
-} & Pick<BasicSeriesProps<Datum>, 'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'>;
+} & Pick<
+  BasicSeriesProps<Datum>,
+  'onPointerMove' | 'onPointerOut' | 'onPointerDown' | 'onPointerUp' | 'onBlur' | 'onFocus'
+>;
 
 export function SVGAreaStack<Datum extends object>({
   children,
@@ -32,6 +35,7 @@ export function SVGAreaStack<Datum extends object>({
   onBlur,
   onFocus,
   onPointerMove,
+  onPointerDown,
   onPointerOut,
   onPointerUp
 }: SVGAreaStackProps<Datum>) {
@@ -56,6 +60,7 @@ export function SVGAreaStack<Datum extends object>({
     onBlur,
     onFocus,
     onPointerMove,
+    onPointerDown,
     onPointerOut,
     onPointerUp,
     source: ownEventSourceKey,

@@ -8,6 +8,7 @@ type PointerEventEmitterParams = {
   onBlur?: boolean;
   onFocus?: boolean;
   onPointerMove?: boolean;
+  onPointerDown?: boolean;
   onPointerOut?: boolean;
   onPointerUp?: boolean;
 };
@@ -20,6 +21,7 @@ export function useEventEmitters({
   source,
   onPointerOut = true,
   onPointerMove = true,
+  onPointerDown = true,
   onPointerUp = true,
   onFocus = false,
   onBlur = false
@@ -28,6 +30,11 @@ export function useEventEmitters({
 
   const emitPointerMove = useCallback(
     (event: PointerEvent) => emit?.('pointermove', event, source),
+    [emit, source]
+  );
+
+  const emitPointerDown = useCallback(
+    (event: PointerEvent) => emit?.('pointerdown', event, source),
     [emit, source]
   );
 
@@ -46,6 +53,7 @@ export function useEventEmitters({
 
   return {
     onPointerMove: onPointerMove ? emitPointerMove : undefined,
+    onPointerDown: onPointerDown ? emitPointerDown : undefined,
     onFocus: onFocus ? emitFocus : undefined,
     onBlur: onBlur ? emitBlur : undefined,
     onPointerOut: onPointerOut ? emitPointerOut : undefined,

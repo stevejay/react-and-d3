@@ -23,6 +23,7 @@ export function SVGBarSeries<Datum extends object>({
   onBlur,
   onFocus,
   onPointerMove,
+  onPointerDown,
   onPointerOut,
   onPointerUp
 }: SVGBarSeriesProps<Datum>) {
@@ -42,6 +43,7 @@ export function SVGBarSeries<Datum extends object>({
     onBlur,
     onFocus,
     onPointerMove,
+    onPointerDown,
     onPointerOut,
     onPointerUp,
     source: ownEventSourceKey,

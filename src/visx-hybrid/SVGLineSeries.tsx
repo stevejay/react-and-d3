@@ -20,6 +20,7 @@ export function SVGLineSeries<Datum extends object>({
   onBlur,
   onFocus,
   onPointerMove,
+  onPointerDown,
   onPointerOut,
   onPointerUp
 }: SVGLineSeriesProps<Datum>) {
@@ -40,6 +41,7 @@ export function SVGLineSeries<Datum extends object>({
     onBlur,
     onFocus,
     onPointerMove,
+    onPointerDown,
     onPointerOut,
     onPointerUp,
     source: ownEventSourceKey,

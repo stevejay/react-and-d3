@@ -475,7 +475,7 @@ export type RenderAnimatedBarProps<Datum extends object> = {
   // colorAccessor?: (datum: Datum, dataKey: string) => string;
 } & Pick<
   React.SVGProps<SVGRectElement | SVGPathElement>,
-  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'
+  'onPointerMove' | 'onPointerOut' | 'onPointerDown' | 'onPointerUp' | 'onBlur' | 'onFocus'
 >;
 
 // export type SVGBarComponent<Datum extends object> = (props: SVGBarProps<Datum>) => JSX.Element;
@@ -493,7 +493,7 @@ export type SVGAnimatedPathProps<Datum extends object> = {
   pathProps?: PathProps | ((dataKey: string) => PathProps);
 } & Pick<
   BasicSeriesProps<Datum>,
-  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
+  'onPointerMove' | 'onPointerOut' | 'onPointerDown' | 'onPointerUp' | 'onBlur' | 'onFocus' | 'enableEvents'
 >;
 
 export type SVGAnimatedPathComponent<Datum extends object> = (
@@ -588,7 +588,7 @@ export type RenderPathProps<Datum extends object> = {
   color: string;
 } & Pick<
   React.SVGProps<SVGPathElement>,
-  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'
+  'onPointerMove' | 'onPointerOut' | 'onPointerDown' | 'onPointerUp' | 'onBlur' | 'onFocus'
 >;
 
 export type RenderAnimatedGlyphProps<Datum extends object> = {
@@ -636,6 +636,19 @@ export interface BasicSeriesProps<Datum extends object> {
    * Alternatively you may set <XYChart captureEvents={false} /> and Series will emit
    * their own events.
    */
+
+  onPointerDown?: (
+    eventParamsList: /*{
+    datum,
+    distanceX,
+    distanceY,
+    event,
+    index,
+    key,
+    svgPoint
+  }*/ readonly EventHandlerParams<Datum>[]
+  ) => void;
+
   onPointerOut?: (
     /** The PointerEvent. */
     eventParamsList: PointerEvent

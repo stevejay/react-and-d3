@@ -17,7 +17,7 @@ export type SVGBarSeriesRendererProps<Datum extends object> = {
   seriesIsLeaving?: boolean;
 } & Pick<
   React.SVGProps<SVGRectElement | SVGPathElement>,
-  'onPointerMove' | 'onPointerOut' | 'onPointerUp' | 'onBlur' | 'onFocus'
+  'onPointerMove' | 'onPointerOut' | 'onPointerDown' | 'onPointerUp' | 'onBlur' | 'onFocus'
 >;
 
 export function SVGBarSeriesRenderer<Datum extends object>({
