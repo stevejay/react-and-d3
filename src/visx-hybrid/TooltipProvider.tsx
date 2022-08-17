@@ -95,6 +95,7 @@ export function TooltipProvider<Datum extends object>({
     [showTooltip, hideTooltip]
   );
 
+  // Split the tooltip context into two so that the chart series don't rerender when the tooltip is showing.
   return (
     <TooltipStateContext.Provider value={stateContextValue}>
       <TooltipUpdateContext.Provider value={controlContextValue}>{children}</TooltipUpdateContext.Provider>
