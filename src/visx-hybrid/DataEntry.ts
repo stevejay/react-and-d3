@@ -110,7 +110,7 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     return datum;
   }
 
-  getPositionForOriginalDatum({
+  getPositionFromOriginalDatum({
     datum,
     scales,
     horizontal
@@ -200,11 +200,11 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     return this._data.filter((datum) => this.independentAccessor(datum) === value);
   }
 
-  getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[] {
-    return this._data.map(mapper);
-  }
+  // getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[] {
+  //   return this._data.map(mapper);
+  // }
 
-  findNearestOriginalDatum({
+  findNearestOriginalDatumToPoint({
     horizontal,
     scales,
     point,
@@ -218,8 +218,8 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     scales: IScaleSet;
   }): NearestDatumReturnType<Datum> | null {
     const dependentScale = scales.getDependentScale(this._usesAlternateDependent);
-    const findNearestOriginalDatum = horizontal ? findNearestDatumY : findNearestDatumX;
-    return findNearestOriginalDatum({
+    const findNearestOriginalDatumToPoint = horizontal ? findNearestDatumY : findNearestDatumX;
+    return findNearestOriginalDatumToPoint({
       independentScale: scales.independent,
       independentAccessor: this.independentAccessor,
       dependentScale,
@@ -322,7 +322,7 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     return datum;
   }
 
-  getPositionForOriginalDatum({
+  getPositionFromOriginalDatum({
     datum,
     scales,
     horizontal
@@ -424,11 +424,11 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     return this._data.filter((datum) => this.independentAccessor(datum) === value);
   }
 
-  getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[] {
-    return this._data.map(mapper);
-  }
+  // getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[] {
+  //   return this._data.map(mapper);
+  // }
 
-  findNearestOriginalDatum({
+  findNearestOriginalDatumToPoint({
     horizontal,
     scales,
     point,
@@ -566,7 +566,7 @@ export class StackDataEntry<Datum extends object>
       : [];
   }
 
-  getPositionForOriginalDatum({
+  getPositionFromOriginalDatum({
     datum,
     scales,
     horizontal
@@ -669,11 +669,11 @@ export class StackDataEntry<Datum extends object>
     return this._originalData.filter((datum) => this.independentAccessor(datum) === value);
   }
 
-  getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[] {
-    return this._originalData.map(mapper);
-  }
+  // getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[] {
+  //   return this._originalData.map(mapper);
+  // }
 
-  findNearestOriginalDatum({
+  findNearestOriginalDatumToPoint({
     point,
     horizontal,
     width,

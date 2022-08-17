@@ -1,5 +1,5 @@
 import { createContext } from 'react';
 
-import type { XYChartContextType } from './types';
+import type { IXYChartContext } from './types';
 
-export const XYChartContext = createContext<XYChartContextType | null>(null);
+export const XYChartContext = createContext<IXYChartContext | null>(null);

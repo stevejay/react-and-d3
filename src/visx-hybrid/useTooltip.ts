@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import type { UseTooltipParams, UseTooltipState } from './types';
+import type { TooltipState } from './types';
 
 export function useTooltip<Datum extends object = object>(
-  initialTooltipState?: Partial<UseTooltipParams<Datum>>
-): UseTooltipParams<Datum> {
-  const [tooltipState, setTooltipState] = useState<UseTooltipState<Datum>>({
+  initialTooltipState?: Partial<TooltipState<Datum>>
+) {
+  const [tooltipState, setTooltipState] = useState<TooltipState<Datum>>({
     tooltipOpen: false,
     ...initialTooltipState
   });

@@ -3,7 +3,7 @@ import { Children, Fragment, isValidElement, ReactNode } from 'react';
 import { calculateAxisMargin } from './calculateAxisMargin';
 import { calculateAxisOrientation } from './calculateAxisOrientation';
 import { mergeMargins } from './mergeMargins';
-import type { AxisScale, BasicAxisProps, Margin, SVGAxisComponent, XYChartTheme } from './types';
+import type { AxisScale, BasicAxisProps, IXYChartTheme, Margin, SVGAxisComponent } from './types';
 
 /**
  * Looks for children of the SVGXYChart that have component names that end in 'Axis'.
@@ -18,7 +18,7 @@ export function calculateAutoMarginFromChildren(params: {
   alternateDependentScale: AxisScale | null;
   independentRangePadding: [number, number];
   dependentRangePadding: [number, number];
-  theme: XYChartTheme;
+  theme: IXYChartTheme;
 }): Margin {
   const {
     children,

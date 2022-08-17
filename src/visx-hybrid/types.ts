@@ -17,12 +17,12 @@ export type AxisScale<Output extends AxisScaleOutput = AxisScaleOutput> = D3Scal
 
 export type Anchor = 'start' | 'middle' | 'end';
 
-export interface Margin {
+export type Margin = {
   top: number;
   bottom: number;
   left: number;
   right: number;
-}
+};
 
 export type AxisOrientation = 'top' | 'bottom' | 'left' | 'right';
 
@@ -45,14 +45,14 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
   getDomainValuesForDependentScale(): readonly ScaleInput<AxisScale>[];
   getDomainValuesForAlternateDependentScale(): readonly ScaleInput<AxisScale>[];
   getOriginalDataByIndependentValue(value: ScaleInput<AxisScale>): readonly Datum[];
-  getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[];
-  getPositionForOriginalDatum(params: {
+  // getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[];
+  getPositionFromOriginalDatum(params: {
     datum: Datum;
     scales: IScaleSet;
     horizontal: boolean;
     renderingOffset: number;
   }): DatumPosition | null;
-  findNearestOriginalDatum(args: {
+  findNearestOriginalDatumToPoint(args: {
     scales: IScaleSet;
     horizontal: boolean;
     width: number;
@@ -100,7 +100,7 @@ export interface IScaleSet {
   color: ScaleTypeToD3Scale<string, string>['ordinal'];
 }
 
-export interface XYChartContextType<Datum extends object = object, RenderingDatum extends object = object> {
+export interface IXYChartContext<Datum extends object = object, RenderingDatum extends object = object> {
   scales: IScaleSet;
   independentRangePadding: [number, number];
   dependentRangePadding: [number, number];
@@ -115,7 +115,7 @@ export interface XYChartContextType<Datum extends object = object, RenderingDatu
   animate: boolean;
   springConfig: SpringConfig;
   renderingOffset: number;
-  theme: XYChartTheme;
+  theme: IXYChartTheme;
 }
 
 export interface TickDatum {
@@ -129,8 +129,8 @@ export type Variable = 'independent' | 'dependent' | 'alternateDependent';
 export type LabelAlignment = 'horizontal' | 'vertical';
 export type TickLabelAlignment = 'horizontal' | 'angled' | 'vertical';
 
-/** Arguments for findNearestOriginalDatum* functions. */
-export type NearestDatumArgs<Datum extends object> = {
+/** Arguments for findNearestOriginalDatumToPoint* functions. */
+export interface NearestDatumArgs<Datum extends object> {
   dataKey: string;
   point: { x: number; y: number } | null;
   independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
@@ -140,7 +140,7 @@ export type NearestDatumArgs<Datum extends object> = {
   height: number;
   independentScale: AxisScale;
   dependentScale: AxisScale;
-};
+}
 
 /** Return type for nearestDatum* functions. */
 export type NearestDatumReturnType<Datum extends object> = {
@@ -198,7 +198,7 @@ export type GlyphStyles = {
   className?: string;
 } & Pick<SVGProps<SVGCircleElement>, 'stroke' | 'strokeWidth' | 'strokeLinecap' | 'strokeDasharray' | 'fill'>;
 
-export interface XYChartTheme {
+export interface IXYChartTheme {
   /** Ordinal colors to be used for default coloring by series `key`s. */
   colors: readonly string[];
   svg?: SVGStyles;
@@ -234,10 +234,10 @@ export type FontProperties = Pick<
   'fontFamily' | 'fontSize' | 'fontStretch' | 'fontStyle' | 'fontVariant' | 'fontWeight' | 'lineHeight'
 >;
 
-export interface FontMetrics {
+export type FontMetrics = {
   height: number;
   heightFromBaseline: number;
-}
+};
 
 export type FormattedValue = string | undefined;
 
@@ -306,39 +306,26 @@ export type TooltipDatum<Datum extends object> = {
   snapTop: number;
 };
 
-export type TooltipData<Datum extends object = object> = {
+export type TooltipData<Datum extends object> = {
   /** Nearest Datum to event across all Series. */
   nearestDatum?: TooltipDatum<Datum> & { distance: number };
   /** Nearest Datum to event across for each Series. */
   datumByKey: Map<string, TooltipDatum<Datum>>;
 };
 
-export type UseTooltipParams<Datum extends object> = {
+export type TooltipState<Datum extends object> = {
   tooltipOpen: boolean;
   tooltipLeft?: number;
   tooltipTop?: number;
   tooltipData?: TooltipData<Datum>;
-  updateTooltip: (args: UpdateTooltipArgs<Datum>) => void;
 };
 
-export type TooltipStateContextType<Datum extends object> = Pick<
-  UseTooltipParams<Datum>,
-  'tooltipOpen' | 'tooltipLeft' | 'tooltipTop' | 'tooltipData'
->;
+export type TooltipStateContextType<Datum extends object> = TooltipState<Datum>;
 
-export interface TooltipUpdateContextType<Datum extends object> {
+export interface ITooltipUpdateContext<Datum extends object> {
   showTooltip: (eventParamsList: readonly EventHandlerParams<Datum>[]) => void;
   hideTooltip: () => void;
 }
-
-export type UseTooltipState<Datum extends object> = Pick<
-  UseTooltipParams<Datum>,
-  'tooltipOpen' | 'tooltipLeft' | 'tooltipTop' | 'tooltipData'
->;
-
-type ValueOrFunc<T> = T | ((t: T) => T);
-export type ShowTooltipArgs<Datum extends object> = ValueOrFunc<Omit<UseTooltipState<Datum>, 'tooltipOpen'>>;
-export type UpdateTooltipArgs<Datum extends object> = ValueOrFunc<UseTooltipState<Datum>>;
 
 // /** Common props for data series. */
 // export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> {
@@ -547,7 +534,7 @@ export type CalculateMargin<Props extends BasicAxisProps = BasicAxisProps> = (
   axisOrientation: AxisOrientation,
   scale: AxisScale<AxisScaleOutput>,
   rangePadding: [number, number],
-  theme: XYChartTheme,
+  theme: IXYChartTheme,
   params: Props
 ) => Margin;
 
@@ -592,7 +579,7 @@ export type RenderPathProps<Datum extends object> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataEntry: IDataEntry<Datum, any>;
   scales: IScaleSet;
-  theme: XYChartTheme;
+  theme: IXYChartTheme;
   horizontal: boolean;
   renderingOffset: number;
   animate: boolean;

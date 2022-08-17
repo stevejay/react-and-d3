@@ -23,7 +23,7 @@ export type PointerEventHandlerParams<Datum extends object> = {
  */
 export function useEventHandlers<Datum extends object>({
   dataKeyOrKeysRef,
-  // findNearestOriginalDatum: userFindNearestDatum,
+  // findNearestOriginalDatumToPoint: userFindNearestDatum,
   onBlur,
   onFocus,
   onPointerMove,
@@ -64,7 +64,7 @@ export function useEventHandlers<Datum extends object>({
         dataKeys.forEach((dataKey) => {
           const dataEntry = dataEntryStore.tryGetByDataKey(dataKey);
           if (dataEntry) {
-            const nearestDatum = dataEntry.findNearestOriginalDatum({
+            const nearestDatum = dataEntry.findNearestOriginalDatumToPoint({
               horizontal,
               width,
               height,

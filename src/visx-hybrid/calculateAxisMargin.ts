@@ -20,11 +20,11 @@ import type {
   AxisScale,
   AxisScaleOutput,
   FontProperties,
+  IXYChartTheme,
   LabelAlignment,
   Margin,
   TickDatum,
-  TickLabelAlignment,
-  XYChartTheme
+  TickLabelAlignment
 } from './types';
 
 function getTickLineMargin(axisOrientation: AxisOrientation, tickLength: number, hideTicks: boolean): Margin {
@@ -151,7 +151,7 @@ export function calculateAxisMargin(
   axisOrientation: AxisOrientation,
   scale: AxisScale<AxisScaleOutput>,
   rangePadding: [number, number],
-  theme: XYChartTheme,
+  theme: IXYChartTheme,
   props: SVGAxisProps
 ): Margin {
   const ticks = calculateTicksData({

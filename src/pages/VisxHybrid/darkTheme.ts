@@ -1,8 +1,8 @@
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
-import { XYChartTheme } from '@/visx-hybrid/types';
+import { IXYChartTheme } from '@/visx-hybrid/types';
 
-export const darkTheme: XYChartTheme = {
+export const darkTheme: IXYChartTheme = {
   colors: schemeCategory10,
   svg: {
     style: { userSelect: 'none' }

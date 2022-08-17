@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { isNil } from 'lodash-es';
 
-import { XYChartContextType } from './types';
+import { IXYChartContext } from './types';
 import { XYChartContext } from './XYChartContext';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -10,5 +10,5 @@ export function useXYChartContext<Datum extends object, RenderingDatum extends o
   if (isNil(value)) {
     throw new Error('No context value found for XYChartContext.');
   }
-  return value as unknown as XYChartContextType<Datum, RenderingDatum>;
+  return value as unknown as IXYChartContext<Datum, RenderingDatum>;
 }

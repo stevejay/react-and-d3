@@ -7,7 +7,7 @@ import { NearestDatumArgs, NearestDatumReturnType } from './types';
 
 /**
  * This is a wrapper around findNearestDatumX/Y for BarGroup, accounting for a
- * Bar's group scale offset (which findNearestOriginalDatum does not).
+ * Bar's group scale offset (which findNearestOriginalDatumToPoint does not).
  */
 export function findNearestGroupDatum<Datum extends object>(
   nearestDatumArgs: NearestDatumArgs<Datum>,

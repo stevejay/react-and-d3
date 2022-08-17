@@ -22,7 +22,7 @@ import { getScaleBandwidth } from './getScaleBandwidth';
 import { ParentSize } from './ParentSize';
 import { ScaleSet } from './ScaleSet';
 import { TooltipProvider } from './TooltipProvider';
-import type { AxisScaleOutput, Margin, ScaleConfig, XYChartContextType, XYChartTheme } from './types';
+import type { AxisScaleOutput, IXYChartContext, IXYChartTheme, Margin, ScaleConfig } from './types';
 import { useEventEmitters } from './useEventEmitters';
 import { XYChartContext } from './XYChartContext';
 
@@ -69,7 +69,7 @@ interface SVGXYChartOwnProps<
   /** The debounce value (in milliseconds) to continue to show the tooltip for when it should be hidden. Defaults to 400ms. */
   hideTooltipDebounceMs?: number;
   /** A custom theme for the chart. Optional. If not given then a default theme is applied. This should be a stable object. */
-  theme?: XYChartTheme;
+  theme?: IXYChartTheme;
 }
 
 export type SVGXYChartProps<
@@ -177,7 +177,7 @@ function InnerChart<
   // Each handler just emits the event.
   const eventEmitters = useEventEmitters({ source: xyChartEventSource });
 
-  let dataContextValue: XYChartContextType | null = null;
+  let dataContextValue: IXYChartContext | null = null;
   const hasValidContent = !isNil(independentScale) && !isNil(dependentScale) && width > 0 && height > 0;
 
   if (hasValidContent) {

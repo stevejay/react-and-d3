@@ -1,7 +1,7 @@
 import { easeCubicInOut } from 'd3-ease';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
-import type { Margin, TickLabelAlignment, XYChartTheme } from './types';
+import type { IXYChartTheme, Margin, TickLabelAlignment } from './types';
 
 export const defaultSpringConfig = { duration: 350, easing: easeCubicInOut };
 
@@ -42,7 +42,7 @@ export const defaultSmallLabelsTextStyle = {
   font: defaultSmallLabelsFont
 };
 
-export const defaultTheme: XYChartTheme = {
+export const defaultTheme: IXYChartTheme = {
   colors: schemeCategory10,
   svg: {
     style: { userSelect: 'none' }
