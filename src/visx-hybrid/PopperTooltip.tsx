@@ -9,9 +9,9 @@ import { isNil } from 'lodash-es';
 import { defaultTheme, defaultTooltipGlyphRadius } from './constants';
 import { isValidNumber } from './isValidNumber';
 import { Portal } from './Portal';
-import type { TooltipContextType, TooltipDatum, TooltipProps as BaseTooltipProps } from './types';
+import type { TooltipDatum, TooltipProps as BaseTooltipProps, TooltipStateContextType } from './types';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
-import { useTooltipContext } from './useTooltipContext';
+import { useTooltipStateContext } from './useTooltipStateContext';
 import { useXYChartContext } from './useXYChartContext';
 
 function addGlyph<Datum extends object>(
@@ -23,17 +23,11 @@ function addGlyph<Datum extends object>(
 ) {
   const { snapLeft: left, snapTop: top } = datum;
   if (isValidNumber(left) && isValidNumber(top)) {
-    glyphProps.push({
-      key,
-      left, //: left - radius - strokeWidth,
-      top, //: top - radius - strokeWidth,
-      radius,
-      strokeWidth
-    });
+    glyphProps.push({ key, left, top, radius, strokeWidth });
   }
 }
 
-export type RenderTooltipParams<Datum extends object> = TooltipContextType<Datum> & {
+export type RenderTooltipParams<Datum extends object> = TooltipStateContextType<Datum> & {
   colorScale?: PickD3Scale<'ordinal', string, string>;
 };
 
@@ -106,7 +100,7 @@ export function PopperTooltip<Datum extends object>({
 // ...tooltipProps
 PopperTooltipProps<Datum>) {
   const { innerHeight, innerWidth, margin, theme } = useXYChartContext();
-  const tooltipContext = useTooltipContext<Datum>();
+  const tooltipContext = useTooltipStateContext<Datum>();
   const referenceElement = useRef<HTMLElement | null>(null); // TODO should this be state?
   const updateRef = useRef<ReturnType<typeof usePopper>['update']>();
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
@@ -223,8 +217,6 @@ PopperTooltipProps<Datum>) {
                 isNil(top) || isNil(left) ? null : (
                   <animated.circle
                     key={key}
-                    // cx={left + radius + strokeWidth}
-                    // cy={top + radius + strokeWidth}
                     cx={left}
                     cy={top}
                     r={radius}

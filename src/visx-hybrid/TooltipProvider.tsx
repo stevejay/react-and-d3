@@ -3,8 +3,9 @@ import { debounce } from 'lodash-es';
 
 import { defaultHideTooltipDebounceMs } from './constants';
 import { isValidNumber } from './isValidNumber';
-import { TooltipContext } from './TooltipContext';
-import type { EventHandlerParams, TooltipData } from './types';
+import { TooltipControlContext } from './TooltipControlContext';
+import { TooltipStateContext } from './TooltipStateContext';
+import type { EventHandlerParams } from './types';
 import { useTooltip } from './useTooltip';
 
 type TooltipProviderProps = {
@@ -23,9 +24,9 @@ export function TooltipProvider<Datum extends object>({
     tooltipLeft,
     tooltipTop,
     tooltipData,
-    updateTooltip,
-    hideTooltip: privateHideTooltip
-  } = useTooltip<TooltipData<Datum>>(undefined);
+    updateTooltip
+    // hideTooltip: privateHideTooltip
+  } = useTooltip<Datum>(undefined);
 
   const debouncedHideTooltip = useRef<ReturnType<typeof debounce> | null>(null);
 
@@ -66,23 +67,37 @@ export function TooltipProvider<Datum extends object>({
     [updateTooltip]
   );
 
+  const privateHideTooltip = useCallback(
+    () => updateTooltip((state) => ({ ...state, tooltipOpen: false })),
+    [updateTooltip]
+  );
+
   const hideTooltip = useCallback(() => {
     debouncedHideTooltip.current = debounce(privateHideTooltip, hideTooltipDebounceMs);
     debouncedHideTooltip.current();
   }, [privateHideTooltip, hideTooltipDebounceMs]);
 
-  const contextValue = useMemo(
+  const stateContextValue = useMemo(
     () => ({
       tooltipOpen,
       tooltipLeft,
       tooltipTop,
-      tooltipData,
-      updateTooltip,
+      tooltipData
+    }),
+    [tooltipOpen, tooltipLeft, tooltipTop, tooltipData]
+  );
+
+  const controlContextValue = useMemo(
+    () => ({
       showTooltip,
       hideTooltip
     }),
-    [tooltipOpen, tooltipLeft, tooltipTop, tooltipData, updateTooltip, showTooltip, hideTooltip]
+    [showTooltip, hideTooltip]
   );
 
-  return <TooltipContext.Provider value={contextValue}>{children}</TooltipContext.Provider>;
+  return (
+    <TooltipStateContext.Provider value={stateContextValue}>
+      <TooltipControlContext.Provider value={controlContextValue}>{children}</TooltipControlContext.Provider>
+    </TooltipStateContext.Provider>
+  );
 }

@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { isNil } from 'lodash-es';
 
-import { TooltipContext } from './TooltipContext';
+import { TooltipContext } from './TooltipContext.ts___';
 import type { TooltipContextType } from './types';
 
 export function useTooltipContext<Datum extends object>() {

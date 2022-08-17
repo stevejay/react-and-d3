@@ -313,28 +313,38 @@ export type TooltipData<Datum extends object = object> = {
   datumByKey: Map<string, TooltipDatum<Datum>>;
 };
 
-export type TooltipContextType<Datum extends object> = UseTooltipParams<TooltipData<Datum>> & {
-  showTooltip: (eventParamsList: readonly EventHandlerParams<Datum>[]) => void;
-};
-
-export type UseTooltipParams<TooltipData> = {
+export type UseTooltipParams<Datum extends object> = {
   tooltipOpen: boolean;
   tooltipLeft?: number;
   tooltipTop?: number;
-  tooltipData?: TooltipData;
-  updateTooltip: (args: UpdateTooltipArgs<TooltipData>) => void;
-  showTooltip: (args: ShowTooltipArgs<TooltipData>) => void;
-  hideTooltip: () => void;
+  tooltipData?: TooltipData<Datum>;
+  updateTooltip: (args: UpdateTooltipArgs<Datum>) => void;
+  // hideTooltip: () => void;
 };
 
-export type UseTooltipState<TooltipData> = Pick<
-  UseTooltipParams<TooltipData>,
+// export type TooltipContextType<Datum extends object> = UseTooltipParams<Datum> & {
+//   showTooltip: (eventParamsList: readonly EventHandlerParams<Datum>[]) => void;
+//   hideTooltip: () => void;
+// };
+
+export type TooltipStateContextType<Datum extends object> = Pick<
+  UseTooltipParams<Datum>,
+  'tooltipOpen' | 'tooltipLeft' | 'tooltipTop' | 'tooltipData'
+>;
+
+export interface TooltipControlContextType<Datum extends object> {
+  showTooltip: (eventParamsList: readonly EventHandlerParams<Datum>[]) => void;
+  hideTooltip: () => void;
+}
+
+export type UseTooltipState<Datum extends object> = Pick<
+  UseTooltipParams<Datum>,
   'tooltipOpen' | 'tooltipLeft' | 'tooltipTop' | 'tooltipData'
 >;
 
 type ValueOrFunc<T> = T | ((t: T) => T);
-export type ShowTooltipArgs<TooltipData> = ValueOrFunc<Omit<UseTooltipState<TooltipData>, 'tooltipOpen'>>;
-export type UpdateTooltipArgs<TooltipData> = ValueOrFunc<UseTooltipState<TooltipData>>;
+export type ShowTooltipArgs<Datum extends object> = ValueOrFunc<Omit<UseTooltipState<Datum>, 'tooltipOpen'>>;
+export type UpdateTooltipArgs<Datum extends object> = ValueOrFunc<UseTooltipState<Datum>>;
 
 // /** Common props for data series. */
 // export interface SeriesProps<XScale extends AxisScale, YScale extends AxisScale, Datum extends object> {
