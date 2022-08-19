@@ -1,5 +1,6 @@
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
+import { CategoryValueDatum } from '@/types';
 import { InView } from '@/visx-hybrid/InView';
 
 import { BarChart } from './BarChart';
@@ -8,7 +9,7 @@ const dataSets = [
   [
     { category: 'A', value: 89.34 },
     { category: 'B', value: -8.56 },
-    { category: 'C', value: 81.32 },
+    { category: 'C', value: undefined },
     { category: 'D', value: -102.974 },
     { category: 'E', value: 87.247 }
   ],
@@ -32,7 +33,7 @@ const dataSets = [
   ],
   [{ category: 'A', value: 0 }],
   []
-];
+] as CategoryValueDatum<string, number>[][];
 
 export function BarChartExample() {
   const [data, nextDataSet] = useDataSets(dataSets);

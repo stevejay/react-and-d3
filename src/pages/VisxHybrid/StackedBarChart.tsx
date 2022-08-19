@@ -5,7 +5,7 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 import { capitalize, isNil } from 'lodash-es';
 
 import type { CategoryValueListDatum } from '@/types';
-import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
+import { FloatingUITooltip } from '@/visx-hybrid/FloatingUITooltip';
 import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBar } from '@/visx-hybrid/SVGBar';
@@ -115,7 +115,7 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
         tickLabelAlignment="angled"
       />
       <SVGAreaAnnotation datum={data[1]} dataKeyRef={dataKeys[2]} />
-      <PopperTooltip<CategoryValueListDatum<string, number>>
+      <FloatingUITooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}

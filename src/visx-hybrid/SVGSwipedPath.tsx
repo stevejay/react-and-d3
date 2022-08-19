@@ -22,6 +22,8 @@ export function SVGSwipedPath<Datum extends object>({
   animate,
   color,
   curve = curveLinear,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  theme,
   ...rest
 }: SVGSwipedPathProps<Datum>) {
   const [offset, pathRef] = useSVGPathLength();
@@ -39,7 +41,8 @@ export function SVGSwipedPath<Datum extends object>({
       d={pathShape}
       stroke={color}
       strokeDashoffset={transitions.offset}
-      strokeDasharray={dataEntry.getOriginalData().length > 1 ? `${offset} ${offset}` : undefined}
+      strokeDasharray={`${offset} ${offset}`}
+      // strokeDasharray={dataEntry.getOriginalData().length > 1 ? `${offset} ${offset}` : undefined}
       strokeWidth={2}
       strokeLinecap="round" // Without this a datum surrounded by nulls will not be visible.
       fill="none"

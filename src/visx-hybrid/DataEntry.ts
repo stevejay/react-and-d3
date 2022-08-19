@@ -74,7 +74,7 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
   }[] {
     return this.getRenderingData().map((datum) => {
       const value = this.dependentAccessor(datum);
-      return { datum, label: labelFormatter?.(value) ?? `${value}` };
+      return { datum, label: isNil(value) ? '' : labelFormatter?.(value) ?? '' };
     });
   }
 
@@ -286,7 +286,7 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
   }[] {
     return this.getRenderingData().map((datum) => {
       const value = this.dependentAccessor(datum);
-      return { datum, label: labelFormatter?.(value) ?? `${value}` };
+      return { datum, label: isNil(value) ? '' : labelFormatter?.(value) ?? '' };
     });
   }
 
@@ -600,7 +600,7 @@ export class StackDataEntry<Datum extends object>
   }[] {
     return this.getRenderingData().map((datum) => {
       const value = this.dependentAccessor(getOriginalDatumFromStackDatum(datum));
-      return { datum, label: labelFormatter?.(value) ?? `${value}` };
+      return { datum, label: isNil(value) ? '' : labelFormatter?.(value) ?? '' };
     });
   }
 

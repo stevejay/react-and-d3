@@ -8,7 +8,7 @@ import { timeFormat } from 'd3-time-format';
 
 import type { TimeValueDatum } from '@/types';
 import { createResourceUrlFromId } from '@/visx-hybrid/createResourceUrlFromId';
-import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
+import { FloatingUITooltip } from '@/visx-hybrid/FloatingUITooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGCircleGlyph } from '@/visx-hybrid/SVGCircleGlyph';
 import { SVGGlyphSeries } from '@/visx-hybrid/SVGGlyphSeries';
@@ -128,7 +128,7 @@ export function LineChart({ data }: LineChartProps) {
         hideAxisPath
       />
       <SVGPointAnnotation datum={data[2]} dataKeyRef="data-a" />
-      <PopperTooltip<TimeValueDatum<number>>
+      <FloatingUITooltip<TimeValueDatum<number>>
         snapTooltipToDatumX
         showVerticalCrosshair
         showDatumGlyph

@@ -4,7 +4,7 @@ import { format } from 'd3-format';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import type { CategoryValueListDatum } from '@/types';
-import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
+import { FloatingUITooltip } from '@/visx-hybrid/FloatingUITooltip';
 import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarGroup } from '@/visx-hybrid/SVGBarGroup';
@@ -116,7 +116,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
         hideZero
         tickLabelPadding={6}
       />
-      <PopperTooltip<CategoryValueListDatum<string, number>>
+      <FloatingUITooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}

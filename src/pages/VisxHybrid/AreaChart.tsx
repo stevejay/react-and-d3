@@ -9,7 +9,7 @@ import { timeFormat } from 'd3-time-format';
 
 import type { TimeValueDatum } from '@/types';
 import { createResourceUrlFromId } from '@/visx-hybrid/createResourceUrlFromId';
-import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
+import { FloatingUITooltip } from '@/visx-hybrid/FloatingUITooltip';
 import { SVGAreaSeries } from '@/visx-hybrid/SVGAreaSeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
@@ -121,7 +121,7 @@ export function AreaChart({ data }: AreaChartProps) {
         hideAxisPath
       />
       <SVGPointAnnotation datum={data[2]} dataKeyRef="data-a" />
-      <PopperTooltip<TimeValueDatum<number>>
+      <FloatingUITooltip<TimeValueDatum<number>>
         snapTooltipToDatumX
         showVerticalCrosshair
         showDatumGlyph

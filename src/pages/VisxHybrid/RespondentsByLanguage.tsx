@@ -9,8 +9,8 @@ import { sortBy } from 'lodash-es';
 import { EntityBucket, useLocaleQuery } from '@/api/stateofjs/generated';
 import { SectionHeading } from '@/components/SectionHeading';
 import { isDefined } from '@/types/typeguards/isDefined';
+import { FloatingUITooltip } from '@/visx-hybrid/FloatingUITooltip';
 import { InView } from '@/visx-hybrid/InView';
-import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBandStripes } from '@/visx-hybrid/SVGBandStripes';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
@@ -178,7 +178,7 @@ export function RespondentsByLanguage() {
                   hideAxisPath
                   tickLabelPadding={10}
                 />
-                <PopperTooltip<EntityBucket>
+                <FloatingUITooltip<EntityBucket>
                   snapTooltipToDatumY
                   showHorizontalCrosshair
                   showDatumGlyph={false}

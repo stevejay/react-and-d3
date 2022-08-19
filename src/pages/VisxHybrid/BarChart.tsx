@@ -5,7 +5,7 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 import { curveCatmullRom } from 'd3-shape';
 
 import type { CategoryValueDatum } from '@/types';
-import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
+import { FloatingUITooltip } from '@/visx-hybrid/FloatingUITooltip';
 import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
@@ -13,6 +13,7 @@ import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
+// import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
 import { SVGLineSeries } from '@/visx-hybrid/SVGLineSeries';
 import { SVGSwipedPath } from '@/visx-hybrid/SVGSwipedPath';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
@@ -128,15 +129,15 @@ export function BarChart({ data }: BarChartProps) {
         // includeRangePaddingInAxisPath={false}
       />
       <SVGAreaAnnotation datum={data[2]} dataKeyRef="data-a" />
-      <PopperTooltip<CategoryValueDatum<string, number>>
+      <FloatingUITooltip<CategoryValueDatum<string, number>>
         snapTooltipToDatumX
         showVerticalCrosshair
         showDatumGlyph={false}
         renderTooltip={({ tooltipData }) => {
-          const datum = tooltipData?.nearestDatum;
+          const datum = tooltipData?.nearestDatum?.datum;
           return datum ? (
             <div>
-              <span className="font-bold">{datum.datum?.category}</span>: {datum.datum?.value}
+              <span className="font-bold">{datum.category}</span>: {datum.value ?? '--'}
             </div>
           ) : null;
         }}

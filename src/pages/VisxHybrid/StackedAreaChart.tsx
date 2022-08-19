@@ -6,7 +6,7 @@ import { curveCatmullRom } from 'd3-shape';
 import { capitalize, isNil } from 'lodash-es';
 
 import type { CategoryValueListDatum } from '@/types';
-import { PopperTooltip } from '@/visx-hybrid/PopperTooltip';
+import { FloatingUITooltip } from '@/visx-hybrid/FloatingUITooltip';
 import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 import { SVGAreaSeries } from '@/visx-hybrid/SVGAreaSeries';
 import { SVGAreaStack } from '@/visx-hybrid/SVGAreaStack';
@@ -132,7 +132,7 @@ export function StackedAreaChart({ data, dataKeys }: StackedAreaChartProps) {
         tickLabelAlignment="angled"
       />
       <SVGAreaAnnotation datum={data[1]} dataKeyRef={dataKeys[2]} />
-      <PopperTooltip<CategoryValueListDatum<Date, number>>
+      <FloatingUITooltip<CategoryValueListDatum<Date, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}
