@@ -7,6 +7,6 @@ export function useSVGPathLength(): [number, RefObject<SVGPathElement>] {
   const [offset, setOffset] = useState<number>(0);
   useIsomorphicLayoutEffect(() => {
     setOffset(pathRef.current?.getTotalLength() ?? 0);
-  }, [offset]);
+  });
   return [offset, pathRef];
 }
