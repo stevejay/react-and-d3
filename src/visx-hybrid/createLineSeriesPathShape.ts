@@ -10,16 +10,23 @@ export function createLineSeriesPathShape<Datum extends object>({
   curve
 }: {
   scales: IScaleSet;
-  dataEntry: IDataEntry<Datum, Datum>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dataEntry: IDataEntry<Datum, any>;
   horizontal: boolean;
   curve: CurveFactory | CurveFactoryLineOnly;
   renderingOffset: number;
 }): string {
-  const accessors = dataEntry.getAreaAccessorsForRenderingData(scales);
+  const independentCenterAccessor = dataEntry.getIndependentCenterAccessor(scales);
+  const dependent1Accessor = dataEntry.getDependent1Accessor(scales);
+  // const definedAccessor = dataEntry.getDefinedAccessor(scales);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const definedAccessor = (datum: any) => dataEntry.renderingDatumIsDefined(datum);
+
   const line = d3Line<Datum>();
-  line.defined(accessors.defined);
+  line.defined(definedAccessor);
   line.curve(curve);
-  setNumberOrNumberAccessor(line.x, horizontal ? accessors.dependent : accessors.independent);
-  setNumberOrNumberAccessor(line.y, horizontal ? accessors.independent : accessors.dependent);
+  setNumberOrNumberAccessor(line.x, horizontal ? dependent1Accessor : independentCenterAccessor);
+  setNumberOrNumberAccessor(line.y, horizontal ? independentCenterAccessor : dependent1Accessor);
   return line(dataEntry.getRenderingData()) ?? '';
 }

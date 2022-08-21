@@ -1,6 +1,6 @@
 import { bisectLeft, bisector, range as d3Range } from 'd3-array';
-import { isNil } from 'lodash-es';
 
+import { isNil } from './isNil';
 import type { AxisScale, ScaleInput } from './types';
 
 // @TODO make more robust to null/undefined scaled values
@@ -54,6 +54,9 @@ export function findNearestDatumSingleDimension<Scale extends AxisScale, Datum e
     // y-axis scales may have reverse ranges, correct for this
     const sortedDomain = range[0] < range[1] ? domain : domain.reverse();
     const domainValue = sortedDomain[domainIndex - 1];
+    // if (isNil(domainValue)) {
+    //   return null;
+    // }
     const index = data.findIndex((datum) => String(accessor(datum)) === String(domainValue));
     nearestDatum = data[index];
     nearestDatumIndex = index;

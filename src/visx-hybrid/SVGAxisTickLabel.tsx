@@ -2,10 +2,10 @@ import { combineFontPropertiesWithStyles } from './combineFontPropertiesWithStyl
 import { defaultSmallLabelsFont } from './constants';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { SVGSimpleText, TextProps } from './SVGSimpleText';
-import type { Anchor, AxisOrientation, TextStyles, TickLabelAlignment } from './types';
+import type { AxisOrientation, TextAnchor, TextStyles, TickLabelAlignment } from './types';
 
-function getTextAnchor(axisOrientation: AxisOrientation, labelAlignment: TickLabelAlignment): Anchor {
-  let textAnchor: Anchor = 'middle';
+function getTextAnchor(axisOrientation: AxisOrientation, labelAlignment: TickLabelAlignment): TextAnchor {
+  let textAnchor: TextAnchor = 'middle';
   if (labelAlignment === 'vertical') {
     if (axisOrientation === 'top') {
       textAnchor = 'start';
@@ -36,8 +36,8 @@ function getTextAnchor(axisOrientation: AxisOrientation, labelAlignment: TickLab
 function getVerticalTextAnchor(
   axisOrientation: AxisOrientation,
   tickLabelAlignment: TickLabelAlignment
-): Anchor {
-  let verticalAnchor: Anchor = 'middle';
+): TextAnchor {
+  let verticalAnchor: TextAnchor = 'middle';
   if (axisOrientation === 'left' || axisOrientation === 'right') {
     if (tickLabelAlignment === 'vertical') {
       verticalAnchor = 'end';

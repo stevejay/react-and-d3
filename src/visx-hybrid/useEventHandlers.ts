@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import { isNil } from 'lodash-es';
 
 import { HandlerParams } from './EventEmitterProvider';
 import { isDefined } from './isDefined';
+import { isNil } from './isNil';
 import { isPointerEvent } from './isPointerEvent';
 import type { BasicSeriesProps, EventHandlerParams } from './types';
 import { useEventEmitterSubscription } from './useEventEmitterSubscription';

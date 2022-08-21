@@ -1,6 +1,5 @@
-import { isNil } from 'lodash-es';
-
 import { coerceNumber } from './coerceNumber';
+import { isNil } from './isNil';
 import { isValidNumber } from './isValidNumber';
 import type { AxisScale } from './types';
 

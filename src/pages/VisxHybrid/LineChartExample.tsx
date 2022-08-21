@@ -9,7 +9,7 @@ const dataSets = [
   [
     { date: new Date(Date.UTC(96, 1, 2, 3, 4, 5)), value: 89.34 },
     { date: new Date(Date.UTC(97, 1, 2, 3, 4, 5)), value: 83.56 },
-    { date: new Date(Date.UTC(98, 1, 2, 3, 4, 5)), value: undefined }, // 81.32 },
+    { date: new Date(Date.UTC(98, 1, 2, 3, 4, 5)), value: 81.32 },
     { date: new Date(Date.UTC(99, 1, 2, 3, 4, 5)), value: 102.974 },
     { date: new Date(Date.UTC(2000, 1, 2, 3, 4, 5)), value: 87.247 }
   ],

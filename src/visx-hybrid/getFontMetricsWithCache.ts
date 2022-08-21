@@ -1,6 +1,5 @@
-import { isNil } from 'lodash-es';
-
 import { getFontMetrics } from './getFontMetrics';
+import { isNil } from './isNil';
 import { mapFontPropertiesToFontString } from './mapFontPropertiesToFontString';
 import type { FontMetrics, FontProperties } from './types';
 

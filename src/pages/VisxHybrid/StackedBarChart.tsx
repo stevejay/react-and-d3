@@ -126,7 +126,7 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
               return isNil(datum) ? null : (
                 <p key={dataKey}>
                   <span style={{ color: colorAccessor(datum, dataKey) }}>{capitalize(dataKey)}</span>:{' '}
-                  {datum.values[dataKey]}
+                  {datum.values[dataKey] ?? '--'}
                 </p>
               );
             })}

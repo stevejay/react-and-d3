@@ -1,5 +1,4 @@
-import { isNil } from 'lodash-es';
-
+import { isNil } from './isNil';
 import type { IDataEntry, IDataEntryStore } from './types';
 
 export class DataEntryStore implements IDataEntryStore {

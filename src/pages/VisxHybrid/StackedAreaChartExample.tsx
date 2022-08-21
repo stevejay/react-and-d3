@@ -11,7 +11,10 @@ const dataSets = [
     data: [
       { category: new Date(Date.UTC(96, 1, 2, 3, 4, 5)), values: { one: 20, two: 0.0001, three: 0.0001 } },
       { category: new Date(Date.UTC(97, 1, 2, 3, 4, 5)), values: { one: -83.56, two: 20, three: 40 } },
-      { category: new Date(Date.UTC(98, 1, 2, 3, 4, 5)), values: undefined }, // { one: 81.32, two: 50, three: 60 } },
+      {
+        category: new Date(Date.UTC(98, 1, 2, 3, 4, 5)),
+        values: { one: 81.32, two: 50, three: 60 }
+      },
       { category: new Date(Date.UTC(99, 1, 2, 3, 4, 5)), values: { one: 102.974, two: 10, three: 20 } },
       { category: new Date(Date.UTC(2000, 1, 2, 3, 4, 5)), values: { one: 87.247, two: 0.0001, three: 40 } }
     ]

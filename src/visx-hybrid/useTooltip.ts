@@ -9,11 +9,5 @@ export function useTooltip<Datum extends object = object>(
     tooltipOpen: false,
     ...initialTooltipState
   });
-
-  // const hideTooltip = useCallback(
-  //   () => setTooltipState((state) => ({ ...state, tooltipOpen: false })),
-  //   [setTooltipState]
-  // );
-
-  return { ...tooltipState, updateTooltip: setTooltipState /*, hideTooltip */ };
+  return { ...tooltipState, updateTooltip: setTooltipState };
 }

@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useMemo, useRef } from 'react';
-import { debounce } from 'lodash-es';
+import { debounce } from 'debounce';
 
 import { defaultHideTooltipDebounceMs } from './constants';
 import { isValidNumber } from './isValidNumber';
@@ -19,14 +19,7 @@ export function TooltipProvider<Datum extends object>({
   hideTooltipDebounceMs = defaultHideTooltipDebounceMs,
   children
 }: TooltipProviderProps) {
-  const {
-    tooltipOpen,
-    tooltipLeft,
-    tooltipTop,
-    tooltipData,
-    updateTooltip
-    // hideTooltip: privateHideTooltip
-  } = useTooltip<Datum>(undefined);
+  const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, updateTooltip } = useTooltip<Datum>(undefined);
 
   const debouncedHideTooltip = useRef<ReturnType<typeof debounce> | null>(null);
 
@@ -34,7 +27,7 @@ export function TooltipProvider<Datum extends object>({
     (eventParamsList: readonly EventHandlerParams<Datum>[]) => {
       // cancel any hideTooltip calls so it won't hide after invoking the logic below
       if (debouncedHideTooltip.current) {
-        debouncedHideTooltip.current.cancel();
+        debouncedHideTooltip.current.clear();
         debouncedHideTooltip.current = null;
       }
 

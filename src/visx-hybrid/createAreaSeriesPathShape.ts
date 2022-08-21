@@ -14,18 +14,26 @@ export function createAreaSeriesPathShape<Datum extends object>({
   dependent0Accessor
 }: {
   scales: IScaleSet;
-  dataEntry: IDataEntry<Datum, Datum>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dataEntry: IDataEntry<Datum, any>;
   horizontal: boolean;
   curve: CurveFactory;
   renderingOffset: number;
   dependent0Accessor?: (datum: Datum) => ScaleInput<AxisScale>;
 }): string {
-  const accessors = dataEntry.getAreaAccessorsForRenderingData(scales, dependent0Accessor);
+  const independentCenterAccessor = dataEntry.getIndependentCenterAccessor(scales);
+  const resolvedDependent0Accessor = dataEntry.getDependent0Accessor(scales, dependent0Accessor);
+  const dependent1Accessor = dataEntry.getDependent1Accessor(scales);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const definedAccessor = (datum: any) => dataEntry.renderingDatumIsDefined(datum);
+
+  // dataEntry.getDefinedAccessor(scales);
+
   const area = d3Area<Datum>();
-  area.defined(accessors.defined);
+  area.defined(definedAccessor);
   area.curve(curve);
-  setNumberOrNumberAccessor(horizontal ? area.y : area.x, accessors.independent);
-  setNumberOrNumberAccessor(horizontal ? area.x0 : area.y0, accessors.dependent0);
-  setNumberOrNumberAccessor(horizontal ? area.x1 : area.y1, accessors.dependent);
+  setNumberOrNumberAccessor(horizontal ? area.y : area.x, independentCenterAccessor);
+  setNumberOrNumberAccessor(horizontal ? area.x0 : area.y0, resolvedDependent0Accessor);
+  setNumberOrNumberAccessor(horizontal ? area.x1 : area.y1, dependent1Accessor);
   return area(dataEntry.getRenderingData()) ?? '';
 }

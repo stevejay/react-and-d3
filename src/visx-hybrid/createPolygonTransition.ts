@@ -1,5 +1,4 @@
-import { isNil } from 'lodash-es';
-
+import { isNil } from './isNil';
 import type { DatumPosition, PolygonTransition } from './types';
 
 export function createPolygonTransition(

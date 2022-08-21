@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import { isNil } from 'lodash-es';
 
+import { isNil } from './isNil';
 import { TooltipUpdateContext } from './TooltipUpdateContext';
 import type { ITooltipUpdateContext } from './types';
 

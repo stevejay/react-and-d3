@@ -5540,6 +5540,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/debounce@npm:^1":
+  version: 1.2.1
+  resolution: "@types/debounce@npm:1.2.1"
+  checksum: bea6d414acefbee50adfe87cee10f8a855d033e4778567ab03bdc3cb2648b6bf9237ca53f4ee76fe4be75f77f86d4688411499626fe409bc870f53631d24231f
+  languageName: node
+  linkType: hard
+
 "@types/eslint-scope@npm:^3.7.3":
   version: 3.7.3
   resolution: "@types/eslint-scope@npm:3.7.3"
@@ -19005,6 +19012,7 @@ __metadata:
     "@types/d3-time-format": ^4.0.0
     "@types/d3-transition": ^3.0.1
     "@types/d3-zoom": ^3.0.1
+    "@types/debounce": ^1
     "@types/eslint": ^8.4.3
     "@types/jsdom": ^16.2.14
     "@types/langmap": ^0
@@ -19047,6 +19055,7 @@ __metadata:
     d3-time-format: ^4.1.0
     d3-transition: ^3.0.1
     d3-zoom: ^3.0.0
+    debounce: ^1.2.1
     dockerfilelint: ^1.8.0
     eslint: ^8.17.0
     eslint-config-prettier: ^8.5.0

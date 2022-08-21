@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
-import { isNil } from 'lodash-es';
 
+import { isNil } from './isNil';
 import { useXYChartContext } from './useXYChartContext';
 
 export interface SVGLinearGradientProps<Datum extends object> {
@@ -26,7 +26,7 @@ export function SVGLinearGradient<Datum extends object>({
 }: SVGLinearGradientProps<Datum>) {
   const { scales, width, dataEntryStore } = useXYChartContext();
   const dataEntry = dataEntryStore.getByDataKey(dataKeyRef);
-  const accessors = dataEntry.getAreaAccessorsForRenderingData(scales);
+  const independentCenterAccessor = dataEntry.getIndependentCenterAccessor(scales);
   return (
     <defs data-testid="linear-gradient-def">
       <linearGradient id={id} gradientUnits="userSpaceOnUse" x1={0} y1={0} x2={width} y2={0}>
@@ -36,7 +36,7 @@ export function SVGLinearGradient<Datum extends object>({
             if (isNil(datum)) {
               return null;
             }
-            const rangeValue = accessors.independent(datum) ?? 0;
+            const rangeValue = independentCenterAccessor(datum) ?? 0;
             const offset = Math.min(Math.max(rangeValue / width, 0), 1);
             return (
               <Fragment key={offset}>

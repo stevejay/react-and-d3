@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { SpringConfig, useTransition } from 'react-spring';
-import { isNil } from 'lodash-es';
 
 import { coerceNumber } from './coerceNumber';
 import { getScaleBandwidth } from './getScaleBandwidth';
 import { isBandScale } from './isBandScale';
+import { isNil } from './isNil';
 import type { AxisScale, TickDatum } from './types';
 
 function keyAccessor(tickValue: TickDatum) {

@@ -130,7 +130,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
             <div>
               <span style={{ color: colorAccessor(datum.datum, datum.key) }}>{datum.key}</span>
               {': '}
-              {datum.datum.values[datum.key]}
+              {datum.datum.values[datum.key] ?? '--'}
             </div>
           );
         }}

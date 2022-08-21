@@ -1,7 +1,7 @@
 import type { ScaleTypeToD3Scale } from '@visx/scale';
 import type { ScaleBand } from 'd3-scale';
-import { isNil } from 'lodash-es';
 
+import { isNil } from './isNil';
 import type { AxisScale, AxisScaleOutput, IScaleSet } from './types';
 
 export class ScaleSet implements IScaleSet {

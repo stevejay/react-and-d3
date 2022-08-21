@@ -3,6 +3,7 @@ import { SpringConfig, useTransition } from 'react-spring';
 import { Margin } from '@/types';
 
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
+import { getRenderingDataWithLabels } from './getRenderingDataWithLabels';
 import { isValidNumber } from './isValidNumber';
 import { measureTextWithCache } from './measureTextWithCache';
 import type { AxisScale, FontProperties, IDataEntry, IScaleSet, LabelTransition, ScaleInput } from './types';
@@ -25,14 +26,15 @@ function createLabelPositionerForRenderingData<RenderingDatum extends object = o
   innerWidth: number;
   innerHeight: number;
 }): (datumWithLabel: { datum: RenderingDatum; label: string }) => LabelTransition | null {
-  const accessors = dataEntry.getPointAccessorsForRenderingData(scales);
+  const independentCenterAccessor = dataEntry.getIndependentCenterAccessor(scales);
+  const dependent1Accessor = dataEntry.getDependent1Accessor(scales);
 
   return ({ datum, label }: { datum: RenderingDatum; label: string }) => {
-    const independentCoord = accessors.independent(datum);
+    const independentCoord = independentCenterAccessor(datum);
     if (!isValidNumber(independentCoord)) {
       return null;
     }
-    const dependentCoord = accessors.dependent(datum);
+    const dependentCoord = dependent1Accessor(datum);
     if (!isValidNumber(dependentCoord)) {
       return null;
     }
@@ -73,7 +75,7 @@ export function usePointLabelTransitions(args: {
   innerHeight: number;
 }) {
   const { dataEntry, springConfig, animate, formatter } = args;
-  const renderingDataWithLabels = dataEntry.getRenderingDataWithLabels(formatter);
+  const renderingDataWithLabels = getRenderingDataWithLabels(dataEntry, formatter);
   const position = createLabelPositionerForRenderingData(args);
   return useTransition<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

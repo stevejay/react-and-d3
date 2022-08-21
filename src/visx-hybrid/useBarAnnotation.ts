@@ -1,5 +1,4 @@
-import { isNil } from 'lodash-es';
-
+import { isNil } from './isNil';
 import { useXYChartContext } from './useXYChartContext';
 
 export function useBarAnnotation<Datum extends object>(

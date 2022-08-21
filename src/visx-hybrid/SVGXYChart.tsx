@@ -1,7 +1,6 @@
 import type { SVGProps } from 'react';
 import { animated, SpringConfig, useTransition } from 'react-spring';
 import { createScale } from '@visx/scale';
-import { isNil } from 'lodash-es';
 
 import { addMargins } from './addMargins';
 import { calculateAutoMarginFromChildren } from './calculateAutoMarginFromChildren';
@@ -19,6 +18,7 @@ import { DataEntryStore } from './DataEntryStore';
 import { EventEmitterProvider } from './EventEmitterProvider';
 import { getDataEntriesFromChildren } from './getDataEntriesFromChildren';
 import { getScaleBandwidth } from './getScaleBandwidth';
+import { isNil } from './isNil';
 import { ParentSize } from './ParentSize';
 import { ScaleSet } from './ScaleSet';
 import { TooltipProvider } from './TooltipProvider';
@@ -150,17 +150,17 @@ function InnerChart<
   // Create the scales, each with a composite domain derived from all the series data.
   const independentDomainValues = dataEntries
     .map((dataEntry) => dataEntry.getDomainValuesForIndependentScale())
-    .flat();
+    .reduce((acc, val) => acc.concat(val), []);
   const independentScale = createScaleFromScaleConfig(independentDomainValues, independentScaleConfig);
 
   const dependentDomainValues = dataEntries
     .map((dataEntry) => dataEntry.getDomainValuesForDependentScale())
-    .flat();
+    .reduce((acc, val) => acc.concat(val), []);
   const dependentScale = createScaleFromScaleConfig(dependentDomainValues, dependentScaleConfig);
 
   const alternateDependentDomainValues = dataEntries
     .map((dataEntry) => dataEntry.getDomainValuesForAlternateDependentScale())
-    .flat();
+    .reduce((acc, val) => acc.concat(val), []);
   const alternateDependentScale = createScaleFromScaleConfig(
     alternateDependentDomainValues,
     alternateDependentScaleConfig

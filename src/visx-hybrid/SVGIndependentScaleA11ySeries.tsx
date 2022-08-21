@@ -1,9 +1,8 @@
-import { flatten } from 'lodash-es';
-
 import { coerceNumber } from './coerceNumber';
 import { defaultA11yElementBandwidth } from './constants';
 import { getScaleBandwidth } from './getScaleBandwidth';
 import { isBandScale } from './isBandScale';
+import { isDefined } from './isDefined';
 import type { A11yProps } from './types';
 import { useXYChartContext } from './useXYChartContext';
 
@@ -32,14 +31,12 @@ export function SVGIndependentScaleA11ySeries<Datum extends object>({
         .map((datum) => filteredDataEntries[0].independentAccessor(datum));
   return (
     <g data-testid={`data-ally-series-${dataKeys.join('-')}`} {...groupA11yProps}>
-      {independentDomain.map((independentDomainValue) => {
+      {independentDomain.filter(isDefined).map((independentDomainValue) => {
         const independentCoord = coerceNumber(scales.independent(independentDomainValue));
         const bandwidth = getScaleBandwidth(scales.independent) || defaultA11yElementBandwidth;
-        const matchingData = flatten(
-          filteredDataEntries.map((dataEntry) =>
-            dataEntry.getOriginalDataByIndependentValue(independentDomainValue)
-          )
-        );
+        const matchingData = filteredDataEntries
+          .map((dataEntry) => dataEntry.getOriginalDataByIndependentValue(independentDomainValue))
+          .reduce((acc, val) => acc.concat(val), []);
         return (
           <rect
             key={independentDomainValue}

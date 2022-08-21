@@ -1,7 +1,6 @@
 // Adapted from https://www.npmjs.com/package/typometer
 
-import { isNil } from 'lodash-es';
-
+import { isNil } from './isNil';
 import { mapFontPropertiesToFontString } from './mapFontPropertiesToFontString';
 import { measureText } from './measureText';
 import type { FontProperties } from './types';

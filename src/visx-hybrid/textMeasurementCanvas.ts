@@ -1,4 +1,4 @@
-import { isNil } from 'lodash-es';
+import { isNil } from './isNil';
 
 let context: CanvasRenderingContext2D;
 

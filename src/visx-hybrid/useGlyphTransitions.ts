@@ -20,10 +20,13 @@ export function useGlyphTransitions<Datum extends object, RenderingDatum extends
   renderingOffset: number;
   glyphSize: number | ((datum: RenderingDatum, dataKey: string) => number);
 }) {
-  const renderingDataWithRadii = dataEntry.getRenderingData().map((datum) => ({
-    datum,
-    size: typeof glyphSize === 'function' ? glyphSize(datum, dataEntry.dataKey) : glyphSize
-  }));
+  const renderingDataWithRadii = dataEntry
+    .getRenderingData()
+    .filter((datum) => dataEntry.renderingDatumIsDefined(datum))
+    .map((datum) => ({
+      datum,
+      size: typeof glyphSize === 'function' ? glyphSize(datum, dataEntry.dataKey) : glyphSize
+    }));
   const position = createBarPositionerForRenderingData(scales, dataEntry, horizontal);
   return useTransition<{ datum: RenderingDatum; size: number }, GlyphTransition>(renderingDataWithRadii, {
     initial: ({ datum, size }) => ({ opacity: 1, ...createGlyphTransition(position(datum)), size }),

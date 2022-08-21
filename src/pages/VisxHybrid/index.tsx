@@ -24,11 +24,11 @@ function VisxHybridPage() {
         This page is for creating a version of Visx that has better animations and extensibility.
       </Paragraph>
       <SectionHeading>Bar Chart</SectionHeading>
-      {false && <StackedAreaChartExample />}
-      {false && <AreaChartExample />}
+      {true && <StackedAreaChartExample />}
+      {true && <AreaChartExample />}
       {true && <LineChartExample />}
-      {false && <StackedBarChartExample />}
-      {false && <GroupedBarChartExample />}
+      {true && <StackedBarChartExample />}
+      {true && <GroupedBarChartExample />}
       {true && <BarChartExample />}
       {true && <RespondentsByLanguage />}
       {false && <EmptyBarChart />}

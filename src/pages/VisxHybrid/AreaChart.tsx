@@ -130,7 +130,7 @@ export function AreaChart({ data }: AreaChartProps) {
           return datum ? (
             <div>
               <span className="font-bold">{independentDatumLabelFormatter(datum.datum?.date)}</span>:{' '}
-              {datum.datum?.value}
+              {datum.datum?.value ?? '--'}
             </div>
           ) : null;
         }}

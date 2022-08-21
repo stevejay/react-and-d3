@@ -2,7 +2,7 @@ import { combineFontPropertiesWithStyles } from './combineFontPropertiesWithStyl
 import { defaultBigLabelsFont } from './constants';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { SVGSimpleText, TextProps } from './SVGSimpleText';
-import type { Anchor, AxisOrientation, LabelAlignment, Margin, TextStyles } from './types';
+import type { AxisOrientation, LabelAlignment, Margin, TextAnchor, TextStyles } from './types';
 
 function getX(
   axisOrientation: AxisOrientation,
@@ -38,8 +38,8 @@ function getY(
   return y;
 }
 
-function getTextAnchor(axisOrientation: AxisOrientation, labelAlignment: LabelAlignment): Anchor {
-  let textAnchor: Anchor = 'middle';
+function getTextAnchor(axisOrientation: AxisOrientation, labelAlignment: LabelAlignment): TextAnchor {
+  let textAnchor: TextAnchor = 'middle';
   if (labelAlignment === 'vertical') {
     if (axisOrientation === 'top') {
       textAnchor = 'end';
@@ -56,8 +56,8 @@ function getTextAnchor(axisOrientation: AxisOrientation, labelAlignment: LabelAl
   return textAnchor;
 }
 
-function getVerticalAnchor(axisOrientation: AxisOrientation, labelAlignment: LabelAlignment): Anchor {
-  let verticalAnchor: Anchor = 'start';
+function getVerticalAnchor(axisOrientation: AxisOrientation, labelAlignment: LabelAlignment): TextAnchor {
+  let verticalAnchor: TextAnchor = 'start';
   if (axisOrientation === 'left' || axisOrientation === 'right') {
     if (labelAlignment === 'horizontal') {
       verticalAnchor = 'middle';
@@ -110,8 +110,8 @@ export function SVGAxisLabel({
   const style = combineFontPropertiesWithStyles(labelStyles?.font, labelPropsStyle);
   const x = getX(axisOrientation, axisPathRange, width, outerMargin);
   const y = getY(axisOrientation, axisPathRange, height, outerMargin);
-  const textAnchor: Anchor = getTextAnchor(axisOrientation, labelAlignment);
-  const verticalAnchor: Anchor = getVerticalAnchor(axisOrientation, labelAlignment);
+  const textAnchor: TextAnchor = getTextAnchor(axisOrientation, labelAlignment);
+  const verticalAnchor: TextAnchor = getVerticalAnchor(axisOrientation, labelAlignment);
   const angle = getAngle(axisOrientation, labelAlignment);
   return (
     <SVGSimpleText

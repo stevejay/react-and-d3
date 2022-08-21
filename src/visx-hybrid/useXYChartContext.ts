@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import { isNil } from 'lodash-es';
 
+import { isNil } from './isNil';
 import { IXYChartContext } from './types';
 import { XYChartContext } from './XYChartContext';
 

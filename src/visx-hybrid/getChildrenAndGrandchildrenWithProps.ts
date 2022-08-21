@@ -1,5 +1,6 @@
 import { Children, ReactElement, ReactNode } from 'react';
-import { isNil } from 'lodash-es';
+
+import { isNil } from './isNil';
 
 /** Returns whether the React.ReactNode has props (and therefore is an `Element` versus primitive type) */
 function isChildWithProps(child: ReactNode): child is ReactNode {

@@ -1,6 +1,7 @@
 import { SpringConfig, useTransition } from 'react-spring';
 
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
+import { getRenderingDataWithLabels } from './getRenderingDataWithLabels';
 import { isValidNumber } from './isValidNumber';
 import { measureTextWithCache } from './measureTextWithCache';
 import type {
@@ -32,22 +33,25 @@ function createLabelPositionerForRenderingData<RenderingDatum extends object = o
   padding: number;
   hideOnOverflow: boolean;
 }): (datumWithLabel: { datum: RenderingDatum; label: string }) => LabelTransition | null {
-  const accessors = dataEntry.getBarAccessorsForRenderingData(scales);
+  const independent0Accessor = dataEntry.getIndependent0Accessor(scales);
+  const independent1Accessor = dataEntry.getIndependent1Accessor(scales);
+  const dependent0Accessor = dataEntry.getDependent0Accessor(scales);
+  const dependent1Accessor = dataEntry.getDependent1Accessor(scales);
 
   return ({ datum, label }: { datum: RenderingDatum; label: string }) => {
-    const independentStartCoord = accessors.independent0(datum);
+    const independentStartCoord = independent0Accessor(datum);
     if (!isValidNumber(independentStartCoord)) {
       return null;
     }
-    const independentEndCoord = accessors.independent(datum);
+    const independentEndCoord = independent1Accessor(datum);
     if (!isValidNumber(independentEndCoord)) {
       return null;
     }
-    const dependentStartCoord = accessors.dependent0(datum);
+    const dependentStartCoord = dependent0Accessor(datum);
     if (!isValidNumber(dependentStartCoord)) {
       return null;
     }
-    const dependentEndCoord = accessors.dependent1(datum);
+    const dependentEndCoord = dependent1Accessor(datum);
     if (!isValidNumber(dependentEndCoord)) {
       return null;
     }
@@ -95,7 +99,7 @@ export function useBarLabelTransitions(args: {
   hideOnOverflow: boolean;
 }) {
   const { dataEntry, springConfig, animate, formatter } = args;
-  const renderingDataWithLabels = dataEntry.getRenderingDataWithLabels(formatter);
+  const renderingDataWithLabels = getRenderingDataWithLabels(dataEntry, formatter);
   const position = createLabelPositionerForRenderingData(args);
   return useTransition<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

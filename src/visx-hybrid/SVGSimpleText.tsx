@@ -1,14 +1,14 @@
 import { animated, SpringValues } from 'react-spring';
 
-import type { Anchor, LabelTransition, SVGTextProps, TextStyles } from './types';
+import type { LabelTransition, SVGTextProps, TextAnchor, TextStyles } from './types';
 
 const SVGStyle = { overflow: 'visible' };
 
 interface SVGSimpleTextOwnProps {
   /** Horizontal text anchor. */
-  textAnchor?: Anchor;
+  textAnchor?: TextAnchor;
   /** Vertical text anchor. */
-  verticalAnchor?: Anchor;
+  verticalAnchor?: TextAnchor;
   textStyles?: TextStyles; // font, fill, className
   angle?: number;
   x: number;
@@ -69,9 +69,9 @@ export function SVGSimpleText({
 
 interface SVGAnimatedSimpleTextOwnProps {
   /** Horizontal text anchor. */
-  textAnchor?: Anchor;
+  textAnchor?: TextAnchor;
   /** Vertical text anchor. */
-  verticalAnchor?: Anchor;
+  verticalAnchor?: TextAnchor;
   /** Fill color of text. */
   // fill?: string;
   textStyles?: TextStyles; // font, fill, className

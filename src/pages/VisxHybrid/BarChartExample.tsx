@@ -9,7 +9,7 @@ const dataSets = [
   [
     { category: 'A', value: 89.34 },
     { category: 'B', value: -8.56 },
-    { category: 'C', value: undefined },
+    { category: 'C', value: 20 },
     { category: 'D', value: -102.974 },
     { category: 'E', value: 87.247 }
   ],

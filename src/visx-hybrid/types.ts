@@ -6,17 +6,20 @@ import type { CurveFactory, CurveFactoryLineOnly, Series, SeriesPoint } from 'd3
 
 export type { ScaleConfig, ScaleConfigToD3Scale, ScaleInput } from '@visx/scale';
 
-/** A value that has .valueOf() function */
+/** A value that has a `valueOf` function */
 export type NumberLike = { valueOf(): number };
 
+/** The possible types returned by an axis scale when mapping a domain value to a range value. */
 export type AxisScaleOutput = number | NumberLike | undefined;
 
 /** A catch-all type for scales that are compatible with axis */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AxisScale<Output extends AxisScaleOutput = AxisScaleOutput> = D3Scale<Output, any, any>;
 
-export type Anchor = 'start' | 'middle' | 'end';
+/** The possible horizontal and vertical alignment values for chart text. */
+export type TextAnchor = 'start' | 'middle' | 'end';
 
+/** The chart margin type. */
 export type Margin = {
   top: number;
   bottom: number;
@@ -24,6 +27,7 @@ export type Margin = {
   right: number;
 };
 
+/** The possible axis orientations, relative to the main chart area. */
 export type AxisOrientation = 'top' | 'bottom' | 'left' | 'right';
 
 export interface DatumPosition {
@@ -36,22 +40,36 @@ export interface DatumPosition {
 }
 
 export interface IDataEntry<Datum extends object = object, RenderingDatum extends object = object> {
+  /** The data key used to register this data entry in the data store. */
   get dataKey(): string;
+  /** The accessor for getting a color for the given original datum object. Will be a fallback color accessor if none is given. */
   get colorAccessor(): (datum: Datum, dataKey: string) => string;
+  /** The independent scale accessor for the given original datum object. */
   get independentAccessor(): (datum: Datum) => ScaleInput<AxisScale>;
+  /** The dependent scale accessor for the given original datum object. This will be for the main dependent scale or the alternate dependent scale. */
   get dependentAccessor(): (datum: Datum) => ScaleInput<AxisScale>;
+  /** The accessor for the key value for the given original datum object. This is useful for use with react-spring. */
   get keyAccessor(): (datum: Datum) => string | number;
+  /** Returns `true` if the given original datum object and its independent and dependent values are all defined. */
+  originalDatumIsDefined(datum: Datum): boolean;
+  /** Returns `true` if the given rendering datum object and its independent and dependent values are all defined. */
+  renderingDatumIsDefined(datum: RenderingDatum): boolean;
+  /** Returns the domain values for this data entry that can be used to determine the domain range for the independent scale. */
   getDomainValuesForIndependentScale(): readonly ScaleInput<AxisScale>[];
+  /** Returns the domain values for this data entry that can be used to determine the domain range for the main dependent scale. */
   getDomainValuesForDependentScale(): readonly ScaleInput<AxisScale>[];
+  /** Returns the domain values for this data entry that can be used to determine the domain range for the alternate dependent scale. */
   getDomainValuesForAlternateDependentScale(): readonly ScaleInput<AxisScale>[];
+  /** Returns any original data objects that have an independent scale value that equals the given value. */
   getOriginalDataByIndependentValue(value: ScaleInput<AxisScale>): readonly Datum[];
-  // getMappedData(mapper: (datum: Datum) => ScaleInput<AxisScale>): ScaleInput<AxisScale>[];
+  /** Returns the chart position data for the given original datum object. This allows you to determine where a given datum should be rendered on the chart. */
   getPositionFromOriginalDatum(params: {
     datum: Datum;
     scales: IScaleSet;
     horizontal: boolean;
     renderingOffset: number;
   }): DatumPosition | null;
+  /** Determines the nearest datum to the given point on the chart. That point value is the point relative to the upper left corner of the chart. */
   findNearestOriginalDatumToPoint(args: {
     scales: IScaleSet;
     horizontal: boolean;
@@ -59,32 +77,42 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
     height: number;
     point: Point;
   }): NearestDatumReturnType<Datum> | null;
+  /** Returns the original datum that corresponds to the given rendering datum. */
   getOriginalDatumFromRenderingDatum(datum: RenderingDatum): Datum;
+  /** Returns the original data. */
   getOriginalData(): readonly Datum[];
+  /** Returns the rendering data. This will differ from `getOriginalData` if the data entry required translating, for example for a stacked data series. */
   getRenderingData(): readonly RenderingDatum[];
-  getRenderingDataWithLabels(labelFormatter?: (value: ScaleInput<AxisScale>) => string): readonly {
-    datum: RenderingDatum;
-    label: string;
-  }[];
-  getAreaAccessorsForRenderingData(
+
+  getIndependent0Accessor(scales: IScaleSet): (datum: RenderingDatum) => number;
+  getIndependent1Accessor(scales: IScaleSet): (datum: RenderingDatum) => number;
+  getIndependentCenterAccessor(scales: IScaleSet): (datum: RenderingDatum) => number;
+  getDependent0Accessor(
     scales: IScaleSet,
-    dependent0Accessor?: (datum: RenderingDatum) => ScaleInput<AxisScale>
-  ): {
-    independent: (datum: RenderingDatum) => number;
-    dependent: (datum: RenderingDatum) => number;
-    dependent0: number | ((datum: RenderingDatum) => number);
-    defined: (datum: RenderingDatum) => boolean;
-  };
-  getBarAccessorsForRenderingData(scales: IScaleSet): {
-    independent0: (datum: RenderingDatum) => number;
-    independent: (datum: RenderingDatum) => number;
-    dependent0: (datum: RenderingDatum) => number;
-    dependent1: (datum: RenderingDatum) => number;
-  };
-  getPointAccessorsForRenderingData(scales: IScaleSet): {
-    independent: (datum: RenderingDatum) => number;
-    dependent: (datum: RenderingDatum) => number;
-  };
+    customAccessor?: (datum: RenderingDatum) => ScaleInput<AxisScale> // TODO RenderingDatum or Datum?????
+  ): (datum: RenderingDatum) => number;
+  getDependent1Accessor(scales: IScaleSet): (datum: RenderingDatum) => number;
+  // getDefinedAccessor(scales: IScaleSet): (datum: RenderingDatum) => boolean;
+
+  // getAreaAccessorsForRenderingData(
+  //   scales: IScaleSet,
+  //   dependent0Accessor?: (datum: RenderingDatum) => ScaleInput<AxisScale>
+  // ): {
+  //   independent: (datum: RenderingDatum) => number;
+  //   dependent: (datum: RenderingDatum) => number;
+  //   dependent0: number | ((datum: RenderingDatum) => number);
+  //   defined: (datum: RenderingDatum) => boolean;
+  // };
+  // getBarAccessorsForRenderingData(scales: IScaleSet): {
+  //   independent0: (datum: RenderingDatum) => number;
+  //   independent: (datum: RenderingDatum) => number;
+  //   dependent0: (datum: RenderingDatum) => number;
+  //   dependent1: (datum: RenderingDatum) => number;
+  // };
+  // getPointAccessorsForRenderingData(scales: IScaleSet): {
+  //   independent: (datum: RenderingDatum) => number;
+  //   dependent: (datum: RenderingDatum) => number;
+  // };
 }
 
 export interface IDataEntryStore<Datum extends object = object, RenderingDatum extends object = object> {

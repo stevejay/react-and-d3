@@ -4,9 +4,9 @@ import { animated, useTransition } from 'react-spring';
 import type { Options as PopperOptions, VirtualElement } from '@popperjs/core';
 import type { PickD3Scale } from '@visx/scale';
 import { easeCubicInOut } from 'd3-ease';
-import { isNil } from 'lodash-es';
 
 import { defaultTheme, defaultTooltipGlyphRadius } from './constants';
+import { isNil } from './isNil';
 import { isValidNumber } from './isValidNumber';
 import { Portal } from './Portal';
 import type { TooltipDatum, TooltipProps as BaseTooltipProps, TooltipStateContextType } from './types';
