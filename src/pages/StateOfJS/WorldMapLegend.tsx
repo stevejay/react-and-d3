@@ -9,26 +9,6 @@ export interface WorldMapLegendProps {
   className?: string;
 }
 
-// export function WorldMapLegend({ colorScale, statistic }: LegendProps) {
-//   const domain = colorScale.domain();
-//   if (!domain || !isFinite(domain[0]) || !isFinite(domain[1])) {
-//     return null;
-//   }
-//   return (
-//     <ul aria-hidden>
-//       {colorScale.range().map((value) => {
-//         const [low, high] = colorScale.invertExtent(value);
-//         return (
-//           <li key={low} className="flex items-center">
-//             <div className="mr-2 w-3 h-3" style={{ backgroundColor: colorScale(low) }} />
-//             {formatStatistic(low, statistic)} &ndash; {formatStatistic(high, statistic)}
-//           </li>
-//         );
-//       })}
-//     </ul>
-//   );
-// }
-
 export function WorldMapLegend({ colorScale, statistic, className = '' }: WorldMapLegendProps) {
   const domain = colorScale.domain();
   if (!domain || !isFinite(domain[0]) || !isFinite(domain[1])) {

@@ -219,35 +219,11 @@ function InnerChart<
     const independentRange = getIndependentRange(chartDimensions.chartAreaIncludingRangePadding, horizontal);
     const dependentRange = getDependentRange(chartDimensions.chartAreaIncludingRangePadding, horizontal);
 
-    // : [number, number] = horizontal
-    //   ? [
-    //       Math.max(0, height - margin.bottom - resolvedIndependentRangePadding[0]),
-    //       margin.top + resolvedIndependentRangePadding[1]
-    //     ]
-    //   : [
-    //       margin.left + resolvedIndependentRangePadding[0],
-    //       Math.max(0, width - margin.right - resolvedIndependentRangePadding[1])
-    //     ];
-
-    // const dependentRange: [number, number] = horizontal
-    //   ? [
-    //       margin.left + resolvedDependentRangePadding[0],
-    //       Math.max(0, width - margin.right - resolvedDependentRangePadding[1])
-    //     ]
-    //   : [
-    //       Math.max(0, height - margin.bottom - resolvedDependentRangePadding[0]),
-    //       margin.top + resolvedDependentRangePadding[1]
-    //     ];
-
     // Update the scales with the calculated ranges:
     independentScale.range(independentRange);
     dependentScale.range(dependentRange);
     alternateDependentScale && alternateDependentScale.range(dependentRange);
     groupScale && groupScale.range([0, getScaleBandwidth(independentScale)]);
-
-    // Calculate the size of the chart area:
-    // const innerWidth = Math.max(0, width - margin.left - margin.right);
-    // const innerHeight = Math.max(0, height - margin.top - margin.bottom);
 
     dataContextValue = {
       scales: new ScaleSet({
@@ -258,14 +234,6 @@ function InnerChart<
         colorScale
       }),
       chartDimensions,
-      // independentRangePadding: resolvedIndependentRangePadding,
-      // dependentRangePadding: resolvedDependentRangePadding,
-      // width,
-      // height,
-      // innerWidth,
-      // innerHeight,
-      // margin, // The margin includes the outerMargin.
-      // outerMargin: resolvedOuterMargin,
       dataEntryStore: new DataEntryStore(dataEntries),
       horizontal,
       animate,

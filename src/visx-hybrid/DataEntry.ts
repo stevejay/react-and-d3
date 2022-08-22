@@ -60,6 +60,22 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     return this._dataKey;
   }
 
+  get keyAccessor() {
+    return this._keyAccessor;
+  }
+
+  get colorAccessor() {
+    return this._colorAccessor;
+  }
+
+  get independentAccessor() {
+    return this._independentAccessor;
+  }
+
+  get dependentAccessor() {
+    return this._dependentAccessor;
+  }
+
   getOriginalData(): readonly Datum[] {
     return this._data;
   }
@@ -90,18 +106,6 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     return this._usesAlternateDependent
       ? this._data.map((datum) => this.dependentAccessor(datum)).filter(isDefined)
       : [];
-  }
-
-  get colorAccessor() {
-    return this._colorAccessor;
-  }
-
-  get independentAccessor() {
-    return this._independentAccessor;
-  }
-
-  get dependentAccessor() {
-    return this._dependentAccessor;
   }
 
   getTransitionKey(datum: Datum): string | number {
@@ -224,6 +228,22 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     return this._dataKey;
   }
 
+  get keyAccessor() {
+    return this._keyAccessor;
+  }
+
+  get colorAccessor() {
+    return this._colorAccessor;
+  }
+
+  get independentAccessor() {
+    return this._independentAccessor;
+  }
+
+  get dependentAccessor() {
+    return this._dependentAccessor;
+  }
+
   getOriginalData(): readonly Datum[] {
     return this._data;
   }
@@ -254,18 +274,6 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     return this._usesAlternateDependent
       ? this._data.map((datum) => this.dependentAccessor(datum)).filter(isDefined)
       : [];
-  }
-
-  get colorAccessor() {
-    return this._colorAccessor;
-  }
-
-  get independentAccessor() {
-    return this._independentAccessor;
-  }
-
-  get dependentAccessor() {
-    return this._dependentAccessor;
   }
 
   getTransitionKey(datum: Datum): string | number {
@@ -434,16 +442,20 @@ export class StackDataEntry<Datum extends object>
     return this._dataKey;
   }
 
+  get keyAccessor() {
+    return this._keyAccessor;
+  }
+
+  get colorAccessor() {
+    return this._colorAccessor;
+  }
+
   get independentAccessor() {
     return this._independentAccessor;
   }
 
   get dependentAccessor() {
     return this._dependentAccessor;
-  }
-
-  get colorAccessor() {
-    return this._colorAccessor;
   }
 
   getTransitionKey(datum: StackDatum<AxisScale, AxisScale, Datum>): string | number {

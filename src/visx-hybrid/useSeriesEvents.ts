@@ -3,7 +3,7 @@ import { FocusEvent, PointerEvent, useCallback } from 'react';
 import type { BasicSeriesProps, EventHandlerParams } from './types';
 import { useEventEmitters } from './useEventEmitters';
 import { PointerEventHandlerParams, useEventHandlers } from './useEventHandlers';
-import { useTooltipUpdateContext } from './useTooltipUpdateContext';
+import { useTooltipVisibilityContext } from './useTooltipVisibilityContext';
 
 export type SeriesEventsParams<Datum extends object> = Pick<
   BasicSeriesProps<Datum>,
@@ -28,7 +28,7 @@ export function useSeriesEvents<Datum extends object>({
   source,
   allowedSources
 }: SeriesEventsParams<Datum>) {
-  const { showTooltip, hideTooltip } = useTooltipUpdateContext<Datum>();
+  const { showTooltip, hideTooltip } = useTooltipVisibilityContext<Datum>();
 
   const onPointerMove = useCallback(
     (params: readonly EventHandlerParams<Datum>[]) => {

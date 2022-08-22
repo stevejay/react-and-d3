@@ -11,10 +11,6 @@ export interface StripePositioningArgs {
   scale: AxisScale;
   chartDimensions: IChartDimensions;
   ignoreRangePadding: boolean;
-  // rangePadding: [number, number];
-  // margin: Margin;
-  // innerWidth: number;
-  // innerHeight: number;
   ticks: readonly TickDatum[];
   animate: boolean;
   springConfig: SpringConfig | undefined;
@@ -26,10 +22,6 @@ function createStripesPositioning({
   scale,
   chartDimensions,
   ignoreRangePadding,
-  // rangePadding,
-  // margin,
-  // innerWidth,
-  // innerHeight,
   renderingOffset
 }: StripePositioningArgs): (datum: TickDatum) => { x: number; y: number; width: number; height: number } {
   const step = getScaleStep(scale);

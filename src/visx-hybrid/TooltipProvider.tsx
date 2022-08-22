@@ -1,12 +1,11 @@
-import { ReactNode, useCallback, useMemo, useRef } from 'react';
+import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { debounce } from 'debounce';
 
 import { defaultHideTooltipDebounceMs } from './constants';
 import { isValidNumber } from './isValidNumber';
 import { TooltipStateContext } from './TooltipStateContext';
-import { TooltipUpdateContext } from './TooltipUpdateContext';
-import type { EventHandlerParams } from './types';
-import { useTooltip } from './useTooltip';
+import { TooltipVisibilityContext } from './TooltipVisibilityContext';
+import type { EventHandlerParams, TooltipState } from './types';
 
 type TooltipProviderProps = {
   /** Debounce time for when `hideTooltip` is invoked. */
@@ -19,7 +18,9 @@ export function TooltipProvider<Datum extends object>({
   hideTooltipDebounceMs = defaultHideTooltipDebounceMs,
   children
 }: TooltipProviderProps) {
-  const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, updateTooltip } = useTooltip<Datum>(undefined);
+  const [{ tooltipOpen, tooltipLeft, tooltipTop, tooltipData }, setTooltipState] = useState<
+    TooltipState<Datum>
+  >({ tooltipOpen: false });
 
   const debouncedHideTooltip = useRef<ReturnType<typeof debounce> | null>(null);
 
@@ -47,7 +48,7 @@ export function TooltipProvider<Datum extends object>({
 
       const nearestDatum = eventParamsList[indexOfNearestDatum];
 
-      updateTooltip({
+      setTooltipState({
         tooltipOpen: true,
         tooltipLeft: nearestDatum.svgPoint?.x,
         tooltipTop: nearestDatum.svgPoint?.y,
@@ -57,12 +58,12 @@ export function TooltipProvider<Datum extends object>({
         }
       });
     },
-    [updateTooltip]
+    [setTooltipState]
   );
 
   const privateHideTooltip = useCallback(
-    () => updateTooltip((state) => ({ ...state, tooltipOpen: false })),
-    [updateTooltip]
+    () => setTooltipState((state) => ({ ...state, tooltipOpen: false })),
+    [setTooltipState]
   );
 
   const hideTooltip = useCallback(() => {
@@ -71,27 +72,18 @@ export function TooltipProvider<Datum extends object>({
   }, [privateHideTooltip, hideTooltipDebounceMs]);
 
   const stateContextValue = useMemo(
-    () => ({
-      tooltipOpen,
-      tooltipLeft,
-      tooltipTop,
-      tooltipData
-    }),
+    () => ({ tooltipOpen, tooltipLeft, tooltipTop, tooltipData }),
     [tooltipOpen, tooltipLeft, tooltipTop, tooltipData]
   );
 
-  const controlContextValue = useMemo(
-    () => ({
-      showTooltip,
-      hideTooltip
-    }),
-    [showTooltip, hideTooltip]
-  );
+  const controlContextValue = useMemo(() => ({ showTooltip, hideTooltip }), [showTooltip, hideTooltip]);
 
-  // Split the tooltip context into two so that the chart series don't rerender when the tooltip is showing.
+  // I split the tooltip context into two so that all the chart series don't rerender when the tooltip is updating.
   return (
     <TooltipStateContext.Provider value={stateContextValue}>
-      <TooltipUpdateContext.Provider value={controlContextValue}>{children}</TooltipUpdateContext.Provider>
+      <TooltipVisibilityContext.Provider value={controlContextValue}>
+        {children}
+      </TooltipVisibilityContext.Provider>
     </TooltipStateContext.Provider>
   );
 }

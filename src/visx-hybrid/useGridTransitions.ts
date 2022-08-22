@@ -12,10 +12,6 @@ export interface GridPositioningParams {
   scale: AxisScale;
   chartDimensions: IChartDimensions;
   ignoreRangePadding: boolean;
-  // rangePadding: [number, number];
-  // margin: Margin;
-  // innerWidth: number;
-  // innerHeight: number;
   ticks: readonly TickDatum[];
   springConfig: SpringConfig | undefined;
   animate: boolean;
@@ -27,10 +23,6 @@ function createGridPositioning({
   scale,
   chartDimensions,
   ignoreRangePadding,
-  // rangePadding,
-  // margin,
-  // innerWidth,
-  // innerHeight,
   renderingOffset
 }: GridPositioningParams): (tickDatum: TickDatum) => { x1: number; y1: number; x2: number; y2: number } {
   const scaleCopy = scale.copy();

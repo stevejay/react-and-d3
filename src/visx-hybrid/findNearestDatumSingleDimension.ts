@@ -3,7 +3,6 @@ import { bisectLeft, bisector, range as d3Range } from 'd3-array';
 import { isNil } from './isNil';
 import type { AxisScale, ScaleInput } from './types';
 
-// @TODO make more robust to null/undefined scaled values
 /** Finds the nearest datum in a single direction (x or y) closest to the specified `scaledValue`. */
 export function findNearestDatumSingleDimension<Scale extends AxisScale, Datum extends object>({
   scale,

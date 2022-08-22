@@ -65,15 +65,6 @@ function createLabelPositionerForRenderingData<RenderingDatum extends object = o
     const isOverflowing = textDependentDimension + padding * 2 > dependentLength;
     const independent = startIndependentCoord + (endIndependentCoord - startIndependentCoord) * 0.5;
 
-    // if (!horizontal) {
-    //   const halfTextWidth = measureTextWithCache(label, font) * 0.5;
-    //   if (independent - halfTextWidth < margin.left + independentRangePadding[0]) {
-    //     independent = margin.left + independentRangePadding[0] + halfTextWidth;
-    //   } else if (independent + halfTextWidth > width - (margin.right + independentRangePadding[1])) {
-    //     independent = width - (margin.right + independentRangePadding[1]) - halfTextWidth;
-    //   }
-    // }
-
     let dependent = 0;
     let opacity = 1;
 

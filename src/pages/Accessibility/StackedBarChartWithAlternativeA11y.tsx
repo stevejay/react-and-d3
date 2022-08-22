@@ -9,12 +9,12 @@ import type { CategoryValueListDatum } from '@/types';
 import { darkTheme } from '@/utils/darkChartTheme';
 import { InView } from '@/visx-hybrid/InView';
 import { Legend } from '@/visx-hybrid/Legend';
+import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBar } from '@/visx-hybrid/SVGBar';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarStack } from '@/visx-hybrid/SVGBarStack';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
-import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
 import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
@@ -25,6 +25,12 @@ const data = [
   { category: '4', values: { a: 103, b: 10, c: 0 } },
   { category: '5', values: { a: 87, b: 0, c: 40 } }
 ] as const;
+
+// const legend = new Map<string, { label: string; color: string }>([
+//   ['a', { label: 'Product 1', color: schemeCategory10[0] }],
+//   ['b', { label: 'Product 2', color: schemeCategory10[1] }],
+//   ['c', { label: 'Product 3', color: schemeCategory10[2] }]
+// ]);
 
 const legend = {
   a: { label: 'Product 1', color: schemeCategory10[0] },
@@ -48,7 +54,7 @@ const dependentScaleConfig: LinearScaleConfig<number> = {
 
 const dependentAxisTickLabelFormatter = format(',.1~f');
 
-export function StackedBarChart() {
+export function StackedBarChartWithAlternativeAlly() {
   const labelId = useId();
   const dataKeys = Object.keys(legend) as (keyof typeof legend)[];
   return (
@@ -78,20 +84,17 @@ export function StackedBarChart() {
                 />
               ))}
             </SVGBarStack>
-            <SVGIndependentScaleA11ySeries<CategoryValueListDatum<string, number>>
-              dataKeyOrKeysRef={dataKeys}
-              categoryA11yProps={(category, data) => ({
-                'aria-label': `Using Strategy ${category}: ${dataKeys
-                  .map(
-                    (dataKey, index) =>
-                      `${legend[dataKey].label} sold ${dependentAxisTickLabelFormatter(
-                        data[index].values[dataKey]
-                      )} units`
-                  )
-                  .join(', ')}`,
-                'aria-roledescription': `Strategy ${category}`
-              })}
-            />
+            {dataKeys.map((dataKey) => (
+              <SVGA11ySeries<CategoryValueListDatum<string, number>>
+                key={dataKey}
+                dataKeyRef={dataKey}
+                groupA11yProps={() => ({ 'aria-label': legend[dataKey].label })}
+                datumA11yProps={(_, datum) => ({
+                  'aria-roledescription': `Strategy ${datum.category}`,
+                  'aria-label': `${dependentAxisTickLabelFormatter(datum.values[dataKey])} units sold`
+                })}
+              />
+            ))}
             <SVGAxis variable="independent" position="start" label="Sales strategy" tickLength={0} />
             <SVGAxis
               variable="dependent"
@@ -124,7 +127,7 @@ export function StackedBarChart() {
         </InView>
       </div>
       <ChartTitle className="italic mt-4 mb-0 text-center" id={labelId}>
-        Figure 1: Comparing sales strategies
+        Figure 2: Comparing sales strategies with alternative accessibility markup
       </ChartTitle>
     </div>
   );

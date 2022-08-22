@@ -35,7 +35,7 @@ export class ChartDimensions implements IChartDimensions {
       y: margin.top,
       y1: height - margin.bottom,
       width: Math.max(0, width - margin.left - margin.right),
-      height: Math.max(0, width - margin.top - margin.bottom)
+      height: Math.max(0, height - margin.top - margin.bottom)
     };
 
     const xRangePadding = horizontal ? dependentRangePadding : independentRangePadding;
