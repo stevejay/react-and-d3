@@ -15,7 +15,6 @@ import type {
   AxisScale,
   AxisStyles,
   LineProps,
-  Margin,
   TextStyles,
   TickDatum,
   TickLabelAlignment
@@ -25,7 +24,6 @@ import { useAxisTransitions } from './useAxisTransitions';
 export interface SVGAxisTicksProps {
   axisOrientation: AxisOrientation;
   scale: AxisScale;
-  margin: Margin;
   springConfig?: SpringConfig;
   animate?: boolean;
   renderingOffset: number;

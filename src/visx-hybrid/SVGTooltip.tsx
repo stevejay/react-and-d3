@@ -40,7 +40,7 @@ type GlyphProps = {
   radius: number;
 };
 
-export type FloatingUITooltipProps<Datum extends object> = {
+export type SVGTooltipProps<Datum extends object> = {
   /**
    * When TooltipContext.tooltipOpen=true, this function is invoked and if the
    * return value is non-null, its content is rendered inside the tooltip container.
@@ -77,7 +77,7 @@ const invisibleStyle: CSSProperties = {
   pointerEvents: 'none'
 };
 
-export function FloatingUITooltip<Datum extends object>({
+export function SVGTooltip<Datum extends object>({
   renderTooltip,
   showDatumGlyph = false,
   showSeriesGlyphs = false,
@@ -85,8 +85,11 @@ export function FloatingUITooltip<Datum extends object>({
   showVerticalCrosshair = false,
   snapTooltipToDatumX = false,
   snapTooltipToDatumY = false
-}: FloatingUITooltipProps<Datum>) {
-  const { innerHeight, innerWidth, margin, theme } = useXYChartContext();
+}: SVGTooltipProps<Datum>) {
+  const {
+    chartDimensions: { chartAreaExcludingRangePadding },
+    theme
+  } = useXYChartContext();
   const tooltipContext = useTooltipStateContext<Datum>();
   const referenceElement = useRef<HTMLElement | null>(null); // TODO should this be state?
   const updateRef = useRef<ReturnType<typeof useFloating>['update']>();
@@ -178,8 +181,8 @@ export function FloatingUITooltip<Datum extends object>({
                 <animated.line
                   x1={tooltipLeft}
                   x2={tooltipLeft}
-                  y1={margin.top ?? 0}
-                  y2={(margin.top ?? 0) + (innerHeight ?? 0)}
+                  y1={chartAreaExcludingRangePadding.y}
+                  y2={chartAreaExcludingRangePadding.y1}
                   strokeWidth={1}
                   stroke="currentColor"
                   style={{ ...crosshairsStyle, ...springStyles }}
@@ -188,8 +191,8 @@ export function FloatingUITooltip<Datum extends object>({
               )}
               {showHorizontalCrosshair && (
                 <animated.line
-                  x1={margin.left ?? 0}
-                  x2={(margin.left ?? 0) + (innerWidth ?? 0)}
+                  x1={chartAreaExcludingRangePadding.x}
+                  x2={chartAreaExcludingRangePadding.x1}
                   y1={tooltipTop}
                   y2={tooltipTop}
                   strokeWidth={1}

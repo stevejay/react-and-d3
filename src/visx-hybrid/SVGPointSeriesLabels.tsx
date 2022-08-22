@@ -34,9 +34,7 @@ export function SVGPointSeriesLabels({
     animate: contextAnimate,
     dataEntryStore,
     theme,
-    margin,
-    innerWidth,
-    innerHeight
+    chartDimensions
   } = useXYChartContext();
   const dataEntry = dataEntryStore.getByDataKey(dataKeyRef);
   const labelStyles = theme.datumLabels ?? theme.smallLabels;
@@ -52,9 +50,7 @@ export function SVGPointSeriesLabels({
     formatter,
     font,
     padding,
-    margin,
-    innerWidth,
-    innerHeight
+    chartDimensions
   });
   return (
     <g data-testid={`series-labels-${dataKeyRef}`} {...groupProps}>

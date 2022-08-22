@@ -5,15 +5,17 @@ import { coerceNumber } from './coerceNumber';
 import { getScaleBandwidth } from './getScaleBandwidth';
 import { isBandScale } from './isBandScale';
 import { isNil } from './isNil';
-import type { AxisScale, GridType, Margin, TickDatum } from './types';
+import type { AxisScale, GridType, IChartDimensions, TickDatum } from './types';
 
 export interface GridPositioningParams {
   gridType: GridType;
   scale: AxisScale;
-  rangePadding: [number, number];
-  margin: Margin;
-  innerWidth: number;
-  innerHeight: number;
+  chartDimensions: IChartDimensions;
+  ignoreRangePadding: boolean;
+  // rangePadding: [number, number];
+  // margin: Margin;
+  // innerWidth: number;
+  // innerHeight: number;
   ticks: readonly TickDatum[];
   springConfig: SpringConfig | undefined;
   animate: boolean;
@@ -23,10 +25,12 @@ export interface GridPositioningParams {
 function createGridPositioning({
   gridType,
   scale,
-  rangePadding,
-  margin,
-  innerWidth,
-  innerHeight,
+  chartDimensions,
+  ignoreRangePadding,
+  // rangePadding,
+  // margin,
+  // innerWidth,
+  // innerHeight,
   renderingOffset
 }: GridPositioningParams): (tickDatum: TickDatum) => { x1: number; y1: number; x2: number; y2: number } {
   const scaleCopy = scale.copy();
@@ -38,23 +42,17 @@ function createGridPositioning({
     scaleOffset = Math.round(scaleOffset);
   }
 
+  const chartArea = ignoreRangePadding
+    ? chartDimensions.chartAreaExcludingRangePadding
+    : chartDimensions.chartAreaIncludingRangePadding;
+
   return (tickDatum) => {
     if (gridType === 'row') {
       const y = (coerceNumber(scaleCopy(tickDatum.value)) ?? 0) + scaleOffset;
-      return {
-        x1: margin.left + rangePadding[0],
-        y1: y,
-        x2: margin.left + innerWidth - rangePadding[1],
-        y2: y
-      };
+      return { x1: chartArea.x, y1: y, x2: chartArea.x1, y2: y };
     } else {
       const x = (coerceNumber(scaleCopy(tickDatum.value)) ?? 0) + scaleOffset;
-      return {
-        x1: x,
-        y1: margin.top + rangePadding[0],
-        x2: x,
-        y2: margin.top + innerHeight - rangePadding[1]
-      };
+      return { x1: x, y1: chartArea.y, x2: x, y2: chartArea.y1 };
     }
   };
 }

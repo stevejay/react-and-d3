@@ -5,7 +5,6 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 import { curveCatmullRom } from 'd3-shape';
 
 import type { CategoryValueDatum } from '@/types';
-import { FloatingUITooltip } from '@/visx-hybrid/FloatingUITooltip';
 import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
@@ -16,6 +15,7 @@ import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScale
 // import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
 import { SVGLineSeries } from '@/visx-hybrid/SVGLineSeries';
 import { SVGSwipedPath } from '@/visx-hybrid/SVGSwipedPath';
+import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
@@ -129,7 +129,7 @@ export function BarChart({ data }: BarChartProps) {
         // includeRangePaddingInAxisPath={false}
       />
       <SVGAreaAnnotation datum={data[2]} dataKeyRef="data-a" />
-      <FloatingUITooltip<CategoryValueDatum<string, number>>
+      <SVGTooltip<CategoryValueDatum<string, number>>
         snapTooltipToDatumX
         showVerticalCrosshair
         showDatumGlyph={false}

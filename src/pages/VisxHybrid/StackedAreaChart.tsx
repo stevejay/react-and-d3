@@ -6,7 +6,6 @@ import { curveCatmullRom } from 'd3-shape';
 import { capitalize, isNil } from 'lodash-es';
 
 import type { CategoryValueListDatum } from '@/types';
-import { FloatingUITooltip } from '@/visx-hybrid/FloatingUITooltip';
 import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 import { SVGAreaSeries } from '@/visx-hybrid/SVGAreaSeries';
 import { SVGAreaStack } from '@/visx-hybrid/SVGAreaStack';
@@ -17,6 +16,7 @@ import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
 import { SVGInterpolatedArea } from '@/visx-hybrid/SVGInterpolatedArea';
 import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
+import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
@@ -100,7 +100,6 @@ export function StackedAreaChart({ data, dataKeys }: StackedAreaChartProps) {
           />
         ))}
       </SVGAreaStack>
-
       <SVGBarStackLabels>
         {dataKeys.map((dataKey) => (
           <SVGBarSeriesLabels
@@ -132,7 +131,7 @@ export function StackedAreaChart({ data, dataKeys }: StackedAreaChartProps) {
         tickLabelAlignment="angled"
       />
       <SVGAreaAnnotation datum={data[1]} dataKeyRef={dataKeys[2]} />
-      <FloatingUITooltip<CategoryValueListDatum<Date, number>>
+      <SVGTooltip<CategoryValueListDatum<Date, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}

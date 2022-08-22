@@ -8,7 +8,6 @@ import { timeFormat } from 'd3-time-format';
 
 import type { TimeValueDatum } from '@/types';
 import { createResourceUrlFromId } from '@/visx-hybrid/createResourceUrlFromId';
-import { FloatingUITooltip } from '@/visx-hybrid/FloatingUITooltip';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGCircleGlyph } from '@/visx-hybrid/SVGCircleGlyph';
 import { SVGGlyphSeries } from '@/visx-hybrid/SVGGlyphSeries';
@@ -19,6 +18,7 @@ import { SVGLineSeries } from '@/visx-hybrid/SVGLineSeries';
 import { SVGPointAnnotation } from '@/visx-hybrid/SVGPointAnnotation';
 import { SVGPointSeriesLabels } from '@/visx-hybrid/SVGPointSeriesLabels';
 import { SVGSwipedPath } from '@/visx-hybrid/SVGSwipedPath';
+import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
@@ -128,7 +128,7 @@ export function LineChart({ data }: LineChartProps) {
         hideAxisPath
       />
       <SVGPointAnnotation datum={data[2]} dataKeyRef="data-a" />
-      <FloatingUITooltip<TimeValueDatum<number>>
+      <SVGTooltip<TimeValueDatum<number>>
         snapTooltipToDatumX
         showVerticalCrosshair
         showDatumGlyph

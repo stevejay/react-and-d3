@@ -16,9 +16,8 @@ export function createLineSeriesPathShape<Datum extends object>({
   curve: CurveFactory | CurveFactoryLineOnly;
   renderingOffset: number;
 }): string {
-  const independentCenterAccessor = dataEntry.getIndependentCenterAccessor(scales);
-  const dependent1Accessor = dataEntry.getDependent1Accessor(scales);
-  // const definedAccessor = dataEntry.getDefinedAccessor(scales);
+  const independentCenterAccessor = dataEntry.getIndependentAccessor(scales, 'center');
+  const dependent1Accessor = dataEntry.getDependentAccessor(scales);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const definedAccessor = (datum: any) => dataEntry.isRenderingDatumDefined(datum);

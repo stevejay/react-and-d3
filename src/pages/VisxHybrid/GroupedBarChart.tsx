@@ -4,7 +4,6 @@ import { format } from 'd3-format';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import type { CategoryValueListDatum } from '@/types';
-import { FloatingUITooltip } from '@/visx-hybrid/FloatingUITooltip';
 import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarGroup } from '@/visx-hybrid/SVGBarGroup';
@@ -14,6 +13,7 @@ import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
+import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
@@ -116,7 +116,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
         hideZero
         tickLabelPadding={6}
       />
-      <FloatingUITooltip<CategoryValueListDatum<string, number>>
+      <SVGTooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}

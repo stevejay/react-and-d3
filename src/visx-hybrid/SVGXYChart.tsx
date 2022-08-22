@@ -4,6 +4,7 @@ import { createScale } from '@visx/scale';
 
 import { addMargins } from './addMargins';
 import { calculateAutoMarginFromChildren } from './calculateAutoMarginFromChildren';
+import { ChartDimensions } from './ChartDimensions';
 import {
   defaultHideTooltipDebounceMs,
   defaultParentSizeDebounceMs,
@@ -17,6 +18,7 @@ import { createScaleFromScaleConfig } from './createScaleFromScaleConfig';
 import { DataEntryStore } from './DataEntryStore';
 import { EventEmitterProvider } from './EventEmitterProvider';
 import { getDataEntriesFromChildren } from './getDataEntriesFromChildren';
+import { getDependentRange, getIndependentRange } from './getRange';
 import { getScaleBandwidth } from './getScaleBandwidth';
 import { isNil } from './isNil';
 import { ParentSize } from './ParentSize';
@@ -203,27 +205,39 @@ function InnerChart<
       });
     const margin = addMargins([resolvedMargin, resolvedOuterMargin]);
 
-    // Now that we know the margin to use, calculate the range for each scale:
+    const chartDimensions = new ChartDimensions({
+      width,
+      height,
+      horizontal,
+      margin, // The margin includes the outerMargin.
+      outerMargin: resolvedOuterMargin,
+      independentRangePadding: resolvedIndependentRangePadding,
+      dependentRangePadding: resolvedDependentRangePadding
+    });
 
-    const independentRange: [number, number] = horizontal
-      ? [
-          Math.max(0, height - margin.bottom - resolvedIndependentRangePadding[0]),
-          margin.top + resolvedIndependentRangePadding[1]
-        ]
-      : [
-          margin.left + resolvedIndependentRangePadding[0],
-          Math.max(0, width - margin.right - resolvedIndependentRangePadding[1])
-        ];
+    // Calculate the range for each scale:
+    const independentRange = getIndependentRange(chartDimensions.chartAreaIncludingRangePadding, horizontal);
+    const dependentRange = getDependentRange(chartDimensions.chartAreaIncludingRangePadding, horizontal);
 
-    const dependentRange: [number, number] = horizontal
-      ? [
-          margin.left + resolvedDependentRangePadding[0],
-          Math.max(0, width - margin.right - resolvedDependentRangePadding[1])
-        ]
-      : [
-          Math.max(0, height - margin.bottom - resolvedDependentRangePadding[0]),
-          margin.top + resolvedDependentRangePadding[1]
-        ];
+    // : [number, number] = horizontal
+    //   ? [
+    //       Math.max(0, height - margin.bottom - resolvedIndependentRangePadding[0]),
+    //       margin.top + resolvedIndependentRangePadding[1]
+    //     ]
+    //   : [
+    //       margin.left + resolvedIndependentRangePadding[0],
+    //       Math.max(0, width - margin.right - resolvedIndependentRangePadding[1])
+    //     ];
+
+    // const dependentRange: [number, number] = horizontal
+    //   ? [
+    //       margin.left + resolvedDependentRangePadding[0],
+    //       Math.max(0, width - margin.right - resolvedDependentRangePadding[1])
+    //     ]
+    //   : [
+    //       Math.max(0, height - margin.bottom - resolvedDependentRangePadding[0]),
+    //       margin.top + resolvedDependentRangePadding[1]
+    //     ];
 
     // Update the scales with the calculated ranges:
     independentScale.range(independentRange);
@@ -232,8 +246,8 @@ function InnerChart<
     groupScale && groupScale.range([0, getScaleBandwidth(independentScale)]);
 
     // Calculate the size of the chart area:
-    const innerWidth = Math.max(0, width - margin.left - margin.right);
-    const innerHeight = Math.max(0, height - margin.top - margin.bottom);
+    // const innerWidth = Math.max(0, width - margin.left - margin.right);
+    // const innerHeight = Math.max(0, height - margin.top - margin.bottom);
 
     dataContextValue = {
       scales: new ScaleSet({
@@ -243,14 +257,15 @@ function InnerChart<
         groupScale,
         colorScale
       }),
-      independentRangePadding: resolvedIndependentRangePadding,
-      dependentRangePadding: resolvedDependentRangePadding,
-      width,
-      height,
-      innerWidth,
-      innerHeight,
-      margin, // The margin includes the outerMargin.
-      outerMargin: resolvedOuterMargin,
+      chartDimensions,
+      // independentRangePadding: resolvedIndependentRangePadding,
+      // dependentRangePadding: resolvedDependentRangePadding,
+      // width,
+      // height,
+      // innerWidth,
+      // innerHeight,
+      // margin, // The margin includes the outerMargin.
+      // outerMargin: resolvedOuterMargin,
       dataEntryStore: new DataEntryStore(dataEntries),
       horizontal,
       animate,
@@ -288,10 +303,10 @@ function InnerChart<
             <XYChartContext.Provider value={context}>{children}</XYChartContext.Provider>
             {captureEvents && (
               <rect
-                x={context.margin.left}
-                y={context.margin.top}
-                width={width - context.margin.left - context.margin.right}
-                height={height - context.margin.top - context.margin.bottom}
+                x={context.chartDimensions.chartAreaExcludingRangePadding.x}
+                y={context.chartDimensions.chartAreaExcludingRangePadding.y}
+                width={context.chartDimensions.chartAreaExcludingRangePadding.width}
+                height={context.chartDimensions.chartAreaExcludingRangePadding.height}
                 fill="transparent"
                 role="presentation"
                 aria-hidden

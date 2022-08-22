@@ -24,9 +24,13 @@ export function SVGLinearGradient<Datum extends object>({
   segmentColors,
   dataKeyRef
 }: SVGLinearGradientProps<Datum>) {
-  const { scales, width, dataEntryStore } = useXYChartContext();
+  const {
+    scales,
+    chartDimensions: { width },
+    dataEntryStore
+  } = useXYChartContext();
   const dataEntry = dataEntryStore.getByDataKey(dataKeyRef);
-  const independentCenterAccessor = dataEntry.getIndependentCenterAccessor(scales);
+  const independentCenterAccessor = dataEntry.getIndependentAccessor(scales, 'center');
   return (
     <defs data-testid="linear-gradient-def">
       <linearGradient id={id} gradientUnits="userSpaceOnUse" x1={0} y1={0} x2={width} y2={0}>

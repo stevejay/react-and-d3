@@ -18,7 +18,7 @@ export function SVGIndependentScaleA11ySeries<Datum extends object>({
   categoryA11yProps,
   dataKeyOrKeysRef
 }: SVGIndependentScaleA11ySeriesProps<Datum>) {
-  const { horizontal, margin, innerWidth, innerHeight, scales, dataEntryStore } = useXYChartContext<Datum>();
+  const { horizontal, chartDimensions, scales, dataEntryStore } = useXYChartContext<Datum>();
   const dataKeys = Array.isArray(dataKeyOrKeysRef) ? dataKeyOrKeysRef : [dataKeyOrKeysRef];
   const filteredDataEntries = dataKeys.map((dataKey) => dataEntryStore.getByDataKey(dataKey));
   if (!filteredDataEntries) {
@@ -40,10 +40,10 @@ export function SVGIndependentScaleA11ySeries<Datum extends object>({
         return (
           <rect
             key={independentDomainValue}
-            x={horizontal ? margin.left : independentCoord}
-            y={horizontal ? independentCoord : margin.top}
-            height={horizontal ? bandwidth : innerHeight}
-            width={horizontal ? innerWidth : bandwidth}
+            x={horizontal ? chartDimensions.chartAreaExcludingRangePadding.x : independentCoord}
+            y={horizontal ? independentCoord : chartDimensions.chartAreaExcludingRangePadding.y}
+            width={horizontal ? chartDimensions.chartAreaExcludingRangePadding.width : bandwidth}
+            height={horizontal ? bandwidth : chartDimensions.chartAreaExcludingRangePadding.height}
             fill="transparent"
             role="graphics-symbol"
             {...categoryA11yProps(independentDomainValue, matchingData)}

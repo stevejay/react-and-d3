@@ -2,38 +2,35 @@ import { combineFontPropertiesWithStyles } from './combineFontPropertiesWithStyl
 import { defaultBigLabelsFont } from './constants';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { SVGSimpleText, TextProps } from './SVGSimpleText';
-import type { AxisOrientation, LabelAlignment, Margin, TextAnchor, TextStyles } from './types';
+import type {
+  AxisOrientation,
+  ChartArea,
+  IChartDimensions,
+  LabelAlignment,
+  TextAnchor,
+  TextStyles
+} from './types';
 
-function getX(
-  axisOrientation: AxisOrientation,
-  range: [number, number],
-  width: number,
-  outerMargin: Margin
-): number {
+function getX(axisOrientation: AxisOrientation, range: [number, number], outerMarginArea: ChartArea): number {
   let x = 0;
   if (axisOrientation === 'top' || axisOrientation === 'bottom') {
     x = (Number(range[0]) + Number(range[1])) * 0.5;
   } else if (axisOrientation === 'left') {
-    x = outerMargin.left;
+    x = outerMarginArea.x;
   } else if (axisOrientation === 'right') {
-    x = width - outerMargin.right;
+    x = outerMarginArea.x1;
   }
   return x;
 }
 
-function getY(
-  axisOrientation: AxisOrientation,
-  range: [number, number],
-  height: number,
-  outerMargin: Margin
-): number {
+function getY(axisOrientation: AxisOrientation, range: [number, number], outerMarginArea: ChartArea): number {
   let y = 0;
   if (axisOrientation === 'left' || axisOrientation === 'right') {
     y = (Number(range[0]) + Number(range[1])) * 0.5;
   } else if (axisOrientation === 'top') {
-    y = outerMargin.top;
+    y = outerMarginArea.y;
   } else if (axisOrientation === 'bottom') {
-    y = height - outerMargin.bottom;
+    y = outerMarginArea.y1;
   }
   return y;
 }
@@ -87,9 +84,10 @@ export interface SVGAxisLabelProps {
   labelStyles: TextStyles;
   /** Props to apply to the axis label. */
   labelProps?: TextProps;
-  width: number;
-  height: number;
-  outerMargin: Margin;
+  chartDimensions: IChartDimensions;
+  // width: number;
+  // height: number;
+  // outerMargin: Margin;
   labelAlignment: LabelAlignment;
 }
 
@@ -99,17 +97,15 @@ export function SVGAxisLabel({
   labelProps = {},
   axisOrientation,
   axisPathRange,
-  width,
-  height,
-  outerMargin,
+  chartDimensions,
   labelAlignment,
   labelStyles
 }: SVGAxisLabelProps) {
   const { style: labelPropsStyle, className: labelPropsClassname, ...restLabelProps } = labelProps;
   const fontMetrics = getFontMetricsWithCache(labelStyles?.font ?? defaultBigLabelsFont);
   const style = combineFontPropertiesWithStyles(labelStyles?.font, labelPropsStyle);
-  const x = getX(axisOrientation, axisPathRange, width, outerMargin);
-  const y = getY(axisOrientation, axisPathRange, height, outerMargin);
+  const x = getX(axisOrientation, axisPathRange, chartDimensions.outerMarginArea);
+  const y = getY(axisOrientation, axisPathRange, chartDimensions.outerMarginArea);
   const textAnchor: TextAnchor = getTextAnchor(axisOrientation, labelAlignment);
   const verticalAnchor: TextAnchor = getVerticalAnchor(axisOrientation, labelAlignment);
   const angle = getAngle(axisOrientation, labelAlignment);

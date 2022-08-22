@@ -5,7 +5,6 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 import { capitalize, isNil } from 'lodash-es';
 
 import type { CategoryValueListDatum } from '@/types';
-import { FloatingUITooltip } from '@/visx-hybrid/FloatingUITooltip';
 import { SVGAreaAnnotation } from '@/visx-hybrid/SVGAreaAnnotation';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBar } from '@/visx-hybrid/SVGBar';
@@ -15,6 +14,7 @@ import { SVGBarStack } from '@/visx-hybrid/SVGBarStack';
 import { SVGBarStackLabels } from '@/visx-hybrid/SVGBarStackLabels';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
+import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { darkTheme } from './darkTheme';
@@ -115,7 +115,7 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
         tickLabelAlignment="angled"
       />
       <SVGAreaAnnotation datum={data[1]} dataKeyRef={dataKeys[2]} />
-      <FloatingUITooltip<CategoryValueListDatum<string, number>>
+      <SVGTooltip<CategoryValueListDatum<string, number>>
         snapTooltipToDatumX //={false}
         snapTooltipToDatumY={false}
         showVerticalCrosshair //={false}

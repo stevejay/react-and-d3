@@ -4,15 +4,17 @@ import { coerceNumber } from './coerceNumber';
 import { getScaleBandwidth } from './getScaleBandwidth';
 import { getScaleStep } from './getScaleStep';
 import { isBandScale } from './isBandScale';
-import type { AxisScale, GridType, Margin, TickDatum } from './types';
+import type { AxisScale, GridType, IChartDimensions, TickDatum } from './types';
 
 export interface StripePositioningArgs {
   gridType: GridType;
   scale: AxisScale;
-  rangePadding: [number, number];
-  margin: Margin;
-  innerWidth: number;
-  innerHeight: number;
+  chartDimensions: IChartDimensions;
+  ignoreRangePadding: boolean;
+  // rangePadding: [number, number];
+  // margin: Margin;
+  // innerWidth: number;
+  // innerHeight: number;
   ticks: readonly TickDatum[];
   animate: boolean;
   springConfig: SpringConfig | undefined;
@@ -22,30 +24,34 @@ export interface StripePositioningArgs {
 function createStripesPositioning({
   gridType,
   scale,
-  rangePadding,
-  margin,
-  innerWidth,
-  innerHeight,
+  chartDimensions,
+  ignoreRangePadding,
+  // rangePadding,
+  // margin,
+  // innerWidth,
+  // innerHeight,
   renderingOffset
 }: StripePositioningArgs): (datum: TickDatum) => { x: number; y: number; width: number; height: number } {
   const step = getScaleStep(scale);
   const bandwidth = getScaleBandwidth(scale);
   const stripeOffset = (step - bandwidth) * 0.5;
-
+  const chartArea = ignoreRangePadding
+    ? chartDimensions.chartAreaExcludingRangePadding
+    : chartDimensions.chartAreaIncludingRangePadding;
   return (datum) => {
     if (gridType === 'row') {
       return {
-        x: margin.left + rangePadding[0],
+        x: chartArea.x,
         y: (coerceNumber(scale(datum.value)) ?? 0) - stripeOffset + renderingOffset,
-        width: innerWidth - (rangePadding[0] + rangePadding[1]),
+        width: chartArea.width,
         height: step
       };
     } else {
       return {
         x: (coerceNumber(scale(datum.value)) ?? 0) - stripeOffset,
-        y: margin.top + rangePadding[1] + renderingOffset,
+        y: chartArea.y + renderingOffset,
         width: step,
-        height: innerHeight - (rangePadding[0] + rangePadding[1])
+        height: chartArea.height
       };
     }
   };

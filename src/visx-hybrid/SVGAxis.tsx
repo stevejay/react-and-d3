@@ -14,6 +14,7 @@ import {
   defaultTickLength
 } from './constants';
 import { getDefaultAxisLabelAngle } from './getDefaultAxisLabelAngle';
+import { getDependentRange, getIndependentRange } from './getRange';
 import { SVGAnimatedGroup } from './SVGAnimatedGroup';
 import { SVGAxisLabel } from './SVGAxisLabel';
 import { SVGAxisPath } from './SVGAxisPath';
@@ -110,18 +111,19 @@ function SVGAxis(props: SVGAxisProps) {
 
   const {
     scales,
-    independentRangePadding,
-    dependentRangePadding,
+    chartDimensions,
+    // independentRangePadding,
+    // dependentRangePadding,
     horizontal,
-    margin,
-    outerMargin,
-    width,
-    height,
+    // margin,
+    // outerMargin,
+    // width,
+    // height,
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     theme,
-    innerWidth,
-    innerHeight,
+    // innerWidth,
+    // innerHeight,
     renderingOffset
   } = useXYChartContext();
 
@@ -133,27 +135,33 @@ function SVGAxis(props: SVGAxisProps) {
 
   const top =
     axisOrientation === 'bottom'
-      ? (height ?? 0) - (margin.bottom ?? 0)
+      ? chartDimensions.chartAreaExcludingRangePadding.y1
       : axisOrientation === 'top'
-      ? margin.top ?? 0
+      ? chartDimensions.chartAreaExcludingRangePadding.y
       : 0;
 
   const left =
     axisOrientation === 'left'
-      ? margin.left ?? 0
+      ? chartDimensions.chartAreaExcludingRangePadding.x
       : axisOrientation === 'right'
-      ? (width ?? 0) - (margin.right ?? 0)
+      ? chartDimensions.chartAreaExcludingRangePadding.x1
       : 0;
 
-  const rangePadding = variable === 'independent' ? independentRangePadding : dependentRangePadding;
+  // const rangePadding = variable === 'independent' ? independentRangePadding : dependentRangePadding;
   const isVertical = axisOrientation === 'left' || axisOrientation === 'right';
-  const rangeFrom = Number(scale.range()[0]) ?? 0;
-  const rangeTo = Number(scale.range()[1]) ?? 0;
-  const axisPathRange: [number, number] = includeRangePaddingInAxisPath
-    ? isVertical
-      ? [rangeFrom + rangePadding[0], rangeTo - rangePadding[1]]
-      : [rangeFrom - rangePadding[0], rangeTo + rangePadding[1]]
-    : [rangeFrom, rangeTo];
+  const axisPathRange = (variable === 'independent' ? getIndependentRange : getDependentRange)(
+    includeRangePaddingInAxisPath
+      ? chartDimensions.chartAreaExcludingRangePadding
+      : chartDimensions.chartAreaIncludingRangePadding,
+    horizontal
+  );
+  // const rangeFrom = Number(scale.range()[0]) ?? 0;
+  // const rangeTo = Number(scale.range()[1]) ?? 0;
+  // const axisPathRange: [number, number] = includeRangePaddingInAxisPath
+  //   ? isVertical
+  //     ? [rangeFrom + rangePadding[0], rangeTo - rangePadding[1]]
+  //     : [rangeFrom - rangePadding[0], rangeTo + rangePadding[1]]
+  //   : (scale.range() as [number, number]);
   const ticks = calculateTicksData({ scale, hideZero, tickFormat, tickCount, tickValues });
   const springConfig = userSpringConfig ?? contextSpringConfig;
   const animate = userAnimate && contextAnimate;
@@ -167,9 +175,10 @@ function SVGAxis(props: SVGAxisProps) {
           axisOrientation={axisOrientation}
           axisPathRange={axisPathRange}
           labelProps={labelProps}
-          width={width}
-          height={height}
-          outerMargin={outerMargin}
+          chartDimensions={chartDimensions}
+          // width={chartDimensions.width}
+          // height={chartDimensions.height}
+          // outerMargin={chartDimensions.outerMargin}
           labelAlignment={labelAlignment ?? getDefaultAxisLabelAngle(axisOrientation)}
           labelStyles={theme.bigLabels ?? defaultBigLabelsTextStyle}
         />
@@ -195,7 +204,6 @@ function SVGAxis(props: SVGAxisProps) {
           springConfig={springConfig}
           animate={animate}
           tickLabelPadding={tickLabelPadding}
-          margin={margin}
           labelStyles={theme.smallLabels}
           tickLabelAlignment={tickLabelAlignment}
           axisStyles={axisTheme}

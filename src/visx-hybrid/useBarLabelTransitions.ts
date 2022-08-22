@@ -33,47 +33,57 @@ function createLabelPositionerForRenderingData<RenderingDatum extends object = o
   padding: number;
   hideOnOverflow: boolean;
 }): (datumWithLabel: { datum: RenderingDatum; label: string }) => LabelTransition | null {
-  const independent0Accessor = dataEntry.getIndependent0Accessor(scales);
-  const independent1Accessor = dataEntry.getIndependent1Accessor(scales);
-  const dependent0Accessor = dataEntry.getDependent0Accessor(scales);
-  const dependent1Accessor = dataEntry.getDependent1Accessor(scales);
+  const startIndependentAccessor = dataEntry.getIndependentAccessor(scales, 'start');
+  const endIndependentAccessor = dataEntry.getIndependentAccessor(scales, 'end');
+  const baselineDependentAccessor = dataEntry.getBaselineDependentAccessor(scales);
+  const dependentAccessor = dataEntry.getDependentAccessor(scales);
 
   return ({ datum, label }: { datum: RenderingDatum; label: string }) => {
-    const independentStartCoord = independent0Accessor(datum);
-    if (!isValidNumber(independentStartCoord)) {
+    const startIndependentCoord = startIndependentAccessor(datum);
+    if (!isValidNumber(startIndependentCoord)) {
       return null;
     }
-    const independentEndCoord = independent1Accessor(datum);
-    if (!isValidNumber(independentEndCoord)) {
+    const endIndependentCoord = endIndependentAccessor(datum);
+    if (!isValidNumber(endIndependentCoord)) {
       return null;
     }
-    const dependentStartCoord = dependent0Accessor(datum);
-    if (!isValidNumber(dependentStartCoord)) {
+    const baselineDependentCoord = baselineDependentAccessor(datum);
+    if (!isValidNumber(baselineDependentCoord)) {
       return null;
     }
-    const dependentEndCoord = dependent1Accessor(datum);
-    if (!isValidNumber(dependentEndCoord)) {
+    const dependentCoord = dependentAccessor(datum);
+    if (!isValidNumber(dependentCoord)) {
       return null;
     }
 
-    const dependentLengthWithSign = dependentEndCoord - dependentStartCoord;
+    const dependentLengthWithSign = dependentCoord - baselineDependentCoord;
     const isNegative = dependentLengthWithSign > 0;
     const dependentLength = Math.abs(dependentLengthWithSign);
-    const textDimension = horizontal
+    const textDependentDimension = horizontal
       ? measureTextWithCache(label, font)
       : getFontMetricsWithCache(font).height;
-    const isOverflowing = textDimension + padding * 2 > dependentLength;
-    const independent = independentStartCoord + (independentEndCoord - independentStartCoord) * 0.5;
+    const isOverflowing = textDependentDimension + padding * 2 > dependentLength;
+    const independent = startIndependentCoord + (endIndependentCoord - startIndependentCoord) * 0.5;
+
+    // if (!horizontal) {
+    //   const halfTextWidth = measureTextWithCache(label, font) * 0.5;
+    //   if (independent - halfTextWidth < margin.left + independentRangePadding[0]) {
+    //     independent = margin.left + independentRangePadding[0] + halfTextWidth;
+    //   } else if (independent + halfTextWidth > width - (margin.right + independentRangePadding[1])) {
+    //     independent = width - (margin.right + independentRangePadding[1]) - halfTextWidth;
+    //   }
+    // }
+
     let dependent = 0;
     let opacity = 1;
 
     if (position === 'outside' || (positionOutsideOnOverflow && isOverflowing)) {
-      dependent = dependentEndCoord + (textDimension * 0.5 + padding) * (isNegative ? 1 : -1);
+      dependent = dependentCoord + (textDependentDimension * 0.5 + padding) * (isNegative ? 1 : -1);
     } else {
       if (position === 'inside') {
-        dependent = dependentEndCoord + (textDimension * 0.5 + padding) * (isNegative ? -1 : 1);
+        dependent = dependentCoord + (textDependentDimension * 0.5 + padding) * (isNegative ? -1 : 1);
       } else {
-        dependent = dependentEndCoord + dependentLength * 0.5 * (isNegative ? -1 : 1);
+        dependent = dependentCoord + dependentLength * 0.5 * (isNegative ? -1 : 1);
       }
       if (hideOnOverflow && isOverflowing) {
         opacity = 0;

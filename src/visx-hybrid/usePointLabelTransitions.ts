@@ -1,12 +1,18 @@
 import { SpringConfig, useTransition } from 'react-spring';
 
-import { Margin } from '@/types';
-
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { getRenderingDataWithLabels } from './getRenderingDataWithLabels';
 import { isValidNumber } from './isValidNumber';
 import { measureTextWithCache } from './measureTextWithCache';
-import type { AxisScale, FontProperties, IDataEntry, IScaleSet, LabelTransition, ScaleInput } from './types';
+import type {
+  AxisScale,
+  FontProperties,
+  IChartDimensions,
+  IDataEntry,
+  IScaleSet,
+  LabelTransition,
+  ScaleInput
+} from './types';
 
 function createLabelPositionerForRenderingData<RenderingDatum extends object = object>({
   dataEntry,
@@ -14,27 +20,25 @@ function createLabelPositionerForRenderingData<RenderingDatum extends object = o
   horizontal,
   font,
   padding,
-  margin,
-  innerHeight
+  chartDimensions
 }: {
   dataEntry: IDataEntry;
   scales: IScaleSet;
   horizontal: boolean;
   font: FontProperties | string;
   padding: number;
-  margin: Margin;
-  innerWidth: number;
-  innerHeight: number;
+  chartDimensions: IChartDimensions;
 }): (datumWithLabel: { datum: RenderingDatum; label: string }) => LabelTransition | null {
-  const independentCenterAccessor = dataEntry.getIndependentCenterAccessor(scales);
-  const dependent1Accessor = dataEntry.getDependent1Accessor(scales);
+  const independentAccessor = dataEntry.getIndependentAccessor(scales, 'center');
+  const dependentAccessor = dataEntry.getDependentAccessor(scales);
 
   return ({ datum, label }: { datum: RenderingDatum; label: string }) => {
-    const independentCoord = independentCenterAccessor(datum);
+    const independentCoord = independentAccessor(datum);
     if (!isValidNumber(independentCoord)) {
       return null;
     }
-    const dependentCoord = dependent1Accessor(datum);
+
+    const dependentCoord = dependentAccessor(datum);
     if (!isValidNumber(dependentCoord)) {
       return null;
     }
@@ -42,18 +46,20 @@ function createLabelPositionerForRenderingData<RenderingDatum extends object = o
     const textDimension = horizontal
       ? measureTextWithCache(label, font)
       : getFontMetricsWithCache(font).height;
-    let dependent = dependentCoord + padding + textDimension * 0.5;
-    const maximumAllowedDependent = horizontal ? margin.left + innerWidth : margin.top + innerHeight;
-    const isOverflowing = dependent + textDimension * 0.5 > maximumAllowedDependent;
+    let adjustedDependentCoord = dependentCoord + padding + textDimension * 0.5;
+    const maximumAllowedDependent = horizontal
+      ? chartDimensions.chartAreaExcludingRangePadding.x1
+      : chartDimensions.chartAreaExcludingRangePadding.y1;
+    const isOverflowing = adjustedDependentCoord + textDimension * 0.5 > maximumAllowedDependent;
     const opacity = 1;
 
     if (isOverflowing) {
-      dependent = dependentCoord - (padding + textDimension * 0.5);
+      adjustedDependentCoord = dependentCoord - (padding + textDimension * 0.5);
     }
 
     return {
-      x: horizontal ? dependent : independentCoord,
-      y: horizontal ? independentCoord : dependent,
+      x: horizontal ? adjustedDependentCoord : independentCoord,
+      y: horizontal ? independentCoord : adjustedDependentCoord,
       opacity
     };
   };
@@ -70,9 +76,7 @@ export function usePointLabelTransitions(args: {
   formatter?: (value: ScaleInput<AxisScale>) => string;
   font: FontProperties | string;
   padding: number;
-  margin: Margin;
-  innerWidth: number;
-  innerHeight: number;
+  chartDimensions: IChartDimensions;
 }) {
   const { dataEntry, springConfig, animate, formatter } = args;
   const renderingDataWithLabels = getRenderingDataWithLabels(dataEntry, formatter);

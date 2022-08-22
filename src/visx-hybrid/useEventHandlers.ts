@@ -35,7 +35,12 @@ export function useEventHandlers<Datum extends object>({
   onPointerUp,
   allowedSources
 }: PointerEventHandlerParams<Datum>) {
-  const { width, height, horizontal, dataEntryStore, scales } = useXYChartContext<Datum>();
+  const {
+    chartDimensions: { width, height },
+    horizontal,
+    dataEntryStore,
+    scales
+  } = useXYChartContext<Datum>();
   // this logic is shared by pointerdown, pointerup, pointermove, and focus handlers
   const getHandlerParams = useCallback(
     (params?: HandlerParams) => {

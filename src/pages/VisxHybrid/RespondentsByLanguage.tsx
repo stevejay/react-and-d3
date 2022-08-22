@@ -9,7 +9,6 @@ import { sortBy } from 'lodash-es';
 import { EntityBucket, useLocaleQuery } from '@/api/stateofjs/generated';
 import { SectionHeading } from '@/components/SectionHeading';
 import { isDefined } from '@/types/typeguards/isDefined';
-import { FloatingUITooltip } from '@/visx-hybrid/FloatingUITooltip';
 import { InView } from '@/visx-hybrid/InView';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBandStripes } from '@/visx-hybrid/SVGBandStripes';
@@ -18,6 +17,7 @@ import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
+import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 import { LocationStatisticSelect } from '../StateOfJS/LocationStatisticSelect';
@@ -178,7 +178,7 @@ export function RespondentsByLanguage() {
                   hideAxisPath
                   tickLabelPadding={10}
                 />
-                <FloatingUITooltip<EntityBucket>
+                <SVGTooltip<EntityBucket>
                   snapTooltipToDatumY
                   showHorizontalCrosshair
                   showDatumGlyph={false}

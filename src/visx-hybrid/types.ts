@@ -16,8 +16,11 @@ export type AxisScaleOutput = number | NumberLike | undefined;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AxisScale<Output extends AxisScaleOutput = AxisScaleOutput> = D3Scale<Output, any, any>;
 
-/** The possible horizontal and vertical alignment values for chart text. */
+/** The possible horizontal and vertical alignment values for text on the chart. */
 export type TextAnchor = 'start' | 'middle' | 'end';
+
+/** The possible alignment values for position calculations. */
+export type Alignment = 'start' | 'center' | 'end';
 
 /** The chart margin type. */
 export type Margin = {
@@ -83,42 +86,35 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
   getOriginalData(): readonly Datum[];
   /** Returns the rendering data. This will differ from `getOriginalData` if the data entry required translating, for example for a stacked data series. */
   getRenderingData(): readonly RenderingDatum[];
-
-  getIndependent0Accessor(scales: IScaleSet): (datum: RenderingDatum) => number;
-  getIndependent1Accessor(scales: IScaleSet): (datum: RenderingDatum) => number;
-  getIndependentCenterAccessor(scales: IScaleSet): (datum: RenderingDatum) => number;
-  getDependent0Accessor(
+  /** Returns an accessor for getting the position of a rendering datum on the independent axis. */
+  getIndependentAccessor(scales: IScaleSet, alignment: Alignment): (datum: RenderingDatum) => number;
+  /** Returns an accessor for getting the baseline position of a rendering datum on its dependent axis. */
+  getBaselineDependentAccessor(
     scales: IScaleSet,
-    customAccessor?: (datum: RenderingDatum) => ScaleInput<AxisScale> // TODO RenderingDatum or Datum?????
+    customAccessor?: (datum: RenderingDatum) => ScaleInput<AxisScale>
   ): (datum: RenderingDatum) => number;
-  getDependent1Accessor(scales: IScaleSet): (datum: RenderingDatum) => number;
-  // getDefinedAccessor(scales: IScaleSet): (datum: RenderingDatum) => boolean;
-
-  // getAreaAccessorsForRenderingData(
-  //   scales: IScaleSet,
-  //   dependent0Accessor?: (datum: RenderingDatum) => ScaleInput<AxisScale>
-  // ): {
-  //   independent: (datum: RenderingDatum) => number;
-  //   dependent: (datum: RenderingDatum) => number;
-  //   dependent0: number | ((datum: RenderingDatum) => number);
-  //   defined: (datum: RenderingDatum) => boolean;
-  // };
-  // getBarAccessorsForRenderingData(scales: IScaleSet): {
-  //   independent0: (datum: RenderingDatum) => number;
-  //   independent: (datum: RenderingDatum) => number;
-  //   dependent0: (datum: RenderingDatum) => number;
-  //   dependent1: (datum: RenderingDatum) => number;
-  // };
-  // getPointAccessorsForRenderingData(scales: IScaleSet): {
-  //   independent: (datum: RenderingDatum) => number;
-  //   dependent: (datum: RenderingDatum) => number;
-  // };
+  /** Returns an accessor for getting the dependent value position of a rendering datum on its dependent axis. */
+  getDependentAccessor(scales: IScaleSet): (datum: RenderingDatum) => number;
 }
 
+/** Stores a chart's data entry objects, keyed by `dataKey` value. */
 export interface IDataEntryStore<Datum extends object = object, RenderingDatum extends object = object> {
   getByDataKey(dataKey: string): IDataEntry<Datum, RenderingDatum>;
   tryGetByDataKey(dataKey: string): IDataEntry<Datum, RenderingDatum> | null;
   getAllDataKeys(): readonly string[];
+}
+
+/** A chart area type */
+export type ChartArea = { x: number; y: number; x1: number; y1: number; width: number; height: number };
+
+export interface IChartDimensions {
+  /** The overall width of the chart, including range padding and margins. */
+  get width(): number;
+  /** The overall height of the chart, including range padding and margins. */
+  get height(): number;
+  get chartAreaExcludingRangePadding(): ChartArea;
+  get chartAreaIncludingRangePadding(): ChartArea;
+  get outerMarginArea(): ChartArea;
 }
 
 export interface IScaleSet {
@@ -130,14 +126,15 @@ export interface IScaleSet {
 
 export interface IXYChartContext<Datum extends object = object, RenderingDatum extends object = object> {
   scales: IScaleSet;
-  independentRangePadding: [number, number];
-  dependentRangePadding: [number, number];
-  width: number;
-  height: number;
-  innerWidth: number;
-  innerHeight: number;
-  margin: Margin;
-  outerMargin: Margin;
+  chartDimensions: IChartDimensions;
+  // independentRangePadding: [number, number];
+  // dependentRangePadding: [number, number];
+  // width: number;
+  // height: number;
+  // innerWidth: number;
+  // innerHeight: number;
+  // margin: Margin;
+  // outerMargin: Margin;
   dataEntryStore: IDataEntryStore<Datum, RenderingDatum>;
   horizontal: boolean;
   animate: boolean;

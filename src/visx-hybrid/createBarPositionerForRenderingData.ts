@@ -6,10 +6,10 @@ export function createBarPositionerForRenderingData<Datum extends object, Render
   dataEntry: IDataEntry<Datum, RenderingDatum>,
   horizontal: boolean
 ): (datum: RenderingDatum) => DatumPosition | null {
-  const independent0Accessor = dataEntry.getIndependent0Accessor(scales);
-  const independent1Accessor = dataEntry.getIndependent1Accessor(scales);
-  const dependent0Accessor = dataEntry.getDependent0Accessor(scales);
-  const dependent1Accessor = dataEntry.getDependent1Accessor(scales);
+  const independent0Accessor = dataEntry.getIndependentAccessor(scales, 'start');
+  const independent1Accessor = dataEntry.getIndependentAccessor(scales, 'end');
+  const dependent0Accessor = dataEntry.getBaselineDependentAccessor(scales);
+  const dependent1Accessor = dataEntry.getDependentAccessor(scales);
 
   return (datum: RenderingDatum) => {
     const independentStartCoord = independent0Accessor(datum);

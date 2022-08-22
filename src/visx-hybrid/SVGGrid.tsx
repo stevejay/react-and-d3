@@ -2,7 +2,7 @@ import type { SVGProps } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 
 import { calculateTicksData } from './calculateTicksData';
-import { defaultShapeRendering, zeroRangePadding } from './constants';
+import { defaultShapeRendering } from './constants';
 import type { AxisScale, GridType, ScaleInput, Variable } from './types';
 import { useGridTransitions } from './useGridTransitions';
 import { useXYChartContext } from './useXYChartContext';
@@ -43,15 +43,16 @@ export function SVGGrid({
 }: SVGGridProps) {
   const {
     scales,
-    independentRangePadding,
-    dependentRangePadding,
+    // independentRangePadding,
+    // dependentRangePadding,
     horizontal,
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     renderingOffset,
-    margin,
-    innerWidth,
-    innerHeight,
+    // margin,
+    // innerWidth,
+    // innerHeight,
+    chartDimensions,
     theme
   } = useXYChartContext();
 
@@ -62,15 +63,18 @@ export function SVGGrid({
     variable === 'independent'
       ? scales.independent
       : scales.getDependentScale(variable === 'alternateDependent');
-  const rangePadding = variable === 'independent' ? dependentRangePadding : independentRangePadding;
+  // const rangePadding = variable === 'independent' ? dependentRangePadding : independentRangePadding;
   const ticks = calculateTicksData({ scale, hideZero, tickCount, tickValues });
   const transitions = useGridTransitions({
     gridType,
     scale,
-    rangePadding: ignoreRangePadding ? zeroRangePadding : rangePadding,
-    margin,
-    innerWidth,
-    innerHeight,
+    chartDimensions,
+    ignoreRangePadding,
+
+    // rangePadding: ignoreRangePadding ? zeroRangePadding : rangePadding,
+    // margin,
+    // innerWidth,
+    // innerHeight,
     ticks,
     springConfig: springConfig ?? contextSpringConfig,
     animate: animate && contextAnimate,

@@ -41,7 +41,7 @@ type GlyphProps = {
   radius: number;
 };
 
-export type PopperTooltipProps<Datum extends object> = {
+export type SVGPopperTooltipProps<Datum extends object> = {
   /**
    * When TooltipContext.tooltipOpen=true, this function is invoked and if the
    * return value is non-null, its content is rendered inside the tooltip container.
@@ -86,7 +86,7 @@ const popperOptions: Partial<PopperOptions> = {
   ]
 };
 
-export function PopperTooltip<Datum extends object>({
+export function SVGPopperTooltip<Datum extends object>({
   renderTooltip,
   // scroll = true,
   showDatumGlyph = false,
@@ -98,8 +98,11 @@ export function PopperTooltip<Datum extends object>({
   snapTooltipToDatumY = false
 }: // verticalCrosshairStyle,
 // ...tooltipProps
-PopperTooltipProps<Datum>) {
-  const { innerHeight, innerWidth, margin, theme } = useXYChartContext();
+SVGPopperTooltipProps<Datum>) {
+  const {
+    chartDimensions: { chartAreaExcludingRangePadding },
+    theme
+  } = useXYChartContext();
   const tooltipContext = useTooltipStateContext<Datum>();
   const referenceElement = useRef<HTMLElement | null>(null); // TODO should this be state?
   const updateRef = useRef<ReturnType<typeof usePopper>['update']>();
@@ -193,8 +196,8 @@ PopperTooltipProps<Datum>) {
                 <animated.line
                   x1={tooltipLeft}
                   x2={tooltipLeft}
-                  y1={margin.top ?? 0}
-                  y2={(margin.top ?? 0) + (innerHeight ?? 0)}
+                  y1={chartAreaExcludingRangePadding.y}
+                  y2={chartAreaExcludingRangePadding.y1}
                   strokeWidth={1}
                   stroke="currentColor"
                   style={{ ...crosshairsStyle, ...springStyles }}
@@ -203,8 +206,8 @@ PopperTooltipProps<Datum>) {
               )}
               {showHorizontalCrosshair && (
                 <animated.line
-                  x1={margin.left ?? 0}
-                  x2={(margin.left ?? 0) + (innerWidth ?? 0)}
+                  x1={chartAreaExcludingRangePadding.x}
+                  x2={chartAreaExcludingRangePadding.x1}
                   y1={tooltipTop}
                   y2={tooltipTop}
                   strokeWidth={1}
