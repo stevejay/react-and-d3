@@ -22,7 +22,7 @@ export function useGlyphTransitions<Datum extends object, RenderingDatum extends
 }) {
   const renderingDataWithRadii = dataEntry
     .getRenderingData()
-    .filter((datum) => dataEntry.renderingDatumIsDefined(datum))
+    .filter((datum) => dataEntry.isRenderingDatumDefined(datum))
     .map((datum) => ({
       datum,
       size: typeof glyphSize === 'function' ? glyphSize(datum, dataEntry.dataKey) : glyphSize
@@ -35,7 +35,7 @@ export function useGlyphTransitions<Datum extends object, RenderingDatum extends
     update: ({ datum, size }) => ({ opacity: 1, ...createGlyphTransition(position(datum)), size }),
     leave: ({ size }) => ({ opacity: 0, size }),
     config: springConfig,
-    keys: ({ datum }) => dataEntry.keyAccessor(dataEntry.getOriginalDatumFromRenderingDatum(datum)),
+    keys: ({ datum }) => dataEntry.getTransitionKey(datum),
     immediate: !animate
   });
 }

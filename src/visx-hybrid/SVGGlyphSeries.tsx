@@ -26,7 +26,8 @@ export function SVGGlyphSeries<Datum extends object>({
   onPointerMove,
   onPointerDown,
   onPointerOut,
-  onPointerUp
+  onPointerUp,
+  colorAccessor
 }: SVGGlyphSeriesProps<Datum>) {
   const {
     scales,
@@ -60,7 +61,7 @@ export function SVGGlyphSeries<Datum extends object>({
           renderingOffset={renderingOffset}
           animate={animate && contextAnimate}
           springConfig={springConfig ?? contextSpringConfig}
-          colorAccessor={dataEntry.colorAccessor}
+          colorAccessor={colorAccessor ?? dataEntry.colorAccessor}
           glyphSize={glyphSize}
           renderGlyph={renderGlyph}
           {...eventEmitters}

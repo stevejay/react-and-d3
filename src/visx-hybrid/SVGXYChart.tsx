@@ -263,8 +263,10 @@ function InnerChart<
   const { style, className = '', ...restSvgProps } = svgProps;
 
   const transitions = useTransition(dataContextValue, {
+    initial: { opacity: 0 },
     from: { opacity: 0 },
     enter: { opacity: 1 },
+    update: { opacity: 1 }, // Appears to be required.
     leave: { opacity: 0 },
     config: springConfig,
     key: Boolean(dataContextValue),

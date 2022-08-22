@@ -11,7 +11,7 @@ export function getRenderingDataWithLabels<Datum extends object, RenderingDatum 
 }[] {
   return dataEntry
     .getRenderingData()
-    .filter((datum) => dataEntry.renderingDatumIsDefined(datum))
+    .filter((datum) => dataEntry.isRenderingDatumDefined(datum))
     .map((datum) => {
       const value = dataEntry.dependentAccessor(dataEntry.getOriginalDatumFromRenderingDatum(datum));
       return { datum, label: isNil(value) ? '' : formatter?.(value) ?? '' };

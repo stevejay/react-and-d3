@@ -21,7 +21,7 @@ export function createLineSeriesPathShape<Datum extends object>({
   // const definedAccessor = dataEntry.getDefinedAccessor(scales);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const definedAccessor = (datum: any) => dataEntry.renderingDatumIsDefined(datum);
+  const definedAccessor = (datum: any) => dataEntry.isRenderingDatumDefined(datum);
 
   const line = d3Line<Datum>();
   line.defined(definedAccessor);

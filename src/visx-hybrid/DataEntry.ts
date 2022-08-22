@@ -67,30 +67,13 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     return this._data;
   }
 
-  renderingDatumIsDefined(datum: Datum): boolean {
+  isRenderingDatumDefined(datum: Datum): boolean {
     return !isNil(datum) && !isNil(this.independentAccessor(datum)) && !isNil(this.dependentAccessor(datum));
   }
 
-  originalDatumIsDefined(datum: Datum): boolean {
-    return this.renderingDatumIsDefined(datum);
+  isOriginalDatumDefined(datum: Datum): boolean {
+    return this.isRenderingDatumDefined(datum);
   }
-
-  // getRenderingDataWithLabels(
-  //   labelFormatter: undefined | ((value: ScaleInput<AxisScale>) => string)
-  // ): readonly { datum: Datum; label: string }[] {
-  //   return this.getRenderingData().map((datum) => {
-  //     const value = this.dependentAccessor(datum);
-  //     return { datum, label: isNil(value) ? '' : labelFormatter?.(value) ?? '' };
-  //   });
-  // }
-
-  // getLabelForRenderingDatum(
-  //   datum: Datum,
-  //   labelFormatter: undefined | ((value: ScaleInput<AxisScale>) => string)
-  // ): string {
-  //   const value = this.dependentAccessor(datum);
-  //   return isNil(value) ? '' : labelFormatter?.(value) ?? '';
-  // }
 
   getDomainValuesForIndependentScale(): readonly ScaleInput<AxisScale>[] {
     return this._data.map((datum) => this.independentAccessor(datum)).filter(isDefined);
@@ -108,9 +91,9 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
       : [];
   }
 
-  get keyAccessor() {
-    return this._keyAccessor;
-  }
+  // get keyAccessor() {
+  //   return this._keyAccessor;
+  // }
 
   get colorAccessor() {
     return this._colorAccessor;
@@ -122,6 +105,10 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
 
   get dependentAccessor() {
     return this._dependentAccessor;
+  }
+
+  getTransitionKey(datum: Datum): string | number {
+    return this._keyAccessor(this.getOriginalDatumFromRenderingDatum(datum));
   }
 
   getOriginalDatumFromRenderingDatum(datum: Datum): Datum {
@@ -333,12 +320,12 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     return this._data;
   }
 
-  renderingDatumIsDefined(datum: Datum): boolean {
+  isRenderingDatumDefined(datum: Datum): boolean {
     return !isNil(datum) && !isNil(this.independentAccessor(datum)) && !isNil(this.dependentAccessor(datum));
   }
 
-  originalDatumIsDefined(datum: Datum): boolean {
-    return this.renderingDatumIsDefined(datum);
+  isOriginalDatumDefined(datum: Datum): boolean {
+    return this.isRenderingDatumDefined(datum);
   }
 
   getDomainValuesForIndependentScale(): readonly ScaleInput<AxisScale>[] {
@@ -357,9 +344,9 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
       : [];
   }
 
-  get keyAccessor() {
-    return this._keyAccessor;
-  }
+  // get keyAccessor() {
+  //   return this._keyAccessor;
+  // }
 
   get colorAccessor() {
     return this._colorAccessor;
@@ -371,6 +358,10 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
 
   get dependentAccessor() {
     return this._dependentAccessor;
+  }
+
+  getTransitionKey(datum: Datum): string | number {
+    return this._keyAccessor(this.getOriginalDatumFromRenderingDatum(datum));
   }
 
   getOriginalDatumFromRenderingDatum(datum: Datum): Datum {
@@ -659,12 +650,16 @@ export class StackDataEntry<Datum extends object>
     return this._dependentAccessor;
   }
 
-  get keyAccessor() {
-    return this._keyAccessor;
-  }
+  // get keyAccessor() {
+  //   return this._keyAccessor;
+  // }
 
   get colorAccessor() {
     return this._colorAccessor;
+  }
+
+  getTransitionKey(datum: StackDatum<AxisScale, AxisScale, Datum>): string | number {
+    return this._keyAccessor(this.getOriginalDatumFromRenderingDatum(datum));
   }
 
   getOriginalDatumFromRenderingDatum(datum: StackDatum<AxisScale, AxisScale, Datum>): Datum {
@@ -729,11 +724,11 @@ export class StackDataEntry<Datum extends object>
     return this._stackData;
   }
 
-  renderingDatumIsDefined(datum: StackDatum<AxisScale, AxisScale, Datum>): boolean {
+  isRenderingDatumDefined(datum: StackDatum<AxisScale, AxisScale, Datum>): boolean {
     return !isNil(datum) && !isNil(getStack(datum)) && !isNil(getSecondItem(datum));
   }
 
-  originalDatumIsDefined(datum: Datum): boolean {
+  isOriginalDatumDefined(datum: Datum): boolean {
     return !isNil(datum) && !isNil(this.independentAccessor(datum)) && !isNil(this.dependentAccessor(datum));
   }
 

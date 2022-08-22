@@ -80,8 +80,8 @@ export function SVGBarGroup<Datum extends object>({
 
   return (
     <>
-      {transitions((styles, datum) => {
-        const child = barSeriesChildren.find((child) => child.props.dataKey === datum.dataKey);
+      {transitions((styles, dataEntry) => {
+        const child = barSeriesChildren.find((child) => child.props.dataKey === dataEntry.dataKey);
         const { groupProps, dataKey } = child?.props ?? {};
         const { style, ...restGroupProps } = groupProps ?? {};
         return (
@@ -92,14 +92,14 @@ export function SVGBarGroup<Datum extends object>({
           >
             <SVGBarSeriesRenderer
               scales={scales}
-              dataEntry={datum}
+              dataEntry={dataEntry}
               horizontal={horizontal}
               renderingOffset={renderingOffset}
               animate={animate && contextAnimate}
               springConfig={springConfig ?? contextSpringConfig}
-              colorAccessor={colorAccessor ?? datum.colorAccessor}
+              colorAccessor={colorAccessor ?? dataEntry.colorAccessor}
               renderBar={renderBar}
-              seriesIsLeaving={!dataKeys.includes(datum.dataKey)}
+              seriesIsLeaving={!dataKeys.includes(dataEntry.dataKey)}
               {...eventEmitters}
             />
           </animated.g>

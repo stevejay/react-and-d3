@@ -25,7 +25,7 @@ export function createAreaSeriesPathShape<Datum extends object>({
   const resolvedDependent0Accessor = dataEntry.getDependent0Accessor(scales, dependent0Accessor);
   const dependent1Accessor = dataEntry.getDependent1Accessor(scales);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const definedAccessor = (datum: any) => dataEntry.renderingDatumIsDefined(datum);
+  const definedAccessor = (datum: any) => dataEntry.isRenderingDatumDefined(datum);
 
   // dataEntry.getDefinedAccessor(scales);
 

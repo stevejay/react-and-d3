@@ -48,12 +48,12 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
   get independentAccessor(): (datum: Datum) => ScaleInput<AxisScale>;
   /** The dependent scale accessor for the given original datum object. This will be for the main dependent scale or the alternate dependent scale. */
   get dependentAccessor(): (datum: Datum) => ScaleInput<AxisScale>;
-  /** The accessor for the key value for the given original datum object. This is useful for use with react-spring. */
-  get keyAccessor(): (datum: Datum) => string | number;
+  /** Returns an accessor that can be used to get a key value from a rendering datum object that is suitable for use with transition animations. */
+  getTransitionKey(datum: RenderingDatum): string | number;
   /** Returns `true` if the given original datum object and its independent and dependent values are all defined. */
-  originalDatumIsDefined(datum: Datum): boolean;
+  isOriginalDatumDefined(datum: Datum): boolean;
   /** Returns `true` if the given rendering datum object and its independent and dependent values are all defined. */
-  renderingDatumIsDefined(datum: RenderingDatum): boolean;
+  isRenderingDatumDefined(datum: RenderingDatum): boolean;
   /** Returns the domain values for this data entry that can be used to determine the domain range for the independent scale. */
   getDomainValuesForIndependentScale(): readonly ScaleInput<AxisScale>[];
   /** Returns the domain values for this data entry that can be used to determine the domain range for the main dependent scale. */

@@ -30,7 +30,7 @@ export function useBarTransitions<Datum extends object, RenderingDatum extends o
       seriesIsLeaving ? { opacity: 1 } : { opacity: 1, ...createPolygonTransition(position(datum)) },
     leave: () => ({ opacity: 0 }),
     config: springConfig,
-    keys: (datum) => dataEntry.keyAccessor(dataEntry.getOriginalDatumFromRenderingDatum(datum)),
+    keys: (datum) => dataEntry.getTransitionKey(datum),
     immediate: !animate
   });
 }
