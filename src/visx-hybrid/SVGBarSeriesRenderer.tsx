@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, SVGProps } from 'react';
 import type { SpringConfig } from 'react-spring';
 
 import type { IDataEntry, IScaleSet, RenderAnimatedBarProps } from './types';
@@ -14,6 +14,7 @@ export type SVGBarSeriesRendererProps<Datum extends object> = {
   springConfig: SpringConfig;
   colorAccessor: (datum: Datum) => string;
   renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
+  elementProps?: (datum: Datum) => Omit<SVGProps<SVGElement>, 'ref'>;
   seriesIsLeaving?: boolean;
 } & Pick<
   React.SVGProps<SVGRectElement | SVGPathElement>,

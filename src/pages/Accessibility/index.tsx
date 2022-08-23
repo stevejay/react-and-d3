@@ -23,17 +23,9 @@ function AccessibilityPage() {
           WAI-ARIA Graphics Module
         </ProseExternalLink>{' '}
         describes how an SVG data visualisation can be made accessible to screen reader users. Graphics role
-        attributes are used to annotate elements in the SVG. Labels and role descriptions are then added to
-        them. You are free to phrase those labels and description however you see fit, although you may need
-        to work around how the screen reader actually reads out that information.
-      </Paragraph>
-      <Paragraph>
-        You have a choice between annotating existing elements in the chart, such as the &lt;rect&gt; bar
-        elements in a bar chart, or adding elements specifically for accessibility. I prefer the latter
-        approach. The existing elements in the chart might need to be rendered in a particular hierarchy for
-        each series to animate correctly when entering and exiting. This arrangement could be at odds with how
-        I want the screen reader user to be able to navigate the data. This also results in a better
-        separation of concerns.
+        attributes are used to annotate elements in the SVG. Labels and role descriptions are added to them.
+        You are free to phrase those labels and descriptions however you see fit, although you may need to
+        work around how the screen reader actually reads out that information.
       </Paragraph>
       <Paragraph>
         The stacked bar chart below follows the WAI-ARIA Graphics Module recommendations. Use a screen reader
@@ -66,16 +58,16 @@ function AccessibilityPage() {
         ) and the role description text (<em>&ldquo;Strategy 1&rdquo;</em>).
       </Paragraph>
       <Paragraph>
-        When I then navigate forward, I hear the description for the second sales strategy:
+        When I then navigate forward, the description for the second sales strategy is read out:
       </Paragraph>
       <VoiceOverQuote>
         Using Strategy 2: Product A sold 84 units, Product B sold 20 units, Product C sold 40 units, Strategy
         2
       </VoiceOverQuote>
       <Paragraph>
-        This annotation does lead to repetition of the sales strategy number but I think it is reasonable. I
-        could remove the repetition by rephrasing the aria label text but this could make the information
-        harder to understand:
+        My particular aria label text does lead to repetition of the sales strategy number but I think this is
+        reasonable. I could remove the repetition by rephrasing the aria label text but this might make the
+        information harder to understand:
       </Paragraph>
       <VoiceOverQuote>
         Product A sold 84 units, Product B sold 20 units, Product C sold 40 units, Strategy 2
@@ -86,10 +78,17 @@ function AccessibilityPage() {
         markup is sufficient.
       </Paragraph>
       <Paragraph>
-        I grouped the data in the chart so that the values for each product are read out all together for a
-        given strategy. This mirrors how the tooltip works, and it facilitates comparison between the products
-        for a given sales strategy. It would also be valid to render each product series separately. You can
-        try this variation below:
+        I had a choice between annotating the existing elements in the chart, specifically the &lt;rect&gt;
+        bar elements that form each stack, or adding elements specifically for accessibility. Both approaches
+        are valid, but in this case I had to use the latter approach. The existing elements in the chart are
+        rendered by series rather than by stack, in order that each series as a whole animates correctly when
+        entering and exiting. This arrangement is at odds with how I want the screen reader user to navigate
+        the data: by strategy rather than by product.
+      </Paragraph>
+      <Paragraph>
+        Nevertheless, it would also be valid to annotate the chart so that the screen reader user navigates
+        the data by product. This can be accomplished by annotating the existing elements in the chart. You
+        can try this variation below:
       </Paragraph>
       <StackedBarChartWithAlternativeAlly />
       <Paragraph>
@@ -120,7 +119,8 @@ function AccessibilityPage() {
       <VoiceOverQuote>10 units sold, Strategy 4</VoiceOverQuote>
       <VoiceOverQuote>0 units sold, Strategy 5</VoiceOverQuote>
       <Paragraph>
-        The best approach to use will depend on the data and which makes that data easiest to comprehend.
+        The best approach to use will depend on the data and how you want the screen reader user to navigate
+        it.
       </Paragraph>
       <SectionHeading>Adding descriptions</SectionHeading>
       <Paragraph>

@@ -36,7 +36,7 @@ function addGlyph<Datum extends object>(
   }
 }
 
-export type RenderTooltipParams<Datum extends object> = TooltipStateContextType<Datum> & {
+export type TooltipRenderParams<Datum extends object> = TooltipStateContextType<Datum> & {
   colorScale?: PickD3Scale<'ordinal', string, string>;
 };
 
@@ -46,7 +46,7 @@ export type SVGTooltipProps<Datum extends object> = {
    * return value is non-null, its content is rendered inside the tooltip container.
    * Content will be rendered in an HTML parent.
    */
-  renderTooltip: (params: RenderTooltipParams<Datum>) => ReactNode;
+  renderTooltip: (params: TooltipRenderParams<Datum>) => ReactNode;
   /** Whether to snap tooltip + crosshair coord to the nearest Datum independent coord instead of the event coord. */
   snapTooltipToIndependentScale?: boolean;
   /** Whether to snap tooltip + crosshair coord to the nearest Datum dependent coord instead of the event coord. */

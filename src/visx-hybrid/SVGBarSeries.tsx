@@ -9,11 +9,13 @@ import { useXYChartContext } from './useXYChartContext';
 export type SVGBarSeriesProps<Datum extends object> = BasicSeriesProps<Datum> & {
   colorAccessor?: (datum: Datum) => string;
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
+  elementProps?: (datum: Datum) => Omit<SVGProps<SVGElement>, 'ref'>;
   renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
 };
 
 export function SVGBarSeries<Datum extends object>({
   groupProps,
+  elementProps,
   springConfig,
   animate = true,
   dataKey,
@@ -61,6 +63,7 @@ export function SVGBarSeries<Datum extends object>({
           springConfig={springConfig ?? contextSpringConfig}
           colorAccessor={colorAccessor ?? dataEntry.colorAccessor}
           renderBar={renderBar}
+          elementProps={elementProps}
           {...eventEmitters}
         />
       }

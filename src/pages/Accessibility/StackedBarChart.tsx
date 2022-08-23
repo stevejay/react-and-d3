@@ -15,7 +15,7 @@ import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarStack } from '@/visx-hybrid/SVGBarStack';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
-import { RenderTooltipParams, SVGTooltip } from '@/visx-hybrid/SVGTooltip';
+import { SVGTooltip, TooltipRenderParams } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 const data = [
@@ -50,7 +50,7 @@ const dependentScaleConfig: LinearScaleConfig<number> = {
 
 const dependentAxisTickLabelFormatter = format(',.1~f');
 
-function Tooltip({ tooltipData }: RenderTooltipParams<CategoryValueListDatum<string, number>>) {
+function Tooltip({ tooltipData }: TooltipRenderParams<CategoryValueListDatum<string, number>>) {
   return (
     <div className="flex flex-col space-y-1 p-1">
       {dataKeys.map((dataKey) => {
@@ -58,7 +58,8 @@ function Tooltip({ tooltipData }: RenderTooltipParams<CategoryValueListDatum<str
         return isNil(datum) ? null : (
           <p key={dataKey} className="flex items-center gap-2">
             <span style={{ backgroundColor: legend[dataKey].color }} className="block w-3 h-3 rounded-sm" />
-            {legend[dataKey].label}: {dependentAxisTickLabelFormatter(datum.values[dataKey])}
+            <span className="text-slate-300">{legend[dataKey].label}:</span>{' '}
+            {dependentAxisTickLabelFormatter(datum.values[dataKey])}
           </p>
         );
       })}

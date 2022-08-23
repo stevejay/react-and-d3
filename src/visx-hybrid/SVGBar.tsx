@@ -10,10 +10,11 @@ export type SVGBarProps<Datum extends object> = RenderAnimatedBarProps<Datum> &
 export function SVGBar<Datum extends object>({
   springValues: { points, opacity },
   dataKey: _dataKey,
-  datum: _datum,
+  datum,
   index: _index,
   horizontal: _horizontal,
   color,
+  elementProps,
   ...rest
 }: SVGBarProps<Datum>) {
   const { style, ...restBarProps } = rest;
@@ -27,6 +28,7 @@ export function SVGBar<Datum extends object>({
       role="presentation"
       aria-hidden
       {...restBarProps}
+      {...elementProps?.(datum)}
     />
   );
 }

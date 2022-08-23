@@ -413,6 +413,7 @@ export type RenderAnimatedBarProps<Datum extends object> = {
   dataKey: string;
   horizontal: boolean;
   color: string;
+  elementProps?: (datum: Datum) => Omit<SVGProps<SVGElement>, 'ref'>;
 } & Pick<
   React.SVGProps<SVGRectElement | SVGPathElement>,
   'onPointerMove' | 'onPointerOut' | 'onPointerDown' | 'onPointerUp' | 'onBlur' | 'onFocus'

@@ -79,7 +79,7 @@ export function SVGBarStack<Datum extends object>({
     <>
       {transitions((styles, dataEntry) => {
         const child = seriesChildren.find((child) => child.props.dataKey === dataEntry.dataKey);
-        const { groupProps } = child?.props ?? {};
+        const { groupProps, elementProps } = child?.props ?? {};
         const { style, ...restGroupProps } = groupProps ?? {};
         return (
           <animated.g
@@ -96,6 +96,7 @@ export function SVGBarStack<Datum extends object>({
               springConfig={springConfig ?? contextSpringConfig}
               colorAccessor={colorAccessor ?? dataEntry.colorAccessor}
               renderBar={renderBar}
+              elementProps={elementProps}
               {...eventEmitters}
             />
           </animated.g>
