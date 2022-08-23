@@ -3,6 +3,7 @@ import { easeCubicInOut } from 'd3-ease';
 
 import { PageHeading } from '@/components/PageHeading';
 import { Paragraph } from '@/components/Paragraph';
+import { ProseExternalLink } from '@/components/ProseExternalLink';
 import { ProseInternalLink } from '@/components/ProseInternalLink';
 import { SectionHeading } from '@/components/SectionHeading';
 
@@ -25,13 +26,17 @@ function TooltipPage() {
       </Paragraph>
       <ul className="px-8 my-4 font-light leading-relaxed list-disc max-w-prose text-slate-200">
         <li>
-          What should the z-order of the tooltip be? Should it sit above or below content like the header and
-          footer?
+          What should the z-order of the tooltip be? Should it sit above or below content like the page header
+          and footer?
         </li>
-        <li>Should the tooltip be rendered in a portal to achieve that desired z-order?</li>
+        <li>
+          Should the tooltip be rendered in a portal to achieve the desired z-order? (A portal would also be
+          important if there is overflow clipping on the chart or one of its parent element, and the tooltip
+          needs to be able to break out of that clipping.)
+        </li>
         <li>What user interactions should trigger the tooltip to show?</li>
         <li>What user interactions should trigger the tooltip to hide?</li>
-        <li>How should the tooltip be shown and dismissed on a touchscreen device?</li>
+        <li>How should the tooltip be shown and hidden on a touchscreen device?</li>
         <li>Should the appearance and disappearance of the tooltip be animated?</li>
         <li>Should the movement of the tooltip be animated?</li>
         <li>
@@ -39,12 +44,20 @@ function TooltipPage() {
           in the scenario when the user is only moving the pointer over the chart to get to somewhere else on
           the page.)
         </li>
+        <li>
+          Should the position of the tooltip be constrained to be within the chart area or can it escape that
+          area?
+        </li>
         <li>Should the target of the tooltip be indicated with a crosshair?</li>
         <li>Should the target of the tooltip be indicated with a glyph (e.g., a dot)?</li>
-        <li>How should the tooltip container be styled to differentiate it from the regular page content?</li>
-        <li>Does the tooltip need to include interactive content, such as a link or a button?</li>
-        <li>Should the width and/or height of the tooltip be restricted?</li>
         <li>What orientation should the tooltip be relative to the element that it annotates?</li>
+        <li>How should the tooltip container be styled to differentiate it from the regular page content?</li>
+        <li>
+          Does the tooltip need to include interactive content, such as a link or a button? (If there is no
+          interactive content then you would likely want to set the pointer-events CSS property to
+          &lsquo;none&rsquo; on the tooltip container.)
+        </li>
+        <li>Should the width and/or height of the tooltip be restricted?</li>
         <li>Should the tooltip include an arrow pointing to the element that it annotates?</li>
         <li>Should the tooltip snap horizontally or vertically to the element that it annotates?</li>
         <li>
@@ -54,14 +67,19 @@ function TooltipPage() {
         <li>Should the tooltip disappear immediately or only after a delay?</li>
         <li>Should the tooltip disappear when the ESC key is pressed?</li>
         <li>Should the tooltip disappear when the user scrolls the page?</li>
-        <li>Should the tooltip disappear if the user clicks elsewhere on the page?</li>
+        <li>Should the tooltip disappear if the user clicks or taps elsewhere on the page?</li>
         <li>Should the tooltip be accessible to screen readers or hidden from them?</li>
       </ul>
       <Paragraph>
-        You will likely also need to ensure that a re-render of the tooltip does not result in an unnecessary
-        re-render of the chart.
+        You also need to be aware of a possible performance issue if a re-render of the tooltip also results
+        in an unnecessary re-render of the whole chart. Ideally this would not happen.
       </Paragraph>
       <SectionHeading>The tooltip</SectionHeading>
+      <Paragraph>
+        The chart below has a tooltip that behaves in a similar way to the tooltip in the{' '}
+        <ProseExternalLink href="https://airbnb.io/visx">visx</ProseExternalLink> library:
+      </Paragraph>
+      <BarChartExample />
       <Paragraph>
         This tooltip shows when the user hovers their mouse over the chart. It also shows if the user has a
         hybrid or touch device and they tap on the screen. The tooltip is placed just above where the user has
@@ -87,7 +105,7 @@ function TooltipPage() {
           touch interface user which bar the tooltip is showing for.
         </li>
       </ul>
-      <BarChartExample />
+
       <BarChartWithTooltipExample springConfig={springConfig} />
       <Paragraph>
         The following is an example of a stacked bar chart with a tooltip. The values for multiple series are
