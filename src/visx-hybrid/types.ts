@@ -106,17 +106,20 @@ export interface IDataEntryStore<Datum extends object = object, RenderingDatum e
   getAllDataKeys(): readonly string[];
 }
 
-/** A chart area type */
+/** Chart area type */
 export type ChartArea = { x: number; y: number; x1: number; y1: number; width: number; height: number };
 
 export interface IChartDimensions {
-  /** The overall width of the chart, including range padding and margins. */
+  /** The total width of the chart, including all range padding and margins. */
   get width(): number;
-  /** The overall height of the chart, including range padding and margins. */
+  /** The total height of the chart, including all range padding and margins. */
   get height(): number;
+  /** The central chart area, inside any range padding. */
   get chartAreaExcludingRangePadding(): ChartArea;
+  /** The central chart area, including any range padding. */
   get chartAreaIncludingRangePadding(): ChartArea;
-  get outerMarginArea(): ChartArea;
+  /** The area containing the axes and the chart area. */
+  get chartWithAxesArea(): ChartArea;
 }
 
 export interface IScaleSet {

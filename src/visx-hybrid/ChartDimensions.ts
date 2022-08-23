@@ -76,7 +76,7 @@ export class ChartDimensions implements IChartDimensions {
     return this._chartAreaIncludingRangePadding;
   }
 
-  get outerMarginArea(): ChartArea {
+  get chartWithAxesArea(): ChartArea {
     return this._outerMarginArea;
   }
 }

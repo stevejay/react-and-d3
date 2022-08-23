@@ -11,26 +11,34 @@ import type {
   TextStyles
 } from './types';
 
-function getX(axisOrientation: AxisOrientation, range: [number, number], outerMarginArea: ChartArea): number {
+function getX(
+  axisOrientation: AxisOrientation,
+  range: [number, number],
+  chartWithAxesArea: ChartArea
+): number {
   let x = 0;
   if (axisOrientation === 'top' || axisOrientation === 'bottom') {
     x = (Number(range[0]) + Number(range[1])) * 0.5;
   } else if (axisOrientation === 'left') {
-    x = outerMarginArea.x;
+    x = chartWithAxesArea.x;
   } else if (axisOrientation === 'right') {
-    x = outerMarginArea.x1;
+    x = chartWithAxesArea.x1;
   }
   return x;
 }
 
-function getY(axisOrientation: AxisOrientation, range: [number, number], outerMarginArea: ChartArea): number {
+function getY(
+  axisOrientation: AxisOrientation,
+  range: [number, number],
+  chartWithAxesArea: ChartArea
+): number {
   let y = 0;
   if (axisOrientation === 'left' || axisOrientation === 'right') {
     y = (Number(range[0]) + Number(range[1])) * 0.5;
   } else if (axisOrientation === 'top') {
-    y = outerMarginArea.y;
+    y = chartWithAxesArea.y;
   } else if (axisOrientation === 'bottom') {
-    y = outerMarginArea.y1;
+    y = chartWithAxesArea.y1;
   }
   return y;
 }
@@ -85,9 +93,6 @@ export interface SVGAxisLabelProps {
   /** Props to apply to the axis label. */
   labelProps?: TextProps;
   chartDimensions: IChartDimensions;
-  // width: number;
-  // height: number;
-  // outerMargin: Margin;
   labelAlignment: LabelAlignment;
 }
 
@@ -104,8 +109,8 @@ export function SVGAxisLabel({
   const { style: labelPropsStyle, className: labelPropsClassname, ...restLabelProps } = labelProps;
   const fontMetrics = getFontMetricsWithCache(labelStyles?.font ?? defaultBigLabelsFont);
   const style = combineFontPropertiesWithStyles(labelStyles?.font, labelPropsStyle);
-  const x = getX(axisOrientation, axisPathRange, chartDimensions.outerMarginArea);
-  const y = getY(axisOrientation, axisPathRange, chartDimensions.outerMarginArea);
+  const x = getX(axisOrientation, axisPathRange, chartDimensions.chartWithAxesArea);
+  const y = getY(axisOrientation, axisPathRange, chartDimensions.chartWithAxesArea);
   const textAnchor: TextAnchor = getTextAnchor(axisOrientation, labelAlignment);
   const verticalAnchor: TextAnchor = getVerticalAnchor(axisOrientation, labelAlignment);
   const angle = getAngle(axisOrientation, labelAlignment);
