@@ -33,8 +33,8 @@ const xScale: BandScaleConfig<string> = {
 
 const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
 
-function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) {
-  switch (key) {
+function colorAccessor(dataKey: string) {
+  switch (dataKey) {
     case 'one':
       return schemeCategory10[0];
     case 'two':
@@ -70,7 +70,7 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
             data={data}
             independentAccessor={(datum) => datum.category}
             dependentAccessor={(datum) => datum.values[dataKey]}
-            colorAccessor={colorAccessor}
+            colorAccessor={() => colorAccessor(dataKey)}
             renderBar={SVGBar}
           />
         ))}
@@ -116,16 +116,15 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
       />
       <SVGAreaAnnotation datum={data[1]} dataKeyRef={dataKeys[2]} />
       <SVGTooltip<CategoryValueListDatum<string, number>>
-        snapTooltipToDatumX //={false}
-        snapTooltipToDatumY={false}
-        showVerticalCrosshair //={false}
+        snapTooltipToIndependentScale
+        showIndependentScaleCrosshair
         renderTooltip={({ tooltipData }) => (
           <div className="flex flex-col space-y-1 p-1">
             {dataKeys.map((dataKey) => {
               const datum = tooltipData?.datumByKey.get(dataKey)?.datum;
               return isNil(datum) ? null : (
                 <p key={dataKey}>
-                  <span style={{ color: colorAccessor(datum, dataKey) }}>{capitalize(dataKey)}</span>:{' '}
+                  <span style={{ color: colorAccessor(dataKey) }}>{capitalize(dataKey)}</span>:{' '}
                   {datum.values[dataKey] ?? '--'}
                 </p>
               );

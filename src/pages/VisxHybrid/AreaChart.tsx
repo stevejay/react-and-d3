@@ -122,8 +122,8 @@ export function AreaChart({ data }: AreaChartProps) {
       />
       <SVGPointAnnotation datum={data[2]} dataKeyRef="data-a" />
       <SVGTooltip<TimeValueDatum<number>>
-        snapTooltipToDatumX
-        showVerticalCrosshair
+        snapTooltipToIndependentScale
+        showIndependentScaleCrosshair
         showDatumGlyph
         renderTooltip={({ tooltipData }) => {
           const datum = tooltipData?.nearestDatum;

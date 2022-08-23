@@ -179,8 +179,8 @@ export function RespondentsByLanguage() {
                   tickLabelPadding={10}
                 />
                 <SVGTooltip<EntityBucket>
-                  snapTooltipToDatumY
-                  showHorizontalCrosshair
+                  snapTooltipToIndependentScale
+                  showIndependentScaleCrosshair
                   showDatumGlyph={false}
                   renderTooltip={({ tooltipData }) => {
                     const datum = tooltipData?.nearestDatum;

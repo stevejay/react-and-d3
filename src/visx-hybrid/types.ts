@@ -48,7 +48,7 @@ export interface IDataEntry<Datum extends object = object, RenderingDatum extend
   /** The key accessor for the given original datum object. */
   get keyAccessor(): (datum: Datum) => string | number;
   /** The accessor for getting a color for the given original datum object. Will be a fallback color accessor if none is given. */
-  get colorAccessor(): (datum: Datum, dataKey: string) => string;
+  get colorAccessor(): (datum: Datum) => string;
   /** The independent scale accessor for the given original datum object. */
   get independentAccessor(): (datum: Datum) => ScaleInput<AxisScale>;
   /** The dependent scale accessor for the given original datum object. This will be for the main dependent scale or the alternate dependent scale. */
@@ -295,7 +295,7 @@ export type StackedData<
 /** Call signature of PointerEvent callback. */
 export interface EventHandlerParams<Datum> {
   /** Series key that datum belongs to. */
-  key: string;
+  dataKey: string;
   /** Index of datum in series data array. */
   index: number;
   /** Datum. */
@@ -315,7 +315,7 @@ export interface EventHandlerParams<Datum> {
 
 export type TooltipDatum<Datum extends object> = {
   /** Series key that datum belongs to. */
-  key: string;
+  dataKey: string;
   /** Index of datum in series data array. */
   index: number;
   /** Datum. */

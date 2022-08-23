@@ -12,7 +12,7 @@ export type SVGBarSeriesRendererProps<Datum extends object> = {
   renderingOffset: number;
   animate: boolean;
   springConfig: SpringConfig;
-  colorAccessor: (datum: Datum, dataKey: string) => string;
+  colorAccessor: (datum: Datum) => string;
   renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
   seriesIsLeaving?: boolean;
 } & Pick<
@@ -48,7 +48,7 @@ export function SVGBarSeriesRenderer<Datum extends object>({
       {transitions((springValues, datum, _, index) => {
         const dataKey = dataEntry.dataKey;
         const originalDatum = dataEntry.getOriginalDatumFromRenderingDatum(datum);
-        const color = colorAccessor?.(originalDatum, dataKey) ?? fallbackColor;
+        const color = colorAccessor?.(originalDatum) ?? fallbackColor;
         return renderBar({ springValues, datum: originalDatum, index, dataKey, horizontal, color, ...rest });
       })}
     </>

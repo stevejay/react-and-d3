@@ -28,7 +28,7 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
   private _dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   private _usesAlternateDependent: boolean;
   private _keyAccessor: (datum: Datum) => string | number;
-  private _colorAccessor: (datum: Datum, dataKey: string) => string;
+  private _colorAccessor: (datum: Datum) => string;
 
   constructor({
     dataKey,
@@ -44,7 +44,7 @@ export class SimpleDataEntry<Datum extends object> implements IDataEntry<Datum, 
     independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
     dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
     usesAlternateDependent: boolean;
-    colorAccessor: (datum: Datum, dataKey: string) => string;
+    colorAccessor: (datum: Datum) => string;
     keyAccessor?: (datum: Datum) => string | number;
   }) {
     this._dataKey = dataKey;
@@ -196,7 +196,7 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
   private _dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   private _usesAlternateDependent: boolean;
   private _keyAccessor: (datum: Datum) => ScaleInput<AxisScale>;
-  private _colorAccessor: (datum: Datum, dataKey: string) => string;
+  private _colorAccessor: (datum: Datum) => string;
 
   constructor({
     dataKey,
@@ -212,7 +212,7 @@ export class GroupDataEntry<Datum extends object> implements IDataEntry<Datum, D
     independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
     dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
     usesAlternateDependent: boolean;
-    colorAccessor: (datum: Datum, dataKey: string) => string;
+    colorAccessor: (datum: Datum) => string;
     keyAccessor?: (datum: Datum) => string | number;
   }) {
     this._dataKey = dataKey;
@@ -408,7 +408,7 @@ export class StackDataEntry<Datum extends object>
   private _dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
   private _usesAlternateDependent: boolean;
   private _keyAccessor: (datum: Datum) => string | number;
-  private _colorAccessor: (datum: Datum, dataKey: string) => string;
+  private _colorAccessor: (datum: Datum) => string;
   private _originalData: readonly Datum[];
 
   constructor({
@@ -425,7 +425,7 @@ export class StackDataEntry<Datum extends object>
     independentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
     dependentAccessor: (datum: Datum) => ScaleInput<AxisScale>;
     usesAlternateDependent: boolean;
-    colorAccessor: (datum: Datum, dataKey: string) => string;
+    colorAccessor: (datum: Datum) => string;
     keyAccessor?: (datum: Datum) => string | number;
   }) {
     this._dataKey = dataKey;

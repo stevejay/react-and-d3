@@ -12,8 +12,8 @@ export type SVGGlyphSeriesRendererProps<Datum extends object> = {
   renderingOffset: number;
   animate: boolean;
   springConfig: SpringConfig;
-  colorAccessor: (datum: Datum, dataKey: string) => string;
-  glyphSize: number | ((datum: Datum, dataKey: string) => number);
+  colorAccessor: (datum: Datum) => string;
+  glyphSize: number | ((datum: Datum) => number);
   renderGlyph: (props: RenderAnimatedGlyphProps<Datum>) => ReactNode;
 } & Pick<
   React.SVGProps<SVGRectElement | SVGPathElement | SVGRectElement | SVGCircleElement>, // TODO ???
@@ -48,7 +48,7 @@ export function SVGGlyphSeriesRenderer<Datum extends object>({
       {transitions((springValues, datum, _, index) => {
         const dataKey = dataEntry.dataKey;
         const originalDatum = dataEntry.getOriginalDatumFromRenderingDatum(datum.datum);
-        const color = colorAccessor?.(originalDatum, dataKey) ?? fallbackColor;
+        const color = colorAccessor?.(originalDatum) ?? fallbackColor;
         return renderGlyph({
           springValues,
           datum: originalDatum,

@@ -23,7 +23,7 @@ export type SVGBarStackProps<Datum extends object> = {
   springConfig?: SpringConfig;
   enableEvents?: boolean;
   children?: ReactNode;
-  colorAccessor?: (datum: Datum, key: string) => string;
+  colorAccessor?: (datum: Datum) => string;
   renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
 } & Pick<
   BasicSeriesProps<Datum>,

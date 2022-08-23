@@ -2,16 +2,16 @@ import { isNil } from './isNil';
 import type { LegendDatum } from './types';
 
 export interface LegendProps {
-  legendData: Record<string, LegendDatum>;
+  config: Record<string, LegendDatum>;
   colorAccessor?: (dataKey: string) => string;
 }
 
-export function Legend({ legendData, colorAccessor }: LegendProps) {
-  const dataKeys = Object.keys(legendData);
+export function Legend({ config, colorAccessor }: LegendProps) {
+  const dataKeys = Object.keys(config);
   return (
     <ul className="flex gap-4 justify-center mb-4" role="presentation">
       {dataKeys.map((dataKey) => {
-        const legendDatum = legendData[dataKey];
+        const legendDatum = config[dataKey];
         return legendDatum ? (
           <li key={dataKey} className="flex items-center gap-2" role="presentation" aria-hidden>
             {(isNil(legendDatum.glyph) || legendDatum.glyph === 'square') && (

@@ -130,8 +130,8 @@ export function BarChart({ data }: BarChartProps) {
       />
       <SVGAreaAnnotation datum={data[2]} dataKeyRef="data-a" />
       <SVGTooltip<CategoryValueDatum<string, number>>
-        snapTooltipToDatumX
-        showVerticalCrosshair
+        snapTooltipToIndependentScale
+        showIndependentScaleCrosshair
         showDatumGlyph={false}
         renderTooltip={({ tooltipData }) => {
           const datum = tooltipData?.nearestDatum?.datum;

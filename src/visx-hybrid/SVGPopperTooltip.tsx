@@ -17,13 +17,13 @@ import { useXYChartContext } from './useXYChartContext';
 function addGlyph<Datum extends object>(
   glyphProps: GlyphProps[],
   datum: TooltipDatum<Datum>,
-  key: string | number,
+  dataKey: string | number,
   radius: number,
   strokeWidth: number
 ) {
   const { snapLeft: left, snapTop: top } = datum;
   if (isValidNumber(left) && isValidNumber(top)) {
-    glyphProps.push({ key, left, top, radius, strokeWidth });
+    glyphProps.push({ dataKey, left, top, radius, strokeWidth });
   }
 }
 
@@ -32,7 +32,7 @@ export type RenderTooltipParams<Datum extends object> = TooltipStateContextType<
 };
 
 type GlyphProps = {
-  key: string | number;
+  dataKey: string | number;
   left?: number;
   top?: number;
   fill?: string;
@@ -168,7 +168,7 @@ SVGPopperTooltipProps<Datum>) {
         addGlyph(glyphProps, datum, key, radius, strokeWidth);
       });
     } else if (nearestDatum) {
-      addGlyph(glyphProps, nearestDatum, nearestDatum.key, radius, strokeWidth);
+      addGlyph(glyphProps, nearestDatum, nearestDatum.dataKey, radius, strokeWidth);
     }
   }
 
@@ -216,10 +216,10 @@ SVGPopperTooltipProps<Datum>) {
                   {...restCrosshairsStyles}
                 />
               )}
-              {glyphProps.map(({ key, left, top, strokeWidth, radius }) =>
+              {glyphProps.map(({ dataKey, left, top, strokeWidth, radius }) =>
                 isNil(top) || isNil(left) ? null : (
                   <animated.circle
-                    key={key}
+                    key={dataKey}
                     cx={left}
                     cy={top}
                     r={radius}

@@ -6,7 +6,7 @@ import { isNil } from 'lodash-es';
 
 import { ChartTitle } from '@/components/ChartTitle';
 import type { CategoryValueListDatum } from '@/types';
-import { darkTheme } from '@/utils/darkChartTheme';
+import { darkTheme } from '@/utils/chartThemes';
 import { InView } from '@/visx-hybrid/InView';
 import { Legend } from '@/visx-hybrid/Legend';
 import { SVGA11ySeries } from '@/visx-hybrid/SVGA11ySeries';
@@ -59,7 +59,7 @@ export function StackedBarChartWithAlternativeAlly() {
   const dataKeys = Object.keys(legend) as (keyof typeof legend)[];
   return (
     <div className="my-12">
-      <Legend legendData={legend} />
+      <Legend config={legend} />
       <div className="relative w-full h-[384px]">
         <InView>
           <SVGXYChart
@@ -104,14 +104,14 @@ export function StackedBarChartWithAlternativeAlly() {
               tickFormat={dependentAxisTickLabelFormatter}
             />
             <SVGTooltip<CategoryValueListDatum<string, number>>
-              snapTooltipToDatumX
-              showVerticalCrosshair
+              snapTooltipToIndependentScale
+              showIndependentScaleCrosshair
               renderTooltip={({ tooltipData }) => (
                 <div className="flex flex-col space-y-1 p-1">
                   {dataKeys.map((dataKey) => {
                     const datum = tooltipData?.datumByKey.get(dataKey)?.datum;
                     return isNil(datum) ? null : (
-                      <p key={dataKey} className="flex items-center gap-1">
+                      <p key={dataKey} className="flex items-center gap-2">
                         <span
                           style={{ backgroundColor: legend[dataKey].color }}
                           className="block w-3 h-3 rounded-sm"

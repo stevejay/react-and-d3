@@ -7,7 +7,7 @@ import { useSeriesEvents } from './useSeriesEvents';
 import { useXYChartContext } from './useXYChartContext';
 
 export type SVGBarSeriesProps<Datum extends object> = BasicSeriesProps<Datum> & {
-  colorAccessor?: (datum: Datum, dataKey: string) => string;
+  colorAccessor?: (datum: Datum) => string;
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
   renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;
 };

@@ -8,8 +8,8 @@ import { useXYChartContext } from './useXYChartContext';
 
 export type SVGGlyphSeriesProps<Datum extends object> = BasicSeriesProps<Datum> & {
   groupProps?: SVGProps<SVGGElement>;
-  colorAccessor?: (datum: Datum, dataKey: string) => string;
-  glyphSize?: number | ((datum: Datum, dataKey: string) => number);
+  colorAccessor?: (datum: Datum) => string;
+  glyphSize?: number | ((datum: Datum) => number);
   renderGlyph: (props: RenderAnimatedGlyphProps<Datum>) => ReactNode;
 };
 

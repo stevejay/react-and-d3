@@ -54,7 +54,7 @@ export function TooltipProvider<Datum extends object>({
         tooltipTop: nearestDatum.svgPoint?.y,
         tooltipData: {
           nearestDatum: { ...nearestDatum, distance: distances[indexOfNearestDatum] },
-          datumByKey: new Map(eventParamsList.map((item) => [item.key, item]))
+          datumByKey: new Map(eventParamsList.map((item) => [item.dataKey, item]))
         }
       });
     },

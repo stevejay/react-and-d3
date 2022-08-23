@@ -6,7 +6,7 @@ import { isNil } from 'lodash-es';
 
 import { ChartTitle } from '@/components/ChartTitle';
 import type { CategoryValueListDatum } from '@/types';
-import { darkTheme } from '@/utils/darkChartTheme';
+import { darkTheme } from '@/utils/chartThemes';
 import { InView } from '@/visx-hybrid/InView';
 import { Legend } from '@/visx-hybrid/Legend';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
@@ -15,7 +15,7 @@ import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
 import { SVGBarStack } from '@/visx-hybrid/SVGBarStack';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
-import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
+import { RenderTooltipParams, SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
 const data = [
@@ -31,6 +31,8 @@ const legend = {
   b: { label: 'Product 2', color: schemeCategory10[1] },
   c: { label: 'Product 3', color: schemeCategory10[2] }
 } as const;
+
+const dataKeys = Object.keys(legend) as (keyof typeof legend)[];
 
 const independentScaleConfig: BandScaleConfig<string> = {
   type: 'band',
@@ -48,12 +50,27 @@ const dependentScaleConfig: LinearScaleConfig<number> = {
 
 const dependentAxisTickLabelFormatter = format(',.1~f');
 
+function Tooltip({ tooltipData }: RenderTooltipParams<CategoryValueListDatum<string, number>>) {
+  return (
+    <div className="flex flex-col space-y-1 p-1">
+      {dataKeys.map((dataKey) => {
+        const datum = tooltipData?.datumByKey.get(dataKey)?.datum;
+        return isNil(datum) ? null : (
+          <p key={dataKey} className="flex items-center gap-2">
+            <span style={{ backgroundColor: legend[dataKey].color }} className="block w-3 h-3 rounded-sm" />
+            {legend[dataKey].label}: {dependentAxisTickLabelFormatter(datum.values[dataKey])}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
 export function StackedBarChart() {
   const labelId = useId();
-  const dataKeys = Object.keys(legend) as (keyof typeof legend)[];
   return (
     <div className="my-12">
-      <Legend legendData={legend} />
+      <Legend config={legend} />
       <div className="relative w-full h-[384px]">
         <InView>
           <SVGXYChart
@@ -101,24 +118,9 @@ export function StackedBarChart() {
               tickFormat={dependentAxisTickLabelFormatter}
             />
             <SVGTooltip<CategoryValueListDatum<string, number>>
-              snapTooltipToDatumX
-              showVerticalCrosshair
-              renderTooltip={({ tooltipData }) => (
-                <div className="flex flex-col space-y-1 p-1">
-                  {dataKeys.map((dataKey) => {
-                    const datum = tooltipData?.datumByKey.get(dataKey)?.datum;
-                    return isNil(datum) ? null : (
-                      <p key={dataKey} className="flex items-center gap-1">
-                        <span
-                          style={{ backgroundColor: legend[dataKey].color }}
-                          className="block w-3 h-3 rounded-sm"
-                        />
-                        {legend[dataKey].label}: {dependentAxisTickLabelFormatter(datum.values[dataKey])}
-                      </p>
-                    );
-                  })}
-                </div>
-              )}
+              snapTooltipToIndependentScale
+              showIndependentScaleCrosshair
+              renderTooltip={Tooltip}
             />
           </SVGXYChart>
         </InView>

@@ -20,7 +20,7 @@ type SVGBarGroupProps<Datum extends object> = {
   /** Group band scale padding, [0, 1] where 0 = no padding, 1 = no bar. */
   padding?: number;
   /** Optional color accessor that overrides any color accessor on the group's children. */
-  colorAccessor?: (datum: Datum, dataKey: string) => string;
+  colorAccessor?: (datum: Datum) => string;
   // component?: SVGBarComponent<Datum>;
   enableEvents?: boolean;
   renderBar: (props: RenderAnimatedBarProps<Datum>) => ReactNode;

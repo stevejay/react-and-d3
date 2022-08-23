@@ -36,7 +36,7 @@ const dependentScaleConfig: LinearScaleConfig<number> = {
   zero: true
 } as const;
 
-function colorAccessor(_d: CategoryValueListDatum<Date, number>, key: string) {
+function colorAccessor(key: string) {
   switch (key) {
     case 'one':
       return schemeCategory10[0];
@@ -132,10 +132,8 @@ export function StackedAreaChart({ data, dataKeys }: StackedAreaChartProps) {
       />
       <SVGAreaAnnotation datum={data[1]} dataKeyRef={dataKeys[2]} />
       <SVGTooltip<CategoryValueListDatum<Date, number>>
-        snapTooltipToDatumX //={false}
-        snapTooltipToDatumY={false}
-        showVerticalCrosshair //={false}
-        // showDatumGlyph
+        snapTooltipToIndependentScale
+        showIndependentScaleCrosshair
         showSeriesGlyphs
         renderTooltip={({ tooltipData }) => (
           <div className="flex flex-col space-y-1 p-1">
@@ -143,7 +141,7 @@ export function StackedAreaChart({ data, dataKeys }: StackedAreaChartProps) {
               const datum = tooltipData?.datumByKey.get(dataKey)?.datum;
               return isNil(datum) ? null : (
                 <p key={dataKey}>
-                  <span style={{ color: colorAccessor(datum, dataKey) }}>{capitalize(dataKey)}</span>:{' '}
+                  <span style={{ color: colorAccessor(dataKey) }}>{capitalize(dataKey)}</span>:{' '}
                   {datum.values[dataKey]}
                 </p>
               );

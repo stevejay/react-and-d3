@@ -82,7 +82,7 @@ export function useEventHandlers<Datum extends object>({
             });
 
             if (nearestDatum) {
-              pointerParamsByKey[dataKey] = { key: dataKey, svgPoint, event, ...nearestDatum };
+              pointerParamsByKey[dataKey] = { dataKey, svgPoint, event, ...nearestDatum };
 
               // compute nearest Datum if not emitting events for all keys
               if (dataKeyOrKeysRef === POINTER_EVENTS_NEAREST) {

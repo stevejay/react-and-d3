@@ -21,7 +21,6 @@ export const darkTheme: IXYChartTheme = {
     className: 'text-slate-600'
   },
   bigLabels: {
-    // font-style, font-variant, font-weight, font-size/line-height, font-family
     font: 'normal normal normal 16px/1 "Readex Pro"',
     className: 'text-slate-400'
   },
@@ -36,7 +35,7 @@ export const darkTheme: IXYChartTheme = {
   tooltip: {
     container: {
       className:
-        'text-slate-900 bg-slate-100 pointer-events-none px-2 py-1 shadow-md max-w-[280px] text-sm leading-none rounded-sm'
+        'max-w-xs p-2 text-base text-left border rounded shadow-sm opacity-0 select-none border-slate-600 bg-slate-900'
     }
   }
 };

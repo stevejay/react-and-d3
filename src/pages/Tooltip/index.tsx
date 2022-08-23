@@ -19,9 +19,35 @@ function TooltipPage() {
         <title>Tooltip - React and D3</title>
       </Helmet>
       <Paragraph>
-        There are many possible behaviours for a chart tooltip. On this page I describe what is generally the
-        best implementation to use.
+        There are many decisions to be made when you create a tooltip for a data visualisation:
       </Paragraph>
+      <ul>
+        <li>Should the tooltip show on hover or only on a click?</li>
+        <li>Should the tooltip hide when hovering ceases or only on another click?</li>
+        <li>How should the tooltip be shown and dismissed on a touchscreen device?</li>
+        <li>Should the appearance and disappearance of the tooltip be animated?</li>
+        <li>
+          Should the tooltip appear immediately or only after a delay? (This would prevent the tooltip showing
+          in the scenario when the user is only moving the pointer over the chart to get to somewhere else on
+          the page.)
+        </li>
+        <li>Should the target of the tooltip be indicated with a crosshair?</li>
+        <li>Should the target of the tooltip be indicated with a glyph (e.g., a dot)?</li>
+        <li>How will the tooltip container be styled to differentiate it from the regular page content?</li>
+        <li>Should the tooltip include an arrow pointing to the element that it annotates?</li>
+        <li>Should the tooltip snap horizontally or vertically to the element that it annotates?</li>
+        <li>
+          In a chart with stacked data, should the tooltip handle each stack as a single element or as
+          multiple elements?
+        </li>
+        <li>Should the tooltip disappear immediately or only after a delay?</li>
+        <li>Should the tooltip disappear when the ESC key is pressed?</li>
+        <li>Should the tooltip disappear when the user scrolls the page?</li>
+        <li>Should the tooltip disappear if the user clicks elsewhere on the page?</li>
+      </ul>
+      You also need to ensure that rendering the tooltip does not cause the chart to also render. This could
+      be a performance issue as, for example, hover events will be generated continuously as the user moves a
+      mouse across a chart.
       <SectionHeading>The &lsquo;Follow On Hover&rsquo; Tooltip</SectionHeading>
       <Paragraph>
         The tooltip shows when the user hovers their mouse over the chart. It also shows if the user has a

@@ -30,8 +30,8 @@ const independentScale: BandScaleConfig<string> = {
   round: true
 } as const;
 
-function colorAccessor(_d: CategoryValueListDatum<string, number>, key: string) {
-  switch (key) {
+function colorAccessor(dataKey: string) {
+  switch (dataKey) {
     case 'one':
       return schemeCategory10[0]; // blue
     case 'two':
@@ -74,7 +74,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
             data={data}
             independentAccessor={(datum) => datum.category}
             dependentAccessor={(datum) => datum.values[dataKey]}
-            colorAccessor={colorAccessor}
+            colorAccessor={() => colorAccessor(dataKey)}
             renderBar={SVGBarWithLine}
           />
         ))}
@@ -117,9 +117,8 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
         tickLabelPadding={6}
       />
       <SVGTooltip<CategoryValueListDatum<string, number>>
-        snapTooltipToDatumX //={false}
-        snapTooltipToDatumY={false}
-        showVerticalCrosshair //={false}
+        snapTooltipToIndependentScale
+        showIndependentScaleCrosshair
         showDatumGlyph
         renderTooltip={({ tooltipData }) => {
           const datum = tooltipData?.nearestDatum;
@@ -128,9 +127,9 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
           }
           return (
             <div>
-              <span style={{ color: colorAccessor(datum.datum, datum.key) }}>{datum.key}</span>
+              <span style={{ color: colorAccessor(datum.dataKey) }}>{datum.dataKey}</span>
               {': '}
-              {datum.datum.values[datum.key] ?? '--'}
+              {datum.datum.values[datum.dataKey] ?? '--'}
             </div>
           );
         }}

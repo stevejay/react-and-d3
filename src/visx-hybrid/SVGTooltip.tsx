@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode, SVGProps, useCallback, useRef } from 'react';
+import { CSSProperties, ReactNode, useCallback, useRef } from 'react';
 import { animated, useTransition } from 'react-spring';
 import { offset, useFloating } from '@floating-ui/react-dom-interactions';
 import type { PickD3Scale } from '@visx/scale';
@@ -13,8 +13,18 @@ import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 import { useTooltipStateContext } from './useTooltipStateContext';
 import { useXYChartContext } from './useXYChartContext';
 
+type TooltipGlyphProps = {
+  key: string | number;
+  left?: number;
+  top?: number;
+  fill?: string;
+  stroke?: string;
+  strokeWidth: number;
+  radius: number;
+};
+
 function addGlyph<Datum extends object>(
-  glyphProps: GlyphProps[],
+  glyphProps: TooltipGlyphProps[],
   datum: TooltipDatum<Datum>,
   key: string | number,
   radius: number,
@@ -30,16 +40,6 @@ export type RenderTooltipParams<Datum extends object> = TooltipStateContextType<
   colorScale?: PickD3Scale<'ordinal', string, string>;
 };
 
-type GlyphProps = {
-  key: string | number;
-  left?: number;
-  top?: number;
-  fill?: string;
-  stroke?: string;
-  strokeWidth: number;
-  radius: number;
-};
-
 export type SVGTooltipProps<Datum extends object> = {
   /**
    * When TooltipContext.tooltipOpen=true, this function is invoked and if the
@@ -47,24 +47,24 @@ export type SVGTooltipProps<Datum extends object> = {
    * Content will be rendered in an HTML parent.
    */
   renderTooltip: (params: RenderTooltipParams<Datum>) => ReactNode;
-  /** Whether to snap tooltip + crosshair x-coord to the nearest Datum x-coord instead of the event x-coord. */
-  snapTooltipToDatumX?: boolean;
-  /** Whether to snap tooltip + crosshair y-coord to the nearest Datum y-coord instead of the event y-coord. */
-  snapTooltipToDatumY?: boolean;
-  /** Whether to show a vertical line at tooltip position. */
-  showVerticalCrosshair?: boolean;
-  /** Whether to show a horizontal line at tooltip position. */
-  showHorizontalCrosshair?: boolean;
+  /** Whether to snap tooltip + crosshair coord to the nearest Datum independent coord instead of the event coord. */
+  snapTooltipToIndependentScale?: boolean;
+  /** Whether to snap tooltip + crosshair coord to the nearest Datum dependent coord instead of the event coord. */
+  snapTooltipToDependentScale?: boolean;
+  /** Whether to show a line indicating the independent scale value at the tooltip position. */
+  showIndependentScaleCrosshair?: boolean;
+  /** Whether to show a line indicating the dependent scale value at the tooltip position. */
+  showDependentScaleCrosshair?: boolean;
   /** Whether to show a glyph at the tooltip position for the (single) nearest Datum. */
   showDatumGlyph?: boolean;
   /** Whether to show a glyph for the nearest Datum in each series. */
   showSeriesGlyphs?: boolean;
-  /** Optional styles for the vertical crosshair, if visible. */
-  verticalCrosshairStyle?: SVGProps<SVGLineElement>;
-  /** Optional styles for the vertical crosshair, if visible. */
-  horizontalCrosshairStyle?: SVGProps<SVGLineElement>;
-  /** Optional styles for the point, if visible. */
-  glyphStyle?: SVGProps<SVGCircleElement>;
+  // /** Optional styles for the vertical crosshair, if visible. */
+  // verticalCrosshairStyle?: SVGProps<SVGLineElement>;
+  // /** Optional styles for the vertical crosshair, if visible. */
+  // horizontalCrosshairStyle?: SVGProps<SVGLineElement>;
+  // /** Optional styles for the point, if visible. */
+  // glyphStyle?: SVGProps<SVGCircleElement>;
 } & Omit<BaseTooltipProps, 'left' | 'top' | 'children'>;
 
 const invisibleStyle: CSSProperties = {
@@ -81,20 +81,23 @@ export function SVGTooltip<Datum extends object>({
   renderTooltip,
   showDatumGlyph = false,
   showSeriesGlyphs = false,
-  showHorizontalCrosshair = false,
-  showVerticalCrosshair = false,
-  snapTooltipToDatumX = false,
-  snapTooltipToDatumY = false
+  showIndependentScaleCrosshair = false,
+  showDependentScaleCrosshair = false,
+  snapTooltipToIndependentScale = false,
+  snapTooltipToDependentScale = false
 }: SVGTooltipProps<Datum>) {
   const {
     chartDimensions: { chartAreaExcludingRangePadding },
-    theme
+    theme,
+    horizontal
   } = useXYChartContext();
   const tooltipContext = useTooltipStateContext<Datum>();
   const referenceElement = useRef<HTMLElement | null>(null); // TODO should this be state?
   const updateRef = useRef<ReturnType<typeof useFloating>['update']>();
   const nearestDatum = tooltipContext?.tooltipData?.nearestDatum;
   const showTooltip = tooltipContext?.tooltipOpen;
+  const snapTooltipToDatumX = horizontal ? snapTooltipToDependentScale : snapTooltipToIndependentScale;
+  const snapTooltipToDatumY = horizontal ? snapTooltipToIndependentScale : snapTooltipToDependentScale;
   let tooltipLeft = tooltipContext?.tooltipLeft;
   let tooltipTop = tooltipContext?.tooltipTop;
 
@@ -142,7 +145,7 @@ export function SVGTooltip<Datum extends object>({
   }, [showTooltip, tooltipLeft, tooltipTop]);
 
   // collect positions + styles for glyphs; glyphs always snap to Datum, not event coords
-  const glyphProps: GlyphProps[] = [];
+  const glyphProps: TooltipGlyphProps[] = [];
 
   if (showDatumGlyph || showSeriesGlyphs) {
     const radius = Number(theme?.tooltip?.glyph?.radius ?? defaultTooltipGlyphRadius);
@@ -153,7 +156,7 @@ export function SVGTooltip<Datum extends object>({
         addGlyph(glyphProps, datum, key, radius, strokeWidth);
       });
     } else if (nearestDatum) {
-      addGlyph(glyphProps, nearestDatum, nearestDatum.key, radius, strokeWidth);
+      addGlyph(glyphProps, nearestDatum, nearestDatum.dataKey, radius, strokeWidth);
     }
   }
 
@@ -169,6 +172,9 @@ export function SVGTooltip<Datum extends object>({
   const { strokeWidth: _strokeWidth, radius: _radius, ...restGlyphStyles } = theme?.tooltip?.glyph ?? {};
   const { style: containerStyle, ...restContainerStyles } =
     theme?.tooltip?.container ?? defaultTheme.tooltip?.container ?? {};
+
+  const showHorizontalCrosshair = horizontal ? showIndependentScaleCrosshair : showDependentScaleCrosshair;
+  const showVerticalCrosshair = horizontal ? showDependentScaleCrosshair : showIndependentScaleCrosshair;
 
   return (
     <>
