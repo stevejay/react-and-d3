@@ -20,6 +20,8 @@ export type SVGBarSeriesLabelsProps = {
   /** Optional; defaults to `true`. Ignored if `labelFormatter` prop is not given. */
   positionOutsideOnOverflow?: boolean;
   hideOnOverflow?: boolean;
+  /** Hide zero labels. Optional. Defaults to `false`. */
+  hideZero?: boolean;
   padding?: number;
 };
 
@@ -32,7 +34,8 @@ export function SVGBarSeriesLabels({
   position = 'inside',
   positionOutsideOnOverflow = true,
   hideOnOverflow = false,
-  padding = defaultDatumLabelPadding
+  hideZero = false,
+  padding
 }: SVGBarSeriesLabelsProps) {
   const {
     scales,
@@ -44,7 +47,7 @@ export function SVGBarSeriesLabels({
     theme
   } = useXYChartContext();
   const dataEntry = dataEntryStore.getByDataKey(dataKeyRef);
-  const labelStyles = theme.datumLabels ?? theme.smallLabels;
+  const labelStyles = theme.datumLabels?.text ?? theme.smallLabels;
   const { font = defaultSmallLabelsFont, ...otherLabelStyles } = labelStyles ?? {};
   const fontMetrics = getFontMetricsWithCache(font);
   const transitions = useBarLabelTransitions({
@@ -59,7 +62,8 @@ export function SVGBarSeriesLabels({
     position,
     positionOutsideOnOverflow,
     hideOnOverflow,
-    padding
+    hideZero,
+    padding: padding ?? theme.datumLabels?.padding ?? defaultDatumLabelPadding
   });
   return (
     <g data-testid={`series-labels-${dataKeyRef}`} {...groupProps}>

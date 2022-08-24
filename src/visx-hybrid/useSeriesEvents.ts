@@ -62,7 +62,7 @@ export function useSeriesEvents<Datum extends object>({
 
   const onPointerOut = useCallback(
     (event: PointerEvent) => {
-      hideTooltip();
+      hideTooltip(event);
       if (event && onPointerOutProps) {
         onPointerOutProps(event);
       }
@@ -72,7 +72,7 @@ export function useSeriesEvents<Datum extends object>({
 
   const onBlur = useCallback(
     (event: FocusEvent) => {
-      hideTooltip();
+      hideTooltip(event);
       if (event && onBlurProps) {
         onBlurProps(event);
       }

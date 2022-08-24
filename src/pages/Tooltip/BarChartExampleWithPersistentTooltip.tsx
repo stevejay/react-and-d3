@@ -1,7 +1,7 @@
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 
-import { BarChart } from './NewBarChart';
+import { BarChartWithPersistentTooltip } from './BarChartWithPersistentTooltip';
 
 const dataSets = [
   [
@@ -24,11 +24,11 @@ const dataSets = [
   ]
 ];
 
-export function BarChartExample() {
+export function BarChartExampleWithPersistentTooltip() {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8 space-y-4">
-      <BarChart data={data} />
+      <BarChartWithPersistentTooltip data={data} />
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>
   );

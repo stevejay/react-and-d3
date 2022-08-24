@@ -10,8 +10,7 @@ export function combineBarStackData<
   DependentScale extends AxisScale,
   Datum extends object
 >(
-  dataEntries: readonly IDataEntry<Datum, Datum>[],
-  horizontal?: boolean
+  dataEntries: readonly IDataEntry<Datum, Datum>[]
 ): StackDataWithSums<IndependentScale, DependentScale, Datum>[] {
   type MapValue = StackDataWithSums<IndependentScale, DependentScale, Datum>;
   const dataByStackValue = new Map<string, MapValue>();
@@ -22,12 +21,9 @@ export function combineBarStackData<
     if (!independentAccessor || !dependentAccessor) {
       return;
     }
-    const [stackAccessor, valueAccessor] = horizontal
-      ? [dependentAccessor, independentAccessor]
-      : [independentAccessor, dependentAccessor];
     dataEntry.getRenderingData().forEach((originalDatum) => {
-      const stack = stackAccessor(originalDatum);
-      const numericValue = valueAccessor(originalDatum);
+      const stack = independentAccessor(originalDatum);
+      const numericValue = dependentAccessor(originalDatum);
       const stackKey = String(stack);
       const stackValue =
         dataByStackValue.get(stackKey) ??

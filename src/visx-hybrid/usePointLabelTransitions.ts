@@ -77,9 +77,10 @@ export function usePointLabelTransitions(args: {
   font: FontProperties | string;
   padding: number;
   chartDimensions: IChartDimensions;
+  hideZero: boolean;
 }) {
-  const { dataEntry, springConfig, animate, formatter } = args;
-  const renderingDataWithLabels = getRenderingDataWithLabels(dataEntry, formatter);
+  const { dataEntry, hideZero, springConfig, animate, formatter } = args;
+  const renderingDataWithLabels = getRenderingDataWithLabels(dataEntry, hideZero, formatter);
   const position = createLabelPositionerForRenderingData(args);
   return useTransition<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

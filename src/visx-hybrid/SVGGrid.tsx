@@ -3,11 +3,11 @@ import { animated, SpringConfig } from 'react-spring';
 
 import { calculateTicksData } from './calculateTicksData';
 import { defaultShapeRendering } from './constants';
-import type { AxisScale, GridType, ScaleInput, Variable } from './types';
+import type { AxisScale, GridType, ScaleInput, TickDatum, Variable } from './types';
 import { useGridTransitions } from './useGridTransitions';
 import { useXYChartContext } from './useXYChartContext';
 
-interface SVGGridOwnProps {
+export interface SVGGridProps {
   /** Whether the stripes are for the independent or the dependent axis. */
   variable: Variable;
   /** Whether the stripes should animate. Optional. Defaults to `true`. */
@@ -24,10 +24,11 @@ interface SVGGridOwnProps {
   tickValues?: ScaleInput<AxisScale>[];
   /** Props to apply to the <g> element that wraps the grid. */
   groupProps?: Omit<SVGProps<SVGGElement>, 'ref'>;
+  /** Props to apply to each grid line. */
+  lineProps?:
+    | Omit<SVGProps<SVGLineElement>, 'ref' | 'x1' | 'y1' | 'x2' | 'y2'>
+    | ((datum: TickDatum) => Omit<SVGProps<SVGLineElement>, 'ref' | 'x1' | 'y1' | 'x2' | 'y2'>);
 }
-
-export type SVGGridProps = SVGGridOwnProps &
-  Omit<Omit<SVGProps<SVGLineElement>, 'ref' | 'x1' | 'y1' | 'x2' | 'y2'>, keyof SVGGridOwnProps>;
 
 /** Renders a series of parallel lines for the given axis (independent or dependent). */
 export function SVGGrid({
@@ -39,19 +40,14 @@ export function SVGGrid({
   ignoreRangePadding = true,
   tickCount,
   tickValues,
-  ...lineProps
+  lineProps
 }: SVGGridProps) {
   const {
     scales,
-    // independentRangePadding,
-    // dependentRangePadding,
     horizontal,
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     renderingOffset,
-    // margin,
-    // innerWidth,
-    // innerHeight,
     chartDimensions,
     theme
   } = useXYChartContext();
@@ -63,45 +59,41 @@ export function SVGGrid({
     variable === 'independent'
       ? scales.independent
       : scales.getDependentScale(variable === 'alternateDependent');
-  // const rangePadding = variable === 'independent' ? dependentRangePadding : independentRangePadding;
   const ticks = calculateTicksData({ scale, hideZero, tickCount, tickValues });
   const transitions = useGridTransitions({
     gridType,
     scale,
     chartDimensions,
     ignoreRangePadding,
-
-    // rangePadding: ignoreRangePadding ? zeroRangePadding : rangePadding,
-    // margin,
-    // innerWidth,
-    // innerHeight,
     ticks,
     springConfig: springConfig ?? contextSpringConfig,
     animate: animate && contextAnimate,
     renderingOffset
   });
-  const { style, className, stroke, strokeWidth, strokeLinecap, strokeDasharray, ...restLineProps } =
-    lineProps;
   return (
     <g data-testid={`grid-${variable}`} {...groupProps}>
-      {transitions(({ opacity, x1, y1, x2, y2 }) => (
-        <animated.line
-          x1={x1}
-          y1={y1}
-          x2={x2}
-          y2={y2}
-          role="presentation"
-          aria-hidden
-          style={{ ...gridTheme?.style, ...style, opacity }}
-          className={`${gridTheme?.className ?? ''} ${className ?? ''}`}
-          stroke={stroke ?? gridTheme?.stroke ?? 'currentColor'}
-          strokeWidth={strokeWidth ?? gridTheme?.strokeWidth ?? 1}
-          strokeLinecap={strokeLinecap ?? gridTheme?.strokeLinecap ?? 'square'}
-          strokeDasharray={strokeDasharray ?? gridTheme?.strokeDasharray ?? undefined}
-          shapeRendering={defaultShapeRendering}
-          {...restLineProps}
-        />
-      ))}
+      {transitions(({ opacity, x1, y1, x2, y2 }, datum) => {
+        const { style, className, stroke, strokeWidth, strokeLinecap, strokeDasharray, ...restLineProps } =
+          typeof lineProps === 'function' ? lineProps(datum) : lineProps ?? {};
+        return (
+          <animated.line
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            role="presentation"
+            aria-hidden
+            style={{ ...gridTheme?.style, ...style, opacity }}
+            className={`${gridTheme?.className ?? ''} ${className ?? ''}`}
+            stroke={stroke ?? gridTheme?.stroke ?? 'currentColor'}
+            strokeWidth={strokeWidth ?? gridTheme?.strokeWidth ?? 1}
+            strokeLinecap={strokeLinecap ?? gridTheme?.strokeLinecap ?? 'square'}
+            strokeDasharray={strokeDasharray ?? gridTheme?.strokeDasharray ?? undefined}
+            shapeRendering={defaultShapeRendering}
+            {...restLineProps}
+          />
+        );
+      })}
     </g>
   );
 }

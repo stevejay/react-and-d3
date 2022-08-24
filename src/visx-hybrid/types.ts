@@ -198,6 +198,9 @@ export interface AxisStyles {
   tickLine?: LineStyles;
   /** Length of axis tick lines. */
   tickLength?: number;
+
+  tickLabel?: TextStyles;
+  axisLabel?: TextStyles;
 }
 
 export type RectStyles = {
@@ -235,7 +238,11 @@ export interface IXYChartTheme {
   /** Styles to applied to small SVG labels (tick label, annotation subtitle, etc.). */
   smallLabels?: TextStyles;
 
-  datumLabels?: TextStyles;
+  datumLabels?: {
+    text?: TextStyles;
+    /** Padding value for positioning the datum label relative to the datum point, given the position type. */
+    padding?: number;
+  };
 
   axis?: {
     top?: AxisStyles;
@@ -346,7 +353,7 @@ export type TooltipStateContextType<Datum extends object> = TooltipState<Datum>;
 
 export interface ITooltipVisibilityContext<Datum extends object> {
   showTooltip: (eventParamsList: readonly EventHandlerParams<Datum>[]) => void;
-  hideTooltip: () => void;
+  hideTooltip: (event: PointerEvent | FocusEvent) => void;
 }
 
 export type SVGTextProps = SVGAttributes<SVGTextElement>;
@@ -562,6 +569,11 @@ export interface BasicSeriesProps<Datum extends object> {
    * and Series will emit their own events.
    */
   onPointerUp?: (eventParamsList: readonly EventHandlerParams<Datum>[]) => void;
+
+  // onClick?: (eventParamsList: readonly EventHandlerParams<Datum>[]) => void;
+  // onMouseMove?: (eventParamsList: readonly EventHandlerParams<Datum>[]) => void;
+  // onMouseLeave?: (eventParamsList: MouseEvent) => void;
+
   /**
    * Callback invoked for onFocus events for the nearest Datum to the FocusEvent.
    * XYChart will NOT capture and emit FocusEvents, they are emitted from individual Series glyph shapes.

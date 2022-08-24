@@ -30,8 +30,11 @@ export const darkTheme: IXYChartTheme = {
     className: 'text-slate-200'
   },
   datumLabels: {
-    font: 'normal normal normal 14px/1 "Readex Pro"',
-    className: 'text-slate-200'
+    text: {
+      font: 'normal normal normal 14px/1 "Readex Pro"',
+      className: 'text-slate-200'
+    },
+    padding: 4
   },
   tooltip: {
     container: {

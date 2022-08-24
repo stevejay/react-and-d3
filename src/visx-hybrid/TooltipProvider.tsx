@@ -1,7 +1,17 @@
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import {
+  FocusEvent,
+  PointerEvent,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { debounce } from 'debounce';
 
 import { defaultHideTooltipDebounceMs } from './constants';
+import { isPointerEvent } from './isPointerEvent';
 import { isValidNumber } from './isValidNumber';
 import { TooltipStateContext } from './TooltipStateContext';
 import { TooltipVisibilityContext } from './TooltipVisibilityContext';
@@ -10,12 +20,14 @@ import type { EventHandlerParams, TooltipState } from './types';
 type TooltipProviderProps = {
   /** Debounce time for when `hideTooltip` is invoked. */
   hideTooltipDebounceMs?: number;
+  persistentTooltipBehaviour: boolean;
   children: ReactNode;
 };
 
 /** Simple wrapper around useTooltip, to provide tooltip data via context. */
 export function TooltipProvider<Datum extends object>({
   hideTooltipDebounceMs = defaultHideTooltipDebounceMs,
+  persistentTooltipBehaviour,
   children
 }: TooltipProviderProps) {
   const [{ tooltipOpen, tooltipLeft, tooltipTop, tooltipData }, setTooltipState] = useState<
@@ -27,10 +39,10 @@ export function TooltipProvider<Datum extends object>({
   const showTooltip = useCallback(
     (eventParamsList: readonly EventHandlerParams<Datum>[]) => {
       // cancel any hideTooltip calls so it won't hide after invoking the logic below
-      if (debouncedHideTooltip.current) {
-        debouncedHideTooltip.current.clear();
-        debouncedHideTooltip.current = null;
-      }
+      // if (debouncedHideTooltip.current) {
+      debouncedHideTooltip.current?.clear();
+      // debouncedHideTooltip.current = null;
+      // }
 
       if (!eventParamsList.length) {
         return;
@@ -62,19 +74,47 @@ export function TooltipProvider<Datum extends object>({
   );
 
   const privateHideTooltip = useCallback(
-    () => setTooltipState((state) => ({ ...state, tooltipOpen: false })),
-    [setTooltipState]
+    (event: PointerEvent | FocusEvent) => {
+      if (isPointerEvent(event) && persistentTooltipBehaviour && event.pointerType === 'touch') {
+        // Don't hide the tooltip if the pointer out event was a touch event.
+        // This stops the tooltip disappearing right after appearing on a touch device.
+        return;
+      }
+      setTooltipState((state) => ({ ...state, tooltipOpen: false }));
+    },
+    [setTooltipState, persistentTooltipBehaviour]
   );
 
-  const hideTooltip = useCallback(() => {
+  useEffect(() => {
     debouncedHideTooltip.current = debounce(privateHideTooltip, hideTooltipDebounceMs);
-    debouncedHideTooltip.current();
   }, [privateHideTooltip, hideTooltipDebounceMs]);
+
+  const hideTooltip = useCallback((event: PointerEvent | FocusEvent) => {
+    debouncedHideTooltip.current?.(event);
+  }, []);
 
   const stateContextValue = useMemo(
     () => ({ tooltipOpen, tooltipLeft, tooltipTop, tooltipData }),
     [tooltipOpen, tooltipLeft, tooltipTop, tooltipData]
   );
+
+  // Hide tooltip on scroll:
+  useEffect(() => {
+    if (tooltipOpen && persistentTooltipBehaviour) {
+      const callback = () => setTooltipState((state) => ({ ...state, tooltipOpen: false }));
+      window.document.addEventListener('scroll', callback);
+      return () => window.document.removeEventListener('scroll', callback);
+    }
+  }, [setTooltipState, tooltipOpen, persistentTooltipBehaviour]);
+
+  // Hide tooltip on any click:
+  useEffect(() => {
+    if (tooltipOpen && persistentTooltipBehaviour) {
+      const callback = () => setTooltipState((state) => ({ ...state, tooltipOpen: false }));
+      window.document.addEventListener('click', callback);
+      return () => window.document.removeEventListener('click', callback);
+    }
+  }, [tooltipOpen, setTooltipState, persistentTooltipBehaviour]);
 
   const controlContextValue = useMemo(() => ({ showTooltip, hideTooltip }), [showTooltip, hideTooltip]);
 

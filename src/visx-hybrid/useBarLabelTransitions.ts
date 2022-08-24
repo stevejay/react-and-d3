@@ -57,8 +57,9 @@ function createLabelPositionerForRenderingData<RenderingDatum extends object = o
     }
 
     const dependentLengthWithSign = dependentCoord - baselineDependentCoord;
-    const isNegative = dependentLengthWithSign > 0;
+    const isZeroOrNegative = horizontal ? dependentLengthWithSign >= 0 : dependentLengthWithSign > 0;
     const dependentLength = Math.abs(dependentLengthWithSign);
+
     const textDependentDimension = horizontal
       ? measureTextWithCache(label, font)
       : getFontMetricsWithCache(font).height;
@@ -69,12 +70,12 @@ function createLabelPositionerForRenderingData<RenderingDatum extends object = o
     let opacity = 1;
 
     if (position === 'outside' || (positionOutsideOnOverflow && isOverflowing)) {
-      dependent = dependentCoord + (textDependentDimension * 0.5 + padding) * (isNegative ? 1 : -1);
+      dependent = dependentCoord + (textDependentDimension * 0.5 + padding) * (isZeroOrNegative ? 1 : -1);
     } else {
       if (position === 'inside') {
-        dependent = dependentCoord + (textDependentDimension * 0.5 + padding) * (isNegative ? -1 : 1);
+        dependent = dependentCoord + (textDependentDimension * 0.5 + padding) * (isZeroOrNegative ? -1 : 1);
       } else {
-        dependent = dependentCoord + dependentLength * 0.5 * (isNegative ? -1 : 1);
+        dependent = dependentCoord + dependentLength * 0.5 * (isZeroOrNegative ? -1 : 1);
       }
       if (hideOnOverflow && isOverflowing) {
         opacity = 0;
@@ -98,9 +99,10 @@ export function useBarLabelTransitions(args: {
   positionOutsideOnOverflow: boolean;
   padding: number;
   hideOnOverflow: boolean;
+  hideZero: boolean;
 }) {
-  const { dataEntry, springConfig, animate, formatter } = args;
-  const renderingDataWithLabels = getRenderingDataWithLabels(dataEntry, formatter);
+  const { dataEntry, hideZero, springConfig, animate, formatter } = args;
+  const renderingDataWithLabels = getRenderingDataWithLabels(dataEntry, hideZero, formatter);
   const position = createLabelPositionerForRenderingData(args);
   return useTransition<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

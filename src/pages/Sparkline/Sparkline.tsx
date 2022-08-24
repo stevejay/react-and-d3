@@ -1,127 +1,45 @@
-import { memo } from 'react';
-import { useId } from '@uifabric/react-hooks';
-import { max, min } from 'd3-array';
-import { scaleLinear, scaleTime } from 'd3-scale';
-import { area, line } from 'd3-shape';
+import { LinearScaleConfig, UtcScaleConfig } from '@visx/scale';
+import { easeCubicInOut } from 'd3-ease';
+import { curveCatmullRom } from 'd3-shape';
 
-import { Margin } from '@/types';
+import type { TimeValueDatum } from '@/types';
+import { darkTheme } from '@/utils/chartThemes';
+import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
+import { SVGLineSeries } from '@/visx-hybrid/SVGLineSeries';
+import { SVGSwipedPath } from '@/visx-hybrid/SVGSwipedPath';
+import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-// TODO can I generalise this type?
-export interface Datum {
-  date: Date;
-  value: number;
-}
+const independentScaleConfig: UtcScaleConfig<number> = { type: 'utc' } as const;
+const dependentScaleConfig: LinearScaleConfig<number> = { type: 'linear' } as const;
 
-const LAST_POINT_RADIUS_PX = 3;
-const LAST_POINT_MARGIN_PX = 2;
-const LINE_STROKE_WIDTH_PX = 2;
-const NO_DATA_LINE_LENGTH_PX = 8;
-
-const margins: Margin = {
-  top: LAST_POINT_RADIUS_PX + 1,
-  left: 1,
-  bottom: LAST_POINT_RADIUS_PX + 1,
-  right: LAST_POINT_RADIUS_PX + 1
-};
+const springConfig = { duration: 350, easing: easeCubicInOut };
 
 export interface SparklineProps {
-  width?: number;
-  height?: number;
-  data?: readonly Datum[];
+  data: TimeValueDatum<number>[];
+  width: number;
+  height: number;
+  animation: 'swipe' | 'interpolation';
 }
 
-export const Sparkline = memo<SparklineProps>(
-  ({ width, height, data }) => {
-    const id = useId();
-
-    if (!width || !height || !data) {
-      return null;
-    }
-
-    const gradientDefId = `${id}_gradient`;
-    const clipPathDefId = `${id}_clipPath`;
-    // const trendClassName = getTrendClassName(data);
-    const hasData = Boolean(data.length);
-    const chartWidth = width - margins.left - margins.right;
-    const chartHeight = height - margins.top - margins.bottom;
-
-    const x = scaleTime()
-      .domain(
-        hasData
-          ? [min(data, (datum) => datum.date) ?? 0, max(data, (datum) => datum.date) ?? 0]
-          : [new Date(), new Date()]
-      )
-      .range([0, chartWidth]);
-
-    const y = scaleLinear()
-      .domain([min(data, (datum) => datum.value) ?? 0, max(data, (datum) => datum.value) ?? 0])
-      .range([chartHeight, 0])
-      .nice();
-
-    const gradientAreaGenerator = area<Datum>()
-      .x((datum) => x(datum.date) ?? 0)
-      .y0(chartHeight)
-      .y1((datum) => y(datum.value));
-
-    const lineGenerator = line<Datum>()
-      .x((datum) => x(datum.date) ?? 0)
-      .y((datum) => y(datum.value));
-
-    const lastDatum = hasData ? data[data.length - 1] : null;
-    const lastPointCx = lastDatum
-      ? x(lastDatum.date) ?? 0
-      : NO_DATA_LINE_LENGTH_PX + LAST_POINT_RADIUS_PX + LAST_POINT_MARGIN_PX * 0.5;
-    const lastPointCy = lastDatum ? y(lastDatum.value) ?? 0 : 0;
-
-    return (
-      <svg role="presentation" className="text-pink-600 pointer-events-none" width={width} height={height}>
-        <defs>
-          <linearGradient id={gradientDefId} x1={0} y2="100%" x2={0} y1={0}>
-            <stop offset="0%" stopColor="currentColor" stopOpacity={0.4}></stop>
-            <stop offset="100%" stopColor="currentColor" stopOpacity={0}></stop>
-          </linearGradient>
-          <mask id={clipPathDefId}>
-            <rect x={0} y={0} width={chartWidth} height={chartHeight} fill="white" />
-            <circle
-              r={LAST_POINT_RADIUS_PX + LAST_POINT_MARGIN_PX}
-              fill="black"
-              cx={lastPointCx}
-              cy={lastPointCy}
-            />
-          </mask>
-        </defs>
-        <g transform={`translate(${margins.left},${margins.top})`} mask={`url(#${clipPathDefId})`}>
-          {hasData && (
-            <>
-              <path d={gradientAreaGenerator(data) ?? ''} fill={`url(#${gradientDefId})`} />
-              <path
-                className="stroke-current"
-                d={lineGenerator(data) ?? ''}
-                fill="none"
-                strokeWidth={LINE_STROKE_WIDTH_PX}
-              />
-            </>
-          )}
-          {!hasData && (
-            <line
-              className="stroke-current"
-              fill="none"
-              strokeWidth={LINE_STROKE_WIDTH_PX}
-              x1={0}
-              y1={0}
-              x2={NO_DATA_LINE_LENGTH_PX}
-              y2={0}
-            />
-          )}
-        </g>
-        <g transform={`translate(${margins.left},${margins.top})`}>
-          <circle className="fill-current" cx={lastPointCx} cy={lastPointCy} r={LAST_POINT_RADIUS_PX} />
-        </g>
-      </svg>
-    );
-  },
-  (prevProps, nextProps) =>
-    prevProps.data === nextProps.data &&
-    prevProps.width === nextProps.width &&
-    prevProps.height === nextProps.height
-);
+export function Sparkline({ data, width, height, animation }: SparklineProps) {
+  const PathComponent = animation === 'swipe' ? SVGSwipedPath : SVGInterpolatedPath;
+  return (
+    <SVGXYChart
+      independentScale={independentScaleConfig}
+      dependentScale={dependentScaleConfig}
+      springConfig={springConfig}
+      theme={darkTheme}
+      width={width}
+      height={height}
+      outerMargin={2}
+    >
+      <SVGLineSeries
+        dataKey="data-a"
+        data={data}
+        independentAccessor={(datum) => datum.date}
+        dependentAccessor={(datum) => datum.value}
+        renderPath={(props) => <PathComponent {...props} strokeWidth={4} curve={curveCatmullRom} />}
+      />
+    </SVGXYChart>
+  );
+}

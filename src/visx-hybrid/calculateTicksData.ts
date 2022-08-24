@@ -30,6 +30,7 @@ export function calculateTicksData({
   );
   const tickFormatter = tickFormat ?? getTickFormatter(scale);
   const mappedValues = values.map((value, index) => ({ value, index, label: '' }));
+  // Done as a separate mapping to the previous line because all mapped values need to be passed to the tickFormatter:
   return mappedValues.map(({ value, index }) => ({
     value,
     index,

@@ -1,145 +1,76 @@
-import { memo, ReactElement, RefObject } from 'react';
-import type { SpringConfig } from 'react-spring';
+import type { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
+import { format } from 'd3-format';
 
-import { SvgAxis } from '@/components/SvgAxis';
-import { SvgBars } from '@/components/SvgBars';
-import { SvgCategoryInteraction } from '@/components/SvgCategoryInteraction';
-import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
-import { SvgChartRoot } from '@/components/SvgChartRoot';
-import { useBandScale } from '@/hooks/useBandScale';
-import { useChartArea } from '@/hooks/useChartArea';
-import { useContinuousDomain } from '@/hooks/useContinuousDomain';
-import { useLinearScale } from '@/hooks/useLinearScale';
-import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
-import { CategoryValueDatum, DomainValue, Margin, Rect } from '@/types';
+import type { CategoryValueDatum } from '@/types';
+import { darkTheme } from '@/utils/chartThemes';
+import { InView } from '@/visx-hybrid/InView';
+import { SVGAxis } from '@/visx-hybrid/SVGAxis';
+import { SVGBar } from '@/visx-hybrid/SVGBar';
+import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
+import { SVGGrid } from '@/visx-hybrid/SVGGrid';
+import { SVGTooltip, TooltipRenderParams } from '@/visx-hybrid/SVGTooltip';
+import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-export interface BarChartProps<CategoryT extends DomainValue> {
-  data: CategoryValueDatum<CategoryT, number>[];
-  width: number;
-  height: number;
-  margins: Margin;
-  ariaLabel?: string;
-  ariaLabelledby?: string;
-  ariaRoleDescription?: string;
-  description?: string;
-  ariaDescribedby?: string;
-  datumAriaRoleDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
-  datumAriaLabel?: (datum: CategoryValueDatum<CategoryT, number>) => string;
-  datumDescription?: (datum: CategoryValueDatum<CategoryT, number>) => string;
-  transitionSeconds?: number;
-  svgRef: RefObject<SVGSVGElement>;
-  onMouseMove: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
-  onMouseLeave: () => void;
-  onClick: (datum: CategoryValueDatum<CategoryT, number>, rect: Rect) => void;
-  springConfig: SpringConfig;
+const independentScaleConfig: BandScaleConfig<string> = {
+  type: 'band',
+  paddingInner: 0.4,
+  paddingOuter: 0.2,
+  round: true
+} as const;
+
+const dependentScaleConfig: LinearScaleConfig<number> = {
+  type: 'linear',
+  nice: true,
+  round: true,
+  clamp: true,
+  zero: true
+} as const;
+
+const dependentAxisTickLabelFormatter = format(',.1~f');
+
+function Tooltip({ tooltipData }: TooltipRenderParams<CategoryValueDatum<string, number>>) {
+  const datum = tooltipData?.nearestDatum?.datum;
+  return datum ? (
+    <div className="flex flex-col space-y-1 p-1">{`${datum.category}: ${format('.2f')(datum.value)}`}</div>
+  ) : null;
 }
 
-function BarChartCore<CategoryT extends DomainValue>({
-  data,
-  width,
-  height,
-  margins,
-  ariaLabel,
-  ariaLabelledby,
-  ariaRoleDescription,
-  description,
-  ariaDescribedby,
-  datumAriaRoleDescription,
-  datumAriaLabel,
-  datumDescription,
-  svgRef,
-  onMouseMove,
-  onMouseLeave,
-  onClick,
-  springConfig
-}: BarChartProps<CategoryT>): ReactElement | null {
-  const chartArea = useChartArea(width, height, margins);
-  const valueDomain = useContinuousDomain(data, (datum) => datum.value, { includeZeroInDomain: true });
-  const valueScale = useLinearScale(valueDomain, chartArea.rangeHeight, { nice: true });
-  const categoryDomain = useOrdinalDomain(data, (datum) => datum.category);
-  const categoryScale = useBandScale(categoryDomain, chartArea.rangeWidth, {
-    paddingInner: 0.3,
-    paddingOuter: 0.2
-  });
+export interface BarChartProps {
+  data: CategoryValueDatum<string, number>[];
+}
+
+export function BarChart({ data }: BarChartProps) {
   return (
-    <>
-      <SvgChartRoot
-        ref={svgRef}
-        width={width}
-        height={height}
-        ariaLabel={ariaLabel}
-        ariaLabelledby={ariaLabelledby}
-        ariaRoleDescription={ariaRoleDescription}
-        description={description}
-        ariaDescribedby={ariaDescribedby}
-        className="font-sans select-none bg-slate-800"
-      >
-        <SvgAxis
-          scale={valueScale}
-          chartArea={chartArea}
-          orientation="left"
-          tickSizeOuter={0}
-          tickSizeInner={-chartArea.width}
-          tickPadding={10}
-          className="text-xs"
-          hideDomainPath
-          tickLineClassName="text-slate-600"
-          tickTextClassName="text-slate-200"
-          axisLabel="Y Axis Label"
-          axisLabelAlignment="center"
-          axisLabelClassName="text-sm text-slate-300"
-          axisLabelSpacing={53}
-          springConfig={springConfig}
-        />
-        <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
-          <SvgBars
+    <div className="relative w-full h-[384px]">
+      <InView>
+        <SVGXYChart
+          independentScale={independentScaleConfig}
+          dependentScale={dependentScaleConfig}
+          theme={darkTheme}
+        >
+          <SVGGrid tickCount={5} variable="dependent" />
+          <SVGBarSeries
+            dataKey="data-a"
             data={data}
-            categoryScale={categoryScale}
-            valueScale={valueScale}
-            orientation="vertical"
-            className="fill-sky-500"
-            datumAriaRoleDescription={datumAriaRoleDescription}
-            datumAriaLabel={datumAriaLabel}
-            datumDescription={datumDescription}
-            springConfig={springConfig}
+            independentAccessor={(datum) => datum.category}
+            dependentAccessor={(datum) => datum.value}
+            renderBar={SVGBar}
           />
-        </SvgChartAreaGroup>
-        {/* X-axis is rendered after the bars so that its domain sits on top of them */}
-        <SvgAxis
-          scale={categoryScale}
-          chartArea={chartArea}
-          orientation="bottom"
-          tickSizeInner={0}
-          tickSizeOuter={0}
-          tickPadding={10}
-          className="text-sm"
-          domainClassName="text-slate-300"
-          axisLabel="X Axis Label"
-          axisLabelAlignment="center"
-          axisLabelClassName="text-sm text-slate-300"
-          axisLabelSpacing={34}
-          springConfig={springConfig}
-        />
-        <SvgCategoryInteraction
-          svgRef={svgRef}
-          data={data}
-          categoryScale={categoryScale}
-          chartArea={chartArea}
-          orientation="vertical"
-          onMouseMove={onMouseMove}
-          onMouseLeave={onMouseLeave}
-          onClick={onClick}
-        />
-      </SvgChartRoot>
-    </>
+          <SVGAxis variable="independent" position="start" label="X Axis Label" tickLength={0} />
+          <SVGAxis
+            variable="dependent"
+            position="start"
+            label="Y Axis Label"
+            tickCount={5}
+            tickFormat={dependentAxisTickLabelFormatter}
+          />
+          <SVGTooltip<CategoryValueDatum<string, number>>
+            snapTooltipToIndependentScale
+            showIndependentScaleCrosshair
+            renderTooltip={Tooltip}
+          />
+        </SVGXYChart>
+      </InView>
+    </div>
   );
 }
-
-export const BarChart = memo(
-  BarChartCore,
-  (prevProps, nextProps) =>
-    prevProps.data === nextProps.data &&
-    prevProps.width === nextProps.width &&
-    prevProps.height === nextProps.height &&
-    prevProps.margins === nextProps.margins
-) as typeof BarChartCore;

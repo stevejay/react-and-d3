@@ -76,7 +76,7 @@ export function SVGAxisTicks({
           {...tickGroupProps}
           style={{ opacity, [tickTranslateAxis]: translate }}
         >
-          {!hideTicks && (
+          {!hideTicks && tickLength > 0 && (
             <SVGAxisTickLine
               {...{ [tickLineAxis + '2']: tickSign * tickLength }}
               lineStyles={axisStyles?.tickLine}

@@ -1,7 +1,7 @@
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
 
-import { HorizontalBarChart } from './HorizontalBarChart';
+import { BarChart } from './BarChart';
 
 const dataSets = [
   [
@@ -21,20 +21,14 @@ const dataSets = [
     { category: 'B', value: 10 },
     { category: 'D', value: 63 },
     { category: 'E', value: 24 }
-  ],
-  [
-    { category: 'A', value: 10 },
-    { category: 'B', value: -20 },
-    { category: 'D', value: -63 },
-    { category: 'E', value: -24 }
   ]
 ];
 
-export function HorizontalBarChartExample() {
+export function BarChartExample() {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8 space-y-4">
-      <HorizontalBarChart data={data} />
+      <BarChart data={data} />
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>
   );

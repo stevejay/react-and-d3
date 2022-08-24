@@ -1,15 +1,13 @@
 import { Helmet } from 'react-helmet-async';
-import { easeCubicInOut } from 'd3-ease';
 
 import { PageHeading } from '@/components/PageHeading';
 import { Paragraph } from '@/components/Paragraph';
-import { ProseInternalLink } from '@/components/ProseInternalLink';
+import { ProseExternalLink } from '@/components/ProseExternalLink';
 import { SectionHeading } from '@/components/SectionHeading';
 
-import { HorizontalBarChartExample } from './HorizontalBarChartExample';
+import { ClippdBarChart } from './ClippdBarChart';
+import { RespondentsByLanguageBarChart } from './RespondentsByLanguageBarChart';
 import { VerticalBarChartExample } from './VerticalBarChartExample';
-
-const springConfig = { duration: 500, easing: easeCubicInOut };
 
 function BarChartPage() {
   return (
@@ -19,17 +17,22 @@ function BarChartPage() {
         <title>Bar Chart - React and D3</title>
       </Helmet>
       <SectionHeading>Vertical Bar Chart</SectionHeading>
+      <Paragraph>The following is an example of a basic vertical bar chart:</Paragraph>
+      <VerticalBarChartExample />
       <Paragraph>
-        The following is an example of a vertical bar chart. You can see a version with tooltips on the{' '}
-        <ProseInternalLink to="/tooltip">tooltip page</ProseInternalLink>.
+        The following is a vertical bar chart styled in a similar way to those in the{' '}
+        <ProseExternalLink href="https://www.clippd.com/">Clippd</ProseExternalLink> golf app:
       </Paragraph>
-      <VerticalBarChartExample springConfig={springConfig} />
+      <ClippdBarChart />
       <SectionHeading>Horizontal Bar Chart</SectionHeading>
       <Paragraph>
-        The following is an example of a horizontal bar chart. You can see a version with tooltips on the{' '}
-        <ProseInternalLink to="/tooltip">tooltip page</ProseInternalLink>.
+        The following is an example of a horizontal bar chart. It displays data from the{' '}
+        <ProseExternalLink href="https://2021.stateofjs.com/en-US/demographics/#locale">
+          2021 State of JavaScript survey
+        </ProseExternalLink>
+        . You can choose which statistic to render:
       </Paragraph>
-      <HorizontalBarChartExample springConfig={springConfig} />
+      <RespondentsByLanguageBarChart />
     </main>
   );
 }

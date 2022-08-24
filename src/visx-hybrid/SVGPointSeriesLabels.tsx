@@ -16,6 +16,8 @@ export type SVGPointSeriesLabelsProps = {
   /** Must be a stable function. */
   formatter?: (value: ScaleInput<AxisScale>) => string;
   padding?: number;
+  /** Hide zero labels. Optional. Defaults to `false`. */
+  hideZero?: boolean;
 };
 
 export function SVGPointSeriesLabels({
@@ -24,7 +26,8 @@ export function SVGPointSeriesLabels({
   animate = true,
   dataKeyRef,
   formatter,
-  padding = defaultDatumLabelPadding
+  padding,
+  hideZero = false
 }: SVGPointSeriesLabelsProps) {
   const {
     scales,
@@ -37,7 +40,7 @@ export function SVGPointSeriesLabels({
     chartDimensions
   } = useXYChartContext();
   const dataEntry = dataEntryStore.getByDataKey(dataKeyRef);
-  const labelStyles = theme.datumLabels ?? theme.smallLabels;
+  const labelStyles = theme.datumLabels?.text ?? theme.smallLabels;
   const { font = defaultSmallLabelsFont, ...otherLabelStyles } = labelStyles ?? {};
   const fontMetrics = getFontMetricsWithCache(font);
   const transitions = usePointLabelTransitions({
@@ -49,8 +52,9 @@ export function SVGPointSeriesLabels({
     renderingOffset,
     formatter,
     font,
-    padding,
-    chartDimensions
+    padding: padding ?? theme.datumLabels?.padding ?? defaultDatumLabelPadding,
+    chartDimensions,
+    hideZero
   });
   return (
     <g data-testid={`series-labels-${dataKeyRef}`} {...groupProps}>

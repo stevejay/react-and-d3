@@ -70,6 +70,8 @@ interface SVGXYChartOwnProps<
   captureEvents?: boolean;
   /** The debounce value (in milliseconds) to continue to show the tooltip for when it should be hidden. Defaults to 400ms. */
   hideTooltipDebounceMs?: number;
+
+  persistentTooltipBehaviour?: boolean;
   /** A custom theme for the chart. Optional. If not given then a default theme is applied. This should be a stable object. */
   theme?: IXYChartTheme;
 }
@@ -97,7 +99,9 @@ export function SVGXYChart<
     width,
     height,
     parentSizeDebounceMs = defaultParentSizeDebounceMs,
-    hideTooltipDebounceMs = defaultHideTooltipDebounceMs
+    hideTooltipDebounceMs = defaultHideTooltipDebounceMs,
+    persistentTooltipBehaviour,
+    ...restProps
   } = props;
 
   if (isNil(width) || isNil(height)) {
@@ -114,9 +118,12 @@ export function SVGXYChart<
   }
 
   return (
-    <TooltipProvider hideTooltipDebounceMs={hideTooltipDebounceMs}>
+    <TooltipProvider
+      hideTooltipDebounceMs={hideTooltipDebounceMs}
+      persistentTooltipBehaviour={persistentTooltipBehaviour ?? false}
+    >
       <EventEmitterProvider>
-        <InnerChart {...props} width={width} height={height} />
+        <InnerChart {...restProps} width={width} height={height} />
       </EventEmitterProvider>
     </TooltipProvider>
   );
@@ -147,7 +154,7 @@ function InnerChart<
   ...svgProps
 }: SVGXYChartProps<IndependentScaleConfig, DependentScaleConfig, AlternateDependentScaleConfig>) {
   // Gather all the series data from the chart's child components:
-  const { dataEntries, groupScale } = getDataEntriesFromChildren(children, horizontal);
+  const { dataEntries, groupScale } = getDataEntriesFromChildren(children);
 
   // Create the scales, each with a composite domain derived from all the series data.
   const independentDomainValues = dataEntries
@@ -279,6 +286,10 @@ function InnerChart<
                 role="presentation"
                 aria-hidden
                 {...eventEmitters}
+                onClick={(event) => {
+                  // Prevent the tooltip closing immediately when shown because of a touch.
+                  event.stopPropagation();
+                }}
               />
             )}
           </animated.svg>

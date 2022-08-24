@@ -175,7 +175,9 @@ export function calculateAxisMargin(
       rangePadding,
       props.tickLabelPadding ?? defaultTickLabelPadding,
       props.tickLabelAlignment ?? defaultTickLabelAngle,
-      theme.smallLabels?.font ?? defaultSmallLabelsTextStyle.font,
+      theme.axis?.[axisOrientation]?.tickLabel?.font ??
+        theme.smallLabels?.font ??
+        defaultSmallLabelsTextStyle.font,
       ticks
     ),
     getLabelMargin(
@@ -185,7 +187,9 @@ export function calculateAxisMargin(
         ? defaultVerticalAxisAutoMarginLabelPadding
         : defaultHorizontalAxisAutoMarginLabelPadding,
       props.labelAlignment ?? getDefaultAxisLabelAngle(axisOrientation),
-      theme.bigLabels?.font ?? defaultBigLabelsTextStyle.font
+      theme.axis?.[axisOrientation]?.axisLabel?.font ??
+        theme.bigLabels?.font ??
+        defaultBigLabelsTextStyle.font
     )
   ]);
 }

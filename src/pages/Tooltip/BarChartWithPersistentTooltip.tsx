@@ -35,11 +35,11 @@ function Tooltip({ tooltipData }: TooltipRenderParams<CategoryValueDatum<string,
   ) : null;
 }
 
-export interface BarChartProps {
+export interface BarChartWithPersistentTooltipProps {
   data: CategoryValueDatum<string, number>[];
 }
 
-export function BarChart({ data }: BarChartProps) {
+export function BarChartWithPersistentTooltip({ data }: BarChartWithPersistentTooltipProps) {
   return (
     <div className="relative w-full h-[384px]">
       <InView>
@@ -47,6 +47,7 @@ export function BarChart({ data }: BarChartProps) {
           independentScale={independentScaleConfig}
           dependentScale={dependentScaleConfig}
           theme={darkTheme}
+          persistentTooltipBehaviour
         >
           <SVGGrid tickCount={5} variable="dependent" />
           <SVGBarSeries

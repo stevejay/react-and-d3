@@ -1,5 +1,4 @@
 import { Helmet } from 'react-helmet-async';
-import { easeCubicInOut } from 'd3-ease';
 
 import { PageHeading } from '@/components/PageHeading';
 import { Paragraph } from '@/components/Paragraph';
@@ -7,8 +6,6 @@ import { SectionHeading } from '@/components/SectionHeading';
 
 import { HorizontalStackedBarChartExample } from './HorizontalStackedBarChartExample';
 import { VerticalStackedBarChartExample } from './VerticalStackedBarChartExample';
-
-const springConfig = { duration: 500, easing: easeCubicInOut };
 
 function StackedBarChartPage() {
   return (
@@ -18,19 +15,16 @@ function StackedBarChartPage() {
         <title>Stacked Bar Chart - React and D3</title>
       </Helmet>
       <SectionHeading>Vertical Stacked Bar Chart</SectionHeading>
-      <Paragraph>
-        A stacked bar chart differs from a regular bar chart in that it displays multiple series of data,
-        rather than a single series. The following is an example of a vertical stacked bar chart.
-      </Paragraph>
-      <VerticalStackedBarChartExample springConfig={springConfig} />
+      <Paragraph>The following is an example of a vertical stacked bar chart:</Paragraph>
+      <VerticalStackedBarChartExample />
       <SectionHeading>Horizontal Stacked Bar Chart</SectionHeading>
-      <Paragraph>The following is an example of a horizontal stacked bar chart.</Paragraph>
-      <HorizontalStackedBarChartExample springConfig={springConfig} />
+      <Paragraph>The following is an example of a horizontal stacked bar chart:</Paragraph>
+      <HorizontalStackedBarChartExample />
       <Paragraph>
-        If you are animating the chart then you need to ensure that the same series are included in the
-        displayed data, even if sometimes a series might be missing in the source data. In that case you would
-        need to include the series with all zero values. This is so the bars for the series know where to
-        animate to when they disappear and where to animate from when they appear.
+        For the best animations with a stacked bar chart, include all the same series in the data, even if
+        sometimes a series might be missing in the source data. (You would need to add each missing series
+        with all zero values.) This is so that the bars for an exiting series animate to zero on exit and from
+        zero on entry.
       </Paragraph>
     </main>
   );

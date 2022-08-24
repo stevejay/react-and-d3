@@ -16,7 +16,6 @@ export function getDataEntriesFromChildren<
   DependentScale extends AxisScale
 >(
   children: ReactNode,
-  horizontal: boolean,
   isInsideGroup = false
 ): {
   dataEntries: readonly IDataEntry[];
@@ -39,7 +38,7 @@ export function getDataEntriesFromChildren<
         throw new Error('Only one grouping is allowed in the XY chart.');
       }
       const { sort, padding = defaultGroupPadding, children } = element.props;
-      const result = getDataEntriesFromChildren<IndependentScale, DependentScale>(children, horizontal, true);
+      const result = getDataEntriesFromChildren<IndependentScale, DependentScale>(children, true);
       const dataKeys = result.dataEntries.map((dataEntry) => dataEntry.dataKey);
       groupScale = scaleBand<string>({ domain: sort ? [...dataKeys].sort(sort) : dataKeys, padding });
       result.dataEntries.forEach((dataEntry) => dataEntries.push(dataEntry));
@@ -47,15 +46,12 @@ export function getDataEntriesFromChildren<
       const { stackOrder, stackOffset } = element.props;
       const result = getDataEntriesFromChildren<IndependentScale, DependentScale>(
         element.props.children,
-        horizontal
+        false
       );
       const dataKeys = result.dataEntries.map((dataEntry) => dataEntry.dataKey).filter(isDefined);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const combinedData = combineBarStackData<IndependentScale, DependentScale, any>(
-        result.dataEntries,
-        horizontal
-      );
+      const combinedData = combineBarStackData<IndependentScale, DependentScale, any>(result.dataEntries);
       const hasSomeNegativeValues = stackOffset ? false : combinedData.some((datum) => datum.negativeSum < 0);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

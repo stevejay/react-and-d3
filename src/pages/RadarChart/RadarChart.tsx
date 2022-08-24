@@ -272,7 +272,7 @@ const RadarChartImpl = <CategoryT extends DomainValue>({
             cy={0}
             role="presentation"
             r={y(tick)}
-          ></circle>
+          />
         ))}
       </g>
 

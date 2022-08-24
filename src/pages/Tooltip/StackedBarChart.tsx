@@ -1,174 +1,101 @@
-import { memo, ReactElement, RefObject } from 'react';
-import type { SpringConfig } from 'react-spring';
+import type { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
+import { easeCubicInOut } from 'd3-ease';
+import { format } from 'd3-format';
+import { schemeCategory10 } from 'd3-scale-chromatic';
+import { capitalize, isNil } from 'lodash-es';
 
-import { SvgAxis } from '@/components/SvgAxis';
-import { SvgCategoryInteraction } from '@/components/SvgCategoryInteraction';
-import { SvgChartAreaGroup } from '@/components/SvgChartAreaGroup';
-import { SvgChartRoot } from '@/components/SvgChartRoot';
-import { SvgStackedBars } from '@/components/SvgStackedBars';
-import { useBandScale } from '@/hooks/useBandScale';
-import { useChartArea } from '@/hooks/useChartArea';
-import { useContinuousDomainForSeriesData } from '@/hooks/useContinuousDomainForSeriesData';
-import { useLinearScale } from '@/hooks/useLinearScale';
-import { useOrdinalDomain } from '@/hooks/useOrdinalDomain';
-import { CategoryValueListDatum, DomainValue, Margin, Rect } from '@/types';
-import { getValueListDatumSum } from '@/utils/dataUtils';
+import type { CategoryValueListDatum } from '@/types';
+import { darkTheme } from '@/utils/chartThemes';
+import { InView } from '@/visx-hybrid/InView';
+import { SVGAxis } from '@/visx-hybrid/SVGAxis';
+import { SVGBar } from '@/visx-hybrid/SVGBar';
+import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
+import { SVGBarStack } from '@/visx-hybrid/SVGBarStack';
+import { SVGGrid } from '@/visx-hybrid/SVGGrid';
+import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
+import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-export interface StackedBarChartProps<CategoryT extends DomainValue> {
-  data: readonly CategoryValueListDatum<CategoryT, number>[];
-  seriesKeys: readonly string[];
-  seriesColor: (series: string) => string;
-  width: number;
-  height: number;
-  margins: Margin;
-  ariaLabel?: string;
-  ariaLabelledby?: string;
-  ariaRoleDescription?: string;
-  description?: string;
-  ariaDescribedby?: string;
-  categoryAriaRoleDescription?: (category: CategoryT) => string;
-  categoryAriaLabel?: (category: CategoryT) => string;
-  categoryDescription?: (category: CategoryT) => string;
-  datumAriaRoleDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
-  datumAriaLabel?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
-  datumDescription?: (datum: CategoryValueListDatum<CategoryT, number>, series: string) => string;
-  svgRef: RefObject<SVGSVGElement>;
-  compact: boolean;
-  onMouseMove: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
-  onMouseLeave: () => void;
-  onClick: (datum: CategoryValueListDatum<CategoryT, number>, rect: Rect) => void;
-  springConfig: SpringConfig;
+export interface StackedBarChartProps {
+  data: readonly CategoryValueListDatum<string, number>[];
+  dataKeys: readonly string[];
 }
 
-function StackedBarChartCore<CategoryT extends DomainValue>({
-  data,
-  seriesKeys,
-  seriesColor,
-  width,
-  height,
-  margins,
-  ariaLabel,
-  ariaLabelledby,
-  ariaRoleDescription,
-  description,
-  ariaDescribedby,
-  categoryAriaRoleDescription,
-  categoryAriaLabel,
-  categoryDescription,
-  datumAriaRoleDescription,
-  datumAriaLabel,
-  datumDescription,
-  svgRef,
-  compact,
-  onMouseMove,
-  onMouseLeave,
-  onClick,
-  springConfig
-}: StackedBarChartProps<CategoryT>): ReactElement | null {
-  const chartArea = useChartArea(width, height, margins);
+const xScale: BandScaleConfig<string> = {
+  type: 'band',
+  paddingInner: 0.4,
+  paddingOuter: 0.2,
+  round: true
+} as const;
 
-  const valueDomain = useContinuousDomainForSeriesData(
-    data,
-    seriesKeys,
-    getValueListDatumSum,
-    getValueListDatumSum,
-    { includeZeroInDomain: true }
-  );
+const yScale: LinearScaleConfig<number> = { type: 'linear', nice: true, round: true, clamp: true } as const;
 
-  const valueScale = useLinearScale(valueDomain, chartArea.rangeWidth, {
-    nice: true,
-    rangeRound: true
-  });
+function colorAccessor(dataKey: string) {
+  switch (dataKey) {
+    case 'one':
+      return schemeCategory10[0];
+    case 'two':
+      return schemeCategory10[1];
+    case 'three':
+      return schemeCategory10[2];
+    default:
+      return 'gray';
+  }
+}
 
-  const categoryDomain = useOrdinalDomain(data, (datum) => datum.category);
-  const categoryScale = useBandScale(categoryDomain, chartArea.rangeHeightReversed, {
-    paddingInner: 0.3,
-    paddingOuter: 0.2,
-    rangeRound: true
-  });
+const springConfig = { duration: 350, easing: easeCubicInOut };
 
+const dependentAxisTickLabelFormatter = format(',.1~f');
+
+export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
   return (
-    <SvgChartRoot
-      ref={svgRef}
-      width={width}
-      height={height}
-      ariaLabel={ariaLabel}
-      ariaLabelledby={ariaLabelledby}
-      ariaRoleDescription={ariaRoleDescription}
-      description={description}
-      ariaDescribedby={ariaDescribedby}
-      className="font-sans select-none bg-slate-800"
-    >
-      <SvgAxis
-        scale={valueScale}
-        chartArea={chartArea}
-        orientation="bottom"
-        tickSizeOuter={0}
-        tickSizeInner={-chartArea.height}
-        tickPadding={10}
-        tickArguments={[compact ? 5 : 10]}
-        className="text-xs"
-        hideDomainPath
-        tickLineClassName="text-slate-600"
-        tickTextClassName="text-slate-200"
-        axisLabel="Y Axis Label"
-        axisLabelAlignment="center"
-        axisLabelClassName="text-sm text-slate-300"
-        axisLabelSpacing={34}
-        springConfig={springConfig}
-      />
-      <SvgChartAreaGroup chartArea={chartArea} clipChartArea>
-        <SvgStackedBars
-          data={data}
-          seriesKeys={seriesKeys}
-          seriesColor={seriesColor}
-          categoryScale={categoryScale}
-          valueScale={valueScale}
-          orientation="horizontal"
-          categoryAriaRoleDescription={categoryAriaRoleDescription}
-          categoryAriaLabel={categoryAriaLabel}
-          categoryDescription={categoryDescription}
-          datumAriaRoleDescription={datumAriaRoleDescription}
-          datumAriaLabel={datumAriaLabel}
-          datumDescription={datumDescription}
+    <div className="relative w-full h-[384px]">
+      <InView>
+        <SVGXYChart
+          independentScale={xScale}
+          dependentScale={yScale}
           springConfig={springConfig}
-        />
-      </SvgChartAreaGroup>
-      {/* X-axis is rendered after the bars so that its domain sits on top of them */}
-      <SvgAxis
-        scale={categoryScale}
-        chartArea={chartArea}
-        orientation="left"
-        tickSizeInner={0}
-        tickSizeOuter={0}
-        tickPadding={10}
-        className="text-sm"
-        domainClassName="text-slate-300"
-        axisLabel="X Axis Label"
-        axisLabelAlignment="center"
-        axisLabelClassName="text-sm text-slate-300"
-        axisLabelSpacing={44}
-        springConfig={springConfig}
-      />
-      <SvgCategoryInteraction
-        svgRef={svgRef}
-        data={data}
-        categoryScale={categoryScale}
-        chartArea={chartArea}
-        orientation="horizontal"
-        onMouseMove={onMouseMove}
-        onMouseLeave={onMouseLeave}
-        onClick={onClick}
-      />
-    </SvgChartRoot>
+          theme={darkTheme}
+          persistentTooltipBehaviour
+        >
+          <SVGGrid tickCount={5} variable="dependent" />
+          <SVGBarStack<CategoryValueListDatum<string, number>> stackOrder="none" renderBar={SVGBar}>
+            {dataKeys.map((dataKey) => (
+              <SVGBarSeries
+                key={dataKey}
+                dataKey={dataKey}
+                data={data}
+                independentAccessor={(datum) => datum.category}
+                dependentAccessor={(datum) => datum.values[dataKey]}
+                colorAccessor={() => colorAccessor(dataKey)}
+                renderBar={SVGBar}
+              />
+            ))}
+          </SVGBarStack>
+          <SVGAxis variable="independent" position="start" label="X Axis Label" tickLength={0} />
+          <SVGAxis variable="dependent" position="start" label="Y Axis Label" tickCount={5} />
+          <SVGTooltip<CategoryValueListDatum<string, number>>
+            snapTooltipToIndependentScale
+            showIndependentScaleCrosshair
+            renderTooltip={({ tooltipData }) => (
+              <div className="flex flex-col space-y-1 p-1">
+                {dataKeys.map((dataKey) => {
+                  const datum = tooltipData?.datumByKey.get(dataKey)?.datum;
+                  return isNil(datum) ? null : (
+                    <p key={dataKey} className="flex items-center gap-2">
+                      <span
+                        style={{ backgroundColor: colorAccessor(dataKey) }}
+                        className="block w-3 h-3 rounded-sm"
+                      />
+                      <span className="text-slate-300">{capitalize(dataKey)}:</span>{' '}
+                      {dependentAxisTickLabelFormatter(datum.values[dataKey])}
+                    </p>
+                  );
+                })}
+              </div>
+            )}
+          />
+        </SVGXYChart>
+      </InView>
+    </div>
   );
 }
-
-export const StackedBarChart = memo(
-  StackedBarChartCore,
-  (prevProps, nextProps) =>
-    prevProps.data === nextProps.data &&
-    prevProps.width === nextProps.width &&
-    prevProps.height === nextProps.height &&
-    prevProps.margins === nextProps.margins
-) as typeof StackedBarChartCore;
