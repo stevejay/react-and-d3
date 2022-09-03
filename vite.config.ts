@@ -14,6 +14,8 @@ export default defineConfig({
     svgr(), // Also added to storybook
     packageConfigPlugin(), // Also added to storybook
     optimisePersistPlugin() // Also added to storybook
+    // TODO see if there is a fix for defineConfig from vitest/config having
+    // a plugins property type that does not work here.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ] as any,
   resolve: {

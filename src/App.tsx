@@ -42,8 +42,8 @@ const pageLinks = [
   { href: '/scatterplot', title: 'Scatterplot', pageComponent: ScatterplotPage },
   { href: '/sparkline', title: 'Sparkline', pageComponent: SparklinePage },
   { href: '/visx', title: 'Visx by Airbnb', pageComponent: VisxPage },
-  { href: '/visx-hybrid', title: 'Visx Hybrid', pageComponent: VisxHybridPage },
-  { href: '/map', title: 'State of JS', pageComponent: MapPage }
+  { href: '/visx-adapted', title: 'Visx Adapted', pageComponent: VisxHybridPage },
+  { href: '/map', title: 'Map', pageComponent: MapPage }
 ];
 
 const navigationData = [

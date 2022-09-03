@@ -30,7 +30,7 @@ function BarChartPage() {
         <ProseExternalLink href="https://2021.stateofjs.com/en-US/demographics/#locale">
           2021 State of JavaScript survey
         </ProseExternalLink>
-        . You can choose which statistic to render:
+        . You can choose which statistic to render.
       </Paragraph>
       <RespondentsByLanguageBarChart />
     </main>

@@ -2,7 +2,7 @@ import type { Options as PopperOptions } from '@popperjs/core';
 import { ScaleQuantize } from 'd3-scale';
 
 import { EntityBucket } from '@/api/stateofjs/generated';
-import { InView } from '@/components/InView';
+import { InView } from '@/visx-hybrid/InView';
 import { ParentSize } from '@/visx-hybrid/ParentSize';
 
 import { CanvasWorldMap, FeatureWithDatum } from './CanvasWorldMap';

@@ -18,14 +18,14 @@ export function LocationStatisticSelect({ value, onChange }: LocationSelectProps
       py-1.5
       text-base
       font-normal
-      text-gray-700
-      bg-white bg-clip-padding bg-no-repeat
-      border border-solid border-gray-300
+      text-slate-100
+      bg-slate-800 bg-clip-padding bg-no-repeat
+      border border-solid border-slate-700
       rounded
       transition
       ease-in-out
       m-0
-      focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+      focus:border-blue-600 focus:outline-none"
     >
       <option value="percentage_survey">% of survey respondents</option>
       <option value="percentage_question">% of question respondents</option>

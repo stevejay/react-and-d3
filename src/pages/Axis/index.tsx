@@ -7,7 +7,7 @@ import { Paragraph } from '@/components/Paragraph';
 import { SectionHeading } from '@/components/SectionHeading';
 
 import { BandAxisExamples } from './BandAxisExamples';
-import { CustomTimeAxisExamples } from './CustomTimeAxisExamples';
+// import { CustomTimeAxisExamples } from './CustomTimeAxisExamples';
 import { LinearAxisExamples } from './LinearAxisExamples';
 import { TimeAxisExamples } from './TimeAxisExamples';
 
@@ -54,13 +54,13 @@ function Axis() {
         Luckily it is unusual to use such long animation times with data visualisations and so the problem can
         basically be ignored.
       </Paragraph>
-      <SectionHeading>Custom Axis</SectionHeading>
+      {/* <SectionHeading>Custom Axis</SectionHeading>
       <Paragraph>
         An advantage of the React axis component is that it is easier to use as a starting point for creating
         your own custom axis components. The following is an example of a custom time axis:
       </Paragraph>
       <ChartTitle>Example 5: A custom React time axis</ChartTitle>
-      <CustomTimeAxisExamples springConfig={fastSpringConfig} />
+      <CustomTimeAxisExamples springConfig={fastSpringConfig} /> */}
     </main>
   );
 }

@@ -16,9 +16,9 @@ import { StackedBarChartExample } from './StackedBarChartExample';
 function VisxHybridPage() {
   return (
     <main className="w-full max-w-3xl p-4 mx-auto md:p-8">
-      <PageHeading>Visx Hybrid</PageHeading>
+      <PageHeading>Visx Adapted</PageHeading>
       <Helmet>
-        <title>Visx Hybrid - React and D3</title>
+        <title>Visx Adapted - React and D3</title>
       </Helmet>
       <Paragraph>
         This page is for creating a version of Visx that has better animations and extensibility.

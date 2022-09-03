@@ -1,71 +1,38 @@
-import { GridRows } from '@visx/grid';
-import { Group } from '@visx/group';
-import { AnimatedAxis } from '@visx/react-spring';
-import { scaleBand, scaleLinear } from '@visx/scale';
+import { AnimatedAxis, AnimatedBarSeries, XYChart } from '@visx/xychart';
 
-import { CategoryValueDatum, Margin } from '@/types';
+import { CategoryValueDatum } from '@/types';
 
 export interface BarChartProps {
   data: CategoryValueDatum<string, number>[];
-  margins: Margin;
   width: number;
   height: number;
 }
 
-export function BarChart({ data, margins, width, height }: BarChartProps) {
-  const categoryScale = scaleBand<string>({
-    domain: data.map((datum) => datum.category),
-    paddingInner: 0.3,
-    paddingOuter: 0.2
-  });
-
-  const valueScale = scaleLinear<number>({
-    domain: [0, Math.max(...data.map((datum) => datum.value))],
-    nice: true,
-    clamp: true
-  });
-
-  const xMax = width - margins.left - margins.right;
-  const yMax = height - margins.top - margins.bottom;
-
-  categoryScale.rangeRound([0, xMax]);
-  valueScale.range([yMax, 0]);
-
+export function BarChart({ data, width, height }: BarChartProps) {
   return (
-    <svg width={width} height={height}>
-      <rect x={0} y={0} width={width} height={height} className="fill-slate-800" rx={14} />
+    <XYChart
+      width={width}
+      height={height}
+      xScale={{ type: 'band', paddingInner: 0.3, paddingOuter: 0.2 }}
+      yScale={{ type: 'linear' }}
+    >
+      <AnimatedBarSeries
+        dataKey="data-a"
+        data={data}
+        xAccessor={(datum) => datum.category}
+        yAccessor={(datum) => datum.value}
+      />
       <AnimatedAxis
         orientation="left"
-        top={margins.top}
-        left={margins.left}
-        scale={valueScale}
-        // axisLineClassName="stroke-slate-300"
         hideAxisLine
-        // tickLineProps={{
-        //   width: -xMax,
-        //   className: 'stroke-slate-300'
-        // }}
-        // tickLength={-xMax}
         tickLabelProps={() => ({
           className: 'fill-slate-200 text-xs',
           textAnchor: 'end',
           verticalAnchor: 'middle'
         })}
       />
-      <Group top={margins.top} left={margins.left}>
-        <GridRows
-          scale={valueScale}
-          width={xMax}
-          height={yMax}
-          stroke="currentColor"
-          className="text-slate-600"
-        />
-      </Group>
       <AnimatedAxis
         orientation="bottom"
-        top={yMax + margins.top}
-        left={margins.left}
-        scale={categoryScale}
         hideTicks
         axisLineClassName="stroke-slate-300"
         tickLength={10}
@@ -75,6 +42,6 @@ export function BarChart({ data, margins, width, height }: BarChartProps) {
           verticalAnchor: 'start'
         })}
       />
-    </svg>
+    </XYChart>
   );
 }

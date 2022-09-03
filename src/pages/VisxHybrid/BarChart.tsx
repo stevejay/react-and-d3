@@ -12,7 +12,6 @@ import { SVGBarSeriesLabels } from '@/visx-hybrid/SVGBarSeriesLabels';
 import { SVGBarWithLine } from '@/visx-hybrid/SVGBarWithLine';
 import { SVGGrid } from '@/visx-hybrid/SVGGrid';
 import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScaleA11ySeries';
-// import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
 import { SVGLineSeries } from '@/visx-hybrid/SVGLineSeries';
 import { SVGSwipedPath } from '@/visx-hybrid/SVGSwipedPath';
 import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
