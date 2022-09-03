@@ -6,7 +6,7 @@ import { isNil } from 'lodash-es';
 
 import { ChartTitle } from '@/components/ChartTitle';
 import type { CategoryValueListDatum } from '@/types';
-import { darkTheme } from '@/utils/chartThemes';
+import { defaultTheme } from '@/utils/chartThemes';
 import { InView } from '@/visx-hybrid/InView';
 import { Legend } from '@/visx-hybrid/Legend';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
@@ -62,7 +62,7 @@ export function StackedBarChartWithAlternativeAlly() {
             role="graphics-document"
             aria-roledescription="Stacked bar chart"
             aria-labelledby={labelId}
-            theme={darkTheme}
+            theme={defaultTheme}
           >
             <SVGGrid tickCount={5} variable="dependent" />
             <SVGBarStack<CategoryValueListDatum<string, number>> stackOrder="none" renderBar={SVGBar}>

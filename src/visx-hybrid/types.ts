@@ -199,8 +199,12 @@ export interface AxisStyles {
   /** Length of axis tick lines. */
   tickLength?: number;
 
+  tickLabelPadding?: number;
+
   tickLabel?: TextStyles;
+  tickLabelAlignment?: TickLabelAlignment;
   axisLabel?: TextStyles;
+  axisLabelAlignment?: LabelAlignment;
 }
 
 export type RectStyles = {

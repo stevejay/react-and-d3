@@ -2,7 +2,7 @@ import type { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 import { format } from 'd3-format';
 
 import type { CategoryValueDatum } from '@/types';
-import { darkTheme } from '@/utils/chartThemes';
+import { defaultTheme } from '@/utils/chartThemes';
 import { InView } from '@/visx-hybrid/InView';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBar } from '@/visx-hybrid/SVGBar';
@@ -46,7 +46,7 @@ export function BarChartWithPersistentTooltip({ data }: BarChartWithPersistentTo
         <SVGXYChart
           independentScale={independentScaleConfig}
           dependentScale={dependentScaleConfig}
-          theme={darkTheme}
+          theme={defaultTheme}
           persistentTooltipBehaviour
         >
           <SVGGrid tickCount={5} variable="dependent" />

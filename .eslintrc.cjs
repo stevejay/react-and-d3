@@ -34,6 +34,7 @@ module.exports = {
     'prettier'
   ],
   rules: {
+    'no-restricted-globals': ['error', 'innerWidth', 'innerHeight'],
     'sort-imports': 'off',
     'import/order': 'off',
     'import/namespace': 'off',

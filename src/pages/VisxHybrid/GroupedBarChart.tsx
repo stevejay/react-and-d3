@@ -16,7 +16,7 @@ import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScale
 import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-import { darkTheme } from './darkTheme';
+import { defaultTheme } from './defaultTheme';
 
 export interface GroupedBarChartProps {
   data: readonly CategoryValueListDatum<string, number>[];
@@ -62,7 +62,7 @@ export function GroupedBarChart({ data, dataKeys }: GroupedBarChartProps) {
       aria-roledescription="Grouped bar chart"
       aria-label="Some title"
       dependentRangePadding={30}
-      theme={darkTheme}
+      theme={defaultTheme}
       // horizontal
     >
       <SVGGrid tickCount={5} variable="dependent" />

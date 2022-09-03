@@ -20,7 +20,7 @@ import { SVGPointSeriesLabels } from '@/visx-hybrid/SVGPointSeriesLabels';
 import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-import { darkTheme } from './darkTheme';
+import { defaultTheme } from './defaultTheme';
 
 export interface AreaChartProps {
   data: TimeValueDatum<number>[];
@@ -67,7 +67,7 @@ export function AreaChart({ data }: AreaChartProps) {
       aria-label="Some Important Results"
       dependentRangePadding={10}
       independentRangePadding={10}
-      theme={darkTheme}
+      theme={defaultTheme}
       // horizontal
     >
       <PatternLines

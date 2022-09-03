@@ -18,7 +18,7 @@ import { SVGSwipedPath } from '@/visx-hybrid/SVGSwipedPath';
 import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-import { darkTheme } from './darkTheme';
+import { defaultTheme } from './defaultTheme';
 
 export interface BarChartProps {
   data: CategoryValueDatum<string, number>[];
@@ -75,7 +75,7 @@ export function BarChart({ data }: BarChartProps) {
       aria-label="Some Important Results"
       dependentRangePadding={50}
       independentRangePadding={50}
-      theme={darkTheme}
+      theme={defaultTheme}
       outerMargin={{ top: 20, bottom: 20, left: 20, right: 20 }}
       // horizontal
     >

@@ -2,7 +2,7 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 
 import { IXYChartTheme } from '@/visx-hybrid/types';
 
-export const darkTheme: IXYChartTheme = {
+export const defaultTheme: IXYChartTheme = {
   colors: schemeCategory10,
   svg: {
     style: { userSelect: 'none' }
@@ -95,6 +95,24 @@ export const clippdTheme: IXYChartTheme = {
         font: 'normal normal normal 18px/1 "Readex Pro"',
         className: 'text-slate-400'
       }
+    }
+  }
+};
+
+export const axisTheme: IXYChartTheme = {
+  colors: schemeCategory10,
+  svg: {
+    style: { userSelect: 'none' },
+    className: 'bg-slate-800'
+  },
+  smallLabels: {
+    font: 'normal normal normal 10px/1 "Readex Pro"',
+    className: 'text-slate-200'
+  },
+  axis: {
+    bottom: {
+      tickLength: 6,
+      tickLabelPadding: 1
     }
   }
 };

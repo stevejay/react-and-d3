@@ -1,17 +1,16 @@
 import { addMargins } from './addMargins';
-import { calculateTicksData } from './calculateTicksData';
 import {
-  defaultBigLabelsTextStyle,
-  defaultHideTicks,
-  defaultHideZero,
-  defaultHorizontalAxisAutoMarginLabelPadding,
-  defaultSmallLabelsTextStyle,
-  defaultTickLabelAngle,
-  defaultTickLabelPadding,
-  defaultTickLength,
-  defaultVerticalAxisAutoMarginLabelPadding
-} from './constants';
-import { getDefaultAxisLabelAngle } from './getDefaultAxisLabelAngle';
+  getAutoMarginAxisLabelPadding,
+  getAxisLabelAlignment,
+  getAxisLabelTextStyles,
+  getHideTicks,
+  getHideZero,
+  getTickLabelAlignment,
+  getTickLabelPadding,
+  getTickLabelTextStyles,
+  getTickLength
+} from './axisStylingUtils';
+import { calculateTicksData } from './calculateTicksData';
 import { getFontMetricsWithCache } from './getFontMetricsWithCache';
 import { measureTextWithCache } from './measureTextWithCache';
 import type { SVGAxisProps } from './SVGAxis';
@@ -19,10 +18,10 @@ import type {
   AxisOrientation,
   AxisScale,
   AxisScaleOutput,
-  FontProperties,
   IXYChartTheme,
   LabelAlignment,
   Margin,
+  TextStyles,
   TickDatum,
   TickLabelAlignment
 } from './types';
@@ -38,9 +37,10 @@ function getTickLabelsMargin(
   rangePadding: [number, number],
   tickLabelPadding: number,
   tickLabelAlignment: TickLabelAlignment,
-  font: string | FontProperties,
+  textStyles: TextStyles,
   ticks: readonly TickDatum[]
 ): Margin {
+  const font = textStyles.font ?? '';
   // Calculate the dimensions of each tick label:
   const widths = ticks.map((tick) => measureTextWithCache(tick.label, font));
   // Get the width of the longest tick label:
@@ -126,8 +126,9 @@ function getLabelMargin(
   label: string,
   labelPadding: number,
   labelAlignment: LabelAlignment,
-  font: string | FontProperties
+  textStyles: TextStyles
 ): Margin {
+  const font = textStyles.font ?? '';
   const result: Margin = { left: 0, right: 0, top: 0, bottom: 0 };
   if (label) {
     // Calls to the font funcs are inlined here to avoid making the call if not actually required.
@@ -159,37 +160,32 @@ export function calculateAxisMargin(
 ): Margin {
   const ticks = calculateTicksData({
     scale,
-    hideZero: props.hideZero ?? defaultHideZero,
+    hideZero: getHideZero(props.hideZero),
     tickFormat: props.tickFormat,
     tickCount: props.tickCount,
     tickValues: props.tickValues
   });
+  const axisStyles = theme?.axis?.[axisOrientation];
   return addMargins([
     getTickLineMargin(
       axisOrientation,
-      props.tickLength ?? defaultTickLength,
-      props.hideTicks ?? defaultHideTicks
+      getTickLength(props.tickLength, axisStyles),
+      getHideTicks(props.hideTicks)
     ),
     getTickLabelsMargin(
       axisOrientation,
       rangePadding,
-      props.tickLabelPadding ?? defaultTickLabelPadding,
-      props.tickLabelAlignment ?? defaultTickLabelAngle,
-      theme.axis?.[axisOrientation]?.tickLabel?.font ??
-        theme.smallLabels?.font ??
-        defaultSmallLabelsTextStyle.font,
+      getTickLabelPadding(props.tickLabelPadding, axisStyles),
+      getTickLabelAlignment(props.tickLabelAlignment, axisStyles),
+      getTickLabelTextStyles(axisStyles, theme.smallLabels),
       ticks
     ),
     getLabelMargin(
       axisOrientation,
       props.label ?? '',
-      props.autoMarginLabelPadding ?? (axisOrientation === 'left' || axisOrientation === 'right')
-        ? defaultVerticalAxisAutoMarginLabelPadding
-        : defaultHorizontalAxisAutoMarginLabelPadding,
-      props.labelAlignment ?? getDefaultAxisLabelAngle(axisOrientation),
-      theme.axis?.[axisOrientation]?.axisLabel?.font ??
-        theme.bigLabels?.font ??
-        defaultBigLabelsTextStyle.font
+      getAutoMarginAxisLabelPadding(props.autoMarginLabelPadding, axisOrientation),
+      getAxisLabelAlignment(props.labelAlignment, axisStyles, axisOrientation),
+      getAxisLabelTextStyles(axisStyles, theme.bigLabels)
     )
   ]);
 }

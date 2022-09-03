@@ -21,7 +21,7 @@ import { SVGSwipedPath } from '@/visx-hybrid/SVGSwipedPath';
 import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-import { darkTheme } from './darkTheme';
+import { defaultTheme } from './defaultTheme';
 
 const independentScaleConfig: UtcScaleConfig<number> = {
   type: 'utc',
@@ -74,7 +74,7 @@ export function LineChart({ data }: LineChartProps) {
       aria-label="Some Important Results"
       dependentRangePadding={10}
       independentRangePadding={10}
-      theme={darkTheme}
+      theme={defaultTheme}
       // outerMargin={20}
       // horizontal
     >

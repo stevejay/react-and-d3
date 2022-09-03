@@ -19,7 +19,7 @@ import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
 import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-import { darkTheme } from './darkTheme';
+import { defaultTheme } from './defaultTheme';
 
 const independentScaleConfig: UtcScaleConfig<number> = {
   type: 'utc',
@@ -67,7 +67,7 @@ export function StackedAreaChart({ data, dataKeys }: StackedAreaChartProps) {
       role="graphics-document"
       aria-label="Some title"
       dependentRangePadding={30}
-      theme={darkTheme}
+      theme={defaultTheme}
     >
       <SVGGrid tickCount={5} variable="dependent" />
       <SVGAreaStack<CategoryValueListDatum<Date, number>>

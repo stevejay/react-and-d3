@@ -1,20 +1,20 @@
 import type { SVGProps } from 'react';
 import type { SpringConfig } from 'react-spring';
 
+import {
+  getAxisLabelAlignment,
+  getAxisLabelTextStyles,
+  getHideTicks,
+  getHideZero,
+  getTickLabelAlignment,
+  getTickLabelPadding,
+  getTickLabelTextStyles,
+  getTickLength
+} from './axisStylingUtils';
 import { calculateAxisMargin } from './calculateAxisMargin';
 import { calculateAxisOrientation } from './calculateAxisOrientation';
 import { calculateTicksData } from './calculateTicksData';
-import {
-  defaultBigLabelsTextStyle,
-  defaultHideTicks,
-  defaultHideZero,
-  defaultOuterTickLength,
-  defaultSmallLabelsTextStyle,
-  defaultTickLabelAngle,
-  defaultTickLabelPadding,
-  defaultTickLength
-} from './constants';
-import { getDefaultAxisLabelAngle } from './getDefaultAxisLabelAngle';
+import { defaultOuterTickLength } from './constants';
 import { getDependentRange, getIndependentRange } from './getRange';
 import { SVGAnimatedGroup } from './SVGAnimatedGroup';
 import { SVGAxisLabel } from './SVGAxisLabel';
@@ -93,17 +93,17 @@ function SVGAxis(props: SVGAxisProps) {
     tickLabelProps,
     labelProps,
     label,
-    tickLabelAlignment = defaultTickLabelAngle,
+    tickLabelAlignment,
     labelAlignment,
     axisLineProps = {},
-    outerTickLength = defaultOuterTickLength,
+    outerTickLength,
     hideAxisPath = false,
-    tickLength = defaultTickLength,
-    hideTicks = defaultHideTicks,
+    tickLength,
+    hideTicks,
     tickGroupProps = {},
     tickLineProps = {},
-    tickLabelPadding = defaultTickLabelPadding,
-    hideZero = defaultHideZero,
+    tickLabelPadding,
+    hideZero,
     tickFormat,
     tickCount,
     tickValues,
@@ -147,10 +147,16 @@ function SVGAxis(props: SVGAxisProps) {
       : chartDimensions.chartAreaIncludingRangePadding,
     horizontal
   );
-  const ticks = calculateTicksData({ scale, hideZero, tickFormat, tickCount, tickValues });
+  const ticks = calculateTicksData({
+    scale,
+    hideZero: getHideZero(hideZero),
+    tickFormat,
+    tickCount,
+    tickValues
+  });
   const springConfig = userSpringConfig ?? contextSpringConfig;
   const animate = userAnimate && contextAnimate;
-  const axisTheme = theme?.axis?.[axisOrientation];
+  const axisStyles = theme?.axis?.[axisOrientation];
 
   return (
     <>
@@ -161,10 +167,8 @@ function SVGAxis(props: SVGAxisProps) {
           axisPathRange={axisPathRange}
           labelProps={labelProps}
           chartDimensions={chartDimensions}
-          labelAlignment={labelAlignment ?? getDefaultAxisLabelAngle(axisOrientation)}
-          labelStyles={
-            theme.axis?.[axisOrientation]?.axisLabel ?? theme.bigLabels ?? defaultBigLabelsTextStyle
-          }
+          labelAlignment={getAxisLabelAlignment(labelAlignment, axisStyles, axisOrientation)}
+          labelStyles={getAxisLabelTextStyles(axisStyles, theme.bigLabels)}
         />
       )}
       <SVGAnimatedGroup
@@ -176,23 +180,21 @@ function SVGAxis(props: SVGAxisProps) {
         {...groupProps}
       >
         <SVGAxisTicks
-          hideTicks={hideTicks}
+          hideTicks={getHideTicks(hideTicks)}
           axisOrientation={axisOrientation}
           scale={scale}
           tickLabelProps={tickLabelProps}
           tickGroupProps={tickGroupProps}
-          tickLength={tickLength}
+          tickLength={getTickLength(tickLength, axisStyles)}
           ticks={ticks}
           tickLineProps={tickLineProps}
           renderingOffset={renderingOffset}
           springConfig={springConfig}
           animate={animate}
-          tickLabelPadding={tickLabelPadding}
-          labelStyles={
-            theme.axis?.[axisOrientation]?.tickLabel ?? theme.smallLabels ?? defaultSmallLabelsTextStyle
-          }
-          tickLabelAlignment={tickLabelAlignment}
-          axisStyles={axisTheme}
+          tickLabelPadding={getTickLabelPadding(tickLabelPadding, axisStyles)}
+          tickLabelAlignment={getTickLabelAlignment(tickLabelAlignment, axisStyles)}
+          labelStyles={getTickLabelTextStyles(axisStyles, theme.smallLabels)}
+          tickLineStyles={axisStyles?.tickLine}
         />
         {!hideAxisPath && (
           <SVGAxisPath
@@ -201,11 +203,15 @@ function SVGAxis(props: SVGAxisProps) {
             renderingOffset={renderingOffset}
             range={axisPathRange}
             outerTickLength={
-              outerTickLength === 'chart' ? (isVertical ? -innerWidth : -innerHeight) : outerTickLength
+              outerTickLength === 'chart'
+                ? isVertical
+                  ? -chartDimensions.chartAreaExcludingRangePadding.width
+                  : -chartDimensions.chartAreaExcludingRangePadding.height
+                : outerTickLength ?? defaultOuterTickLength
             }
             springConfig={springConfig}
             animate={animate}
-            pathStyles={axisTheme?.axisPath}
+            pathStyles={axisStyles?.axisPath}
             {...axisLineProps}
           />
         )}

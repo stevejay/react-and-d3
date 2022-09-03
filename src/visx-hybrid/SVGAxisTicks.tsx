@@ -1,20 +1,14 @@
 import type { SVGProps } from 'react';
 import { animated, SpringConfig } from 'react-spring';
 
-import {
-  defaultHideTicks,
-  defaultTickLabelAngle,
-  defaultTickLabelPadding,
-  defaultTickLength
-} from './constants';
 import { SVGAxisTickLabel } from './SVGAxisTickLabel';
 import { SVGAxisTickLine } from './SVGAxisTickLine';
 import { TextProps } from './SVGSimpleText';
 import type {
   AxisOrientation,
   AxisScale,
-  AxisStyles,
   LineProps,
+  LineStyles,
   TextStyles,
   TickDatum,
   TickLabelAlignment
@@ -24,44 +18,44 @@ import { useAxisTransitions } from './useAxisTransitions';
 export interface SVGAxisTicksProps {
   axisOrientation: AxisOrientation;
   scale: AxisScale;
-  springConfig?: SpringConfig;
-  animate?: boolean;
+  springConfig: SpringConfig;
+  animate: boolean;
   renderingOffset: number;
   /** If true, will hide the ticks (but not the tick labels). */
-  hideTicks?: boolean;
+  hideTicks: boolean;
   /** Props to apply to the <g> element that wraps each tick line and label. */
   tickGroupProps?: Omit<SVGProps<SVGGElement>, 'ref' | 'style'>; // TODO think about removing style.
   /** The angle that the tick label will be rendered at. */
-  tickLabelAlignment?: TickLabelAlignment;
+  tickLabelAlignment: TickLabelAlignment;
   /** Padding between the tick lines and the tick labels. */
-  tickLabelPadding?: number;
+  tickLabelPadding: number;
   /** The props to apply to the tick labels. */
   tickLabelProps?: Partial<TextProps>;
   /** The length of the tick lines. */
-  tickLength?: number;
+  tickLength: number;
   /** Props to be applied to individual tick lines. */
   tickLineProps?: LineProps;
   ticks: readonly TickDatum[];
-  labelStyles?: TextStyles;
-  axisStyles?: AxisStyles;
+  labelStyles: TextStyles;
+  tickLineStyles?: LineStyles;
 }
 
 export function SVGAxisTicks({
   scale,
-  hideTicks = defaultHideTicks,
+  hideTicks,
   axisOrientation,
   tickLabelProps = {},
   tickGroupProps,
   ticks,
-  tickLength = defaultTickLength,
+  tickLength,
   tickLineProps,
   springConfig,
-  animate = true,
+  animate,
   renderingOffset,
-  tickLabelPadding = defaultTickLabelPadding,
+  tickLabelPadding,
   labelStyles,
-  tickLabelAlignment = defaultTickLabelAngle,
-  axisStyles
+  tickLabelAlignment,
+  tickLineStyles
 }: SVGAxisTicksProps) {
   const transitions = useAxisTransitions(scale, ticks, springConfig, animate, renderingOffset);
   const isVertical = axisOrientation === 'left' || axisOrientation === 'right';
@@ -79,7 +73,7 @@ export function SVGAxisTicks({
           {!hideTicks && tickLength > 0 && (
             <SVGAxisTickLine
               {...{ [tickLineAxis + '2']: tickSign * tickLength }}
-              lineStyles={axisStyles?.tickLine}
+              lineStyles={tickLineStyles}
               {...tickLineProps}
             />
           )}

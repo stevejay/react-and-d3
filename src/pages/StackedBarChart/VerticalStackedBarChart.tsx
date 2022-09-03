@@ -5,7 +5,7 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 import { capitalize, isNil } from 'lodash-es';
 
 import type { CategoryValueListDatum } from '@/types';
-import { darkTheme } from '@/utils/chartThemes';
+import { defaultTheme } from '@/utils/chartThemes';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBar } from '@/visx-hybrid/SVGBar';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
@@ -62,7 +62,7 @@ export function VerticalStackedBarChart({ data, dataKeys }: VerticalStackedBarCh
       role="graphics-document"
       aria-label="Some title"
       dependentRangePadding={30}
-      theme={darkTheme}
+      theme={defaultTheme}
     >
       <SVGGrid
         tickCount={5}

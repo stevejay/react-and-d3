@@ -5,7 +5,7 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 import { capitalize, isNil } from 'lodash-es';
 
 import type { CategoryValueListDatum } from '@/types';
-import { darkTheme } from '@/utils/chartThemes';
+import { defaultTheme } from '@/utils/chartThemes';
 import { InView } from '@/visx-hybrid/InView';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBar } from '@/visx-hybrid/SVGBar';
@@ -54,7 +54,7 @@ export function StackedBarChart({ data, dataKeys }: StackedBarChartProps) {
           independentScale={xScale}
           dependentScale={yScale}
           springConfig={springConfig}
-          theme={darkTheme}
+          theme={defaultTheme}
           persistentTooltipBehaviour
         >
           <SVGGrid tickCount={5} variable="dependent" />

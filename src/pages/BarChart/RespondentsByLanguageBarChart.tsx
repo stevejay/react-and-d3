@@ -8,7 +8,7 @@ import { sortBy } from 'lodash-es';
 
 import { EntityBucket, useLocaleQuery } from '@/api/stateofjs/generated';
 import { isDefined } from '@/types/typeguards/isDefined';
-import { darkTheme } from '@/utils/chartThemes';
+import { defaultTheme } from '@/utils/chartThemes';
 import { InView } from '@/visx-hybrid/InView';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBandStripes } from '@/visx-hybrid/SVGBandStripes';
@@ -20,8 +20,8 @@ import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScale
 import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-import { LocationStatisticSelect } from '../StateOfJS/LocationStatisticSelect';
-import { Statistic } from '../StateOfJS/types';
+import { LocationStatisticSelect } from '../Map/LocationStatisticSelect';
+import { Statistic } from '../Map/types';
 
 const independentScale: BandScaleConfig<string> = {
   type: 'band',
@@ -126,7 +126,7 @@ export function RespondentsByLanguageBarChart() {
                 role="graphics-document"
                 aria-roledescription="Bar chart"
                 aria-label="Some Important Results"
-                theme={darkTheme}
+                theme={defaultTheme}
               >
                 <SVGBandStripes variable="independent" even={false} ignoreRangePadding={false} />
                 <SVGGrid variable="dependent" tickCount={5} />

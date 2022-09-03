@@ -20,10 +20,10 @@ import { SVGIndependentScaleA11ySeries } from '@/visx-hybrid/SVGIndependentScale
 import { SVGTooltip } from '@/visx-hybrid/SVGTooltip';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-import { LocationStatisticSelect } from '../StateOfJS/LocationStatisticSelect';
-import { Statistic } from '../StateOfJS/types';
+import { LocationStatisticSelect } from '../Map/LocationStatisticSelect';
+import { Statistic } from '../Map/types';
 
-import { darkTheme } from './darkTheme';
+import { defaultTheme } from './defaultTheme';
 
 const independentScale: BandScaleConfig<string> = {
   type: 'band',
@@ -130,7 +130,7 @@ export function RespondentsByLanguage() {
                 aria-roledescription="Bar chart"
                 aria-label="Some Important Results"
                 className="bg-slate-700"
-                theme={darkTheme}
+                theme={defaultTheme}
               >
                 <SVGBandStripes variable="independent" even={false} ignoreRangePadding={false} />
                 <SVGGrid variable="dependent" tickCount={5} />

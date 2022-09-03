@@ -3,7 +3,7 @@ import { easeCubicInOut } from 'd3-ease';
 import { curveCatmullRom } from 'd3-shape';
 
 import type { TimeValueDatum } from '@/types';
-import { darkTheme } from '@/utils/chartThemes';
+import { defaultTheme } from '@/utils/chartThemes';
 import { SVGInterpolatedPath } from '@/visx-hybrid/SVGInterpolatedPath';
 import { SVGLineSeries } from '@/visx-hybrid/SVGLineSeries';
 import { SVGSwipedPath } from '@/visx-hybrid/SVGSwipedPath';
@@ -28,7 +28,7 @@ export function Sparkline({ data, width, height, animation }: SparklineProps) {
       independentScale={independentScaleConfig}
       dependentScale={dependentScaleConfig}
       springConfig={springConfig}
-      theme={darkTheme}
+      theme={defaultTheme}
       width={width}
       height={height}
       outerMargin={2}

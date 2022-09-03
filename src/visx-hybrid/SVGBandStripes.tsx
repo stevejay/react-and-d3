@@ -44,15 +44,10 @@ export function SVGBandStripes({
 }: SVGBandStripesProps) {
   const {
     scales,
-    // independentRangePadding,
-    // dependentRangePadding,
     horizontal,
     springConfig: contextSpringConfig,
     animate: contextAnimate,
     renderingOffset,
-    // margin,
-    // innerWidth,
-    // innerHeight,
     chartDimensions,
     theme
   } = useXYChartContext();
@@ -67,17 +62,12 @@ export function SVGBandStripes({
 
   const gridType =
     variable === 'independent' ? (horizontal ? 'row' : 'column') : horizontal ? 'column' : 'row';
-  // const rangePadding = variable === 'independent' ? dependentRangePadding : independentRangePadding;
   const ticks = calculateTicksData({ scale, hideZero: false, tickCount, tickValues });
   const transitions = useBandStripesTransitions({
     gridType,
     scale,
     chartDimensions,
     ignoreRangePadding,
-    // rangePadding: ignoreRangePadding ? zeroRangePadding : rangePadding,
-    // margin,
-    // innerWidth,
-    // innerHeight,
     ticks,
     springConfig: springConfig ?? contextSpringConfig,
     animate: animate && contextAnimate,

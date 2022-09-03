@@ -5,7 +5,6 @@ import { schemePuBu } from 'd3-scale-chromatic';
 import { gql } from 'graphql-tag';
 
 import { EntityBucket, useCountryQuery } from '@/api/stateofjs/generated';
-import { SectionHeading } from '@/components/SectionHeading';
 
 import { CanvasWorldMapWithTooltip } from './CanvasWorldMapWithTooltip';
 import { LocationStatisticSelect } from './LocationStatisticSelect';
@@ -55,33 +54,10 @@ export function RespondentsByCountry() {
     () => data?.survey?.demographics?.country?.year?.facets?.[0]?.buckets ?? [],
     [data]
   );
-  // const [statistic, setStatistic] = useState<Statistic>('percentage_survey');
-  // const colorScale = useMemo(
-  //   () =>
-  //     scaleQuantize<string>()
-  //       .domain(extent(mapData, (datum) => datum?.[statistic]) as [number, number])
-  //       .nice()
-  //       .range(schemePuBu[6]),
-  //   [mapData, statistic]
-  // );
   return (
-    <div>
-      <SectionHeading>Respondents per country (Choropleth map)</SectionHeading>
-      <div className="flex flex-col space-y-8">
-        <RespondentsByCountrySVG data={mapData} />
-        <RespondentsByCountryCanvas data={mapData} />
-        {/* <LocationStatisticSelect value={statistic} onChange={setStatistic} />
-        <div className="space-y-3">
-          <h3 className="text-base text-slate-300">SVG implementation (Equal Earth projection)</h3>
-          <SVGWorldMapWithTooltip data={mapData} colorScale={colorScale} statistic={statistic} />
-          <WorldMapLegend colorScale={colorScale} statistic={statistic} className="w-64" />
-        </div>
-        <div className="space-y-3">
-          <h3 className="text-base text-slate-300">Canvas implementation (Mercator projection)</h3>
-          <CanvasWorldMapWithTooltip data={mapData} colorScale={colorScale} statistic={statistic} />
-          <WorldMapLegend colorScale={colorScale} statistic={statistic} className="w-64" />
-        </div> */}
-      </div>
+    <div className="flex flex-col space-y-8">
+      <RespondentsByCountrySVG data={mapData} />
+      <RespondentsByCountryCanvas data={mapData} />
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 import { capitalize, isNil } from 'lodash-es';
 
 import type { CategoryValueListDatum } from '@/types';
-import { darkTheme } from '@/utils/chartThemes';
+import { defaultTheme } from '@/utils/chartThemes';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBar } from '@/visx-hybrid/SVGBar';
 import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
@@ -57,7 +57,7 @@ export function HorizontalStackedBarChart({ data, dataKeys }: HorizontalStackedB
       dependentScale={dependentScale}
       springConfig={springConfig}
       dependentRangePadding={30}
-      theme={darkTheme}
+      theme={defaultTheme}
       horizontal
     >
       <SVGGrid

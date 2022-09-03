@@ -10,7 +10,7 @@ interface SVGAxisPathOwnProps {
   outerTickLength: number;
   renderingOffset: number;
   range: AxisScaleOutput[];
-  springConfig?: SpringConfig;
+  springConfig: SpringConfig;
   animate: boolean;
   pathStyles?: PathStyles;
 }

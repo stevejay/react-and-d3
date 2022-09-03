@@ -4,7 +4,7 @@ import { easeCubicInOut } from 'd3-ease';
 import { InView } from '@/visx-hybrid/InView';
 import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-import { darkTheme } from './darkTheme';
+import { defaultTheme } from './defaultTheme';
 
 const independentScale: BandScaleConfig<string> = {
   type: 'band',
@@ -37,7 +37,7 @@ export function EmptyBarChart() {
             aria-label="Some Important Results"
             dependentRangePadding={50}
             independentRangePadding={50}
-            theme={darkTheme}
+            theme={defaultTheme}
           />
         </InView>
       </div>

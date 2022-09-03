@@ -1,15 +1,25 @@
-import { memo } from 'react';
 import type { SpringConfig } from 'react-spring';
-import { identity } from 'lodash-es';
+import { LinearScaleConfig } from '@visx/scale';
 
-import { Svg } from '@/components/Svg';
-import { SvgAxis } from '@/components/SvgAxis';
-import { useChartArea } from '@/hooks/useChartArea';
-import { useContinuousDomain } from '@/hooks/useContinuousDomain';
-import { useLinearScale } from '@/hooks/useLinearScale';
 import { TickLabelOrientation } from '@/types';
+import { axisTheme } from '@/utils/chartThemes';
+import { SVGAxis } from '@/visx-hybrid/SVGAxis';
+import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
+import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-const margins = { top: 20, bottom: 34, left: 24, right: 24 };
+const independentScale: LinearScaleConfig<number> = {
+  type: 'linear',
+  nice: true,
+  round: true
+};
+
+const dependentScale: LinearScaleConfig<number> = {
+  type: 'linear',
+  nice: true,
+  round: true,
+  clamp: true,
+  zero: true
+};
 
 export interface ReactLinearAxisChartProps {
   data: number[];
@@ -20,42 +30,38 @@ export interface ReactLinearAxisChartProps {
   tickLabelOrientation: TickLabelOrientation;
 }
 
-export const ReactLinearAxisChart = memo<ReactLinearAxisChartProps>(
-  ({ data, width, height, ariaLabelledby, tickLabelOrientation, springConfig }) => {
-    const chartArea = useChartArea(width, height, margins);
-    const domain = useContinuousDomain(data, identity);
-    const scale = useLinearScale(domain, chartArea.rangeWidth, {
-      nice: true,
-      rangeRound: true
-    });
-
-    if (!width || !height) {
-      return null;
-    }
-
-    return (
-      <Svg
-        width={width}
-        height={height}
-        aria-labelledby={ariaLabelledby}
-        className="font-sans select-none bg-slate-800"
-      >
-        <SvgAxis
-          scale={scale}
-          chartArea={chartArea}
-          orientation="bottom"
-          tickSizeOuter={-chartArea.height}
-          tickLabelOrientation={tickLabelOrientation}
-          className="text-[10px]"
-          springConfig={springConfig}
-        />
-      </Svg>
-    );
-  },
-  (prevProps, nextProps) =>
-    prevProps.data === nextProps.data &&
-    prevProps.width === nextProps.width &&
-    prevProps.height === nextProps.height &&
-    prevProps.springConfig === nextProps.springConfig &&
-    prevProps.tickLabelOrientation === nextProps.tickLabelOrientation
-);
+export function ReactLinearAxisChart({
+  data,
+  width,
+  height,
+  ariaLabelledby,
+  springConfig
+}: ReactLinearAxisChartProps) {
+  if (!width || !height) {
+    return null;
+  }
+  return (
+    <SVGXYChart
+      independentScale={independentScale}
+      dependentScale={dependentScale}
+      springConfig={springConfig}
+      role="graphics-document"
+      aria-roledescription="Bar chart"
+      aria-labelledby={ariaLabelledby}
+      theme={axisTheme}
+      width={width}
+      height={height}
+      margin={{ top: 20, bottom: 34, left: 24, right: 24 }}
+    >
+      <SVGBarSeries
+        dataKey="data-a"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        data={data as any}
+        independentAccessor={(datum) => datum}
+        dependentAccessor={() => 20}
+        renderBar={() => null}
+      />
+      <SVGAxis variable="independent" position="start" outerTickLength="chart" />
+    </SVGXYChart>
+  );
+}

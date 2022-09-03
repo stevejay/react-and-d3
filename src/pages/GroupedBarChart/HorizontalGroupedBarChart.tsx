@@ -5,7 +5,7 @@ import { schemeCategory10 } from 'd3-scale-chromatic';
 import { capitalize } from 'lodash-es';
 
 import type { CategoryValueListDatum } from '@/types';
-import { darkTheme } from '@/utils/chartThemes';
+import { defaultTheme } from '@/utils/chartThemes';
 import { SVGAxis } from '@/visx-hybrid/SVGAxis';
 import { SVGBarGroup } from '@/visx-hybrid/SVGBarGroup';
 import { SVGBarGroupLabels } from '@/visx-hybrid/SVGBarGroupLabels';
@@ -56,7 +56,7 @@ export function HorizontalGroupedBarChart({ data, dataKeys }: HorizontalGroupedB
       independentScale={independentScale}
       dependentScale={dependentScale}
       springConfig={springConfig}
-      theme={darkTheme}
+      theme={defaultTheme}
       horizontal
       dependentRangePadding={30}
     >

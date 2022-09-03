@@ -28,7 +28,7 @@ const ScatterplotPage = lazy(() => import('@/pages/Scatterplot'));
 const SparklinePage = lazy(() => import('@/pages/Sparkline'));
 const VisxPage = lazy(() => import('@/pages/Visx'));
 const VisxHybridPage = lazy(() => import('@/pages/VisxHybrid'));
-const StateOfJSPage = lazy(() => import('@/pages/StateOfJS'));
+const MapPage = lazy(() => import('@/pages/Map'));
 
 const pageLinks = [
   { href: '/', title: 'Home', pageComponent: HomePage },
@@ -43,7 +43,7 @@ const pageLinks = [
   { href: '/sparkline', title: 'Sparkline', pageComponent: SparklinePage },
   { href: '/visx', title: 'Visx by Airbnb', pageComponent: VisxPage },
   { href: '/visx-hybrid', title: 'Visx Hybrid', pageComponent: VisxHybridPage },
-  { href: '/state-of-js', title: 'State of JS', pageComponent: StateOfJSPage }
+  { href: '/map', title: 'State of JS', pageComponent: MapPage }
 ];
 
 const navigationData = [
