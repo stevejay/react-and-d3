@@ -5,7 +5,7 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
+    "skipDefaultLibCheck": false,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
@@ -21,7 +21,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["@honkhonk/vite-plugin-svgr/client", "vitest/globals"]
+    "types": ["@honkhonk/vite-plugin-svgr/client", "vitest/globals", "@types/offscreencanvas"]
   },
   "include": ["./src", "./e2e-tests"],
   "exclude": ["./types-temp", "**/node_modules", "**/.*/"]

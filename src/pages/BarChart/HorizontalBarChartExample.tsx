@@ -1,9 +1,5 @@
-import { SpringConfig } from 'react-spring';
-
-import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
-import { Margin } from '@/types';
 
 import { HorizontalBarChart } from './HorizontalBarChart';
 
@@ -34,35 +30,11 @@ const dataSets = [
   ]
 ];
 
-const margins: Margin = { left: 64, right: 40, top: 40, bottom: 64 };
-
-function isCompact(width: number) {
-  return Boolean(width) && width < 500;
-}
-
-export interface HorizontalBarChartExampleProps {
-  springConfig: SpringConfig;
-}
-
-export function HorizontalBarChartExample({ springConfig }: HorizontalBarChartExampleProps) {
+export function HorizontalBarChartExample() {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
-    <div className="my-8">
-      <ExampleChartWrapper title="Example 2: Horizontal Bar Chart" sizerClassName="h-[384px]">
-        {({ inView, width, height, ariaLabelledby }) =>
-          inView && (
-            <HorizontalBarChart
-              ariaLabelledby={ariaLabelledby}
-              data={data}
-              width={width}
-              height={height}
-              margins={margins}
-              compact={isCompact(width)}
-              springConfig={springConfig}
-            />
-          )
-        }
-      </ExampleChartWrapper>
+    <div className="my-8 space-y-4">
+      <HorizontalBarChart data={data} />
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>
   );

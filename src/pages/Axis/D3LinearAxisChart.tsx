@@ -3,7 +3,7 @@ import { max, min } from 'd3-array';
 import { axisBottom } from 'd3-axis';
 import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
-import { transition } from 'd3-transition';
+import { Transition, transition } from 'd3-transition';
 
 import { TickLabelOrientation } from '@/types';
 
@@ -38,13 +38,16 @@ class D3LinearAxisChartRenderer {
 
     this.axis.tickArguments([10]).tickSizeInner(6).tickSizeOuter(-chartHeight);
 
-    const groupTransition = transition<SVGGElement>().duration(this.transitionSeconds * 1000);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const groupTransition: Transition<any, null, null, undefined> = transition<null>().duration(
+      this.transitionSeconds * 1000
+    );
     let group = svg.selectAll<SVGGElement, null>('.axis').data([null]);
     group = group.enter().append('g').classed('axis', true).merge(group);
     group
       .attr('transform', `translate(${this.margins.left}, ${this.margins.top + chartHeight})`)
       .style('font-family', 'inherit')
-      .transition(groupTransition as any)
+      .transition(groupTransition)
       .call(this.axis);
   }
 }

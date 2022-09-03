@@ -215,8 +215,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
   // Get a function that can be used to calculate the pixel position for a tick
   // value. This has special handling if the scale is a band scale, in which case
   // the position is in the center of each band. The scale needs to be copied
-  // (`scale.copy()`)because it will later be stored in the DOM to be used for
-  // enter animations the next time that this axis component is rendered.
+  // because it will be stored until the next render.
   const position = (scale.bandwidth ? center : number)(scale.copy(), renderingOffset);
 
   // Store the position function so it can be used to animate the entering ticks
@@ -267,7 +266,7 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
 
   return (
     <SvgGroup
-      data-test-id={`axis-${orientation}`}
+      data-testid={`axis-${orientation}`}
       translateX={translateX}
       translateY={translateY}
       textAnchor={orientation === 'right' ? 'start' : orientation === 'left' ? 'end' : 'middle'}
@@ -290,22 +289,22 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
       )}
       {tickTransitions((styles, tickValue) => (
         <animated.g
-          data-test-id="tick-group"
+          data-testid="tick-group"
           style={styles}
           className={tickGroupClassName}
           {...tickGroupProps}
         >
           <line
-            data-test-id="tick"
+            data-testid="tick"
             {...{ [x + '2']: k * tickSizeInner }}
             stroke="currentColor"
             role="presentation"
             className={tickLineClassName}
             {...tickLineProps}
           />
-          <g data-test-id="tick-label-group" style={{ transform: labelGroupTransform }}>
+          <g data-testid="tick-label-group" style={{ transform: labelGroupTransform }}>
             <text
-              data-test-id="tick-label"
+              data-testid="tick-label"
               stroke="none"
               fill="currentColor"
               role="presentation"
@@ -320,9 +319,9 @@ export function SvgAxis<DomainT extends DomainValue>(props: SvgAxisProps<DomainT
         </animated.g>
       ))}
       {axisLabel && (
-        <g data-test-id="axis-label-group" transform={axisLabelOrientationProps.transform}>
+        <g data-testid="axis-label-group" transform={axisLabelOrientationProps.transform}>
           <text
-            data-test-id="axis-label"
+            data-testid="axis-label"
             stroke="none"
             fill="currentColor"
             className={axisLabelClassName}

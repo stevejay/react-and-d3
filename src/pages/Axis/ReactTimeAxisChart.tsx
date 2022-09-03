@@ -1,16 +1,27 @@
-import { memo } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
+import { LinearScaleConfig, UtcScaleConfig } from '@visx/scale';
 
-import { Svg } from '@/components/Svg';
-import { SvgAxis } from '@/components/SvgAxis';
-import { useChartArea } from '@/hooks/useChartArea';
-import { useTimeDomain } from '@/hooks/useTimeDomain';
-import { useTimeScale } from '@/hooks/useTimeScale';
 import { TickLabelOrientation } from '@/types';
+import { axisTheme } from '@/utils/chartThemes';
+import { SVGAxis } from '@/visx-hybrid/SVGAxis';
+import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
+import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-import { yearMonthMultiFormat } from './format';
+import { yearMonthMultiFormat } from './formatters';
 
-const margins = { top: 20, bottom: 48, left: 32, right: 24 };
+const independentScale: UtcScaleConfig<Date> = {
+  type: 'utc',
+  nice: true,
+  round: true
+};
+
+const dependentScale: LinearScaleConfig<number> = {
+  type: 'linear',
+  nice: true,
+  round: true,
+  clamp: true,
+  zero: true
+};
 
 export interface ReactTimeAxisChartProps {
   data: Date[];
@@ -21,45 +32,42 @@ export interface ReactTimeAxisChartProps {
   tickLabelOrientation: TickLabelOrientation;
 }
 
-export const ReactTimeAxisChart = memo<ReactTimeAxisChartProps>(
-  ({ data, width, height, ariaLabelledby, tickLabelOrientation, springConfig }) => {
-    const chartArea = useChartArea(width, height, margins);
-    const domain = useTimeDomain(data);
-    const scale = useTimeScale(domain, chartArea.rangeWidth, {
-      nice: true,
-      rangeRound: true,
-      utc: true,
-      clamp: true
-    });
-
-    if (!width || !height) {
-      return null;
-    }
-
-    return (
-      <Svg
-        width={width}
-        height={height}
-        aria-labelledby={ariaLabelledby}
-        className="font-sans select-none bg-slate-800"
-      >
-        <SvgAxis
-          scale={scale}
-          chartArea={chartArea}
-          orientation="bottom"
-          tickSizeOuter={-chartArea.height}
-          tickLabelOrientation={tickLabelOrientation}
-          tickFormat={yearMonthMultiFormat}
-          className="text-[10px]"
-          springConfig={springConfig}
-        />
-      </Svg>
-    );
-  },
-  (prevProps, nextProps) =>
-    prevProps.data === nextProps.data &&
-    prevProps.width === nextProps.width &&
-    prevProps.height === nextProps.height &&
-    prevProps.springConfig === nextProps.springConfig &&
-    prevProps.tickLabelOrientation === nextProps.tickLabelOrientation
-);
+export function ReactTimeAxisChart({
+  data,
+  width,
+  height,
+  ariaLabelledby,
+  springConfig
+}: ReactTimeAxisChartProps) {
+  if (!width || !height) {
+    return null;
+  }
+  return (
+    <SVGXYChart
+      independentScale={independentScale}
+      dependentScale={dependentScale}
+      springConfig={springConfig}
+      role="graphics-document"
+      aria-roledescription="Bar chart"
+      aria-labelledby={ariaLabelledby}
+      theme={axisTheme}
+      width={width}
+      height={height}
+      margin={{ top: 20, bottom: 34, left: 24, right: 24 }}
+    >
+      <SVGBarSeries
+        dataKey="data-a"
+        data={data}
+        independentAccessor={(datum) => datum}
+        dependentAccessor={() => 20}
+        renderBar={() => null}
+      />
+      <SVGAxis
+        variable="independent"
+        position="start"
+        outerTickLength="chart"
+        tickFormat={yearMonthMultiFormat}
+      />
+    </SVGXYChart>
+  );
+}

@@ -2,9 +2,9 @@
 import svgr from '@honkhonk/vite-plugin-svgr';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
-import { defineConfig } from 'vite';
 import optimisePersistPlugin from 'vite-plugin-optimize-persist';
 import packageConfigPlugin from 'vite-plugin-package-config';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [
@@ -14,7 +14,10 @@ export default defineConfig({
     svgr(), // Also added to storybook
     packageConfigPlugin(), // Also added to storybook
     optimisePersistPlugin() // Also added to storybook
-  ],
+    // TODO see if there is a fix for defineConfig from vitest/config having
+    // a plugins property type that does not work here.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ] as any,
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')
@@ -22,7 +25,7 @@ export default defineConfig({
   },
   server: {
     strictPort: true,
-    port: 3000
+    port: 3030
   },
   build: {
     minify: true,

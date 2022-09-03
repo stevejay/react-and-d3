@@ -3,7 +3,7 @@ import { MeshProps } from '@react-three/fiber';
 // import { motion } from 'framer-motion/three';
 // import * as THREE from 'three';
 
-export function Box(props: Omit<MeshProps, 'onUpdate' | 'ref'>) {
+export function Box(_props: Omit<MeshProps, 'onUpdate' | 'ref'>) {
   //   const [hovered, setHover] = useState(false);
   //   const [active, setActive] = useState(false);
   //   return (

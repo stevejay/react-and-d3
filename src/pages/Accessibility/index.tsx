@@ -1,32 +1,17 @@
-import { ReactNode } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { easeCubicInOut } from 'd3-ease';
 
 import { PageHeading } from '@/components/PageHeading';
 import { Paragraph } from '@/components/Paragraph';
 import { ProseExternalLink } from '@/components/ProseExternalLink';
 import { SectionHeading } from '@/components/SectionHeading';
 
-import { StackedBarChartWithTooltipExample } from './StackedBarChartWithTooltipExample';
-
-function VoiceOverText({ children }: { children: ReactNode }) {
-  return (
-    <figure>
-      <blockquote>
-        <p className="px-4 py-2 my-4 italic font-light leading-relaxed rounded max-w-prose text-slate-300">
-          {children}
-        </p>
-      </blockquote>
-      <figcaption className="sr-only">Text spoken by VoiceOver</figcaption>
-    </figure>
-  );
-}
-
-const springConfig = { duration: 500, easing: easeCubicInOut };
+import { StackedBarChart } from './StackedBarChart';
+import { StackedBarChartWithAlternativeAlly } from './StackedBarChartWithAlternativeA11y';
+import { VoiceOverQuote } from './VoiceOverQuote';
 
 function AccessibilityPage() {
   return (
-    <main className="w-full max-w-3xl p-4 mx-auto md:p-8">
+    <main className="w-full max-w-3xl p-4 mx-auto md:px-8 md:py-16">
       <PageHeading>Accessibility</PageHeading>
       <Helmet>
         <title>Accessibility - React and D3</title>
@@ -37,42 +22,118 @@ function AccessibilityPage() {
         <ProseExternalLink href="https://www.w3.org/TR/graphics-aria-1.0/">
           WAI-ARIA Graphics Module
         </ProseExternalLink>{' '}
-        describes how a data visualisation can be made accessible to screen reader users. The stacked bar
-        chart below follows these recommendations. Use a screen reader with its preferred browser to hear the
-        result. On macOS you can use VoiceOver with the Safari Web browser. On Windows you can use NVDA with
-        Firefox.
-      </Paragraph>
-      <StackedBarChartWithTooltipExample springConfig={springConfig} />
-      <Paragraph>
-        Using either of those combinations, I hear the following when I navigate to the chart:
-      </Paragraph>
-      <VoiceOverText>Comparing sales strategies, Stacked bar chart</VoiceOverText>
-      <Paragraph>
-        If I then navigate into the chart, the first category is selected and announced by the screen reader:
-      </Paragraph>
-      <VoiceOverText>Strategy 1, Sales strategy</VoiceOverText>
-      <Paragraph>If I now navigate to the second category, I hear the following:</Paragraph>
-      <VoiceOverText>Strategy 2, Sales strategy</VoiceOverText>
-      <Paragraph>
-        If I navigate into this category, the screen reader announces the first of its values:
-      </Paragraph>
-      <VoiceOverText>84 units sold, Product A</VoiceOverText>
-      <Paragraph>I can then navigate through the rest of the category values:</Paragraph>
-      <VoiceOverText>
-        20 units sold, Product B
-        <br />
-        40 units sold, Product C
-      </VoiceOverText>
-      <Paragraph>
-        Note that you cannot navigate to the axis labels, the axis tick labels or the tooltip, and they are
-        not announced. I have deliberately hidden them from the screen reader as they do not aid
-        comprehension.
+        describes how an SVG data visualisation can be made accessible to screen reader users. Graphics role
+        attributes are used to annotate elements in the SVG. Labels and role descriptions are added to them.
+        You are free to phrase those labels and descriptions however you see fit, although you may need to
+        work around how the screen reader actually reads out that information.
       </Paragraph>
       <Paragraph>
-        As described in the WAI-ARIA Graphics Module, it is also possible to add descriptions to the parts of
-        the chart. Originally I included a description for the chart and each category. These worked well with
-        VoiceOver but in NVDA the description text is spoken immediately after the label text, which I found
-        confusing.
+        The stacked bar chart below follows the WAI-ARIA Graphics Module recommendations. Use a screen reader
+        to hear the result. On macOS you can use VoiceOver with the Safari Web browser. On Windows you can use
+        NVDA with Chrome or Firefox, or JAWS with Chrome. Some screen readers work best with a particular
+        browser, such as Voiceover with Safari. Other screen readers might support multiple browsers but some
+        combinations are more popular than others. (You can find recent usage figures{' '}
+        <ProseExternalLink href="https://webaim.org/projects/screenreadersurvey9/#browsers">
+          here
+        </ProseExternalLink>
+        .)
+      </Paragraph>
+      <StackedBarChart />
+      <Paragraph>I first hear the chart title when I navigate to the chart:</Paragraph>
+      <VoiceOverQuote>Figure 1: Comparing sales strategies, Stacked bar chart</VoiceOverQuote>
+      <Paragraph>
+        When I then navigate into the chart, the first sales strategy is visually outlined and the stack data
+        for that strategy is read out by the screen reader:
+      </Paragraph>
+      <VoiceOverQuote>
+        Using Strategy 1: Product A sold 20 units, Product B sold 0 units, Product C sold 0 units, Strategy 1
+      </VoiceOverQuote>
+      <Paragraph>
+        The screen reader has concatenated two strings to create this description: the aria label text for the
+        stack data (
+        <em>
+          &ldquo;Using Strategy 1: Product A sold 20 units, Product B sold 0 units, Product C sold 0
+          units&rdquo;
+        </em>
+        ) and the role description text (<em>&ldquo;Strategy 1&rdquo;</em>).
+      </Paragraph>
+      <Paragraph>
+        When I then navigate forward, the description for the second sales strategy is read out:
+      </Paragraph>
+      <VoiceOverQuote>
+        Using Strategy 2: Product A sold 84 units, Product B sold 20 units, Product C sold 40 units, Strategy
+        2
+      </VoiceOverQuote>
+      <Paragraph>
+        My particular aria label text does lead to repetition of the sales strategy number but I think this is
+        reasonable. I could remove the repetition by rephrasing the aria label text but this might make the
+        information harder to understand:
+      </Paragraph>
+      <VoiceOverQuote>
+        Product A sold 84 units, Product B sold 20 units, Product C sold 40 units, Strategy 2
+      </VoiceOverQuote>
+      <Paragraph>
+        Note that you cannot navigate to the legend, the axis labels, the axis tick labels or the tooltip, and
+        they are all not announced. I deliberately hide them from the screen reader because the accessibility
+        markup is sufficient.
+      </Paragraph>
+      <Paragraph>
+        I had a choice between annotating the existing elements in the chart, specifically the &lt;rect&gt;
+        bar elements that form each stack, or adding elements specifically for accessibility. Both approaches
+        are valid, but in this case I had to use the latter approach. The existing elements in the chart are
+        rendered by series rather than by stack, in order that each series as a whole animates correctly when
+        entering and exiting. This arrangement is at odds with how I want the screen reader user to navigate
+        the data: by strategy rather than by product.
+      </Paragraph>
+      <Paragraph>
+        Nevertheless, it would also be valid to annotate the chart so that the screen reader user navigates
+        the data by product. This can be accomplished by annotating the existing elements in the chart. You
+        can try this variation below:
+      </Paragraph>
+      <StackedBarChartWithAlternativeAlly />
+      <Paragraph>
+        Similar to the first chart, I first hear the chart title when I navigate to the chart:
+      </Paragraph>
+      <VoiceOverQuote>
+        Figure 2: Comparing sales strategies with alternative accessibility markup, Stacked bar chart
+      </VoiceOverQuote>
+      <Paragraph>
+        When I then navigate into the chart, the title for the first data series is read out:
+      </Paragraph>
+      <VoiceOverQuote>Product 1, group</VoiceOverQuote>
+      <Paragraph>
+        I can either navigate into the data series, or navigate to the second series. If I do the latter, the
+        title for the second data series is read out:
+      </Paragraph>
+      <VoiceOverQuote>Product 2, group</VoiceOverQuote>
+      <Paragraph>
+        If I navigate into that second series, the sales figure for the first sales strategy in that series is
+        read out:
+      </Paragraph>
+      <VoiceOverQuote>0 units sold, Strategy 1</VoiceOverQuote>
+      <Paragraph>
+        I can then continue to navigate through the remainder of the sales figures for product 2:
+      </Paragraph>
+      <VoiceOverQuote>20 units sold, Strategy 2</VoiceOverQuote>
+      <VoiceOverQuote>50 units sold, Strategy 3</VoiceOverQuote>
+      <VoiceOverQuote>10 units sold, Strategy 4</VoiceOverQuote>
+      <VoiceOverQuote>0 units sold, Strategy 5</VoiceOverQuote>
+      <Paragraph>
+        The best approach to use will depend on the data and how you want the screen reader user to navigate
+        it.
+      </Paragraph>
+      <SectionHeading>Adding descriptions</SectionHeading>
+      <Paragraph>
+        As described in the WAI-ARIA Graphics Module, it is also possible to use the &lt;desc&gt; element to
+        add a description to any part of the chart. I originally included a description for the chart itself
+        and for each strategy. These worked well with VoiceOver but in NVDA the description text is spoken
+        immediately after the aria label text and I found this confusing.
+      </Paragraph>
+      <SectionHeading>An alternative approach</SectionHeading>
+      <Paragraph>
+        Rather than add extra markup to the chart, you could instead completely hide the chart from the screen
+        reader and render a visually hidden table alongside it. The screen reader user would then navigate
+        this table in order to discover the data.
       </Paragraph>
     </main>
   );

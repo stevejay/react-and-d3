@@ -1,13 +1,23 @@
-import { memo } from 'react';
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
+import { BandScaleConfig, LinearScaleConfig } from '@visx/scale';
 
-import { Svg } from '@/components/Svg';
-import { SvgAxis } from '@/components/SvgAxis';
-import { useBandScale } from '@/hooks/useBandScale';
-import { useChartArea } from '@/hooks/useChartArea';
 import { TickLabelOrientation } from '@/types';
+import { axisTheme } from '@/utils/chartThemes';
+import { SVGAxis } from '@/visx-hybrid/SVGAxis';
+import { SVGBarSeries } from '@/visx-hybrid/SVGBarSeries';
+import { SVGXYChart } from '@/visx-hybrid/SVGXYChart';
 
-const margins = { top: 20, bottom: 34, left: 30, right: 30 };
+const independentScale: BandScaleConfig<number> = {
+  type: 'band'
+};
+
+const dependentScale: LinearScaleConfig<number> = {
+  type: 'linear',
+  nice: true,
+  round: true,
+  clamp: true,
+  zero: true
+};
 
 export interface ReactBandAxisChartProps {
   data: string[];
@@ -18,38 +28,38 @@ export interface ReactBandAxisChartProps {
   tickLabelOrientation: TickLabelOrientation;
 }
 
-export const ReactBandAxisChart = memo<ReactBandAxisChartProps>(
-  ({ data, width, height, ariaLabelledby, tickLabelOrientation, springConfig }) => {
-    const chartArea = useChartArea(width, height, margins);
-    const scale = useBandScale(data, chartArea.rangeWidth, { rangeRound: true });
-
-    if (!width || !height) {
-      return null;
-    }
-
-    return (
-      <Svg
-        width={width}
-        height={height}
-        aria-labelledby={ariaLabelledby}
-        className="font-sans select-none bg-slate-800"
-      >
-        <SvgAxis
-          scale={scale}
-          chartArea={chartArea}
-          orientation="bottom"
-          tickSizeOuter={-chartArea.height}
-          tickLabelOrientation={tickLabelOrientation}
-          className="text-[10px]"
-          springConfig={springConfig}
-        />
-      </Svg>
-    );
-  },
-  (prevProps, nextProps) =>
-    prevProps.data === nextProps.data &&
-    prevProps.width === nextProps.width &&
-    prevProps.height === nextProps.height &&
-    prevProps.springConfig === nextProps.springConfig &&
-    prevProps.tickLabelOrientation === nextProps.tickLabelOrientation
-);
+export function ReactBandAxisChart({
+  data,
+  width,
+  height,
+  ariaLabelledby,
+  springConfig
+}: ReactBandAxisChartProps) {
+  if (!width || !height) {
+    return null;
+  }
+  return (
+    <SVGXYChart
+      independentScale={independentScale}
+      dependentScale={dependentScale}
+      springConfig={springConfig}
+      role="graphics-document"
+      aria-roledescription="Bar chart"
+      aria-labelledby={ariaLabelledby}
+      theme={axisTheme}
+      width={width}
+      height={height}
+      margin={{ top: 20, bottom: 34, left: 24, right: 24 }}
+    >
+      <SVGBarSeries
+        dataKey="data-a"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        data={data as any}
+        independentAccessor={(datum) => datum}
+        dependentAccessor={() => 20}
+        renderBar={() => null}
+      />
+      <SVGAxis variable="independent" position="start" outerTickLength="chart" />
+    </SVGXYChart>
+  );
+}

@@ -2,7 +2,6 @@ import { ParentSizeModern } from '@visx/responsive';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
-import { Margin } from '@/types';
 
 import { BarChart } from './BarChart';
 
@@ -27,33 +26,13 @@ const dataSets = [
   ]
 ];
 
-const margins: Margin = { left: 72, right: 40, top: 40, bottom: 64 };
-
-// function isCompact(width: number) {
-//   return Boolean(width) && width < 500;
-// }
-
-// function renderTooltipContent(datum: CategoryValueListDatum<string, number>) {
-//   return (
-//     <>
-//       {seriesKeys.map((series, index) => (
-//         <Fragment key={series}>
-//           <span style={{ color: schemeSet3[index] }}>{capitalize(series)}:</span>{' '}
-//           {format('.2f')(datum.values[series])}
-//           <br />
-//         </Fragment>
-//       ))}
-//     </>
-//   );
-// }
-
 export function BarChartExample() {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
     <div className="my-8">
-      <div className="relative overflow-hidden w-full h-[384px]">
+      <div className="relative overflow-hidden w-full h-[384px] bg-slate-800">
         <ParentSizeModern>
-          {({ width, height }) => <BarChart data={data} width={width} height={height} margins={margins} />}
+          {({ width, height }) => <BarChart data={data} width={width} height={height} />}
         </ParentSizeModern>
       </div>
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>

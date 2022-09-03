@@ -11,7 +11,7 @@ export interface SvgChartAreaInteractionRectProps {
 export const SvgChartAreaInteractionRect = memo(
   forwardRef<SVGRectElement, SvgChartAreaInteractionRectProps>(({ chartArea, className = '' }, ref) => (
     <SvgGroup
-      data-test-id="gesture-interaction"
+      data-testid="gesture-interaction"
       translateX={chartArea.translateLeft}
       translateY={chartArea.translateTop}
       className={className}
@@ -20,7 +20,7 @@ export const SvgChartAreaInteractionRect = memo(
     >
       <rect
         ref={ref}
-        data-test-id="interaction-area"
+        data-testid="interaction-area"
         role="presentation"
         className="touch-none"
         x={0}

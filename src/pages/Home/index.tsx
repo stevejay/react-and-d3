@@ -7,6 +7,7 @@ import { Paragraph } from '@/components/Paragraph';
 import { BarChartSvg } from './illustrations/BarChartSvg';
 import circuitBoardSvgUrl from './illustrations/circuitBoard.svg';
 import { GroupedBarChartSvg } from './illustrations/GroupedBarChartSvg';
+import { MapSvg } from './illustrations/MapSvg';
 import { RadarChartSvg } from './illustrations/RadarChartSvg';
 import { ReactAndD3Svg } from './illustrations/ReactAndD3Svg';
 import { ScatterplotSvg } from './illustrations/ScatterplotSvg';
@@ -36,7 +37,8 @@ const pageCardData: PageCardProps[] = [
   { href: '/scatterplot', title: 'Scatterplot', illustration: ScatterplotSvg },
   { href: '/radar-chart', title: 'Radar Chart', illustration: RadarChartSvg },
   { href: '/sparkline', title: 'Sparkline', illustration: SparklineSvg },
-  { href: '/visx', title: 'Visx by Airbnb', illustration: VisxSvg }
+  { href: '/visx', title: 'Visx by Airbnb', illustration: VisxSvg },
+  { href: '/map', title: 'Map', illustration: MapSvg }
 ];
 
 function Home() {

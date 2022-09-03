@@ -13,7 +13,6 @@ interface RenderProps {
 
 export interface AxisExampleChartWrapperProps {
   title: string;
-  subtitle?: string;
   sizerClassName: string;
   children: ({ inView, width, height, ariaLabelledby }: RenderProps) => ReactNode;
 }
@@ -22,12 +21,7 @@ export interface AxisExampleChartWrapperProps {
  * Controls the size of the contained chart and only renders it if it
  * is in the viewport.
  */
-export function AxisExampleChartWrapper({
-  title,
-  subtitle,
-  sizerClassName,
-  children
-}: AxisExampleChartWrapperProps) {
+export function AxisExampleChartWrapper({ title, sizerClassName, children }: AxisExampleChartWrapperProps) {
   const id = useId();
   return (
     <div>

@@ -1,9 +1,5 @@
-import { SpringConfig } from 'react-spring';
-
-import { ExampleChartWrapper } from '@/components/ExampleChartWrapper';
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
-import { Margin } from '@/types';
 
 import { VerticalBarChart } from './VerticalBarChart';
 
@@ -40,30 +36,11 @@ const dataSets = [
   ]
 ];
 
-const margins: Margin = { left: 72, right: 40, top: 40, bottom: 64 };
-
-export interface VerticalBarChartExampleProps {
-  springConfig: SpringConfig;
-}
-
-export function VerticalBarChartExample({ springConfig }: VerticalBarChartExampleProps) {
+export function VerticalBarChartExample() {
   const [data, nextDataSet] = useDataSets(dataSets);
   return (
-    <div className="my-8">
-      <ExampleChartWrapper title="Example 1: Vertical Bar Chart" sizerClassName="h-[384px]">
-        {({ inView, width, height, ariaLabelledby }) =>
-          inView && (
-            <VerticalBarChart
-              ariaLabelledby={ariaLabelledby}
-              data={data}
-              width={width}
-              height={height}
-              margins={margins}
-              springConfig={springConfig}
-            />
-          )
-        }
-      </ExampleChartWrapper>
+    <div className="my-8 space-y-4">
+      <VerticalBarChart data={data} />
       <ExampleUpdateButton onClick={nextDataSet}>Update bar chart data</ExampleUpdateButton>
     </div>
   );

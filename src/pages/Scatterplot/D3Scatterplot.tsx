@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useLayoutEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { max, min } from 'd3-array';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { Delaunay } from 'd3-delaunay';
@@ -8,16 +8,18 @@ import { zoom, zoomIdentity } from 'd3-zoom';
 import { noop, uniqueId } from 'lodash-es';
 
 import { Svg } from '@/components/Svg';
+import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 import { useFollowOnHoverTooltip } from '@/tooltip';
 import { Margin, PointDatum, Rect } from '@/types';
 
 /* globals ElementTagNameMap */
 function ensureChild<K extends keyof ElementTagNameMap, ParentElementT extends SVGElement>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   svg: Selection<ParentElementT, any, any, any>,
   k: K,
   className?: string
 ) {
-  let element = svg.selectAll<ElementTagNameMap[K], null>(`.${className ?? k}`).data([null]);
+  const element = svg.selectAll<ElementTagNameMap[K], null>(`.${className ?? k}`).data([null]);
   const enter = element
     .enter()
     .append(k)
@@ -286,7 +288,7 @@ export function D3Scatterplot<DatumT>({
 
   const [renderer] = useState<D3ScatterplotRenderer<DatumT>>(() => new D3ScatterplotRenderer());
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     renderer.width = width;
     renderer.height = height;
     renderer.margins = margins;
@@ -297,7 +299,7 @@ export function D3Scatterplot<DatumT>({
     );
     renderer.svgElement = svgRef.current;
     renderer.compact = compact;
-    renderer.onMouseMove = interactionProps.onMouseEnter;
+    renderer.onMouseMove = interactionProps.onMouseMove;
     renderer.onMouseLeave = interactionProps.onMouseLeave;
     renderer.onClick = interactionProps.onClick;
     renderer.render();

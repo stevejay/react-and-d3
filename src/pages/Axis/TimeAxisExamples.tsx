@@ -1,4 +1,4 @@
-import { SpringConfig } from 'react-spring';
+import type { SpringConfig } from 'react-spring';
 
 import { ExampleUpdateButton } from '@/components/ExampleUpdateButton';
 import { useDataSets } from '@/hooks/useDataSets';
