@@ -41,9 +41,9 @@ const pageLinks = [
   { href: '/radar-chart', title: 'Radar Chart', pageComponent: RadarChartPage },
   { href: '/scatterplot', title: 'Scatterplot', pageComponent: ScatterplotPage },
   { href: '/sparkline', title: 'Sparkline', pageComponent: SparklinePage },
+  { href: '/map', title: 'Map', pageComponent: MapPage },
   { href: '/visx', title: 'Visx by Airbnb', pageComponent: VisxPage },
-  { href: '/visx-adapted', title: 'Visx Adapted', pageComponent: VisxHybridPage },
-  { href: '/map', title: 'Map', pageComponent: MapPage }
+  { href: '/visx-adapted', title: 'Visx Adapted', pageComponent: VisxHybridPage }
 ];
 
 const navigationData = [

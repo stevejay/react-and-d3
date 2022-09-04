@@ -30,7 +30,7 @@ function VisxHybridPage() {
       {true && <StackedBarChartExample />}
       {true && <GroupedBarChartExample />}
       {true && <BarChartExample />}
-      {true && <RespondentsByLanguage />}
+      {false && <RespondentsByLanguage />}
       {false && <EmptyBarChart />}
     </main>
   );

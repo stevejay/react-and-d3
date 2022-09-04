@@ -37,8 +37,9 @@ const pageCardData: PageCardProps[] = [
   { href: '/scatterplot', title: 'Scatterplot', illustration: ScatterplotSvg },
   { href: '/radar-chart', title: 'Radar Chart', illustration: RadarChartSvg },
   { href: '/sparkline', title: 'Sparkline', illustration: SparklineSvg },
+  { href: '/map', title: 'Map', illustration: MapSvg },
   { href: '/visx', title: 'Visx by Airbnb', illustration: VisxSvg },
-  { href: '/map', title: 'Map', illustration: MapSvg }
+  { href: '/visx-adapted', title: 'Visx Adapted', illustration: VisxSvg }
 ];
 
 function Home() {
