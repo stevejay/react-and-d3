@@ -30,7 +30,7 @@ export type SVGBarStackProps<Datum extends object> = {
   'onPointerMove' | 'onPointerOut' | 'onPointerDown' | 'onPointerUp' | 'onBlur' | 'onFocus'
 >;
 
-export function SVGBarStack<Datum extends object>({
+function SVGBarStack<Datum extends object>({
   children,
   enableEvents = true,
   animate = true,
@@ -105,3 +105,7 @@ export function SVGBarStack<Datum extends object>({
     </>
   );
 }
+
+SVGBarStack.type = 'stack';
+
+export { SVGBarStack };

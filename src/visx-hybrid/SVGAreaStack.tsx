@@ -27,7 +27,7 @@ export type SVGAreaStackProps<Datum extends object> = {
   'onPointerMove' | 'onPointerOut' | 'onPointerDown' | 'onPointerUp' | 'onBlur' | 'onFocus'
 >;
 
-export function SVGAreaStack<Datum extends object>({
+function SVGAreaStack<Datum extends object>({
   children,
   enableEvents = true,
   animate = true,
@@ -116,3 +116,7 @@ export function SVGAreaStack<Datum extends object>({
     </>
   );
 }
+
+SVGAreaStack.type = 'stack';
+
+export { SVGAreaStack };

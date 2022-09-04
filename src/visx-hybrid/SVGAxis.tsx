@@ -16,7 +16,7 @@ import { calculateAxisOrientation } from './calculateAxisOrientation';
 import { calculateTicksData } from './calculateTicksData';
 import { defaultOuterTickLength } from './constants';
 import { getDependentRange, getIndependentRange } from './getRange';
-import { SVGAnimatedGroup } from './SVGAnimatedGroup';
+import { SVGAnimatedGElement } from './SVGAnimatedGElement';
 import { SVGAxisLabel } from './SVGAxisLabel';
 import { SVGAxisPath } from './SVGAxisPath';
 import { SVGAxisTicks } from './SVGAxisTicks';
@@ -171,7 +171,7 @@ function SVGAxis(props: SVGAxisProps) {
           labelStyles={getAxisLabelTextStyles(axisStyles, theme.bigLabels)}
         />
       )}
-      <SVGAnimatedGroup
+      <SVGAnimatedGElement
         data-testid={`axis-${axisOrientation}`}
         x={left}
         y={top}
@@ -215,7 +215,7 @@ function SVGAxis(props: SVGAxisProps) {
             {...axisLineProps}
           />
         )}
-      </SVGAnimatedGroup>
+      </SVGAnimatedGElement>
     </>
   );
 }

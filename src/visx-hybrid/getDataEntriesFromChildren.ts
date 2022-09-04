@@ -9,7 +9,7 @@ import { GroupDataEntry, SimpleDataEntry, StackDataEntry } from './DataEntry';
 import { isDefined } from './isDefined';
 import { getStackOffset } from './stackOffset';
 import { getStackOrder } from './stackOrder';
-import type { AxisScale, IDataEntry, StackDataWithSums } from './types';
+import type { AxisScale, IDataEntry, ISeriesContainerComponent, StackDataWithSums } from './types';
 
 export function getDataEntriesFromChildren<
   IndependentScale extends AxisScale,
@@ -32,7 +32,9 @@ export function getDataEntriesFromChildren<
     // Groups can't be nested in groups.
     if (
       element.type === Fragment ||
-      (typeof element.type !== 'string' && element.type.name.endsWith('Group') && !isInsideGroup)
+      (typeof element.type !== 'string' &&
+        (element.type as ISeriesContainerComponent)?.type === 'group' &&
+        !isInsideGroup)
     ) {
       if (groupScale) {
         throw new Error('Only one grouping is allowed in the XY chart.');
@@ -42,7 +44,10 @@ export function getDataEntriesFromChildren<
       const dataKeys = result.dataEntries.map((dataEntry) => dataEntry.dataKey);
       groupScale = scaleBand<string>({ domain: sort ? [...dataKeys].sort(sort) : dataKeys, padding });
       result.dataEntries.forEach((dataEntry) => dataEntries.push(dataEntry));
-    } else if (typeof element.type !== 'string' && element.type.name.endsWith('Stack')) {
+    } else if (
+      typeof element.type !== 'string' &&
+      (element.type as ISeriesContainerComponent)?.type === 'stack'
+    ) {
       const { stackOrder, stackOffset } = element.props;
       const result = getDataEntriesFromChildren<IndependentScale, DependentScale>(
         element.props.children,

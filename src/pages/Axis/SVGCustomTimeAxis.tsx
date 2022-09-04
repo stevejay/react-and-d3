@@ -16,7 +16,7 @@ import { calculateAxisOrientation } from '@/visx-hybrid/calculateAxisOrientation
 import { calculateTicksData } from '@/visx-hybrid/calculateTicksData';
 import { defaultOuterTickLength } from '@/visx-hybrid/constants';
 import { getDependentRange, getIndependentRange } from '@/visx-hybrid/getRange';
-import { SVGAnimatedGroup } from '@/visx-hybrid/SVGAnimatedGroup';
+import { SVGAnimatedGElement } from '@/visx-hybrid/SVGAnimatedGElement';
 import { SVGAxisLabel } from '@/visx-hybrid/SVGAxisLabel';
 import { SVGAxisPath } from '@/visx-hybrid/SVGAxisPath';
 import { SVGAxisTicks } from '@/visx-hybrid/SVGAxisTicks';
@@ -171,7 +171,7 @@ function SVGCustomTimeAxis(props: SVGCustomTimeAxisProps) {
           labelStyles={getAxisLabelTextStyles(axisStyles, theme.bigLabels)}
         />
       )}
-      <SVGAnimatedGroup
+      <SVGAnimatedGElement
         data-testid={`axis-${axisOrientation}`}
         x={left}
         y={top}
@@ -215,7 +215,7 @@ function SVGCustomTimeAxis(props: SVGCustomTimeAxisProps) {
             {...axisLineProps}
           />
         )}
-      </SVGAnimatedGroup>
+      </SVGAnimatedGElement>
     </>
   );
 }

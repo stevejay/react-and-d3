@@ -1,7 +1,7 @@
 import type { ReactNode, SVGProps } from 'react';
 import { animated, SpringConfig, useSpring } from 'react-spring';
 
-export type SVGAnimatedGroupProps = {
+export type SVGAnimatedGElementProps = {
   x: number;
   y: number;
   springConfig?: SpringConfig;
@@ -9,7 +9,7 @@ export type SVGAnimatedGroupProps = {
   children: ReactNode;
 } & Omit<SVGProps<SVGGElement>, 'ref' | 'x' | 'y'>;
 
-export function SVGAnimatedGroup({
+export function SVGAnimatedGElement({
   x,
   y,
   springConfig,
@@ -17,7 +17,7 @@ export function SVGAnimatedGroup({
   children,
   style,
   ...restProps
-}: SVGAnimatedGroupProps) {
+}: SVGAnimatedGElementProps) {
   const styles = useSpring({ to: { x, y }, config: springConfig, immediate: !animate });
   return (
     <animated.g {...restProps} style={{ ...style, ...styles }}>

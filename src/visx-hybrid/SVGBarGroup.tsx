@@ -29,7 +29,7 @@ type SVGBarGroupProps<Datum extends object> = {
   'onPointerMove' | 'onPointerOut' | 'onPointerDown' | 'onPointerUp' | 'onBlur' | 'onFocus'
 >;
 
-export function SVGBarGroup<Datum extends object>({
+function SVGBarGroup<Datum extends object>({
   children,
   springConfig,
   animate = true,
@@ -108,3 +108,7 @@ export function SVGBarGroup<Datum extends object>({
     </>
   );
 }
+
+SVGBarGroup.type = 'group';
+
+export { SVGBarGroup };

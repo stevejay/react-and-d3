@@ -1,9 +1,8 @@
 import { Children, Fragment, isValidElement, ReactNode } from 'react';
 
-import { calculateAxisMargin } from './calculateAxisMargin';
 import { calculateAxisOrientation } from './calculateAxisOrientation';
 import { mergeMargins } from './mergeMargins';
-import type { AxisScale, BasicAxisProps, IXYChartTheme, Margin, SVGAxisComponent } from './types';
+import type { AxisScale, IMarginComponent, IXYChartTheme, Margin } from './types';
 
 /**
  * Looks for children of the SVGXYChart that have component names that end in 'Axis'.
@@ -39,9 +38,8 @@ export function calculateAutoMarginFromChildren(params: {
       if (element.type === Fragment) {
         // Support wrapping axes in React.Fragment.
         marginList.push(calculateAutoMarginFromChildren(params));
-      } else if (typeof element.type !== 'string' && element.type.name.endsWith('Axis')) {
-        const elementType = element.type as SVGAxisComponent;
-        const props = element.props as BasicAxisProps;
+      } else if (typeof element.type !== 'string' && (element.type as IMarginComponent)?.calculateMargin) {
+        const props = element.props;
         const axisOrientation = calculateAxisOrientation(horizontal, props.variable, props.position);
         const scale =
           props.variable === 'independent'
@@ -54,9 +52,9 @@ export function calculateAutoMarginFromChildren(params: {
         }
         const rangePadding =
           props.variable === 'independent' ? independentRangePadding : dependentRangePadding;
-        const calculateMargin = elementType.calculateMargin ?? calculateAxisMargin;
-        const autoMargin = calculateMargin(axisOrientation, scale, rangePadding, theme, props);
-        marginList.push(autoMargin);
+        const calculateMargin = (element.type as IMarginComponent).calculateMargin;
+        const margin = calculateMargin(axisOrientation, scale, rangePadding, theme, props);
+        marginList.push(margin);
       }
     }
   });

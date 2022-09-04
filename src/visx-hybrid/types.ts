@@ -478,9 +478,14 @@ export type CalculateMargin<Props extends BasicAxisProps = BasicAxisProps> = (
   params: Props
 ) => Margin;
 
-export interface SVGAxisComponent<Props extends BasicAxisProps = BasicAxisProps> {
+export interface IMarginComponent<Props extends BasicAxisProps = BasicAxisProps> {
   (props: Props): JSX.Element;
   calculateMargin: CalculateMargin<Props>;
+}
+
+export interface ISeriesContainerComponent<Props extends object = object> {
+  (props: Props): JSX.Element;
+  type: 'group' | 'stack';
 }
 
 export type AccessorForArrayItem<Datum, Output> = (d: Datum, index: number, data: Datum[]) => Output;

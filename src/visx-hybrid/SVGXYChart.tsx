@@ -210,6 +210,7 @@ function InnerChart<
         dependentRangePadding: resolvedDependentRangePadding,
         theme
       });
+
     const margin = addMargins([resolvedMargin, resolvedOuterMargin]);
 
     const chartDimensions = new ChartDimensions({
